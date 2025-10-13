@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.WmsVisitorMapper">
+    
+    <resultMap type="WmsVisitor" id="WmsVisitorResult">
+        <result property="visitorId"    column="visitor_id"    />
+        <result property="visitorIdentityNo"    column="visitor_identity_no"    />
+        <result property="visitorName"    column="visitor_name"    />
+        <result property="visitorPhone"    column="visitor_phone"    />
+        <result property="visitorPurpose"    column="visitor_purpose"    />
+        <result property="estimatedTime"    column="estimated_time"    />
+        <result property="visitee"    column="visitee"    />
+        <result property="img"    column="img"    />
+        <result property="cardRecordId"    column="card_record_id"    />
+        <result property="areaCode"    column="area_code"    />
+    </resultMap>
+
+    <sql id="selectWmsVisitorVo">
+        select visitor_id, visitor_identity_no, visitor_name, visitor_phone, visitor_purpose, estimated_time, visitee, img, card_record_id, area_code from wms_visitor
+    </sql>
+
+    <select id="selectWmsVisitorList" parameterType="WmsVisitor" resultMap="WmsVisitorResult">
+        <include refid="selectWmsVisitorVo"/>
+        <where>  
+            <if test="visitorIdentityNo != null  and visitorIdentityNo != ''"> and visitor_identity_no = #{visitorIdentityNo}</if>
+            <if test="visitorName != null  and visitorName != ''"> and visitor_name like concat('%', #{visitorName}, '%')</if>
+            <if test="visitorPhone != null  and visitorPhone != ''"> and visitor_phone = #{visitorPhone}</if>
+            <if test="visitorPurpose != null  and visitorPurpose != ''"> and visitor_purpose = #{visitorPurpose}</if>
+            <if test="estimatedTime != null  and estimatedTime != ''"> and estimated_time = #{estimatedTime}</if>
+            <if test="visitee != null  and visitee != ''"> and visitee = #{visitee}</if>
+            <if test="img != null  and img != ''"> and img = #{img}</if>
+            <if test="cardRecordId != null "> and card_record_id = #{cardRecordId}</if>
+            <if test="areaCode != null  and areaCode != ''"> and area_code = #{areaCode}</if>
+        </where>
+    </select>
+    
+    <select id="selectWmsVisitorByVisitorId" parameterType="Long" resultMap="WmsVisitorResult">
+        <include refid="selectWmsVisitorVo"/>
+        where visitor_id = #{visitorId}
+    </select>
+
+    <insert id="insertWmsVisitor" parameterType="WmsVisitor" useGeneratedKeys="true" keyProperty="visitorId">
+        insert into wms_visitor
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="visitorIdentityNo != null and visitorIdentityNo != ''">visitor_identity_no,</if>
+            <if test="visitorName != null and visitorName != ''">visitor_name,</if>
+            <if test="visitorPhone != null">visitor_phone,</if>
+            <if test="visitorPurpose != null">visitor_purpose,</if>
+            <if test="estimatedTime != null">estimated_time,</if>
+            <if test="visitee != null and visitee != ''">visitee,</if>
+            <if test="img != null">img,</if>
+            <if test="cardRecordId != null">card_record_id,</if>
+            <if test="areaCode != null and areaCode != ''">area_code,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="visitorIdentityNo != null and visitorIdentityNo != ''">#{visitorIdentityNo},</if>
+            <if test="visitorName != null and visitorName != ''">#{visitorName},</if>
+            <if test="visitorPhone != null">#{visitorPhone},</if>
+            <if test="visitorPurpose != null">#{visitorPurpose},</if>
+            <if test="estimatedTime != null">#{estimatedTime},</if>
+            <if test="visitee != null and visitee != ''">#{visitee},</if>
+            <if test="img != null">#{img},</if>
+            <if test="cardRecordId != null">#{cardRecordId},</if>
+            <if test="areaCode != null and areaCode != ''">#{areaCode},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWmsVisitor" parameterType="WmsVisitor">
+        update wms_visitor
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="visitorIdentityNo != null and visitorIdentityNo != ''">visitor_identity_no = #{visitorIdentityNo},</if>
+            <if test="visitorName != null and visitorName != ''">visitor_name = #{visitorName},</if>
+            <if test="visitorPhone != null">visitor_phone = #{visitorPhone},</if>
+            <if test="visitorPurpose != null">visitor_purpose = #{visitorPurpose},</if>
+            <if test="estimatedTime != null">estimated_time = #{estimatedTime},</if>
+            <if test="visitee != null and visitee != ''">visitee = #{visitee},</if>
+            <if test="img != null">img = #{img},</if>
+            <if test="cardRecordId != null">card_record_id = #{cardRecordId},</if>
+            <if test="areaCode != null and areaCode != ''">area_code = #{areaCode},</if>
+        </trim>
+        where visitor_id = #{visitorId}
+    </update>
+
+    <delete id="deleteWmsVisitorByVisitorId" parameterType="Long">
+        delete from wms_visitor where visitor_id = #{visitorId}
+    </delete>
+
+    <delete id="deleteWmsVisitorByVisitorIds" parameterType="String">
+        delete from wms_visitor where visitor_id in 
+        <foreach item="visitorId" collection="array" open="(" separator="," close=")">
+            #{visitorId}
+        </foreach>
+    </delete>
+</mapper>

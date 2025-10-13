@@ -20,12 +20,12 @@ import Layout from '@/layout'
  * roles: ['admin', 'common']       // 访问路由的角色权限
  * permissions: ['a:a:a', 'b:b:b']  // 访问路由的菜单权限
  * meta : {
-    noCache: true                   // 如果设置为true，则不会被 <keep-alive> 缓存(默认 false)
-    title: 'title'                  // 设置该路由在侧边栏和面包屑中展示的名字
-    icon: 'svg-name'                // 设置该路由的图标，对应路径src/assets/icons/svg
-    breadcrumb: false               // 如果设置为false，则不会在breadcrumb面包屑中显示
-    activeMenu: '/system/user'      // 当路由设置了该属性，则会高亮相对应的侧边栏。
-  }
+ noCache: true                   // 如果设置为true，则不会被 <keep-alive> 缓存(默认 false)
+ title: 'title'                  // 设置该路由在侧边栏和面包屑中展示的名字
+ icon: 'svg-name'                // 设置该路由的图标，对应路径src/assets/icons/svg
+ breadcrumb: false               // 如果设置为false，则不会在breadcrumb面包屑中显示
+ activeMenu: '/system/user'      // 当路由设置了该属性，则会高亮相对应的侧边栏。
+ }
  */
 
 // 公共路由
@@ -70,7 +70,7 @@ export const constantRoutes = [
         path: 'index',
         component: () => import('@/views/index'),
         name: 'Index',
-        meta: { title: '首页', icon: 'dashboard', affix: true }
+        meta: {title: '首页', icon: 'dashboard', affix: true}
       }
     ]
   },
@@ -84,7 +84,7 @@ export const constantRoutes = [
         path: 'profile',
         component: () => import('@/views/system/user/profile/index'),
         name: 'Profile',
-        meta: { title: '个人中心', icon: 'user' }
+        meta: {title: '个人中心', icon: 'user'}
       }
     ]
   }
@@ -102,7 +102,7 @@ export const dynamicRoutes = [
         path: 'role/:userId(\\d+)',
         component: () => import('@/views/system/user/authRole'),
         name: 'AuthRole',
-        meta: { title: '分配角色', activeMenu: '/system/user' }
+        meta: {title: '分配角色', activeMenu: '/system/user'}
       }
     ]
   },
@@ -116,7 +116,7 @@ export const dynamicRoutes = [
         path: 'user/:roleId(\\d+)',
         component: () => import('@/views/system/role/authUser'),
         name: 'AuthUser',
-        meta: { title: '分配用户', activeMenu: '/system/role' }
+        meta: {title: '分配用户', activeMenu: '/system/role'}
       }
     ]
   },
@@ -130,7 +130,7 @@ export const dynamicRoutes = [
         path: 'index/:dictId(\\d+)',
         component: () => import('@/views/system/dict/data'),
         name: 'Data',
-        meta: { title: '字典数据', activeMenu: '/system/dict' }
+        meta: {title: '字典数据', activeMenu: '/system/dict'}
       }
     ]
   },
@@ -144,7 +144,7 @@ export const dynamicRoutes = [
         path: 'index/:jobId(\\d+)',
         component: () => import('@/views/monitor/job/log'),
         name: 'JobLog',
-        meta: { title: '调度日志', activeMenu: '/monitor/job' }
+        meta: {title: '调度日志', activeMenu: '/monitor/job'}
       }
     ]
   },
@@ -158,7 +158,213 @@ export const dynamicRoutes = [
         path: 'index/:tableId(\\d+)',
         component: () => import('@/views/tool/gen/editTable'),
         name: 'GenEdit',
-        meta: { title: '修改生成配置', activeMenu: '/tool/gen' }
+        meta: {title: '修改生成配置', activeMenu: '/tool/gen'}
+      }
+    ]
+  },
+  {
+    path: '/lanya-core-area',
+    component: Layout,
+    hidden: true,
+    permissions: ['system:role:edit'],
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/lanya_core_area/index'),
+        name: 'Area',
+        meta: {title: '区域管理'}
+      }
+    ]
+  },
+  {
+    path: '/person',
+    component: Layout,
+    hidden: true,
+    permissions: ['system:role:edit'],
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/person/index'),
+        name: 'Area',
+        meta: {title: '员工档案'}
+      }
+    ]
+  },
+  {
+    path: '/lanya-vehicleInfo-visitor',
+    component: Layout,
+    hidden: true,
+    permissions: ['system:role:edit'],
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/lanya_vehicleInfo_visitor/index'),
+        name: 'Area',
+        meta: {title: '访客车辆'}
+      }
+    ]
+  },
+  {
+    path: '/gatepass',
+    component: Layout,
+    hidden: true,
+    permissions: ['system:role:edit'],
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/gatepass/index'),
+        name: 'Area',
+        meta: {title: '车辆预约'}
+      }
+    ]
+  },
+  {
+    path: '/route-set',
+    component: Layout,
+    hidden: true,
+    permissions: ['system:role:edit'],
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/route_set/index'),
+        name: 'Area',
+        meta: {title: '路线规划'}
+      }
+    ]
+  },
+  {
+    path: '/lanya-core-visitor',
+    component: Layout,
+    hidden: true,
+    permissions: ['system:role:edit'],
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/lanya_core_visitor/index'),
+        name: 'Area',
+        meta: {title: '访客信息'}
+      }
+    ]
+  },
+  {
+    path: '/alarm',
+    component: Layout,
+    hidden: true,
+    permissions: ['system:role:edit'],
+    children: [
+      {
+        path: 'core',
+        component: () => import('@/views/lanya_core_alarm/index'),
+        name: 'Area',
+        meta: {title: '报警记录'}
+      },
+      {
+        path: 'vehicle',
+        component: () => import('@/views/lanya_vehicle_alarm/index'),
+        name: 'Area',
+        meta: {title: '报警记录'}
+      },
+      {
+        path: 'people',
+        component: () => import('@/views/lanya_core_alarm_people/index'),
+        name: 'Area',
+        meta: {title: '报警记录'}
+      }
+    ]
+  },
+  {
+    path: '/card-log',
+    component: Layout,
+    hidden: true,
+    permissions: ['system:role:edit'],
+    children: [
+      {
+        path: 'people',
+        component: () => import('@/views/lanya_device_card_sender_log/index'),
+        name: 'Area',
+        meta: {title: '人员发卡记录'}
+      },
+      {
+        path: 'vehicle',
+        component: () => import('@/views/lanya_device_card_sender_vehicle_log/index'),
+        name: 'Area',
+        meta: {title: '车辆发卡记录'}
+      }
+    ]
+  },
+  {
+    path: '/material',
+    component: Layout,
+    hidden: true,
+    permissions: ['system:role:edit'],
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/material/index'),
+        name: 'Area',
+        meta: {title: '物料档案'}
+      }
+    ]
+  },
+  {
+    path: '/trajectory',
+    component: Layout,
+    hidden: true,
+    permissions: ['system:role:edit'],
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/lanya_position_history/index'),
+        name: 'Area',
+        meta: {title: '轨迹'}
+      }
+    ]
+  },
+  {
+    path: '/lanya-core-person',
+    component: Layout,
+    hidden: true,
+    permissions: ['system:role:edit'],
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/lanya_core_person/index'),
+        name: 'Area',
+        meta: {title: '轨迹'}
+      }
+    ]
+  },
+  {
+    path: '/device-manage',
+    component: Layout,
+    hidden: true,
+    permissions: ['system:role:edit'],
+    children: [
+      {
+        path: 'card-manage',
+        component: () => import('@/views/lanya_device_card/index'),
+        name: 'Area',
+        meta: {title: '定位卡管理'}
+      },
+      {
+        path: 'machine-manage',
+        component: () => import('@/views/lanya_device_machine/index'),
+        name: 'Area',
+        meta: {title: '发卡机管理'}
+      }
+    ]
+  },
+  {
+    path: '/people-manage',
+    component: Layout,
+    hidden: true,
+    permissions: ['system:role:edit'],
+    children: [
+      {
+        path: 'internal-employee',
+        component: () => import('@/views/lanya_internal_employee/index'),
+        name: 'Area',
+        meta: {title: '内部员工'}
       }
     ]
   }
@@ -178,6 +384,6 @@ Router.prototype.replace = function push(location) {
 
 export default new Router({
   mode: 'history', // 去掉url中的#
-  scrollBehavior: () => ({ y: 0 }),
+  scrollBehavior: () => ({y: 0}),
   routes: constantRoutes
 })

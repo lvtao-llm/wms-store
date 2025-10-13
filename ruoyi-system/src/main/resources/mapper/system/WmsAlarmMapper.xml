@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.WmsAlarmMapper">
+    
+    <resultMap type="WmsAlarm" id="WmsAlarmResult">
+        <result property="alarmId"    column="alarm_id"    />
+        <result property="alarmType"    column="alarm_type"    />
+        <result property="cardRecordId"    column="card_record_id"    />
+        <result property="personName"    column="person_name"    />
+        <result property="personJobNo"    column="person_job_no"    />
+        <result property="personDept"    column="person_dept"    />
+        <result property="vehiclePlateNo"    column="vehicle_plate_no"    />
+        <result property="vehicleType"    column="vehicle_type"    />
+        <result property="alarmLocation"    column="alarm_location"    />
+        <result property="areaCode"    column="area_code"    />
+        <result property="alarmEnterTime"    column="alarm_enter_time"    />
+        <result property="alarmBehavior"    column="alarm_behavior"    />
+        <result property="alarmResult"    column="alarm_result"    />
+        <result property="alarmHandler"    column="alarm_handler"    />
+        <result property="alarmHandleTime"    column="alarm_handle_time"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="delFlag"    column="del_flag"    />
+    </resultMap>
+
+    <sql id="selectWmsAlarmVo">
+        select alarm_id, alarm_type, card_record_id, person_name, person_job_no, person_dept, vehicle_plate_no, vehicle_type, alarm_location, area_code, alarm_enter_time, alarm_behavior, alarm_result, alarm_handler, alarm_handle_time, create_time, update_time, del_flag from wms_alarm
+    </sql>
+
+    <select id="selectWmsAlarmList" parameterType="WmsAlarm" resultMap="WmsAlarmResult">
+        <include refid="selectWmsAlarmVo"/>
+        <where>  
+            <if test="alarmType != null  and alarmType != ''"> and alarm_type = #{alarmType}</if>
+            <if test="cardRecordId != null "> and card_record_id = #{cardRecordId}</if>
+            <if test="personName != null  and personName != ''"> and person_name like concat('%', #{personName}, '%')</if>
+            <if test="personJobNo != null  and personJobNo != ''"> and person_job_no = #{personJobNo}</if>
+            <if test="personDept != null  and personDept != ''"> and person_dept = #{personDept}</if>
+            <if test="vehiclePlateNo != null  and vehiclePlateNo != ''"> and vehicle_plate_no = #{vehiclePlateNo}</if>
+            <if test="vehicleType != null  and vehicleType != ''"> and vehicle_type = #{vehicleType}</if>
+            <if test="alarmLocation != null  and alarmLocation != ''"> and alarm_location = #{alarmLocation}</if>
+            <if test="areaCode != null  and areaCode != ''"> and area_code = #{areaCode}</if>
+            <if test="alarmEnterTime != null "> and alarm_enter_time = #{alarmEnterTime}</if>
+            <if test="alarmBehavior != null  and alarmBehavior != ''"> and alarm_behavior = #{alarmBehavior}</if>
+            <if test="alarmResult != null  and alarmResult != ''"> and alarm_result = #{alarmResult}</if>
+            <if test="alarmHandler != null  and alarmHandler != ''"> and alarm_handler = #{alarmHandler}</if>
+            <if test="alarmHandleTime != null "> and alarm_handle_time = #{alarmHandleTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectWmsAlarmByAlarmId" parameterType="Long" resultMap="WmsAlarmResult">
+        <include refid="selectWmsAlarmVo"/>
+        where alarm_id = #{alarmId}
+    </select>
+
+    <insert id="insertWmsAlarm" parameterType="WmsAlarm" useGeneratedKeys="true" keyProperty="alarmId">
+        insert into wms_alarm
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="alarmType != null and alarmType != ''">alarm_type,</if>
+            <if test="cardRecordId != null">card_record_id,</if>
+            <if test="personName != null and personName != ''">person_name,</if>
+            <if test="personJobNo != null and personJobNo != ''">person_job_no,</if>
+            <if test="personDept != null">person_dept,</if>
+            <if test="vehiclePlateNo != null and vehiclePlateNo != ''">vehicle_plate_no,</if>
+            <if test="vehicleType != null">vehicle_type,</if>
+            <if test="alarmLocation != null and alarmLocation != ''">alarm_location,</if>
+            <if test="areaCode != null and areaCode != ''">area_code,</if>
+            <if test="alarmEnterTime != null">alarm_enter_time,</if>
+            <if test="alarmBehavior != null and alarmBehavior != ''">alarm_behavior,</if>
+            <if test="alarmResult != null">alarm_result,</if>
+            <if test="alarmHandler != null">alarm_handler,</if>
+            <if test="alarmHandleTime != null">alarm_handle_time,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="alarmType != null and alarmType != ''">#{alarmType},</if>
+            <if test="cardRecordId != null">#{cardRecordId},</if>
+            <if test="personName != null and personName != ''">#{personName},</if>
+            <if test="personJobNo != null and personJobNo != ''">#{personJobNo},</if>
+            <if test="personDept != null">#{personDept},</if>
+            <if test="vehiclePlateNo != null and vehiclePlateNo != ''">#{vehiclePlateNo},</if>
+            <if test="vehicleType != null">#{vehicleType},</if>
+            <if test="alarmLocation != null and alarmLocation != ''">#{alarmLocation},</if>
+            <if test="areaCode != null and areaCode != ''">#{areaCode},</if>
+            <if test="alarmEnterTime != null">#{alarmEnterTime},</if>
+            <if test="alarmBehavior != null and alarmBehavior != ''">#{alarmBehavior},</if>
+            <if test="alarmResult != null">#{alarmResult},</if>
+            <if test="alarmHandler != null">#{alarmHandler},</if>
+            <if test="alarmHandleTime != null">#{alarmHandleTime},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWmsAlarm" parameterType="WmsAlarm">
+        update wms_alarm
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="alarmType != null and alarmType != ''">alarm_type = #{alarmType},</if>
+            <if test="cardRecordId != null">card_record_id = #{cardRecordId},</if>
+            <if test="personName != null and personName != ''">person_name = #{personName},</if>
+            <if test="personJobNo != null and personJobNo != ''">person_job_no = #{personJobNo},</if>
+            <if test="personDept != null">person_dept = #{personDept},</if>
+            <if test="vehiclePlateNo != null and vehiclePlateNo != ''">vehicle_plate_no = #{vehiclePlateNo},</if>
+            <if test="vehicleType != null">vehicle_type = #{vehicleType},</if>
+            <if test="alarmLocation != null and alarmLocation != ''">alarm_location = #{alarmLocation},</if>
+            <if test="areaCode != null and areaCode != ''">area_code = #{areaCode},</if>
+            <if test="alarmEnterTime != null">alarm_enter_time = #{alarmEnterTime},</if>
+            <if test="alarmBehavior != null and alarmBehavior != ''">alarm_behavior = #{alarmBehavior},</if>
+            <if test="alarmResult != null">alarm_result = #{alarmResult},</if>
+            <if test="alarmHandler != null">alarm_handler = #{alarmHandler},</if>
+            <if test="alarmHandleTime != null">alarm_handle_time = #{alarmHandleTime},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+        </trim>
+        where alarm_id = #{alarmId}
+    </update>
+
+    <delete id="deleteWmsAlarmByAlarmId" parameterType="Long">
+        delete from wms_alarm where alarm_id = #{alarmId}
+    </delete>
+
+    <delete id="deleteWmsAlarmByAlarmIds" parameterType="String">
+        delete from wms_alarm where alarm_id in 
+        <foreach item="alarmId" collection="array" open="(" separator="," close=")">
+            #{alarmId}
+        </foreach>
+    </delete>
+</mapper>

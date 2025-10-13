@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.WmsVehicleMapper">
+    
+    <resultMap type="WmsVehicle" id="WmsVehicleResult">
+        <result property="vehicleId"    column="vehicle_id"    />
+        <result property="vehiclePlateNo"    column="vehicle_plate_no"    />
+        <result property="vehicleType"    column="vehicle_type"    />
+        <result property="vehicleAxleNum"    column="vehicle_axle_num"    />
+        <result property="vehicleCompany"    column="vehicle_company"    />
+        <result property="vehicleDriverName"    column="vehicle_driver_name"    />
+        <result property="vehicleDriverPhone"    column="vehicle_driver_phone"    />
+        <result property="maxWeight"    column="max_weight"    />
+        <result property="authArea"    column="auth_area"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="delFlag"    column="del_flag"    />
+    </resultMap>
+
+    <sql id="selectWmsVehicleVo">
+        select vehicle_id, vehicle_plate_no, vehicle_type, vehicle_axle_num, vehicle_company, vehicle_driver_name, vehicle_driver_phone, max_weight, auth_area, status, create_by, create_time, update_by, update_time, del_flag from wms_vehicle
+    </sql>
+
+    <select id="selectWmsVehicleList" parameterType="WmsVehicle" resultMap="WmsVehicleResult">
+        <include refid="selectWmsVehicleVo"/>
+        <where>  
+            <if test="vehiclePlateNo != null  and vehiclePlateNo != ''"> and vehicle_plate_no = #{vehiclePlateNo}</if>
+            <if test="vehicleType != null  and vehicleType != ''"> and vehicle_type = #{vehicleType}</if>
+            <if test="vehicleAxleNum != null  and vehicleAxleNum != ''"> and vehicle_axle_num = #{vehicleAxleNum}</if>
+            <if test="vehicleCompany != null  and vehicleCompany != ''"> and vehicle_company = #{vehicleCompany}</if>
+            <if test="vehicleDriverName != null  and vehicleDriverName != ''"> and vehicle_driver_name like concat('%', #{vehicleDriverName}, '%')</if>
+            <if test="vehicleDriverPhone != null  and vehicleDriverPhone != ''"> and vehicle_driver_phone = #{vehicleDriverPhone}</if>
+            <if test="maxWeight != null  and maxWeight != ''"> and max_weight = #{maxWeight}</if>
+            <if test="authArea != null  and authArea != ''"> and auth_area = #{authArea}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectWmsVehicleByVehicleId" parameterType="Long" resultMap="WmsVehicleResult">
+        <include refid="selectWmsVehicleVo"/>
+        where vehicle_id = #{vehicleId}
+    </select>
+
+    <insert id="insertWmsVehicle" parameterType="WmsVehicle" useGeneratedKeys="true" keyProperty="vehicleId">
+        insert into wms_vehicle
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="vehiclePlateNo != null and vehiclePlateNo != ''">vehicle_plate_no,</if>
+            <if test="vehicleType != null">vehicle_type,</if>
+            <if test="vehicleAxleNum != null">vehicle_axle_num,</if>
+            <if test="vehicleCompany != null">vehicle_company,</if>
+            <if test="vehicleDriverName != null">vehicle_driver_name,</if>
+            <if test="vehicleDriverPhone != null">vehicle_driver_phone,</if>
+            <if test="maxWeight != null">max_weight,</if>
+            <if test="authArea != null">auth_area,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="delFlag != null">del_flag,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="vehiclePlateNo != null and vehiclePlateNo != ''">#{vehiclePlateNo},</if>
+            <if test="vehicleType != null">#{vehicleType},</if>
+            <if test="vehicleAxleNum != null">#{vehicleAxleNum},</if>
+            <if test="vehicleCompany != null">#{vehicleCompany},</if>
+            <if test="vehicleDriverName != null">#{vehicleDriverName},</if>
+            <if test="vehicleDriverPhone != null">#{vehicleDriverPhone},</if>
+            <if test="maxWeight != null">#{maxWeight},</if>
+            <if test="authArea != null">#{authArea},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWmsVehicle" parameterType="WmsVehicle">
+        update wms_vehicle
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="vehiclePlateNo != null and vehiclePlateNo != ''">vehicle_plate_no = #{vehiclePlateNo},</if>
+            <if test="vehicleType != null">vehicle_type = #{vehicleType},</if>
+            <if test="vehicleAxleNum != null">vehicle_axle_num = #{vehicleAxleNum},</if>
+            <if test="vehicleCompany != null">vehicle_company = #{vehicleCompany},</if>
+            <if test="vehicleDriverName != null">vehicle_driver_name = #{vehicleDriverName},</if>
+            <if test="vehicleDriverPhone != null">vehicle_driver_phone = #{vehicleDriverPhone},</if>
+            <if test="maxWeight != null">max_weight = #{maxWeight},</if>
+            <if test="authArea != null">auth_area = #{authArea},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+        </trim>
+        where vehicle_id = #{vehicleId}
+    </update>
+
+    <delete id="deleteWmsVehicleByVehicleId" parameterType="Long">
+        delete from wms_vehicle where vehicle_id = #{vehicleId}
+    </delete>
+
+    <delete id="deleteWmsVehicleByVehicleIds" parameterType="String">
+        delete from wms_vehicle where vehicle_id in 
+        <foreach item="vehicleId" collection="array" open="(" separator="," close=")">
+            #{vehicleId}
+        </foreach>
+    </delete>
+</mapper>

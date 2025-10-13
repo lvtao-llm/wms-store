@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.WmsTrajectoryMapper">
+    
+    <resultMap type="WmsTrajectory" id="WmsTrajectoryResult">
+        <result property="trajectoryId"    column="trajectory_id"    />
+        <result property="trajectoryType"    column="trajectory_type"    />
+        <result property="trajectoryBegin"    column="trajectory_begin"    />
+        <result property="trajectoryEnd"    column="trajectory_end"    />
+        <result property="trajectoryPoints"    column="trajectory_points"    />
+        <result property="cardRecordId"    column="card_record_id"    />
+    </resultMap>
+
+    <sql id="selectWmsTrajectoryVo">
+        select trajectory_id, trajectory_type, trajectory_begin, trajectory_end, trajectory_points, card_record_id from wms_trajectory
+    </sql>
+
+    <select id="selectWmsTrajectoryList" parameterType="WmsTrajectory" resultMap="WmsTrajectoryResult">
+        <include refid="selectWmsTrajectoryVo"/>
+        <where>  
+            <if test="trajectoryType != null  and trajectoryType != ''"> and trajectory_type = #{trajectoryType}</if>
+            <if test="trajectoryBegin != null "> and trajectory_begin = #{trajectoryBegin}</if>
+            <if test="trajectoryEnd != null "> and trajectory_end = #{trajectoryEnd}</if>
+            <if test="trajectoryPoints != null  and trajectoryPoints != ''"> and trajectory_points = #{trajectoryPoints}</if>
+            <if test="cardRecordId != null "> and card_record_id = #{cardRecordId}</if>
+        </where>
+    </select>
+    
+    <select id="selectWmsTrajectoryByTrajectoryId" parameterType="Long" resultMap="WmsTrajectoryResult">
+        <include refid="selectWmsTrajectoryVo"/>
+        where trajectory_id = #{trajectoryId}
+    </select>
+
+    <insert id="insertWmsTrajectory" parameterType="WmsTrajectory" useGeneratedKeys="true" keyProperty="trajectoryId">
+        insert into wms_trajectory
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="trajectoryType != null and trajectoryType != ''">trajectory_type,</if>
+            <if test="trajectoryBegin != null">trajectory_begin,</if>
+            <if test="trajectoryEnd != null">trajectory_end,</if>
+            <if test="trajectoryPoints != null">trajectory_points,</if>
+            <if test="cardRecordId != null">card_record_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="trajectoryType != null and trajectoryType != ''">#{trajectoryType},</if>
+            <if test="trajectoryBegin != null">#{trajectoryBegin},</if>
+            <if test="trajectoryEnd != null">#{trajectoryEnd},</if>
+            <if test="trajectoryPoints != null">#{trajectoryPoints},</if>
+            <if test="cardRecordId != null">#{cardRecordId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWmsTrajectory" parameterType="WmsTrajectory">
+        update wms_trajectory
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="trajectoryType != null and trajectoryType != ''">trajectory_type = #{trajectoryType},</if>
+            <if test="trajectoryBegin != null">trajectory_begin = #{trajectoryBegin},</if>
+            <if test="trajectoryEnd != null">trajectory_end = #{trajectoryEnd},</if>
+            <if test="trajectoryPoints != null">trajectory_points = #{trajectoryPoints},</if>
+            <if test="cardRecordId != null">card_record_id = #{cardRecordId},</if>
+        </trim>
+        where trajectory_id = #{trajectoryId}
+    </update>
+
+    <delete id="deleteWmsTrajectoryByTrajectoryId" parameterType="Long">
+        delete from wms_trajectory where trajectory_id = #{trajectoryId}
+    </delete>
+
+    <delete id="deleteWmsTrajectoryByTrajectoryIds" parameterType="String">
+        delete from wms_trajectory where trajectory_id in 
+        <foreach item="trajectoryId" collection="array" open="(" separator="," close=")">
+            #{trajectoryId}
+        </foreach>
+    </delete>
+</mapper>

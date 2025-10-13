@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.WmsMaterialMapper">
+    
+    <resultMap type="WmsMaterial" id="WmsMaterialResult">
+        <result property="materialId"    column="material_id"    />
+        <result property="materialCode"    column="material_code"    />
+        <result property="materialName"    column="material_name"    />
+        <result property="materialSpec"    column="material_spec"    />
+        <result property="materialModel"    column="material_model"    />
+        <result property="materialBatchNo"    column="material_batch_no"    />
+        <result property="areaCode"    column="area_code"    />
+        <result property="materialStockQty"    column="material_stock_qty"    />
+        <result property="materialChangePrevId"    column="material_change_prev_id"    />
+        <result property="materialChangeNextId"    column="material_change_next_id"    />
+        <result property="materialIsChange"    column="material_is_change"    />
+        <result property="materialChangeType"    column="material_change_type"    />
+        <result property="materialChangeCause"    column="material_change_cause"    />
+        <result property="materialUnit"    column="material_unit"    />
+        <result property="materialPos"    column="material_pos"    />
+        <result property="materialRequirements"    column="material_requirements"    />
+        <result property="materialSafetyNotice"    column="material_safety_notice"    />
+        <result property="materialPhoto"    column="material_photo"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectWmsMaterialVo">
+        select material_id, material_code, material_name, material_spec, material_model, material_batch_no, area_code, material_stock_qty, material_change_prev_id, material_change_next_id, material_is_change, material_change_type, material_change_cause, material_unit, material_pos, material_requirements, material_safety_notice, material_photo, create_by, create_time from wms_material
+    </sql>
+
+    <select id="selectWmsMaterialList" parameterType="WmsMaterial" resultMap="WmsMaterialResult">
+        <include refid="selectWmsMaterialVo"/>
+        <where>  
+            <if test="materialCode != null  and materialCode != ''"> and material_code = #{materialCode}</if>
+            <if test="materialName != null  and materialName != ''"> and material_name like concat('%', #{materialName}, '%')</if>
+            <if test="materialSpec != null  and materialSpec != ''"> and material_spec = #{materialSpec}</if>
+            <if test="materialModel != null  and materialModel != ''"> and material_model = #{materialModel}</if>
+            <if test="materialBatchNo != null  and materialBatchNo != ''"> and material_batch_no = #{materialBatchNo}</if>
+            <if test="areaCode != null  and areaCode != ''"> and area_code = #{areaCode}</if>
+            <if test="materialStockQty != null "> and material_stock_qty = #{materialStockQty}</if>
+            <if test="materialChangePrevId != null "> and material_change_prev_id = #{materialChangePrevId}</if>
+            <if test="materialChangeNextId != null "> and material_change_next_id = #{materialChangeNextId}</if>
+            <if test="materialIsChange != null  and materialIsChange != ''"> and material_is_change = #{materialIsChange}</if>
+            <if test="materialChangeType != null  and materialChangeType != ''"> and material_change_type = #{materialChangeType}</if>
+            <if test="materialChangeCause != null  and materialChangeCause != ''"> and material_change_cause = #{materialChangeCause}</if>
+            <if test="materialUnit != null  and materialUnit != ''"> and material_unit = #{materialUnit}</if>
+            <if test="materialPos != null  and materialPos != ''"> and material_pos = #{materialPos}</if>
+            <if test="materialRequirements != null  and materialRequirements != ''"> and material_requirements = #{materialRequirements}</if>
+            <if test="materialSafetyNotice != null  and materialSafetyNotice != ''"> and material_safety_notice = #{materialSafetyNotice}</if>
+            <if test="materialPhoto != null  and materialPhoto != ''"> and material_photo = #{materialPhoto}</if>
+        </where>
+    </select>
+    
+    <select id="selectWmsMaterialByMaterialId" parameterType="Long" resultMap="WmsMaterialResult">
+        <include refid="selectWmsMaterialVo"/>
+        where material_id = #{materialId}
+    </select>
+
+    <insert id="insertWmsMaterial" parameterType="WmsMaterial" useGeneratedKeys="true" keyProperty="materialId">
+        insert into wms_material
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="materialCode != null and materialCode != ''">material_code,</if>
+            <if test="materialName != null and materialName != ''">material_name,</if>
+            <if test="materialSpec != null">material_spec,</if>
+            <if test="materialModel != null">material_model,</if>
+            <if test="materialBatchNo != null">material_batch_no,</if>
+            <if test="areaCode != null and areaCode != ''">area_code,</if>
+            <if test="materialStockQty != null">material_stock_qty,</if>
+            <if test="materialChangePrevId != null">material_change_prev_id,</if>
+            <if test="materialChangeNextId != null">material_change_next_id,</if>
+            <if test="materialIsChange != null and materialIsChange != ''">material_is_change,</if>
+            <if test="materialChangeType != null and materialChangeType != ''">material_change_type,</if>
+            <if test="materialChangeCause != null">material_change_cause,</if>
+            <if test="materialUnit != null">material_unit,</if>
+            <if test="materialPos != null and materialPos != ''">material_pos,</if>
+            <if test="materialRequirements != null and materialRequirements != ''">material_requirements,</if>
+            <if test="materialSafetyNotice != null and materialSafetyNotice != ''">material_safety_notice,</if>
+            <if test="materialPhoto != null">material_photo,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="materialCode != null and materialCode != ''">#{materialCode},</if>
+            <if test="materialName != null and materialName != ''">#{materialName},</if>
+            <if test="materialSpec != null">#{materialSpec},</if>
+            <if test="materialModel != null">#{materialModel},</if>
+            <if test="materialBatchNo != null">#{materialBatchNo},</if>
+            <if test="areaCode != null and areaCode != ''">#{areaCode},</if>
+            <if test="materialStockQty != null">#{materialStockQty},</if>
+            <if test="materialChangePrevId != null">#{materialChangePrevId},</if>
+            <if test="materialChangeNextId != null">#{materialChangeNextId},</if>
+            <if test="materialIsChange != null and materialIsChange != ''">#{materialIsChange},</if>
+            <if test="materialChangeType != null and materialChangeType != ''">#{materialChangeType},</if>
+            <if test="materialChangeCause != null">#{materialChangeCause},</if>
+            <if test="materialUnit != null">#{materialUnit},</if>
+            <if test="materialPos != null and materialPos != ''">#{materialPos},</if>
+            <if test="materialRequirements != null and materialRequirements != ''">#{materialRequirements},</if>
+            <if test="materialSafetyNotice != null and materialSafetyNotice != ''">#{materialSafetyNotice},</if>
+            <if test="materialPhoto != null">#{materialPhoto},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWmsMaterial" parameterType="WmsMaterial">
+        update wms_material
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="materialCode != null and materialCode != ''">material_code = #{materialCode},</if>
+            <if test="materialName != null and materialName != ''">material_name = #{materialName},</if>
+            <if test="materialSpec != null">material_spec = #{materialSpec},</if>
+            <if test="materialModel != null">material_model = #{materialModel},</if>
+            <if test="materialBatchNo != null">material_batch_no = #{materialBatchNo},</if>
+            <if test="areaCode != null and areaCode != ''">area_code = #{areaCode},</if>
+            <if test="materialStockQty != null">material_stock_qty = #{materialStockQty},</if>
+            <if test="materialChangePrevId != null">material_change_prev_id = #{materialChangePrevId},</if>
+            <if test="materialChangeNextId != null">material_change_next_id = #{materialChangeNextId},</if>
+            <if test="materialIsChange != null and materialIsChange != ''">material_is_change = #{materialIsChange},</if>
+            <if test="materialChangeType != null and materialChangeType != ''">material_change_type = #{materialChangeType},</if>
+            <if test="materialChangeCause != null">material_change_cause = #{materialChangeCause},</if>
+            <if test="materialUnit != null">material_unit = #{materialUnit},</if>
+            <if test="materialPos != null and materialPos != ''">material_pos = #{materialPos},</if>
+            <if test="materialRequirements != null and materialRequirements != ''">material_requirements = #{materialRequirements},</if>
+            <if test="materialSafetyNotice != null and materialSafetyNotice != ''">material_safety_notice = #{materialSafetyNotice},</if>
+            <if test="materialPhoto != null">material_photo = #{materialPhoto},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where material_id = #{materialId}
+    </update>
+
+    <delete id="deleteWmsMaterialByMaterialId" parameterType="Long">
+        delete from wms_material where material_id = #{materialId}
+    </delete>
+
+    <delete id="deleteWmsMaterialByMaterialIds" parameterType="String">
+        delete from wms_material where material_id in 
+        <foreach item="materialId" collection="array" open="(" separator="," close=")">
+            #{materialId}
+        </foreach>
+    </delete>
+</mapper>

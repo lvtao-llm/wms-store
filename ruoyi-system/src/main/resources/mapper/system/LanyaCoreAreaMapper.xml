@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.LanyaCoreAreaMapper">
+    
+    <resultMap type="LanyaCoreArea" id="LanyaCoreAreaResult">
+        <result property="areaId"    column="area_id"    />
+        <result property="areaName"    column="area_name"    />
+        <result property="areaEnable"    column="area_enable"    />
+        <result property="alarmType"    column="alarm_type"    />
+        <result property="rule"    column="rule"    />
+        <result property="validBeginDate"    column="valid_begin_date"    />
+        <result property="validEndDate"    column="valid_end_date"    />
+        <result property="validBeginTime"    column="valid_begin_time"    />
+        <result property="validEndTime"    column="valid_end_time"    />
+        <result property="alarmNoticeId"    column="alarm_notice_id"    />
+        <result property="secondAlarmRule"    column="second_alarm_rule"    />
+        <result property="secondAlarmNoticeId"    column="second_alarm_notice_id"    />
+        <result property="thirdAlarmRule"    column="third_alarm_rule"    />
+        <result property="thirdAlarmNoticeId"    column="third_alarm_notice_id"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateBy"    column="update_by"    />
+    </resultMap>
+
+    <sql id="selectLanyaCoreAreaVo">
+        select area_id, area_name, area_enable, alarm_type, rule, valid_begin_date, valid_end_date, valid_begin_time, valid_end_time, alarm_notice_id, second_alarm_rule, second_alarm_notice_id, third_alarm_rule, third_alarm_notice_id, create_time, create_by, update_time, update_by from core_area
+    </sql>
+
+    <select id="selectLanyaCoreAreaList" parameterType="LanyaCoreArea" resultMap="LanyaCoreAreaResult">
+        <include refid="selectLanyaCoreAreaVo"/>
+        <where>  
+            <if test="areaName != null  and areaName != ''"> and area_name like concat('%', #{areaName}, '%')</if>
+            <if test="areaEnable != null  and areaEnable != ''"> and area_enable = #{areaEnable}</if>
+            <if test="alarmType != null  and alarmType != ''"> and alarm_type = #{alarmType}</if>
+            <if test="rule != null  and rule != ''"> and rule = #{rule}</if>
+            <if test="validBeginDate != null "> and valid_begin_date = #{validBeginDate}</if>
+            <if test="validEndDate != null "> and valid_end_date = #{validEndDate}</if>
+            <if test="validBeginTime != null "> and valid_begin_time = #{validBeginTime}</if>
+            <if test="validEndTime != null "> and valid_end_time = #{validEndTime}</if>
+            <if test="alarmNoticeId != null "> and alarm_notice_id = #{alarmNoticeId}</if>
+            <if test="secondAlarmRule != null  and secondAlarmRule != ''"> and second_alarm_rule = #{secondAlarmRule}</if>
+            <if test="secondAlarmNoticeId != null "> and second_alarm_notice_id = #{secondAlarmNoticeId}</if>
+            <if test="thirdAlarmRule != null  and thirdAlarmRule != ''"> and third_alarm_rule = #{thirdAlarmRule}</if>
+            <if test="thirdAlarmNoticeId != null "> and third_alarm_notice_id = #{thirdAlarmNoticeId}</if>
+        </where>
+    </select>
+    
+    <select id="selectLanyaCoreAreaByAreaId" parameterType="Long" resultMap="LanyaCoreAreaResult">
+        <include refid="selectLanyaCoreAreaVo"/>
+        where area_id = #{areaId}
+    </select>
+
+    <insert id="insertLanyaCoreArea" parameterType="LanyaCoreArea" useGeneratedKeys="true" keyProperty="areaId">
+        insert into core_area
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="areaName != null and areaName != ''">area_name,</if>
+            <if test="areaEnable != null and areaEnable != ''">area_enable,</if>
+            <if test="alarmType != null and alarmType != ''">alarm_type,</if>
+            <if test="rule != null">rule,</if>
+            <if test="validBeginDate != null">valid_begin_date,</if>
+            <if test="validEndDate != null">valid_end_date,</if>
+            <if test="validBeginTime != null">valid_begin_time,</if>
+            <if test="validEndTime != null">valid_end_time,</if>
+            <if test="alarmNoticeId != null">alarm_notice_id,</if>
+            <if test="secondAlarmRule != null">second_alarm_rule,</if>
+            <if test="secondAlarmNoticeId != null">second_alarm_notice_id,</if>
+            <if test="thirdAlarmRule != null">third_alarm_rule,</if>
+            <if test="thirdAlarmNoticeId != null">third_alarm_notice_id,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="updateBy != null">update_by,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="areaName != null and areaName != ''">#{areaName},</if>
+            <if test="areaEnable != null and areaEnable != ''">#{areaEnable},</if>
+            <if test="alarmType != null and alarmType != ''">#{alarmType},</if>
+            <if test="rule != null">#{rule},</if>
+            <if test="validBeginDate != null">#{validBeginDate},</if>
+            <if test="validEndDate != null">#{validEndDate},</if>
+            <if test="validBeginTime != null">#{validBeginTime},</if>
+            <if test="validEndTime != null">#{validEndTime},</if>
+            <if test="alarmNoticeId != null">#{alarmNoticeId},</if>
+            <if test="secondAlarmRule != null">#{secondAlarmRule},</if>
+            <if test="secondAlarmNoticeId != null">#{secondAlarmNoticeId},</if>
+            <if test="thirdAlarmRule != null">#{thirdAlarmRule},</if>
+            <if test="thirdAlarmNoticeId != null">#{thirdAlarmNoticeId},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+         </trim>
+    </insert>
+
+    <update id="updateLanyaCoreArea" parameterType="LanyaCoreArea">
+        update core_area
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="areaName != null and areaName != ''">area_name = #{areaName},</if>
+            <if test="areaEnable != null and areaEnable != ''">area_enable = #{areaEnable},</if>
+            <if test="alarmType != null and alarmType != ''">alarm_type = #{alarmType},</if>
+            <if test="rule != null">rule = #{rule},</if>
+            <if test="validBeginDate != null">valid_begin_date = #{validBeginDate},</if>
+            <if test="validEndDate != null">valid_end_date = #{validEndDate},</if>
+            <if test="validBeginTime != null">valid_begin_time = #{validBeginTime},</if>
+            <if test="validEndTime != null">valid_end_time = #{validEndTime},</if>
+            <if test="alarmNoticeId != null">alarm_notice_id = #{alarmNoticeId},</if>
+            <if test="secondAlarmRule != null">second_alarm_rule = #{secondAlarmRule},</if>
+            <if test="secondAlarmNoticeId != null">second_alarm_notice_id = #{secondAlarmNoticeId},</if>
+            <if test="thirdAlarmRule != null">third_alarm_rule = #{thirdAlarmRule},</if>
+            <if test="thirdAlarmNoticeId != null">third_alarm_notice_id = #{thirdAlarmNoticeId},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+        </trim>
+        where area_id = #{areaId}
+    </update>
+
+    <delete id="deleteLanyaCoreAreaByAreaId" parameterType="Long">
+        delete from core_area where area_id = #{areaId}
+    </delete>
+
+    <delete id="deleteLanyaCoreAreaByAreaIds" parameterType="String">
+        delete from core_area where area_id in 
+        <foreach item="areaId" collection="array" open="(" separator="," close=")">
+            #{areaId}
+        </foreach>
+    </delete>
+</mapper>

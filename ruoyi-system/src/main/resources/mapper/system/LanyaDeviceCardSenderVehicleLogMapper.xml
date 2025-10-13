@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.LanyaDeviceCardSenderVehicleLogMapper">
+    
+    <resultMap type="LanyaDeviceCardSenderVehicleLog" id="LanyaDeviceCardSenderVehicleLogResult">
+        <result property="id"    column="id"    />
+        <result property="vehicleCategory"    column="vehicle_category"    />
+        <result property="vehicleName"    column="vehicle_name"    />
+        <result property="vehicleType"    column="vehicle_type"    />
+        <result property="cardId"    column="card_id"    />
+        <result property="vehicleId"    column="vehicle_id"    />
+        <result property="licensePlateNumber"    column="license_plate_number"    />
+        <result property="driverName"    column="driver_name"    />
+        <result property="idNumber"    column="id_number"    />
+        <result property="personIc"    column="person_ic"    />
+        <result property="driverTel"    column="driver_tel"    />
+        <result property="companyName"    column="company_name"    />
+        <result property="deviceSn"    column="device_sn"    />
+        <result property="deviceAims"    column="device_aims"    />
+        <result property="deviceNum"    column="device_num"    />
+        <result property="cardSenderType"    column="card_sender_type"    />
+        <result property="result"    column="result"    />
+        <result property="identifyType"    column="identify_type"    />
+        <result property="identifyPhoto"    column="identify_photo"    />
+        <result property="rentType"    column="rent_type"    />
+        <result property="remark"    column="remark"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="identifyTime"    column="identify_time"    />
+        <result property="deviceName"    column="device_name"    />
+        <result property="commandTime"    column="command_time"    />
+        <result property="closedTime"    column="closed_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="notifyStatus"    column="notify_status"    />
+    </resultMap>
+
+    <sql id="selectLanyaDeviceCardSenderVehicleLogVo">
+        select id, vehicle_category, vehicle_name, vehicle_type, card_id, vehicle_id, license_plate_number, driver_name, id_number, person_ic, driver_tel, company_name, device_sn, device_aims, device_num, card_sender_type, result, identify_type, identify_photo, rent_type, remark, create_time, identify_time, device_name, command_time, closed_time, update_time, notify_status from device_card_sender_vehicle_log
+    </sql>
+
+    <select id="selectLanyaDeviceCardSenderVehicleLogList" parameterType="LanyaDeviceCardSenderVehicleLog" resultMap="LanyaDeviceCardSenderVehicleLogResult">
+        <include refid="selectLanyaDeviceCardSenderVehicleLogVo"/>
+        <where>  
+            <if test="vehicleCategory != null  and vehicleCategory != ''"> and vehicle_category = #{vehicleCategory}</if>
+            <if test="vehicleName != null  and vehicleName != ''"> and vehicle_name like concat('%', #{vehicleName}, '%')</if>
+            <if test="vehicleType != null  and vehicleType != ''"> and vehicle_type = #{vehicleType}</if>
+            <if test="cardId != null "> and card_id = #{cardId}</if>
+            <if test="vehicleId != null "> and vehicle_id = #{vehicleId}</if>
+            <if test="licensePlateNumber != null  and licensePlateNumber != ''"> and license_plate_number = #{licensePlateNumber}</if>
+            <if test="driverName != null  and driverName != ''"> and driver_name like concat('%', #{driverName}, '%')</if>
+            <if test="idNumber != null  and idNumber != ''"> and id_number = #{idNumber}</if>
+            <if test="personIc != null  and personIc != ''"> and person_ic = #{personIc}</if>
+            <if test="driverTel != null  and driverTel != ''"> and driver_tel = #{driverTel}</if>
+            <if test="companyName != null  and companyName != ''"> and company_name like concat('%', #{companyName}, '%')</if>
+            <if test="deviceSn != null  and deviceSn != ''"> and device_sn = #{deviceSn}</if>
+            <if test="deviceAims != null "> and device_aims = #{deviceAims}</if>
+            <if test="deviceNum != null "> and device_num = #{deviceNum}</if>
+            <if test="cardSenderType != null "> and card_sender_type = #{cardSenderType}</if>
+            <if test="result != null  and result != ''"> and result = #{result}</if>
+            <if test="identifyType != null  and identifyType != ''"> and identify_type = #{identifyType}</if>
+            <if test="identifyPhoto != null  and identifyPhoto != ''"> and identify_photo = #{identifyPhoto}</if>
+            <if test="rentType != null  and rentType != ''"> and rent_type = #{rentType}</if>
+            <if test="identifyTime != null "> and identify_time = #{identifyTime}</if>
+            <if test="deviceName != null  and deviceName != ''"> and device_name like concat('%', #{deviceName}, '%')</if>
+            <if test="commandTime != null "> and command_time = #{commandTime}</if>
+            <if test="closedTime != null "> and closed_time = #{closedTime}</if>
+            <if test="notifyStatus != null  and notifyStatus != ''"> and notify_status = #{notifyStatus}</if>
+        </where>
+    </select>
+    
+    <select id="selectLanyaDeviceCardSenderVehicleLogById" parameterType="Long" resultMap="LanyaDeviceCardSenderVehicleLogResult">
+        <include refid="selectLanyaDeviceCardSenderVehicleLogVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertLanyaDeviceCardSenderVehicleLog" parameterType="LanyaDeviceCardSenderVehicleLog" useGeneratedKeys="true" keyProperty="id">
+        insert into device_card_sender_vehicle_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="vehicleCategory != null">vehicle_category,</if>
+            <if test="vehicleName != null">vehicle_name,</if>
+            <if test="vehicleType != null">vehicle_type,</if>
+            <if test="cardId != null">card_id,</if>
+            <if test="vehicleId != null">vehicle_id,</if>
+            <if test="licensePlateNumber != null">license_plate_number,</if>
+            <if test="driverName != null">driver_name,</if>
+            <if test="idNumber != null">id_number,</if>
+            <if test="personIc != null">person_ic,</if>
+            <if test="driverTel != null">driver_tel,</if>
+            <if test="companyName != null">company_name,</if>
+            <if test="deviceSn != null">device_sn,</if>
+            <if test="deviceAims != null">device_aims,</if>
+            <if test="deviceNum != null">device_num,</if>
+            <if test="cardSenderType != null">card_sender_type,</if>
+            <if test="result != null">result,</if>
+            <if test="identifyType != null">identify_type,</if>
+            <if test="identifyPhoto != null">identify_photo,</if>
+            <if test="rentType != null">rent_type,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="identifyTime != null">identify_time,</if>
+            <if test="deviceName != null">device_name,</if>
+            <if test="commandTime != null">command_time,</if>
+            <if test="closedTime != null">closed_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="notifyStatus != null">notify_status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="vehicleCategory != null">#{vehicleCategory},</if>
+            <if test="vehicleName != null">#{vehicleName},</if>
+            <if test="vehicleType != null">#{vehicleType},</if>
+            <if test="cardId != null">#{cardId},</if>
+            <if test="vehicleId != null">#{vehicleId},</if>
+            <if test="licensePlateNumber != null">#{licensePlateNumber},</if>
+            <if test="driverName != null">#{driverName},</if>
+            <if test="idNumber != null">#{idNumber},</if>
+            <if test="personIc != null">#{personIc},</if>
+            <if test="driverTel != null">#{driverTel},</if>
+            <if test="companyName != null">#{companyName},</if>
+            <if test="deviceSn != null">#{deviceSn},</if>
+            <if test="deviceAims != null">#{deviceAims},</if>
+            <if test="deviceNum != null">#{deviceNum},</if>
+            <if test="cardSenderType != null">#{cardSenderType},</if>
+            <if test="result != null">#{result},</if>
+            <if test="identifyType != null">#{identifyType},</if>
+            <if test="identifyPhoto != null">#{identifyPhoto},</if>
+            <if test="rentType != null">#{rentType},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="identifyTime != null">#{identifyTime},</if>
+            <if test="deviceName != null">#{deviceName},</if>
+            <if test="commandTime != null">#{commandTime},</if>
+            <if test="closedTime != null">#{closedTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="notifyStatus != null">#{notifyStatus},</if>
+         </trim>
+    </insert>
+
+    <update id="updateLanyaDeviceCardSenderVehicleLog" parameterType="LanyaDeviceCardSenderVehicleLog">
+        update device_card_sender_vehicle_log
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="vehicleCategory != null">vehicle_category = #{vehicleCategory},</if>
+            <if test="vehicleName != null">vehicle_name = #{vehicleName},</if>
+            <if test="vehicleType != null">vehicle_type = #{vehicleType},</if>
+            <if test="cardId != null">card_id = #{cardId},</if>
+            <if test="vehicleId != null">vehicle_id = #{vehicleId},</if>
+            <if test="licensePlateNumber != null">license_plate_number = #{licensePlateNumber},</if>
+            <if test="driverName != null">driver_name = #{driverName},</if>
+            <if test="idNumber != null">id_number = #{idNumber},</if>
+            <if test="personIc != null">person_ic = #{personIc},</if>
+            <if test="driverTel != null">driver_tel = #{driverTel},</if>
+            <if test="companyName != null">company_name = #{companyName},</if>
+            <if test="deviceSn != null">device_sn = #{deviceSn},</if>
+            <if test="deviceAims != null">device_aims = #{deviceAims},</if>
+            <if test="deviceNum != null">device_num = #{deviceNum},</if>
+            <if test="cardSenderType != null">card_sender_type = #{cardSenderType},</if>
+            <if test="result != null">result = #{result},</if>
+            <if test="identifyType != null">identify_type = #{identifyType},</if>
+            <if test="identifyPhoto != null">identify_photo = #{identifyPhoto},</if>
+            <if test="rentType != null">rent_type = #{rentType},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="identifyTime != null">identify_time = #{identifyTime},</if>
+            <if test="deviceName != null">device_name = #{deviceName},</if>
+            <if test="commandTime != null">command_time = #{commandTime},</if>
+            <if test="closedTime != null">closed_time = #{closedTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="notifyStatus != null">notify_status = #{notifyStatus},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteLanyaDeviceCardSenderVehicleLogById" parameterType="Long">
+        delete from device_card_sender_vehicle_log where id = #{id}
+    </delete>
+
+    <delete id="deleteLanyaDeviceCardSenderVehicleLogByIds" parameterType="String">
+        delete from device_card_sender_vehicle_log where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

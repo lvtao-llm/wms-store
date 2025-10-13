@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.LanyaCoreVisitorMapper">
+    
+    <resultMap type="LanyaCoreVisitor" id="LanyaCoreVisitorResult">
+        <result property="visitorId"    column="visitor_id"    />
+        <result property="cardId"    column="card_id"    />
+        <result property="positionIconType"    column="position_icon_type"    />
+        <result property="cardType"    column="card_type"    />
+        <result property="realName"    column="real_name"    />
+        <result property="phone"    column="phone"    />
+        <result property="sex"    column="sex"    />
+        <result property="personPhoto"    column="person_photo"    />
+        <result property="birth"    column="birth"    />
+        <result property="email"    column="email"    />
+        <result property="nativePlace"    column="native_place"    />
+        <result property="politicsStatus"    column="politics_status"    />
+        <result property="healthStatus"    column="health_status"    />
+        <result property="idType"    column="id_type"    />
+        <result property="idNumber"    column="id_number"    />
+        <result property="personIc"    column="person_ic"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="postId"    column="post_id"    />
+        <result property="administratorName"    column="administrator_name"    />
+        <result property="administratorPhone"    column="administrator_phone"    />
+        <result property="jobNumber"    column="job_number"    />
+        <result property="companyName"    column="company_name"    />
+        <result property="officePhone"    column="office_phone"    />
+        <result property="reservationEntryStartTime"    column="reservation_entry_start_time"    />
+        <result property="reservationEntryEndTime"    column="reservation_entry_end_time"    />
+        <result property="visitTime"    column="visit_time"    />
+        <result property="leaveTime"    column="leave_time"    />
+        <result property="visitorStatus"    column="visitor_status"    />
+        <result property="visitReason"    column="visit_reason"    />
+        <result property="visitLocation"    column="visit_location"    />
+        <result property="personId"    column="person_id"    />
+        <result property="receiveLeader"    column="receive_leader"    />
+        <result property="receivePhone"    column="receive_phone"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="gateThrough"    column="gate_through"    />
+    </resultMap>
+
+    <sql id="selectLanyaCoreVisitorVo">
+        select visitor_id, card_id, position_icon_type, card_type, real_name, phone, sex, person_photo, birth, email, native_place, politics_status, health_status, id_type, id_number, person_ic, dept_id, post_id, administrator_name, administrator_phone, job_number, company_name, office_phone, reservation_entry_start_time, reservation_entry_end_time, visit_time, leave_time, visitor_status, visit_reason, visit_location, person_id, receive_leader, receive_phone, create_by, create_time, update_by, update_time, remark, gate_through from core_visitor
+    </sql>
+
+    <select id="selectLanyaCoreVisitorList" parameterType="LanyaCoreVisitor" resultMap="LanyaCoreVisitorResult">
+        <include refid="selectLanyaCoreVisitorVo"/>
+        <where>  
+            <if test="cardId != null "> and card_id = #{cardId}</if>
+            <if test="positionIconType != null  and positionIconType != ''"> and position_icon_type = #{positionIconType}</if>
+            <if test="cardType != null  and cardType != ''"> and card_type = #{cardType}</if>
+            <if test="realName != null  and realName != ''"> and real_name like concat('%', #{realName}, '%')</if>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+            <if test="sex != null  and sex != ''"> and sex = #{sex}</if>
+            <if test="personPhoto != null  and personPhoto != ''"> and person_photo = #{personPhoto}</if>
+            <if test="birth != null "> and birth = #{birth}</if>
+            <if test="email != null  and email != ''"> and email = #{email}</if>
+            <if test="nativePlace != null  and nativePlace != ''"> and native_place = #{nativePlace}</if>
+            <if test="politicsStatus != null  and politicsStatus != ''"> and politics_status = #{politicsStatus}</if>
+            <if test="healthStatus != null  and healthStatus != ''"> and health_status = #{healthStatus}</if>
+            <if test="idType != null  and idType != ''"> and id_type = #{idType}</if>
+            <if test="idNumber != null  and idNumber != ''"> and id_number = #{idNumber}</if>
+            <if test="personIc != null  and personIc != ''"> and person_ic = #{personIc}</if>
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+            <if test="postId != null "> and post_id = #{postId}</if>
+            <if test="administratorName != null  and administratorName != ''"> and administrator_name like concat('%', #{administratorName}, '%')</if>
+            <if test="administratorPhone != null  and administratorPhone != ''"> and administrator_phone = #{administratorPhone}</if>
+            <if test="jobNumber != null  and jobNumber != ''"> and job_number = #{jobNumber}</if>
+            <if test="companyName != null  and companyName != ''"> and company_name like concat('%', #{companyName}, '%')</if>
+            <if test="officePhone != null  and officePhone != ''"> and office_phone = #{officePhone}</if>
+            <if test="reservationEntryStartTime != null "> and reservation_entry_start_time = #{reservationEntryStartTime}</if>
+            <if test="reservationEntryEndTime != null "> and reservation_entry_end_time = #{reservationEntryEndTime}</if>
+            <if test="visitTime != null "> and visit_time = #{visitTime}</if>
+            <if test="leaveTime != null "> and leave_time = #{leaveTime}</if>
+            <if test="visitorStatus != null  and visitorStatus != ''"> and visitor_status = #{visitorStatus}</if>
+            <if test="visitReason != null  and visitReason != ''"> and visit_reason = #{visitReason}</if>
+            <if test="visitLocation != null  and visitLocation != ''"> and visit_location = #{visitLocation}</if>
+            <if test="personId != null "> and person_id = #{personId}</if>
+            <if test="receiveLeader != null  and receiveLeader != ''"> and receive_leader = #{receiveLeader}</if>
+            <if test="receivePhone != null  and receivePhone != ''"> and receive_phone = #{receivePhone}</if>
+            <if test="gateThrough != null  and gateThrough != ''"> and gate_through = #{gateThrough}</if>
+        </where>
+    </select>
+    
+    <select id="selectLanyaCoreVisitorByVisitorId" parameterType="Long" resultMap="LanyaCoreVisitorResult">
+        <include refid="selectLanyaCoreVisitorVo"/>
+        where visitor_id = #{visitorId}
+    </select>
+
+    <insert id="insertLanyaCoreVisitor" parameterType="LanyaCoreVisitor" useGeneratedKeys="true" keyProperty="visitorId">
+        insert into core_visitor
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="cardId != null">card_id,</if>
+            <if test="positionIconType != null">position_icon_type,</if>
+            <if test="cardType != null">card_type,</if>
+            <if test="realName != null and realName != ''">real_name,</if>
+            <if test="phone != null">phone,</if>
+            <if test="sex != null">sex,</if>
+            <if test="personPhoto != null">person_photo,</if>
+            <if test="birth != null">birth,</if>
+            <if test="email != null">email,</if>
+            <if test="nativePlace != null">native_place,</if>
+            <if test="politicsStatus != null">politics_status,</if>
+            <if test="healthStatus != null">health_status,</if>
+            <if test="idType != null">id_type,</if>
+            <if test="idNumber != null">id_number,</if>
+            <if test="personIc != null">person_ic,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="postId != null">post_id,</if>
+            <if test="administratorName != null">administrator_name,</if>
+            <if test="administratorPhone != null">administrator_phone,</if>
+            <if test="jobNumber != null">job_number,</if>
+            <if test="companyName != null">company_name,</if>
+            <if test="officePhone != null">office_phone,</if>
+            <if test="reservationEntryStartTime != null">reservation_entry_start_time,</if>
+            <if test="reservationEntryEndTime != null">reservation_entry_end_time,</if>
+            <if test="visitTime != null">visit_time,</if>
+            <if test="leaveTime != null">leave_time,</if>
+            <if test="visitorStatus != null">visitor_status,</if>
+            <if test="visitReason != null">visit_reason,</if>
+            <if test="visitLocation != null">visit_location,</if>
+            <if test="personId != null">person_id,</if>
+            <if test="receiveLeader != null">receive_leader,</if>
+            <if test="receivePhone != null">receive_phone,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="gateThrough != null">gate_through,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="cardId != null">#{cardId},</if>
+            <if test="positionIconType != null">#{positionIconType},</if>
+            <if test="cardType != null">#{cardType},</if>
+            <if test="realName != null and realName != ''">#{realName},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="sex != null">#{sex},</if>
+            <if test="personPhoto != null">#{personPhoto},</if>
+            <if test="birth != null">#{birth},</if>
+            <if test="email != null">#{email},</if>
+            <if test="nativePlace != null">#{nativePlace},</if>
+            <if test="politicsStatus != null">#{politicsStatus},</if>
+            <if test="healthStatus != null">#{healthStatus},</if>
+            <if test="idType != null">#{idType},</if>
+            <if test="idNumber != null">#{idNumber},</if>
+            <if test="personIc != null">#{personIc},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="postId != null">#{postId},</if>
+            <if test="administratorName != null">#{administratorName},</if>
+            <if test="administratorPhone != null">#{administratorPhone},</if>
+            <if test="jobNumber != null">#{jobNumber},</if>
+            <if test="companyName != null">#{companyName},</if>
+            <if test="officePhone != null">#{officePhone},</if>
+            <if test="reservationEntryStartTime != null">#{reservationEntryStartTime},</if>
+            <if test="reservationEntryEndTime != null">#{reservationEntryEndTime},</if>
+            <if test="visitTime != null">#{visitTime},</if>
+            <if test="leaveTime != null">#{leaveTime},</if>
+            <if test="visitorStatus != null">#{visitorStatus},</if>
+            <if test="visitReason != null">#{visitReason},</if>
+            <if test="visitLocation != null">#{visitLocation},</if>
+            <if test="personId != null">#{personId},</if>
+            <if test="receiveLeader != null">#{receiveLeader},</if>
+            <if test="receivePhone != null">#{receivePhone},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="gateThrough != null">#{gateThrough},</if>
+         </trim>
+    </insert>
+
+    <update id="updateLanyaCoreVisitor" parameterType="LanyaCoreVisitor">
+        update core_visitor
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="cardId != null">card_id = #{cardId},</if>
+            <if test="positionIconType != null">position_icon_type = #{positionIconType},</if>
+            <if test="cardType != null">card_type = #{cardType},</if>
+            <if test="realName != null and realName != ''">real_name = #{realName},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="sex != null">sex = #{sex},</if>
+            <if test="personPhoto != null">person_photo = #{personPhoto},</if>
+            <if test="birth != null">birth = #{birth},</if>
+            <if test="email != null">email = #{email},</if>
+            <if test="nativePlace != null">native_place = #{nativePlace},</if>
+            <if test="politicsStatus != null">politics_status = #{politicsStatus},</if>
+            <if test="healthStatus != null">health_status = #{healthStatus},</if>
+            <if test="idType != null">id_type = #{idType},</if>
+            <if test="idNumber != null">id_number = #{idNumber},</if>
+            <if test="personIc != null">person_ic = #{personIc},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="postId != null">post_id = #{postId},</if>
+            <if test="administratorName != null">administrator_name = #{administratorName},</if>
+            <if test="administratorPhone != null">administrator_phone = #{administratorPhone},</if>
+            <if test="jobNumber != null">job_number = #{jobNumber},</if>
+            <if test="companyName != null">company_name = #{companyName},</if>
+            <if test="officePhone != null">office_phone = #{officePhone},</if>
+            <if test="reservationEntryStartTime != null">reservation_entry_start_time = #{reservationEntryStartTime},</if>
+            <if test="reservationEntryEndTime != null">reservation_entry_end_time = #{reservationEntryEndTime},</if>
+            <if test="visitTime != null">visit_time = #{visitTime},</if>
+            <if test="leaveTime != null">leave_time = #{leaveTime},</if>
+            <if test="visitorStatus != null">visitor_status = #{visitorStatus},</if>
+            <if test="visitReason != null">visit_reason = #{visitReason},</if>
+            <if test="visitLocation != null">visit_location = #{visitLocation},</if>
+            <if test="personId != null">person_id = #{personId},</if>
+            <if test="receiveLeader != null">receive_leader = #{receiveLeader},</if>
+            <if test="receivePhone != null">receive_phone = #{receivePhone},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="gateThrough != null">gate_through = #{gateThrough},</if>
+        </trim>
+        where visitor_id = #{visitorId}
+    </update>
+
+    <delete id="deleteLanyaCoreVisitorByVisitorId" parameterType="Long">
+        delete from core_visitor where visitor_id = #{visitorId}
+    </delete>
+
+    <delete id="deleteLanyaCoreVisitorByVisitorIds" parameterType="String">
+        delete from core_visitor where visitor_id in 
+        <foreach item="visitorId" collection="array" open="(" separator="," close=")">
+            #{visitorId}
+        </foreach>
+    </delete>
+</mapper>

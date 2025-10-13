@@ -1,0 +1,44 @@
+import request from '@/utils/request'
+
+// 查询车辆发卡记录列表
+export function listLanya_device_card_sender_vehicle_log(query) {
+  return request({
+    url: '/system/lanya_device_card_sender_vehicle_log/list',
+    method: 'get',
+    params: query
+  })
+}
+
+// 查询车辆发卡记录详细
+export function getLanya_device_card_sender_vehicle_log(id) {
+  return request({
+    url: '/system/lanya_device_card_sender_vehicle_log/' + id,
+    method: 'get'
+  })
+}
+
+// 新增车辆发卡记录
+export function addLanya_device_card_sender_vehicle_log(data) {
+  return request({
+    url: '/system/lanya_device_card_sender_vehicle_log',
+    method: 'post',
+    data: data
+  })
+}
+
+// 修改车辆发卡记录
+export function updateLanya_device_card_sender_vehicle_log(data) {
+  return request({
+    url: '/system/lanya_device_card_sender_vehicle_log',
+    method: 'put',
+    data: data
+  })
+}
+
+// 删除车辆发卡记录
+export function delLanya_device_card_sender_vehicle_log(id) {
+  return request({
+    url: '/system/lanya_device_card_sender_vehicle_log/' + id,
+    method: 'delete'
+  })
+}

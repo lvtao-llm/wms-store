@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.WmsCardRecordMapper">
+    
+    <resultMap type="WmsCardRecord" id="WmsCardRecordResult">
+        <result property="cardRecordId"    column="card_record_id"    />
+    </resultMap>
+
+    <sql id="selectWmsCardRecordVo">
+        select card_record_id from wms_card_record
+    </sql>
+
+    <select id="selectWmsCardRecordList" parameterType="WmsCardRecord" resultMap="WmsCardRecordResult">
+        <include refid="selectWmsCardRecordVo"/>
+        <where>  
+        </where>
+    </select>
+    
+    <select id="selectWmsCardRecordByCardRecordId" parameterType="Long" resultMap="WmsCardRecordResult">
+        <include refid="selectWmsCardRecordVo"/>
+        where card_record_id = #{cardRecordId}
+    </select>
+
+    <insert id="insertWmsCardRecord" parameterType="WmsCardRecord" useGeneratedKeys="true" keyProperty="cardRecordId">
+        insert into wms_card_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+         </trim>
+    </insert>
+
+    <update id="updateWmsCardRecord" parameterType="WmsCardRecord">
+        update wms_card_record
+        <trim prefix="SET" suffixOverrides=",">
+        </trim>
+        where card_record_id = #{cardRecordId}
+    </update>
+
+    <delete id="deleteWmsCardRecordByCardRecordId" parameterType="Long">
+        delete from wms_card_record where card_record_id = #{cardRecordId}
+    </delete>
+
+    <delete id="deleteWmsCardRecordByCardRecordIds" parameterType="String">
+        delete from wms_card_record where card_record_id in 
+        <foreach item="cardRecordId" collection="array" open="(" separator="," close=")">
+            #{cardRecordId}
+        </foreach>
+    </delete>
+</mapper>

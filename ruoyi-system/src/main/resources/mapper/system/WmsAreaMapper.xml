@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.WmsAreaMapper">
+    
+    <resultMap type="WmsArea" id="WmsAreaResult">
+        <result property="areaId"    column="area_id"    />
+        <result property="areaCode"    column="area_code"    />
+        <result property="areaName"    column="area_name"    />
+        <result property="areaType"    column="area_type"    />
+        <result property="areaFunction"    column="area_function"    />
+        <result property="areaSafetyNotice"    column="area_safety_notice"    />
+        <result property="areaPolygon"    column="area_polygon"    />
+        <result property="areaRiskLevel"    column="area_risk_level"    />
+        <result property="enabled"    column="enabled"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="delFlag"    column="del_flag"    />
+    </resultMap>
+
+    <sql id="selectWmsAreaVo">
+        select area_id, area_code, area_name, area_type, area_function, area_safety_notice, area_polygon, area_risk_level, enabled, remark, create_by, create_time, update_by, update_time, del_flag from wms_area
+    </sql>
+
+    <select id="selectWmsAreaList" parameterType="WmsArea" resultMap="WmsAreaResult">
+        <include refid="selectWmsAreaVo"/>
+        <where>  
+            <if test="areaCode != null  and areaCode != ''"> and area_code = #{areaCode}</if>
+            <if test="areaName != null  and areaName != ''"> and area_name like concat('%', #{areaName}, '%')</if>
+            <if test="areaType != null  and areaType != ''"> and area_type = #{areaType}</if>
+            <if test="areaFunction != null  and areaFunction != ''"> and area_function = #{areaFunction}</if>
+            <if test="areaSafetyNotice != null  and areaSafetyNotice != ''"> and area_safety_notice = #{areaSafetyNotice}</if>
+            <if test="areaPolygon != null  and areaPolygon != ''"> and area_polygon = #{areaPolygon}</if>
+            <if test="areaRiskLevel != null  and areaRiskLevel != ''"> and area_risk_level = #{areaRiskLevel}</if>
+            <if test="enabled != null  and enabled != ''"> and enabled = #{enabled}</if>
+        </where>
+    </select>
+    
+    <select id="selectWmsAreaByAreaId" parameterType="Long" resultMap="WmsAreaResult">
+        <include refid="selectWmsAreaVo"/>
+        where area_id = #{areaId}
+    </select>
+
+    <insert id="insertWmsArea" parameterType="WmsArea" useGeneratedKeys="true" keyProperty="areaId">
+        insert into wms_area
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="areaCode != null and areaCode != ''">area_code,</if>
+            <if test="areaName != null and areaName != ''">area_name,</if>
+            <if test="areaType != null and areaType != ''">area_type,</if>
+            <if test="areaFunction != null and areaFunction != ''">area_function,</if>
+            <if test="areaSafetyNotice != null and areaSafetyNotice != ''">area_safety_notice,</if>
+            <if test="areaPolygon != null">area_polygon,</if>
+            <if test="areaRiskLevel != null">area_risk_level,</if>
+            <if test="enabled != null">enabled,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="delFlag != null">del_flag,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="areaCode != null and areaCode != ''">#{areaCode},</if>
+            <if test="areaName != null and areaName != ''">#{areaName},</if>
+            <if test="areaType != null and areaType != ''">#{areaType},</if>
+            <if test="areaFunction != null and areaFunction != ''">#{areaFunction},</if>
+            <if test="areaSafetyNotice != null and areaSafetyNotice != ''">#{areaSafetyNotice},</if>
+            <if test="areaPolygon != null">#{areaPolygon},</if>
+            <if test="areaRiskLevel != null">#{areaRiskLevel},</if>
+            <if test="enabled != null">#{enabled},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWmsArea" parameterType="WmsArea">
+        update wms_area
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="areaCode != null and areaCode != ''">area_code = #{areaCode},</if>
+            <if test="areaName != null and areaName != ''">area_name = #{areaName},</if>
+            <if test="areaType != null and areaType != ''">area_type = #{areaType},</if>
+            <if test="areaFunction != null and areaFunction != ''">area_function = #{areaFunction},</if>
+            <if test="areaSafetyNotice != null and areaSafetyNotice != ''">area_safety_notice = #{areaSafetyNotice},</if>
+            <if test="areaPolygon != null">area_polygon = #{areaPolygon},</if>
+            <if test="areaRiskLevel != null">area_risk_level = #{areaRiskLevel},</if>
+            <if test="enabled != null">enabled = #{enabled},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+        </trim>
+        where area_id = #{areaId}
+    </update>
+
+    <delete id="deleteWmsAreaByAreaId" parameterType="Long">
+        delete from wms_area where area_id = #{areaId}
+    </delete>
+
+    <delete id="deleteWmsAreaByAreaIds" parameterType="String">
+        delete from wms_area where area_id in 
+        <foreach item="areaId" collection="array" open="(" separator="," close=")">
+            #{areaId}
+        </foreach>
+    </delete>
+</mapper>

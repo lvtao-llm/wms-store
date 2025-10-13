@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.LanyaVehicleInfoVisitorMapper">
+    
+    <resultMap type="LanyaVehicleInfoVisitor" id="LanyaVehicleInfoVisitorResult">
+        <result property="id"    column="id"    />
+        <result property="vehicleId"    column="vehicle_id"    />
+        <result property="vehicleName"    column="vehicle_name"    />
+        <result property="vehicleType"    column="vehicle_type"    />
+        <result property="cardId"    column="card_id"    />
+        <result property="licensePlateNumber"    column="license_plate_number"    />
+        <result property="driverName"    column="driver_name"    />
+        <result property="driverTel"    column="driver_tel"    />
+        <result property="driverPhoto"    column="driver_photo"    />
+        <result property="idNumber"    column="id_number"    />
+        <result property="personIc"    column="person_ic"    />
+        <result property="companyName"    column="company_name"    />
+        <result property="reservationEntryStartTime"    column="reservation_entry_start_time"    />
+        <result property="reservationEntryEndTime"    column="reservation_entry_end_time"    />
+        <result property="visitingTime"    column="visiting_time"    />
+        <result property="leaveTime"    column="leave_time"    />
+        <result property="visitingStatus"    column="visiting_status"    />
+        <result property="visitingReason"    column="visiting_reason"    />
+        <result property="receiver"    column="receiver"    />
+        <result property="receiverTel"    column="receiver_tel"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectLanyaVehicleInfoVisitorVo">
+        select id, vehicle_id, vehicle_name, vehicle_type, card_id, license_plate_number, driver_name, driver_tel, driver_photo, id_number, person_ic, company_name, reservation_entry_start_time, reservation_entry_end_time, visiting_time, leave_time, visiting_status, visiting_reason, receiver, receiver_tel, create_by, create_time, update_by, update_time, remark from vehicle_info_visitor
+    </sql>
+
+    <select id="selectLanyaVehicleInfoVisitorList" parameterType="LanyaVehicleInfoVisitor" resultMap="LanyaVehicleInfoVisitorResult">
+        <include refid="selectLanyaVehicleInfoVisitorVo"/>
+        <where>  
+            <if test="vehicleId != null "> and vehicle_id = #{vehicleId}</if>
+            <if test="vehicleName != null  and vehicleName != ''"> and vehicle_name like concat('%', #{vehicleName}, '%')</if>
+            <if test="vehicleType != null  and vehicleType != ''"> and vehicle_type = #{vehicleType}</if>
+            <if test="cardId != null "> and card_id = #{cardId}</if>
+            <if test="licensePlateNumber != null  and licensePlateNumber != ''"> and license_plate_number = #{licensePlateNumber}</if>
+            <if test="driverName != null  and driverName != ''"> and driver_name like concat('%', #{driverName}, '%')</if>
+            <if test="driverTel != null  and driverTel != ''"> and driver_tel = #{driverTel}</if>
+            <if test="driverPhoto != null  and driverPhoto != ''"> and driver_photo = #{driverPhoto}</if>
+            <if test="idNumber != null  and idNumber != ''"> and id_number = #{idNumber}</if>
+            <if test="personIc != null  and personIc != ''"> and person_ic = #{personIc}</if>
+            <if test="companyName != null  and companyName != ''"> and company_name like concat('%', #{companyName}, '%')</if>
+            <if test="reservationEntryStartTime != null "> and reservation_entry_start_time = #{reservationEntryStartTime}</if>
+            <if test="reservationEntryEndTime != null "> and reservation_entry_end_time = #{reservationEntryEndTime}</if>
+            <if test="visitingTime != null "> and visiting_time = #{visitingTime}</if>
+            <if test="leaveTime != null "> and leave_time = #{leaveTime}</if>
+            <if test="visitingStatus != null "> and visiting_status = #{visitingStatus}</if>
+            <if test="visitingReason != null  and visitingReason != ''"> and visiting_reason = #{visitingReason}</if>
+            <if test="receiver != null  and receiver != ''"> and receiver = #{receiver}</if>
+            <if test="receiverTel != null  and receiverTel != ''"> and receiver_tel = #{receiverTel}</if>
+        </where>
+    </select>
+    
+    <select id="selectLanyaVehicleInfoVisitorById" parameterType="Long" resultMap="LanyaVehicleInfoVisitorResult">
+        <include refid="selectLanyaVehicleInfoVisitorVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertLanyaVehicleInfoVisitor" parameterType="LanyaVehicleInfoVisitor">
+        insert into vehicle_info_visitor
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="vehicleId != null">vehicle_id,</if>
+            <if test="vehicleName != null and vehicleName != ''">vehicle_name,</if>
+            <if test="vehicleType != null and vehicleType != ''">vehicle_type,</if>
+            <if test="cardId != null">card_id,</if>
+            <if test="licensePlateNumber != null and licensePlateNumber != ''">license_plate_number,</if>
+            <if test="driverName != null and driverName != ''">driver_name,</if>
+            <if test="driverTel != null and driverTel != ''">driver_tel,</if>
+            <if test="driverPhoto != null">driver_photo,</if>
+            <if test="idNumber != null">id_number,</if>
+            <if test="personIc != null">person_ic,</if>
+            <if test="companyName != null">company_name,</if>
+            <if test="reservationEntryStartTime != null">reservation_entry_start_time,</if>
+            <if test="reservationEntryEndTime != null">reservation_entry_end_time,</if>
+            <if test="visitingTime != null">visiting_time,</if>
+            <if test="leaveTime != null">leave_time,</if>
+            <if test="visitingStatus != null">visiting_status,</if>
+            <if test="visitingReason != null and visitingReason != ''">visiting_reason,</if>
+            <if test="receiver != null">receiver,</if>
+            <if test="receiverTel != null">receiver_tel,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="vehicleId != null">#{vehicleId},</if>
+            <if test="vehicleName != null and vehicleName != ''">#{vehicleName},</if>
+            <if test="vehicleType != null and vehicleType != ''">#{vehicleType},</if>
+            <if test="cardId != null">#{cardId},</if>
+            <if test="licensePlateNumber != null and licensePlateNumber != ''">#{licensePlateNumber},</if>
+            <if test="driverName != null and driverName != ''">#{driverName},</if>
+            <if test="driverTel != null and driverTel != ''">#{driverTel},</if>
+            <if test="driverPhoto != null">#{driverPhoto},</if>
+            <if test="idNumber != null">#{idNumber},</if>
+            <if test="personIc != null">#{personIc},</if>
+            <if test="companyName != null">#{companyName},</if>
+            <if test="reservationEntryStartTime != null">#{reservationEntryStartTime},</if>
+            <if test="reservationEntryEndTime != null">#{reservationEntryEndTime},</if>
+            <if test="visitingTime != null">#{visitingTime},</if>
+            <if test="leaveTime != null">#{leaveTime},</if>
+            <if test="visitingStatus != null">#{visitingStatus},</if>
+            <if test="visitingReason != null and visitingReason != ''">#{visitingReason},</if>
+            <if test="receiver != null">#{receiver},</if>
+            <if test="receiverTel != null">#{receiverTel},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateLanyaVehicleInfoVisitor" parameterType="LanyaVehicleInfoVisitor">
+        update vehicle_info_visitor
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="vehicleId != null">vehicle_id = #{vehicleId},</if>
+            <if test="vehicleName != null and vehicleName != ''">vehicle_name = #{vehicleName},</if>
+            <if test="vehicleType != null and vehicleType != ''">vehicle_type = #{vehicleType},</if>
+            <if test="cardId != null">card_id = #{cardId},</if>
+            <if test="licensePlateNumber != null and licensePlateNumber != ''">license_plate_number = #{licensePlateNumber},</if>
+            <if test="driverName != null and driverName != ''">driver_name = #{driverName},</if>
+            <if test="driverTel != null and driverTel != ''">driver_tel = #{driverTel},</if>
+            <if test="driverPhoto != null">driver_photo = #{driverPhoto},</if>
+            <if test="idNumber != null">id_number = #{idNumber},</if>
+            <if test="personIc != null">person_ic = #{personIc},</if>
+            <if test="companyName != null">company_name = #{companyName},</if>
+            <if test="reservationEntryStartTime != null">reservation_entry_start_time = #{reservationEntryStartTime},</if>
+            <if test="reservationEntryEndTime != null">reservation_entry_end_time = #{reservationEntryEndTime},</if>
+            <if test="visitingTime != null">visiting_time = #{visitingTime},</if>
+            <if test="leaveTime != null">leave_time = #{leaveTime},</if>
+            <if test="visitingStatus != null">visiting_status = #{visitingStatus},</if>
+            <if test="visitingReason != null and visitingReason != ''">visiting_reason = #{visitingReason},</if>
+            <if test="receiver != null">receiver = #{receiver},</if>
+            <if test="receiverTel != null">receiver_tel = #{receiverTel},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteLanyaVehicleInfoVisitorById" parameterType="Long">
+        delete from vehicle_info_visitor where id = #{id}
+    </delete>
+
+    <delete id="deleteLanyaVehicleInfoVisitorByIds" parameterType="String">
+        delete from vehicle_info_visitor where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

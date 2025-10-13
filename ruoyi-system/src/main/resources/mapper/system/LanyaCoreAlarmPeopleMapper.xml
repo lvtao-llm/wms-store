@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.LanyaCoreAlarmPeopleMapper">
+    
+    <resultMap type="LanyaCoreAlarmPeople" id="LanyaCoreAlarmPeopleResult">
+        <result property="id"    column="id"    />
+        <result property="coreAlarmId"    column="core_alarm_id"    />
+        <result property="realName"    column="real_name"    />
+        <result property="personId"    column="person_id"    />
+        <result property="cardId"    column="card_id"    />
+        <result property="jobNumber"    column="job_number"    />
+        <result property="postName"    column="post_name"    />
+        <result property="phone"    column="phone"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="deptName"    column="dept_name"    />
+        <result property="longitude"    column="longitude"    />
+        <result property="latitude"    column="latitude"    />
+        <result property="layerId"    column="layer_id"    />
+        <result property="acceptTime"    column="accept_time"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateBy"    column="update_by"    />
+    </resultMap>
+
+    <sql id="selectLanyaCoreAlarmPeopleVo">
+        select id, core_alarm_id, real_name, person_id, card_id, job_number, post_name, phone, dept_id, dept_name, longitude, latitude, layer_id, accept_time, end_time, create_time, create_by, update_time, update_by from core_alarm_people
+    </sql>
+
+    <select id="selectLanyaCoreAlarmPeopleList" parameterType="LanyaCoreAlarmPeople" resultMap="LanyaCoreAlarmPeopleResult">
+        <include refid="selectLanyaCoreAlarmPeopleVo"/>
+        <where>  
+            <if test="coreAlarmId != null "> and core_alarm_id = #{coreAlarmId}</if>
+            <if test="realName != null  and realName != ''"> and real_name like concat('%', #{realName}, '%')</if>
+            <if test="personId != null "> and person_id = #{personId}</if>
+            <if test="cardId != null "> and card_id = #{cardId}</if>
+            <if test="jobNumber != null  and jobNumber != ''"> and job_number = #{jobNumber}</if>
+            <if test="postName != null  and postName != ''"> and post_name like concat('%', #{postName}, '%')</if>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+            <if test="deptName != null  and deptName != ''"> and dept_name like concat('%', #{deptName}, '%')</if>
+            <if test="longitude != null "> and longitude = #{longitude}</if>
+            <if test="latitude != null "> and latitude = #{latitude}</if>
+            <if test="layerId != null  and layerId != ''"> and layer_id = #{layerId}</if>
+            <if test="acceptTime != null "> and accept_time = #{acceptTime}</if>
+            <if test="endTime != null "> and end_time = #{endTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectLanyaCoreAlarmPeopleById" parameterType="Long" resultMap="LanyaCoreAlarmPeopleResult">
+        <include refid="selectLanyaCoreAlarmPeopleVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertLanyaCoreAlarmPeople" parameterType="LanyaCoreAlarmPeople" useGeneratedKeys="true" keyProperty="id">
+        insert into core_alarm_people
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="coreAlarmId != null">core_alarm_id,</if>
+            <if test="realName != null and realName != ''">real_name,</if>
+            <if test="personId != null">person_id,</if>
+            <if test="cardId != null">card_id,</if>
+            <if test="jobNumber != null">job_number,</if>
+            <if test="postName != null">post_name,</if>
+            <if test="phone != null">phone,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="deptName != null">dept_name,</if>
+            <if test="longitude != null">longitude,</if>
+            <if test="latitude != null">latitude,</if>
+            <if test="layerId != null">layer_id,</if>
+            <if test="acceptTime != null">accept_time,</if>
+            <if test="endTime != null">end_time,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="updateBy != null">update_by,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="coreAlarmId != null">#{coreAlarmId},</if>
+            <if test="realName != null and realName != ''">#{realName},</if>
+            <if test="personId != null">#{personId},</if>
+            <if test="cardId != null">#{cardId},</if>
+            <if test="jobNumber != null">#{jobNumber},</if>
+            <if test="postName != null">#{postName},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="deptName != null">#{deptName},</if>
+            <if test="longitude != null">#{longitude},</if>
+            <if test="latitude != null">#{latitude},</if>
+            <if test="layerId != null">#{layerId},</if>
+            <if test="acceptTime != null">#{acceptTime},</if>
+            <if test="endTime != null">#{endTime},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+         </trim>
+    </insert>
+
+    <update id="updateLanyaCoreAlarmPeople" parameterType="LanyaCoreAlarmPeople">
+        update core_alarm_people
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="coreAlarmId != null">core_alarm_id = #{coreAlarmId},</if>
+            <if test="realName != null and realName != ''">real_name = #{realName},</if>
+            <if test="personId != null">person_id = #{personId},</if>
+            <if test="cardId != null">card_id = #{cardId},</if>
+            <if test="jobNumber != null">job_number = #{jobNumber},</if>
+            <if test="postName != null">post_name = #{postName},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="deptName != null">dept_name = #{deptName},</if>
+            <if test="longitude != null">longitude = #{longitude},</if>
+            <if test="latitude != null">latitude = #{latitude},</if>
+            <if test="layerId != null">layer_id = #{layerId},</if>
+            <if test="acceptTime != null">accept_time = #{acceptTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteLanyaCoreAlarmPeopleById" parameterType="Long">
+        delete from core_alarm_people where id = #{id}
+    </delete>
+
+    <delete id="deleteLanyaCoreAlarmPeopleByIds" parameterType="String">
+        delete from core_alarm_people where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

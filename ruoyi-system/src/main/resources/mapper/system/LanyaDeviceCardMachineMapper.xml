@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.LanyaDeviceCardMachineMapper">
+    
+    <resultMap type="LanyaDeviceCardMachine" id="LanyaDeviceCardMachineResult">
+        <result property="cardSenderId"    column="card_sender_id"    />
+        <result property="deviceSn"    column="device_sn"    />
+        <result property="deviceVersion"    column="device_version"    />
+        <result property="deviceName"    column="device_name"    />
+        <result property="deviceBtnRent"    column="device_btn_rent"    />
+        <result property="deviceHeartTime"    column="device_heart_time"    />
+        <result property="deviceConfig"    column="device_config"    />
+        <result property="longitude"    column="longitude"    />
+        <result property="latitude"    column="latitude"    />
+        <result property="layerId"    column="layer_id"    />
+        <result property="layerHeight"    column="layer_height"    />
+        <result property="userName"    column="user_name"    />
+        <result property="password"    column="password"    />
+        <result property="faceUrl"    column="face_url"    />
+        <result property="faceFlag"    column="face_flag"    />
+        <result property="faceMacAddr"    column="face_mac_addr"    />
+        <result property="faceSn"    column="face_sn"    />
+        <result property="faceHeartTime"    column="face_heart_time"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="remark"    column="remark"    />
+        <result property="deviceEnable"    column="device_enable"    />
+        <result property="cardModel"    column="card_model"    />
+        <result property="plannedNumberCards"    column="planned_number_cards"    />
+        <result property="pushFace"    column="push_face"    />
+        <result property="whiteListCount"    column="white_list_count"    />
+        <result property="viewSort"    column="view_sort"    />
+        <result property="viewRows"    column="view_rows"    />
+        <result property="viewColumns"    column="view_columns"    />
+        <result property="viewData"    column="view_data"    />
+    </resultMap>
+
+    <sql id="selectLanyaDeviceCardMachineVo">
+        select card_sender_id, device_sn, device_version, device_name, device_btn_rent, device_heart_time, device_config, longitude, latitude, layer_id, layer_height, user_name, password, face_url, face_flag, face_mac_addr, face_sn, face_heart_time, create_time, create_by, update_time, update_by, remark, device_enable, card_model, planned_number_cards, push_face, white_list_count, view_sort, view_rows, view_columns, view_data from device_card_sender
+    </sql>
+
+    <select id="selectLanyaDeviceCardMachineList" parameterType="LanyaDeviceCardMachine" resultMap="LanyaDeviceCardMachineResult">
+        <include refid="selectLanyaDeviceCardMachineVo"/>
+        <where>  
+            <if test="deviceSn != null  and deviceSn != ''"> and device_sn = #{deviceSn}</if>
+            <if test="deviceVersion != null  and deviceVersion != ''"> and device_version = #{deviceVersion}</if>
+            <if test="deviceName != null  and deviceName != ''"> and device_name like concat('%', #{deviceName}, '%')</if>
+            <if test="deviceBtnRent != null "> and device_btn_rent = #{deviceBtnRent}</if>
+            <if test="deviceHeartTime != null "> and device_heart_time = #{deviceHeartTime}</if>
+            <if test="deviceConfig != null  and deviceConfig != ''"> and device_config = #{deviceConfig}</if>
+            <if test="longitude != null "> and longitude = #{longitude}</if>
+            <if test="latitude != null "> and latitude = #{latitude}</if>
+            <if test="layerId != null  and layerId != ''"> and layer_id = #{layerId}</if>
+            <if test="layerHeight != null "> and layer_height = #{layerHeight}</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="password != null  and password != ''"> and password = #{password}</if>
+            <if test="faceUrl != null  and faceUrl != ''"> and face_url = #{faceUrl}</if>
+            <if test="faceFlag != null  and faceFlag != ''"> and face_flag = #{faceFlag}</if>
+            <if test="faceMacAddr != null  and faceMacAddr != ''"> and face_mac_addr = #{faceMacAddr}</if>
+            <if test="faceSn != null  and faceSn != ''"> and face_sn = #{faceSn}</if>
+            <if test="faceHeartTime != null "> and face_heart_time = #{faceHeartTime}</if>
+            <if test="deviceEnable != null  and deviceEnable != ''"> and device_enable = #{deviceEnable}</if>
+            <if test="cardModel != null  and cardModel != ''"> and card_model = #{cardModel}</if>
+            <if test="plannedNumberCards != null "> and planned_number_cards = #{plannedNumberCards}</if>
+            <if test="pushFace != null  and pushFace != ''"> and push_face = #{pushFace}</if>
+            <if test="whiteListCount != null "> and white_list_count = #{whiteListCount}</if>
+            <if test="viewSort != null  and viewSort != ''"> and view_sort = #{viewSort}</if>
+            <if test="viewRows != null "> and view_rows = #{viewRows}</if>
+            <if test="viewColumns != null "> and view_columns = #{viewColumns}</if>
+            <if test="viewData != null  and viewData != ''"> and view_data = #{viewData}</if>
+        </where>
+    </select>
+    
+    <select id="selectLanyaDeviceCardMachineByCardSenderId" parameterType="Long" resultMap="LanyaDeviceCardMachineResult">
+        <include refid="selectLanyaDeviceCardMachineVo"/>
+        where card_sender_id = #{cardSenderId}
+    </select>
+
+    <insert id="insertLanyaDeviceCardMachine" parameterType="LanyaDeviceCardMachine" useGeneratedKeys="true" keyProperty="cardSenderId">
+        insert into device_card_sender
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="deviceSn != null and deviceSn != ''">device_sn,</if>
+            <if test="deviceVersion != null">device_version,</if>
+            <if test="deviceName != null and deviceName != ''">device_name,</if>
+            <if test="deviceBtnRent != null">device_btn_rent,</if>
+            <if test="deviceHeartTime != null">device_heart_time,</if>
+            <if test="deviceConfig != null">device_config,</if>
+            <if test="longitude != null">longitude,</if>
+            <if test="latitude != null">latitude,</if>
+            <if test="layerId != null">layer_id,</if>
+            <if test="layerHeight != null">layer_height,</if>
+            <if test="userName != null">user_name,</if>
+            <if test="password != null">password,</if>
+            <if test="faceUrl != null">face_url,</if>
+            <if test="faceFlag != null and faceFlag != ''">face_flag,</if>
+            <if test="faceMacAddr != null">face_mac_addr,</if>
+            <if test="faceSn != null">face_sn,</if>
+            <if test="faceHeartTime != null">face_heart_time,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="remark != null">remark,</if>
+            <if test="deviceEnable != null and deviceEnable != ''">device_enable,</if>
+            <if test="cardModel != null">card_model,</if>
+            <if test="plannedNumberCards != null">planned_number_cards,</if>
+            <if test="pushFace != null">push_face,</if>
+            <if test="whiteListCount != null">white_list_count,</if>
+            <if test="viewSort != null">view_sort,</if>
+            <if test="viewRows != null">view_rows,</if>
+            <if test="viewColumns != null">view_columns,</if>
+            <if test="viewData != null">view_data,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="deviceSn != null and deviceSn != ''">#{deviceSn},</if>
+            <if test="deviceVersion != null">#{deviceVersion},</if>
+            <if test="deviceName != null and deviceName != ''">#{deviceName},</if>
+            <if test="deviceBtnRent != null">#{deviceBtnRent},</if>
+            <if test="deviceHeartTime != null">#{deviceHeartTime},</if>
+            <if test="deviceConfig != null">#{deviceConfig},</if>
+            <if test="longitude != null">#{longitude},</if>
+            <if test="latitude != null">#{latitude},</if>
+            <if test="layerId != null">#{layerId},</if>
+            <if test="layerHeight != null">#{layerHeight},</if>
+            <if test="userName != null">#{userName},</if>
+            <if test="password != null">#{password},</if>
+            <if test="faceUrl != null">#{faceUrl},</if>
+            <if test="faceFlag != null and faceFlag != ''">#{faceFlag},</if>
+            <if test="faceMacAddr != null">#{faceMacAddr},</if>
+            <if test="faceSn != null">#{faceSn},</if>
+            <if test="faceHeartTime != null">#{faceHeartTime},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="deviceEnable != null and deviceEnable != ''">#{deviceEnable},</if>
+            <if test="cardModel != null">#{cardModel},</if>
+            <if test="plannedNumberCards != null">#{plannedNumberCards},</if>
+            <if test="pushFace != null">#{pushFace},</if>
+            <if test="whiteListCount != null">#{whiteListCount},</if>
+            <if test="viewSort != null">#{viewSort},</if>
+            <if test="viewRows != null">#{viewRows},</if>
+            <if test="viewColumns != null">#{viewColumns},</if>
+            <if test="viewData != null">#{viewData},</if>
+         </trim>
+    </insert>
+
+    <update id="updateLanyaDeviceCardMachine" parameterType="LanyaDeviceCardMachine">
+        update device_card_sender
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="deviceSn != null and deviceSn != ''">device_sn = #{deviceSn},</if>
+            <if test="deviceVersion != null">device_version = #{deviceVersion},</if>
+            <if test="deviceName != null and deviceName != ''">device_name = #{deviceName},</if>
+            <if test="deviceBtnRent != null">device_btn_rent = #{deviceBtnRent},</if>
+            <if test="deviceHeartTime != null">device_heart_time = #{deviceHeartTime},</if>
+            <if test="deviceConfig != null">device_config = #{deviceConfig},</if>
+            <if test="longitude != null">longitude = #{longitude},</if>
+            <if test="latitude != null">latitude = #{latitude},</if>
+            <if test="layerId != null">layer_id = #{layerId},</if>
+            <if test="layerHeight != null">layer_height = #{layerHeight},</if>
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="password != null">password = #{password},</if>
+            <if test="faceUrl != null">face_url = #{faceUrl},</if>
+            <if test="faceFlag != null and faceFlag != ''">face_flag = #{faceFlag},</if>
+            <if test="faceMacAddr != null">face_mac_addr = #{faceMacAddr},</if>
+            <if test="faceSn != null">face_sn = #{faceSn},</if>
+            <if test="faceHeartTime != null">face_heart_time = #{faceHeartTime},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="deviceEnable != null and deviceEnable != ''">device_enable = #{deviceEnable},</if>
+            <if test="cardModel != null">card_model = #{cardModel},</if>
+            <if test="plannedNumberCards != null">planned_number_cards = #{plannedNumberCards},</if>
+            <if test="pushFace != null">push_face = #{pushFace},</if>
+            <if test="whiteListCount != null">white_list_count = #{whiteListCount},</if>
+            <if test="viewSort != null">view_sort = #{viewSort},</if>
+            <if test="viewRows != null">view_rows = #{viewRows},</if>
+            <if test="viewColumns != null">view_columns = #{viewColumns},</if>
+            <if test="viewData != null">view_data = #{viewData},</if>
+        </trim>
+        where card_sender_id = #{cardSenderId}
+    </update>
+
+    <delete id="deleteLanyaDeviceCardMachineByCardSenderId" parameterType="Long">
+        delete from device_card_sender where card_sender_id = #{cardSenderId}
+    </delete>
+
+    <delete id="deleteLanyaDeviceCardMachineByCardSenderIds" parameterType="String">
+        delete from device_card_sender where card_sender_id in 
+        <foreach item="cardSenderId" collection="array" open="(" separator="," close=")">
+            #{cardSenderId}
+        </foreach>
+    </delete>
+</mapper>

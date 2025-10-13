@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.WmsPersonMapper">
+    
+    <resultMap type="WmsPerson" id="WmsPersonResult">
+        <result property="personId"    column="person_id"    />
+        <result property="personType"    column="person_type"    />
+        <result property="personEmpNo"    column="person_emp_no"    />
+        <result property="personIdentityNo"    column="person_identity_no"    />
+        <result property="personName"    column="person_name"    />
+        <result property="personSex"    column="person_sex"    />
+        <result property="personAge"    column="person_age"    />
+        <result property="personPhone"    column="person_phone"    />
+        <result property="personPost"    column="person_post"    />
+        <result property="personJobNo"    column="person_job_no"    />
+        <result property="personDeptId"    column="person_dept_id"    />
+        <result property="personFaceImg"    column="person_face_img"    />
+        <result property="personCardNo"    column="person_card_no"    />
+        <result property="personAuthArea"    column="person_auth_area"    />
+        <result property="personStatus"    column="person_status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="delFlag"    column="del_flag"    />
+    </resultMap>
+
+    <sql id="selectWmsPersonVo">
+        select person_id, person_type, person_emp_no, person_identity_no, person_name, person_sex, person_age, person_phone, person_post, person_job_no, person_dept_id, person_face_img, person_card_no, person_auth_area, person_status, create_by, create_time, update_by, update_time, del_flag from wms_person
+    </sql>
+
+    <select id="selectWmsPersonList" parameterType="WmsPerson" resultMap="WmsPersonResult">
+        <include refid="selectWmsPersonVo"/>
+        <where>  
+            <if test="personType != null  and personType != ''"> and person_type = #{personType}</if>
+            <if test="personEmpNo != null  and personEmpNo != ''"> and person_emp_no = #{personEmpNo}</if>
+            <if test="personIdentityNo != null  and personIdentityNo != ''"> and person_identity_no = #{personIdentityNo}</if>
+            <if test="personName != null  and personName != ''"> and person_name like concat('%', #{personName}, '%')</if>
+            <if test="personSex != null  and personSex != ''"> and person_sex = #{personSex}</if>
+            <if test="personAge != null  and personAge != ''"> and person_age = #{personAge}</if>
+            <if test="personPhone != null  and personPhone != ''"> and person_phone = #{personPhone}</if>
+            <if test="personPost != null  and personPost != ''"> and person_post = #{personPost}</if>
+            <if test="personJobNo != null  and personJobNo != ''"> and person_job_no = #{personJobNo}</if>
+            <if test="personDeptId != null "> and person_dept_id = #{personDeptId}</if>
+            <if test="personFaceImg != null  and personFaceImg != ''"> and person_face_img = #{personFaceImg}</if>
+            <if test="personCardNo != null  and personCardNo != ''"> and person_card_no = #{personCardNo}</if>
+            <if test="personAuthArea != null  and personAuthArea != ''"> and person_auth_area = #{personAuthArea}</if>
+            <if test="personStatus != null  and personStatus != ''"> and person_status = #{personStatus}</if>
+        </where>
+    </select>
+    
+    <select id="selectWmsPersonByPersonId" parameterType="Long" resultMap="WmsPersonResult">
+        <include refid="selectWmsPersonVo"/>
+        where person_id = #{personId}
+    </select>
+
+    <insert id="insertWmsPerson" parameterType="WmsPerson" useGeneratedKeys="true" keyProperty="personId">
+        insert into wms_person
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="personType != null and personType != ''">person_type,</if>
+            <if test="personEmpNo != null">person_emp_no,</if>
+            <if test="personIdentityNo != null and personIdentityNo != ''">person_identity_no,</if>
+            <if test="personName != null and personName != ''">person_name,</if>
+            <if test="personSex != null and personSex != ''">person_sex,</if>
+            <if test="personAge != null and personAge != ''">person_age,</if>
+            <if test="personPhone != null">person_phone,</if>
+            <if test="personPost != null">person_post,</if>
+            <if test="personJobNo != null">person_job_no,</if>
+            <if test="personDeptId != null">person_dept_id,</if>
+            <if test="personFaceImg != null">person_face_img,</if>
+            <if test="personCardNo != null">person_card_no,</if>
+            <if test="personAuthArea != null">person_auth_area,</if>
+            <if test="personStatus != null">person_status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="delFlag != null">del_flag,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="personType != null and personType != ''">#{personType},</if>
+            <if test="personEmpNo != null">#{personEmpNo},</if>
+            <if test="personIdentityNo != null and personIdentityNo != ''">#{personIdentityNo},</if>
+            <if test="personName != null and personName != ''">#{personName},</if>
+            <if test="personSex != null and personSex != ''">#{personSex},</if>
+            <if test="personAge != null and personAge != ''">#{personAge},</if>
+            <if test="personPhone != null">#{personPhone},</if>
+            <if test="personPost != null">#{personPost},</if>
+            <if test="personJobNo != null">#{personJobNo},</if>
+            <if test="personDeptId != null">#{personDeptId},</if>
+            <if test="personFaceImg != null">#{personFaceImg},</if>
+            <if test="personCardNo != null">#{personCardNo},</if>
+            <if test="personAuthArea != null">#{personAuthArea},</if>
+            <if test="personStatus != null">#{personStatus},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWmsPerson" parameterType="WmsPerson">
+        update wms_person
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="personType != null and personType != ''">person_type = #{personType},</if>
+            <if test="personEmpNo != null">person_emp_no = #{personEmpNo},</if>
+            <if test="personIdentityNo != null and personIdentityNo != ''">person_identity_no = #{personIdentityNo},</if>
+            <if test="personName != null and personName != ''">person_name = #{personName},</if>
+            <if test="personSex != null and personSex != ''">person_sex = #{personSex},</if>
+            <if test="personAge != null and personAge != ''">person_age = #{personAge},</if>
+            <if test="personPhone != null">person_phone = #{personPhone},</if>
+            <if test="personPost != null">person_post = #{personPost},</if>
+            <if test="personJobNo != null">person_job_no = #{personJobNo},</if>
+            <if test="personDeptId != null">person_dept_id = #{personDeptId},</if>
+            <if test="personFaceImg != null">person_face_img = #{personFaceImg},</if>
+            <if test="personCardNo != null">person_card_no = #{personCardNo},</if>
+            <if test="personAuthArea != null">person_auth_area = #{personAuthArea},</if>
+            <if test="personStatus != null">person_status = #{personStatus},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+        </trim>
+        where person_id = #{personId}
+    </update>
+
+    <delete id="deleteWmsPersonByPersonId" parameterType="Long">
+        delete from wms_person where person_id = #{personId}
+    </delete>
+
+    <delete id="deleteWmsPersonByPersonIds" parameterType="String">
+        delete from wms_person where person_id in 
+        <foreach item="personId" collection="array" open="(" separator="," close=")">
+            #{personId}
+        </foreach>
+    </delete>
+</mapper>

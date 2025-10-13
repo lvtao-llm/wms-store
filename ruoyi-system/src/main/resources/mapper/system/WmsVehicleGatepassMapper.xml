@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.WmsVehicleGatepassMapper">
+    
+    <resultMap type="WmsVehicleGatepass" id="WmsVehicleGatepassResult">
+        <result property="gatepassId"    column="gatepass_id"    />
+        <result property="vehicleId"    column="vehicle_id"    />
+        <result property="gatepassAppointmentTime"    column="gatepass_appointment_time"    />
+        <result property="areaCodes"    column="area_codes"    />
+        <result property="cardRecordId"    column="card_record_id"    />
+        <result property="vehicleDriverName"    column="vehicle_driver_name"    />
+        <result property="vehicleDriverPhone"    column="vehicle_driver_phone"    />
+        <result property="actuals"    column="actuals"    />
+        <result property="plans"    column="plans"    />
+        <result property="gatepassGateInTime"    column="gatepass_gate_in_time"    />
+        <result property="gatepassGateInPhoto"    column="gatepass_gate_in_photo"    />
+        <result property="gatepassGateOutTime"    column="gatepass_gate_out_time"    />
+        <result property="gatepassGateOutPhoto"    column="gatepass_gate_out_photo"    />
+        <result property="gatepassDwellTime"    column="gatepass_dwell_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectWmsVehicleGatepassVo">
+        select gatepass_id, vehicle_id, gatepass_appointment_time, area_codes, card_record_id, vehicle_driver_name, vehicle_driver_phone, actuals, plans, gatepass_gate_in_time, gatepass_gate_in_photo, gatepass_gate_out_time, gatepass_gate_out_photo, gatepass_dwell_time, create_by, create_time from wms_vehicle_gatepass
+    </sql>
+
+    <select id="selectWmsVehicleGatepassList" parameterType="WmsVehicleGatepass" resultMap="WmsVehicleGatepassResult">
+        <include refid="selectWmsVehicleGatepassVo"/>
+        <where>  
+            <if test="vehicleId != null "> and vehicle_id = #{vehicleId}</if>
+            <if test="gatepassAppointmentTime != null "> and gatepass_appointment_time = #{gatepassAppointmentTime}</if>
+            <if test="areaCodes != null  and areaCodes != ''"> and area_codes = #{areaCodes}</if>
+            <if test="cardRecordId != null "> and card_record_id = #{cardRecordId}</if>
+            <if test="vehicleDriverName != null  and vehicleDriverName != ''"> and vehicle_driver_name like concat('%', #{vehicleDriverName}, '%')</if>
+            <if test="vehicleDriverPhone != null  and vehicleDriverPhone != ''"> and vehicle_driver_phone = #{vehicleDriverPhone}</if>
+            <if test="actuals != null  and actuals != ''"> and actuals = #{actuals}</if>
+            <if test="plans != null  and plans != ''"> and plans = #{plans}</if>
+            <if test="gatepassGateInTime != null "> and gatepass_gate_in_time = #{gatepassGateInTime}</if>
+            <if test="gatepassGateInPhoto != null  and gatepassGateInPhoto != ''"> and gatepass_gate_in_photo = #{gatepassGateInPhoto}</if>
+            <if test="gatepassGateOutTime != null "> and gatepass_gate_out_time = #{gatepassGateOutTime}</if>
+            <if test="gatepassGateOutPhoto != null  and gatepassGateOutPhoto != ''"> and gatepass_gate_out_photo = #{gatepassGateOutPhoto}</if>
+            <if test="gatepassDwellTime != null "> and gatepass_dwell_time = #{gatepassDwellTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectWmsVehicleGatepassByGatepassId" parameterType="Long" resultMap="WmsVehicleGatepassResult">
+        <include refid="selectWmsVehicleGatepassVo"/>
+        where gatepass_id = #{gatepassId}
+    </select>
+
+    <insert id="insertWmsVehicleGatepass" parameterType="WmsVehicleGatepass" useGeneratedKeys="true" keyProperty="gatepassId">
+        insert into wms_vehicle_gatepass
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="vehicleId != null">vehicle_id,</if>
+            <if test="gatepassAppointmentTime != null">gatepass_appointment_time,</if>
+            <if test="areaCodes != null and areaCodes != ''">area_codes,</if>
+            <if test="cardRecordId != null">card_record_id,</if>
+            <if test="vehicleDriverName != null and vehicleDriverName != ''">vehicle_driver_name,</if>
+            <if test="vehicleDriverPhone != null and vehicleDriverPhone != ''">vehicle_driver_phone,</if>
+            <if test="actuals != null">actuals,</if>
+            <if test="plans != null and plans != ''">plans,</if>
+            <if test="gatepassGateInTime != null">gatepass_gate_in_time,</if>
+            <if test="gatepassGateInPhoto != null">gatepass_gate_in_photo,</if>
+            <if test="gatepassGateOutTime != null">gatepass_gate_out_time,</if>
+            <if test="gatepassGateOutPhoto != null">gatepass_gate_out_photo,</if>
+            <if test="gatepassDwellTime != null">gatepass_dwell_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="vehicleId != null">#{vehicleId},</if>
+            <if test="gatepassAppointmentTime != null">#{gatepassAppointmentTime},</if>
+            <if test="areaCodes != null and areaCodes != ''">#{areaCodes},</if>
+            <if test="cardRecordId != null">#{cardRecordId},</if>
+            <if test="vehicleDriverName != null and vehicleDriverName != ''">#{vehicleDriverName},</if>
+            <if test="vehicleDriverPhone != null and vehicleDriverPhone != ''">#{vehicleDriverPhone},</if>
+            <if test="actuals != null">#{actuals},</if>
+            <if test="plans != null and plans != ''">#{plans},</if>
+            <if test="gatepassGateInTime != null">#{gatepassGateInTime},</if>
+            <if test="gatepassGateInPhoto != null">#{gatepassGateInPhoto},</if>
+            <if test="gatepassGateOutTime != null">#{gatepassGateOutTime},</if>
+            <if test="gatepassGateOutPhoto != null">#{gatepassGateOutPhoto},</if>
+            <if test="gatepassDwellTime != null">#{gatepassDwellTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWmsVehicleGatepass" parameterType="WmsVehicleGatepass">
+        update wms_vehicle_gatepass
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="vehicleId != null">vehicle_id = #{vehicleId},</if>
+            <if test="gatepassAppointmentTime != null">gatepass_appointment_time = #{gatepassAppointmentTime},</if>
+            <if test="areaCodes != null and areaCodes != ''">area_codes = #{areaCodes},</if>
+            <if test="cardRecordId != null">card_record_id = #{cardRecordId},</if>
+            <if test="vehicleDriverName != null and vehicleDriverName != ''">vehicle_driver_name = #{vehicleDriverName},</if>
+            <if test="vehicleDriverPhone != null and vehicleDriverPhone != ''">vehicle_driver_phone = #{vehicleDriverPhone},</if>
+            <if test="actuals != null">actuals = #{actuals},</if>
+            <if test="plans != null and plans != ''">plans = #{plans},</if>
+            <if test="gatepassGateInTime != null">gatepass_gate_in_time = #{gatepassGateInTime},</if>
+            <if test="gatepassGateInPhoto != null">gatepass_gate_in_photo = #{gatepassGateInPhoto},</if>
+            <if test="gatepassGateOutTime != null">gatepass_gate_out_time = #{gatepassGateOutTime},</if>
+            <if test="gatepassGateOutPhoto != null">gatepass_gate_out_photo = #{gatepassGateOutPhoto},</if>
+            <if test="gatepassDwellTime != null">gatepass_dwell_time = #{gatepassDwellTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where gatepass_id = #{gatepassId}
+    </update>
+
+    <delete id="deleteWmsVehicleGatepassByGatepassId" parameterType="Long">
+        delete from wms_vehicle_gatepass where gatepass_id = #{gatepassId}
+    </delete>
+
+    <delete id="deleteWmsVehicleGatepassByGatepassIds" parameterType="String">
+        delete from wms_vehicle_gatepass where gatepass_id in 
+        <foreach item="gatepassId" collection="array" open="(" separator="," close=")">
+            #{gatepassId}
+        </foreach>
+    </delete>
+</mapper>

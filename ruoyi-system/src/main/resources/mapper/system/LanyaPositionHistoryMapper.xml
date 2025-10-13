@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.LanyaPositionHistoryMapper">
+    
+    <resultMap type="LanyaPositionHistory" id="LanyaPositionHistoryResult">
+        <result property="id"    column="id"    />
+        <result property="acceptTime"    column="accept_time"    />
+        <result property="cardId"    column="card_id"    />
+        <result property="cardType"    column="card_type"    />
+        <result property="beaconId"    column="beacon_id"    />
+        <result property="longitude"    column="longitude"    />
+        <result property="latitude"    column="latitude"    />
+        <result property="distance"    column="distance"    />
+        <result property="layerId"    column="layer_id"    />
+        <result property="layerHeight"    column="layer_height"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="personId"    column="person_id"    />
+        <result property="personType"    column="person_type"    />
+        <result property="staffType"    column="staff_type"    />
+        <result property="realName"    column="real_name"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="postId"    column="post_id"    />
+        <result property="contractorId"    column="contractor_id"    />
+        <result property="altitude"    column="altitude"    />
+        <result property="rtkPositionMode"    column="rtk_position_mode"    />
+    </resultMap>
+
+    <sql id="selectLanyaPositionHistoryVo">
+        select id, accept_time, card_id, card_type, beacon_id, longitude, latitude, distance, layer_id, layer_height, create_time, person_id, person_type, staff_type, real_name, dept_id, post_id, contractor_id, altitude, rtk_position_mode from position_history
+    </sql>
+
+    <select id="selectLanyaPositionHistoryList" parameterType="LanyaPositionHistory" resultMap="LanyaPositionHistoryResult">
+        <include refid="selectLanyaPositionHistoryVo"/>
+        <where>  
+            <if test="acceptTime != null "> and accept_time = #{acceptTime}</if>
+            <if test="cardId != null "> and card_id = #{cardId}</if>
+            <if test="cardType != null  and cardType != ''"> and card_type = #{cardType}</if>
+            <if test="beaconId != null "> and beacon_id = #{beaconId}</if>
+            <if test="longitude != null "> and longitude = #{longitude}</if>
+            <if test="latitude != null "> and latitude = #{latitude}</if>
+            <if test="distance != null "> and distance = #{distance}</if>
+            <if test="layerId != null  and layerId != ''"> and layer_id = #{layerId}</if>
+            <if test="layerHeight != null "> and layer_height = #{layerHeight}</if>
+            <if test="personId != null "> and person_id = #{personId}</if>
+            <if test="personType != null  and personType != ''"> and person_type = #{personType}</if>
+            <if test="staffType != null  and staffType != ''"> and staff_type = #{staffType}</if>
+            <if test="realName != null  and realName != ''"> and real_name like concat('%', #{realName}, '%')</if>
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+            <if test="postId != null "> and post_id = #{postId}</if>
+            <if test="contractorId != null "> and contractor_id = #{contractorId}</if>
+            <if test="altitude != null "> and altitude = #{altitude}</if>
+            <if test="rtkPositionMode != null  and rtkPositionMode != ''"> and rtk_position_mode = #{rtkPositionMode}</if>
+        </where>
+    </select>
+    
+    <select id="selectLanyaPositionHistoryById" parameterType="Long" resultMap="LanyaPositionHistoryResult">
+        <include refid="selectLanyaPositionHistoryVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertLanyaPositionHistory" parameterType="LanyaPositionHistory" useGeneratedKeys="true" keyProperty="id">
+        insert into position_history
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="acceptTime != null">accept_time,</if>
+            <if test="cardId != null">card_id,</if>
+            <if test="cardType != null">card_type,</if>
+            <if test="beaconId != null">beacon_id,</if>
+            <if test="longitude != null">longitude,</if>
+            <if test="latitude != null">latitude,</if>
+            <if test="distance != null">distance,</if>
+            <if test="layerId != null">layer_id,</if>
+            <if test="layerHeight != null">layer_height,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="personId != null">person_id,</if>
+            <if test="personType != null">person_type,</if>
+            <if test="staffType != null">staff_type,</if>
+            <if test="realName != null">real_name,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="postId != null">post_id,</if>
+            <if test="contractorId != null">contractor_id,</if>
+            <if test="altitude != null">altitude,</if>
+            <if test="rtkPositionMode != null">rtk_position_mode,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="acceptTime != null">#{acceptTime},</if>
+            <if test="cardId != null">#{cardId},</if>
+            <if test="cardType != null">#{cardType},</if>
+            <if test="beaconId != null">#{beaconId},</if>
+            <if test="longitude != null">#{longitude},</if>
+            <if test="latitude != null">#{latitude},</if>
+            <if test="distance != null">#{distance},</if>
+            <if test="layerId != null">#{layerId},</if>
+            <if test="layerHeight != null">#{layerHeight},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="personId != null">#{personId},</if>
+            <if test="personType != null">#{personType},</if>
+            <if test="staffType != null">#{staffType},</if>
+            <if test="realName != null">#{realName},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="postId != null">#{postId},</if>
+            <if test="contractorId != null">#{contractorId},</if>
+            <if test="altitude != null">#{altitude},</if>
+            <if test="rtkPositionMode != null">#{rtkPositionMode},</if>
+         </trim>
+    </insert>
+
+    <update id="updateLanyaPositionHistory" parameterType="LanyaPositionHistory">
+        update position_history
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="acceptTime != null">accept_time = #{acceptTime},</if>
+            <if test="cardId != null">card_id = #{cardId},</if>
+            <if test="cardType != null">card_type = #{cardType},</if>
+            <if test="beaconId != null">beacon_id = #{beaconId},</if>
+            <if test="longitude != null">longitude = #{longitude},</if>
+            <if test="latitude != null">latitude = #{latitude},</if>
+            <if test="distance != null">distance = #{distance},</if>
+            <if test="layerId != null">layer_id = #{layerId},</if>
+            <if test="layerHeight != null">layer_height = #{layerHeight},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="personId != null">person_id = #{personId},</if>
+            <if test="personType != null">person_type = #{personType},</if>
+            <if test="staffType != null">staff_type = #{staffType},</if>
+            <if test="realName != null">real_name = #{realName},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="postId != null">post_id = #{postId},</if>
+            <if test="contractorId != null">contractor_id = #{contractorId},</if>
+            <if test="altitude != null">altitude = #{altitude},</if>
+            <if test="rtkPositionMode != null">rtk_position_mode = #{rtkPositionMode},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteLanyaPositionHistoryById" parameterType="Long">
+        delete from position_history where id = #{id}
+    </delete>
+
+    <delete id="deleteLanyaPositionHistoryByIds" parameterType="String">
+        delete from position_history where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

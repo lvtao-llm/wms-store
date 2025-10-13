@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.WmsVehicleRouteMapper">
+    
+    <resultMap type="WmsVehicleRoute" id="WmsVehicleRouteResult">
+        <result property="routeId"    column="route_id"    />
+        <result property="routeNo"    column="route_no"    />
+        <result property="routeWaypoints"    column="route_waypoints"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="delFlag"    column="del_flag"    />
+    </resultMap>
+
+    <sql id="selectWmsVehicleRouteVo">
+        select route_id, route_no, route_waypoints, create_by, create_time, update_by, update_time, del_flag from wms_vehicle_route
+    </sql>
+
+    <select id="selectWmsVehicleRouteList" parameterType="WmsVehicleRoute" resultMap="WmsVehicleRouteResult">
+        <include refid="selectWmsVehicleRouteVo"/>
+        <where>  
+            <if test="routeNo != null  and routeNo != ''"> and route_no = #{routeNo}</if>
+            <if test="routeWaypoints != null  and routeWaypoints != ''"> and route_waypoints = #{routeWaypoints}</if>
+        </where>
+    </select>
+    
+    <select id="selectWmsVehicleRouteByRouteId" parameterType="Long" resultMap="WmsVehicleRouteResult">
+        <include refid="selectWmsVehicleRouteVo"/>
+        where route_id = #{routeId}
+    </select>
+
+    <insert id="insertWmsVehicleRoute" parameterType="WmsVehicleRoute" useGeneratedKeys="true" keyProperty="routeId">
+        insert into wms_vehicle_route
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="routeNo != null and routeNo != ''">route_no,</if>
+            <if test="routeWaypoints != null">route_waypoints,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="routeNo != null and routeNo != ''">#{routeNo},</if>
+            <if test="routeWaypoints != null">#{routeWaypoints},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWmsVehicleRoute" parameterType="WmsVehicleRoute">
+        update wms_vehicle_route
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="routeNo != null and routeNo != ''">route_no = #{routeNo},</if>
+            <if test="routeWaypoints != null">route_waypoints = #{routeWaypoints},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+        </trim>
+        where route_id = #{routeId}
+    </update>
+
+    <delete id="deleteWmsVehicleRouteByRouteId" parameterType="Long">
+        delete from wms_vehicle_route where route_id = #{routeId}
+    </delete>
+
+    <delete id="deleteWmsVehicleRouteByRouteIds" parameterType="String">
+        delete from wms_vehicle_route where route_id in 
+        <foreach item="routeId" collection="array" open="(" separator="," close=")">
+            #{routeId}
+        </foreach>
+    </delete>
+</mapper>

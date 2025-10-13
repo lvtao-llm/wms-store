@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.LanyaVehicleAlarmMapper">
+    
+    <resultMap type="LanyaVehicleAlarm" id="LanyaVehicleAlarmResult">
+        <result property="id"    column="id"    />
+        <result property="alarmTime"    column="alarm_time"    />
+        <result property="vehicleId"    column="vehicle_id"    />
+        <result property="vehicleCategory"    column="vehicle_category"    />
+        <result property="cardId"    column="card_id"    />
+        <result property="vehicleName"    column="vehicle_name"    />
+        <result property="licensePlateNumber"    column="license_plate_number"    />
+        <result property="driverName"    column="driver_name"    />
+        <result property="driverTel"    column="driver_tel"    />
+        <result property="companyName"    column="company_name"    />
+        <result property="alarmType"    column="alarm_type"    />
+        <result property="alarmTypeName"    column="alarm_type_name"    />
+        <result property="alarmName"    column="alarm_name"    />
+        <result property="alarmDesc"    column="alarm_desc"    />
+        <result property="alarmStatus"    column="alarm_status"    />
+        <result property="settingId"    column="setting_id"    />
+        <result property="settingName"    column="setting_name"    />
+        <result property="railId"    column="rail_id"    />
+        <result property="railName"    column="rail_name"    />
+        <result property="drawType"    column="draw_type"    />
+        <result property="railScope"    column="rail_scope"    />
+        <result property="railHeight"    column="rail_height"    />
+        <result property="layerId"    column="layer_id"    />
+        <result property="layerHeight"    column="layer_height"    />
+        <result property="longitude"    column="longitude"    />
+        <result property="latitude"    column="latitude"    />
+        <result property="speed"    column="speed"    />
+        <result property="direction"    column="direction"    />
+        <result property="electricity"    column="electricity"    />
+        <result property="beaconId"    column="beacon_id"    />
+        <result property="acceptTime"    column="accept_time"    />
+        <result property="disposeBy"    column="dispose_by"    />
+        <result property="disposeTime"    column="dispose_time"    />
+        <result property="disposeFeedback"    column="dispose_feedback"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectLanyaVehicleAlarmVo">
+        select id, alarm_time, vehicle_id, vehicle_category, card_id, vehicle_name, license_plate_number, driver_name, driver_tel, company_name, alarm_type, alarm_type_name, alarm_name, alarm_desc, alarm_status, setting_id, setting_name, rail_id, rail_name, draw_type, rail_scope, rail_height, layer_id, layer_height, longitude, latitude, speed, direction, electricity, beacon_id, accept_time, dispose_by, dispose_time, dispose_feedback, create_by, create_time, update_time, update_by, remark from vehicle_alarm
+    </sql>
+
+    <select id="selectLanyaVehicleAlarmList" parameterType="LanyaVehicleAlarm" resultMap="LanyaVehicleAlarmResult">
+        <include refid="selectLanyaVehicleAlarmVo"/>
+        <where>  
+            <if test="alarmTime != null "> and alarm_time = #{alarmTime}</if>
+            <if test="vehicleId != null "> and vehicle_id = #{vehicleId}</if>
+            <if test="vehicleCategory != null  and vehicleCategory != ''"> and vehicle_category = #{vehicleCategory}</if>
+            <if test="cardId != null "> and card_id = #{cardId}</if>
+            <if test="vehicleName != null  and vehicleName != ''"> and vehicle_name like concat('%', #{vehicleName}, '%')</if>
+            <if test="licensePlateNumber != null  and licensePlateNumber != ''"> and license_plate_number = #{licensePlateNumber}</if>
+            <if test="driverName != null  and driverName != ''"> and driver_name like concat('%', #{driverName}, '%')</if>
+            <if test="driverTel != null  and driverTel != ''"> and driver_tel = #{driverTel}</if>
+            <if test="companyName != null  and companyName != ''"> and company_name like concat('%', #{companyName}, '%')</if>
+            <if test="alarmType != null  and alarmType != ''"> and alarm_type = #{alarmType}</if>
+            <if test="alarmTypeName != null  and alarmTypeName != ''"> and alarm_type_name like concat('%', #{alarmTypeName}, '%')</if>
+            <if test="alarmName != null  and alarmName != ''"> and alarm_name like concat('%', #{alarmName}, '%')</if>
+            <if test="alarmDesc != null  and alarmDesc != ''"> and alarm_desc = #{alarmDesc}</if>
+            <if test="alarmStatus != null  and alarmStatus != ''"> and alarm_status = #{alarmStatus}</if>
+            <if test="settingId != null "> and setting_id = #{settingId}</if>
+            <if test="settingName != null  and settingName != ''"> and setting_name like concat('%', #{settingName}, '%')</if>
+            <if test="railId != null "> and rail_id = #{railId}</if>
+            <if test="railName != null  and railName != ''"> and rail_name like concat('%', #{railName}, '%')</if>
+            <if test="drawType != null "> and draw_type = #{drawType}</if>
+            <if test="railScope != null  and railScope != ''"> and rail_scope = #{railScope}</if>
+            <if test="railHeight != null "> and rail_height = #{railHeight}</if>
+            <if test="layerId != null  and layerId != ''"> and layer_id = #{layerId}</if>
+            <if test="layerHeight != null "> and layer_height = #{layerHeight}</if>
+            <if test="longitude != null "> and longitude = #{longitude}</if>
+            <if test="latitude != null "> and latitude = #{latitude}</if>
+            <if test="speed != null "> and speed = #{speed}</if>
+            <if test="direction != null "> and direction = #{direction}</if>
+            <if test="electricity != null "> and electricity = #{electricity}</if>
+            <if test="beaconId != null "> and beacon_id = #{beaconId}</if>
+            <if test="acceptTime != null "> and accept_time = #{acceptTime}</if>
+            <if test="disposeBy != null  and disposeBy != ''"> and dispose_by = #{disposeBy}</if>
+            <if test="disposeTime != null "> and dispose_time = #{disposeTime}</if>
+            <if test="disposeFeedback != null  and disposeFeedback != ''"> and dispose_feedback = #{disposeFeedback}</if>
+        </where>
+    </select>
+    
+    <select id="selectLanyaVehicleAlarmById" parameterType="Long" resultMap="LanyaVehicleAlarmResult">
+        <include refid="selectLanyaVehicleAlarmVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertLanyaVehicleAlarm" parameterType="LanyaVehicleAlarm">
+        insert into vehicle_alarm
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="alarmTime != null">alarm_time,</if>
+            <if test="vehicleId != null">vehicle_id,</if>
+            <if test="vehicleCategory != null">vehicle_category,</if>
+            <if test="cardId != null">card_id,</if>
+            <if test="vehicleName != null">vehicle_name,</if>
+            <if test="licensePlateNumber != null">license_plate_number,</if>
+            <if test="driverName != null">driver_name,</if>
+            <if test="driverTel != null">driver_tel,</if>
+            <if test="companyName != null">company_name,</if>
+            <if test="alarmType != null and alarmType != ''">alarm_type,</if>
+            <if test="alarmTypeName != null">alarm_type_name,</if>
+            <if test="alarmName != null">alarm_name,</if>
+            <if test="alarmDesc != null">alarm_desc,</if>
+            <if test="alarmStatus != null and alarmStatus != ''">alarm_status,</if>
+            <if test="settingId != null">setting_id,</if>
+            <if test="settingName != null">setting_name,</if>
+            <if test="railId != null">rail_id,</if>
+            <if test="railName != null">rail_name,</if>
+            <if test="drawType != null">draw_type,</if>
+            <if test="railScope != null">rail_scope,</if>
+            <if test="railHeight != null">rail_height,</if>
+            <if test="layerId != null">layer_id,</if>
+            <if test="layerHeight != null">layer_height,</if>
+            <if test="longitude != null">longitude,</if>
+            <if test="latitude != null">latitude,</if>
+            <if test="speed != null">speed,</if>
+            <if test="direction != null">direction,</if>
+            <if test="electricity != null">electricity,</if>
+            <if test="beaconId != null">beacon_id,</if>
+            <if test="acceptTime != null">accept_time,</if>
+            <if test="disposeBy != null">dispose_by,</if>
+            <if test="disposeTime != null">dispose_time,</if>
+            <if test="disposeFeedback != null">dispose_feedback,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="alarmTime != null">#{alarmTime},</if>
+            <if test="vehicleId != null">#{vehicleId},</if>
+            <if test="vehicleCategory != null">#{vehicleCategory},</if>
+            <if test="cardId != null">#{cardId},</if>
+            <if test="vehicleName != null">#{vehicleName},</if>
+            <if test="licensePlateNumber != null">#{licensePlateNumber},</if>
+            <if test="driverName != null">#{driverName},</if>
+            <if test="driverTel != null">#{driverTel},</if>
+            <if test="companyName != null">#{companyName},</if>
+            <if test="alarmType != null and alarmType != ''">#{alarmType},</if>
+            <if test="alarmTypeName != null">#{alarmTypeName},</if>
+            <if test="alarmName != null">#{alarmName},</if>
+            <if test="alarmDesc != null">#{alarmDesc},</if>
+            <if test="alarmStatus != null and alarmStatus != ''">#{alarmStatus},</if>
+            <if test="settingId != null">#{settingId},</if>
+            <if test="settingName != null">#{settingName},</if>
+            <if test="railId != null">#{railId},</if>
+            <if test="railName != null">#{railName},</if>
+            <if test="drawType != null">#{drawType},</if>
+            <if test="railScope != null">#{railScope},</if>
+            <if test="railHeight != null">#{railHeight},</if>
+            <if test="layerId != null">#{layerId},</if>
+            <if test="layerHeight != null">#{layerHeight},</if>
+            <if test="longitude != null">#{longitude},</if>
+            <if test="latitude != null">#{latitude},</if>
+            <if test="speed != null">#{speed},</if>
+            <if test="direction != null">#{direction},</if>
+            <if test="electricity != null">#{electricity},</if>
+            <if test="beaconId != null">#{beaconId},</if>
+            <if test="acceptTime != null">#{acceptTime},</if>
+            <if test="disposeBy != null">#{disposeBy},</if>
+            <if test="disposeTime != null">#{disposeTime},</if>
+            <if test="disposeFeedback != null">#{disposeFeedback},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateLanyaVehicleAlarm" parameterType="LanyaVehicleAlarm">
+        update vehicle_alarm
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="alarmTime != null">alarm_time = #{alarmTime},</if>
+            <if test="vehicleId != null">vehicle_id = #{vehicleId},</if>
+            <if test="vehicleCategory != null">vehicle_category = #{vehicleCategory},</if>
+            <if test="cardId != null">card_id = #{cardId},</if>
+            <if test="vehicleName != null">vehicle_name = #{vehicleName},</if>
+            <if test="licensePlateNumber != null">license_plate_number = #{licensePlateNumber},</if>
+            <if test="driverName != null">driver_name = #{driverName},</if>
+            <if test="driverTel != null">driver_tel = #{driverTel},</if>
+            <if test="companyName != null">company_name = #{companyName},</if>
+            <if test="alarmType != null and alarmType != ''">alarm_type = #{alarmType},</if>
+            <if test="alarmTypeName != null">alarm_type_name = #{alarmTypeName},</if>
+            <if test="alarmName != null">alarm_name = #{alarmName},</if>
+            <if test="alarmDesc != null">alarm_desc = #{alarmDesc},</if>
+            <if test="alarmStatus != null and alarmStatus != ''">alarm_status = #{alarmStatus},</if>
+            <if test="settingId != null">setting_id = #{settingId},</if>
+            <if test="settingName != null">setting_name = #{settingName},</if>
+            <if test="railId != null">rail_id = #{railId},</if>
+            <if test="railName != null">rail_name = #{railName},</if>
+            <if test="drawType != null">draw_type = #{drawType},</if>
+            <if test="railScope != null">rail_scope = #{railScope},</if>
+            <if test="railHeight != null">rail_height = #{railHeight},</if>
+            <if test="layerId != null">layer_id = #{layerId},</if>
+            <if test="layerHeight != null">layer_height = #{layerHeight},</if>
+            <if test="longitude != null">longitude = #{longitude},</if>
+            <if test="latitude != null">latitude = #{latitude},</if>
+            <if test="speed != null">speed = #{speed},</if>
+            <if test="direction != null">direction = #{direction},</if>
+            <if test="electricity != null">electricity = #{electricity},</if>
+            <if test="beaconId != null">beacon_id = #{beaconId},</if>
+            <if test="acceptTime != null">accept_time = #{acceptTime},</if>
+            <if test="disposeBy != null">dispose_by = #{disposeBy},</if>
+            <if test="disposeTime != null">dispose_time = #{disposeTime},</if>
+            <if test="disposeFeedback != null">dispose_feedback = #{disposeFeedback},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteLanyaVehicleAlarmById" parameterType="Long">
+        delete from vehicle_alarm where id = #{id}
+    </delete>
+
+    <delete id="deleteLanyaVehicleAlarmByIds" parameterType="String">
+        delete from vehicle_alarm where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

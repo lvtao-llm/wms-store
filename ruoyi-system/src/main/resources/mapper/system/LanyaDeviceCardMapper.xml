@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.LanyaDeviceCardMapper">
+    
+    <resultMap type="LanyaDeviceCard" id="LanyaDeviceCardResult">
+        <result property="id"    column="id"    />
+        <result property="cardId"    column="card_id"    />
+        <result property="cardType"    column="card_type"    />
+        <result property="cardModel"    column="card_model"    />
+        <result property="icCardId"    column="ic_card_id"    />
+        <result property="cardPower"    column="card_power"    />
+        <result property="cardStatus"    column="card_status"    />
+        <result property="cardVersion"    column="card_version"    />
+        <result property="cardFreq"    column="card_freq"    />
+        <result property="statusTime"    column="status_time"    />
+        <result property="cardEnable"    column="card_enable"    />
+        <result property="useStatus"    column="use_status"    />
+        <result property="cardTransfer"    column="card_transfer"    />
+        <result property="heartTime"    column="heart_time"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectLanyaDeviceCardVo">
+        select id, card_id, card_type, card_model, ic_card_id, card_power, card_status, card_version, card_freq, status_time, card_enable, use_status, card_transfer, heart_time, create_time, create_by, update_time, update_by, remark from device_card
+    </sql>
+
+    <select id="selectLanyaDeviceCardList" parameterType="LanyaDeviceCard" resultMap="LanyaDeviceCardResult">
+        <include refid="selectLanyaDeviceCardVo"/>
+        <where>  
+            <if test="cardId != null "> and card_id = #{cardId}</if>
+            <if test="cardType != null  and cardType != ''"> and card_type = #{cardType}</if>
+            <if test="cardModel != null  and cardModel != ''"> and card_model = #{cardModel}</if>
+            <if test="icCardId != null  and icCardId != ''"> and ic_card_id = #{icCardId}</if>
+            <if test="cardPower != null "> and card_power = #{cardPower}</if>
+            <if test="cardStatus != null "> and card_status = #{cardStatus}</if>
+            <if test="cardVersion != null "> and card_version = #{cardVersion}</if>
+            <if test="cardFreq != null "> and card_freq = #{cardFreq}</if>
+            <if test="statusTime != null "> and status_time = #{statusTime}</if>
+            <if test="cardEnable != null  and cardEnable != ''"> and card_enable = #{cardEnable}</if>
+            <if test="useStatus != null  and useStatus != ''"> and use_status = #{useStatus}</if>
+            <if test="cardTransfer != null "> and card_transfer = #{cardTransfer}</if>
+            <if test="heartTime != null "> and heart_time = #{heartTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectLanyaDeviceCardById" parameterType="Long" resultMap="LanyaDeviceCardResult">
+        <include refid="selectLanyaDeviceCardVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertLanyaDeviceCard" parameterType="LanyaDeviceCard" useGeneratedKeys="true" keyProperty="id">
+        insert into device_card
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="cardId != null">card_id,</if>
+            <if test="cardType != null">card_type,</if>
+            <if test="cardModel != null">card_model,</if>
+            <if test="icCardId != null">ic_card_id,</if>
+            <if test="cardPower != null">card_power,</if>
+            <if test="cardStatus != null">card_status,</if>
+            <if test="cardVersion != null">card_version,</if>
+            <if test="cardFreq != null">card_freq,</if>
+            <if test="statusTime != null">status_time,</if>
+            <if test="cardEnable != null and cardEnable != ''">card_enable,</if>
+            <if test="useStatus != null and useStatus != ''">use_status,</if>
+            <if test="cardTransfer != null">card_transfer,</if>
+            <if test="heartTime != null">heart_time,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="cardId != null">#{cardId},</if>
+            <if test="cardType != null">#{cardType},</if>
+            <if test="cardModel != null">#{cardModel},</if>
+            <if test="icCardId != null">#{icCardId},</if>
+            <if test="cardPower != null">#{cardPower},</if>
+            <if test="cardStatus != null">#{cardStatus},</if>
+            <if test="cardVersion != null">#{cardVersion},</if>
+            <if test="cardFreq != null">#{cardFreq},</if>
+            <if test="statusTime != null">#{statusTime},</if>
+            <if test="cardEnable != null and cardEnable != ''">#{cardEnable},</if>
+            <if test="useStatus != null and useStatus != ''">#{useStatus},</if>
+            <if test="cardTransfer != null">#{cardTransfer},</if>
+            <if test="heartTime != null">#{heartTime},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateLanyaDeviceCard" parameterType="LanyaDeviceCard">
+        update device_card
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="cardId != null">card_id = #{cardId},</if>
+            <if test="cardType != null">card_type = #{cardType},</if>
+            <if test="cardModel != null">card_model = #{cardModel},</if>
+            <if test="icCardId != null">ic_card_id = #{icCardId},</if>
+            <if test="cardPower != null">card_power = #{cardPower},</if>
+            <if test="cardStatus != null">card_status = #{cardStatus},</if>
+            <if test="cardVersion != null">card_version = #{cardVersion},</if>
+            <if test="cardFreq != null">card_freq = #{cardFreq},</if>
+            <if test="statusTime != null">status_time = #{statusTime},</if>
+            <if test="cardEnable != null and cardEnable != ''">card_enable = #{cardEnable},</if>
+            <if test="useStatus != null and useStatus != ''">use_status = #{useStatus},</if>
+            <if test="cardTransfer != null">card_transfer = #{cardTransfer},</if>
+            <if test="heartTime != null">heart_time = #{heartTime},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteLanyaDeviceCardById" parameterType="Long">
+        delete from device_card where id = #{id}
+    </delete>
+
+    <delete id="deleteLanyaDeviceCardByIds" parameterType="String">
+        delete from device_card where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
