@@ -12,7 +12,6 @@
             reserve-keyword
             :popper-append-to-body="false"
             :remote-method="remoteSearchUser"
-            :loading="userLoading"
             class="searchSelect"
             v-model="queryParams.status"
             clearable
