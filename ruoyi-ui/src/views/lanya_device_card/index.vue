@@ -77,9 +77,22 @@
       <el-table-column type="selection" width="55" align="center"/>
       <el-table-column label="卡号" align="center" prop="cardId"/>
       <el-table-column label="手机号" align="center"/>
-      <el-table-column label="电量" align="center" prop="cardPower"/>
-      <el-table-column label="使用状态" align="center" prop="useStatus"/>
-      <el-table-column label="启用状态" align="center" prop="cardStatus"/>
+      <el-table-column label="电量" align="center" prop="cardPower">
+        <template slot-scope="scope">
+          <span v-if="scope.row.cardPower">{{ scope.row.cardPower }}%</span>
+          <span v-else>--</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="使用状态" align="center" prop="useStatus">
+        <template slot-scope="scope">
+          <span>{{ scope.row.useStatus === '-1' ? '使用' : '未使用' }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="启用状态" align="center" prop="cardEnable">
+        <template slot-scope="scope">
+          <span>{{ scope.row.cardEnable === 'Y' ? '启用' : '未启用' }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -116,45 +129,14 @@
         <el-form-item label="卡号" prop="cardId">
           <el-input v-model="form.cardId" placeholder="请输入卡号"/>
         </el-form-item>
-        <el-form-item label="定位卡型号" prop="cardModel">
-          <el-input v-model="form.cardModel" placeholder="请输入定位卡型号"/>
+        <el-form-item label="手机号" prop="cardModel">
+          <el-input v-model="form.cardModel" placeholder="请输入定位卡手机号"/>
         </el-form-item>
-        <el-form-item label="IC卡号" prop="icCardId">
-          <el-input v-model="form.icCardId" placeholder="请输入IC卡号"/>
-        </el-form-item>
-        <el-form-item label="电量百分比" prop="cardPower">
-          <el-input v-model="form.cardPower" placeholder="请输入电量百分比"/>
-        </el-form-item>
-        <el-form-item label="版本" prop="cardVersion">
-          <el-input v-model="form.cardVersion" placeholder="请输入版本"/>
-        </el-form-item>
-        <el-form-item label="频点" prop="cardFreq">
-          <el-input v-model="form.cardFreq" placeholder="请输入频点"/>
-        </el-form-item>
-        <el-form-item label="更新状态时间" prop="statusTime">
-          <el-date-picker clearable
-                          v-model="form.statusTime"
-                          type="date"
-                          value-format="yyyy-MM-dd"
-                          placeholder="请选择更新状态时间">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="" prop="cardEnable">
-          <el-input v-model="form.cardEnable" placeholder="请输入"/>
-        </el-form-item>
-        <el-form-item label="卡片传输状态" prop="cardTransfer">
-          <el-input v-model="form.cardTransfer" placeholder="请输入卡片传输状态"/>
-        </el-form-item>
-        <el-form-item label="心跳时间" prop="heartTime">
-          <el-date-picker clearable
-                          v-model="form.heartTime"
-                          type="date"
-                          value-format="yyyy-MM-dd"
-                          placeholder="请选择心跳时间">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" placeholder="请输入备注"/>
+        <el-form-item label="启用状态" prop="cardEnable">
+          <el-select v-model="form.cardEnable" placeholder="请选择启用状态">
+            <el-option label="启用" value="Y"/>
+            <el-option label="未启用" value="N"/>
+          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -167,12 +149,11 @@
 
 <script>
 import {
-  listLanya_device_card,
-  getLanya_device_card,
-  delLanya_device_card,
-  addLanya_device_card,
-  updateLanya_device_card
-} from "@/api/system/lanya_device_card"
+  deviceCardListPage,
+  deviceCardAddCard,
+  deviceCardUpdateCard,
+  deviceCardDelCard
+} from "@/api/lanya_transfer"
 
 export default {
   name: "Lanya_device_card",
@@ -243,8 +224,8 @@ export default {
     /** 查询定位卡管理列表 */
     getList() {
       this.loading = true
-      listLanya_device_card(this.queryParams).then(response => {
-        this.lanya_device_cardList = response.rows
+      deviceCardListPage(this.queryParams).then(response => {
+        this.lanya_device_cardList = response.data
         this.total = response.total
         this.loading = false
       })
@@ -304,25 +285,24 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset()
-      const id = row.id || this.ids
-      getLanya_device_card(id).then(response => {
-        this.form = response.data
-        this.open = true
-        this.title = "修改定位卡管理"
-      })
+      this.form = row
+      this.open = true
+      this.title = "修改定位卡管理"
     },
     /** 提交按钮 */
     submitForm() {
       this.$refs["form"].validate(valid => {
         if (valid) {
+          this.form.cardModel = "GT01"
+          this.form.cardType = "card"
           if (this.form.id != null) {
-            updateLanya_device_card(this.form).then(response => {
+            deviceCardUpdateCard(this.form).then(response => {
               this.$modal.msgSuccess("修改成功")
               this.open = false
               this.getList()
             })
           } else {
-            addLanya_device_card(this.form).then(response => {
+            deviceCardAddCard(this.form).then(response => {
               this.$modal.msgSuccess("新增成功")
               this.open = false
               this.getList()
@@ -335,7 +315,7 @@ export default {
     handleDelete(row) {
       const ids = row.id || this.ids
       this.$modal.confirm('是否确认删除定位卡管理编号为"' + ids + '"的数据项？').then(function () {
-        return delLanya_device_card(ids)
+        return deviceCardDelCard({cardIds: [row.cardId]})
       }).then(() => {
         this.getList()
         this.$modal.msgSuccess("删除成功")

@@ -3,13 +3,12 @@ package com.ruoyi.common.utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -20,17 +19,17 @@ import java.util.Map;
 @Component
 public class ThirdPartyAuth {
     @Value("${third-party.base-url:http://112.98.110.101:8091}")
-    private String baseUrl;
+    public String baseUrl;
     @Value("${third-party.username:admin}")
     private String username;
     @Value("${third-party.password:xrkc168168}")
     private String password;
 
-    private String token = null;
+    public String token = null;
 
     private ObjectMapper mapper = new ObjectMapper();
 
-    private RestTemplate restTemplate = new RestTemplate();
+    public RestTemplate restTemplate = new RestTemplate();
 
     public Map callThirdPartyLogin() throws JsonProcessingException {
 
@@ -71,43 +70,112 @@ public class ThirdPartyAuth {
         String url = baseUrl + path;
 
         // 4. 发 POST
-        Map respMap = exchange(url, method, entity(body));
+        Object object = exchange(url, method, entity(body, MediaType.APPLICATION_JSON));
 
-        if (respMap.containsKey("code") && !"200".equals(respMap.get("code") + "")) {
-            if ("令牌不能为空".equals(respMap.get("msg"))) {
-                callThirdPartyLogin();
-                respMap = exchange(url, method, entity(body));
-            } else {
-                return null;
+        if (object instanceof Map) {
+            Map map = (Map) object;
+            if (map.containsKey("code") && !"200".equals(map.get("code") + "")) {
+                if ("令牌不能为空".equals(map.get("msg"))) {
+                    callThirdPartyLogin();
+                    object = exchange(url, method, entity(body, MediaType.APPLICATION_JSON));
+                } else {
+                    return object;
+                }
+            }
+        }
+        return object;
+    }
+
+    public Object callThirdParty(String path, HttpMethod method, HttpEntity<MultiValueMap<String, Object>> entity) throws JsonProcessingException {
+        String url = baseUrl + path;
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.putAll(entity.getHeaders());
+        headers.set("Authorization", token);
+
+        HttpEntity<MultiValueMap<String, Object>> newEntity = new HttpEntity<>(entity.getBody(), headers);
+
+        // 4. 发 POST
+        Object object = exchange(url, method, newEntity);
+
+        if (object instanceof Map) {
+            Map map = (Map) object;
+            if (map.containsKey("code") && !"200".equals(map.get("code") + "")) {
+                if ("令牌不能为空".equals(map.get("msg"))) {
+                    callThirdPartyLogin();
+                    headers = new HttpHeaders();
+                    headers.putAll(entity.getHeaders());
+                    headers.set("Authorization", token);
+                    newEntity = new HttpEntity<>(entity.getBody(), headers);
+                    object = exchange(url, method, newEntity);
+                } else {
+                    return null;
+                }
             }
         }
 
-        if (!respMap.containsKey("data")) {
-            return null;
-        }
-
-        Object data =  respMap.get("data");
-        return data;
+        return object;
     }
 
-    private HttpEntity<String> entity(Map<String, Object> body) throws JsonProcessingException {
+    public Object callThirdParty(String path, HttpMethod method, MediaType imageJpeg) throws JsonProcessingException {
+        String url = baseUrl + path;
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(imageJpeg);
+        headers.set("Authorization", token);
+
+        // 3. 组装请求
+        HttpEntity<Object> entity = new HttpEntity<>(headers);
+        Object object = exchange(url, method, entity);
+
+        if (object instanceof Map) {
+            Map map = (Map) object;
+            if (map.containsKey("code") && !"200".equals(map.get("code") + "")) {
+                if ("令牌不能为空".equals(map.get("msg"))) {
+                    callThirdPartyLogin();
+                    headers = new HttpHeaders();
+                    headers.putAll(entity.getHeaders());
+                    headers.set("Authorization", token);
+                    entity = new HttpEntity<>(entity.getBody(), headers);
+                    object = exchange(url, method, entity);
+                } else {
+                    return null;
+                }
+            }
+        }
+
+        return object;
+    }
+
+    private HttpEntity<Object> entity(Map<String, Object> body, MediaType mediaType) throws JsonProcessingException {
         // 1. JSON 体
         String sendBody = mapper.writeValueAsString(body);
 
         // 2. 头
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        if (mediaType != null) {
+            headers.setContentType(mediaType);
+        } else {
+            headers.setContentType(MediaType.APPLICATION_JSON);
+        }
         headers.set("Authorization", token);
 
         // 3. 组装请求
-        HttpEntity<String> entity = new HttpEntity<>(sendBody, headers);
+        HttpEntity<Object> entity = new HttpEntity<>(sendBody, headers);
         return entity;
     }
 
-    private Map exchange(String url, HttpMethod method, HttpEntity<String> entity) throws JsonProcessingException {
+    private Object exchange(String url, HttpMethod method, HttpEntity entity) throws JsonProcessingException {
         ResponseEntity<String> resp = restTemplate.exchange(url, method, entity, String.class);
         String respBody = resp.getBody();
-        Map respMap = mapper.readValue(respBody, HashMap.class);
-        return respMap;
+        Object result = null;
+        try {
+            result = mapper.readValue(respBody, HashMap.class);
+        } catch (Exception e) {
+            result = respBody;
+        }
+
+        return result;
     }
+
+
 }

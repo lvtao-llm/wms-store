@@ -13,10 +13,21 @@ import com.ruoyi.common.utils.ThirdPartyAuth;
 import com.ruoyi.system.domain.LanyaCoreAlarm;
 import com.ruoyi.system.service.ILanyaCoreAlarmService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,10 +55,9 @@ public class LanyaTransferController extends BaseController {
     @Log(title = "人员实时定位", businessType = BusinessType.OTHER)
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
     @GetMapping("/position-person-realtime")
-    public TableDataInfo positionPersonRealtime(LanyaCoreAlarm lanyaCoreAlarm) throws JsonProcessingException {
+    public Object positionPersonRealtime(LanyaCoreAlarm lanyaCoreAlarm) throws JsonProcessingException {
         Map<String, Object> body = new HashMap<>();
-        List<?> map = (List<?>) thirdPartyAuth.callThirdParty("/api-service/position/currentList", HttpMethod.POST, body);
-        return getDataTable(map);
+        return thirdPartyAuth.callThirdParty("/api-service/position/currentList", HttpMethod.POST, body);
     }
 
     /**
@@ -55,10 +65,9 @@ public class LanyaTransferController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
     @GetMapping("/position-person-history")
-    public TableDataInfo positionPersonHistory(LanyaCoreAlarm lanyaCoreAlarm) throws JsonProcessingException {
+    public Object positionPersonHistory(LanyaCoreAlarm lanyaCoreAlarm) throws JsonProcessingException {
         Map<String, Object> body = new HashMap<>();
-        List<?> map = (List<?>) thirdPartyAuth.callThirdParty("/api-service/position/historyPosition", HttpMethod.POST, body);
-        return getDataTable(map);
+        return thirdPartyAuth.callThirdParty("/api-service/position/historyPosition", HttpMethod.POST, body);
     }
 
     /**
@@ -66,35 +75,206 @@ public class LanyaTransferController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
     @GetMapping("/position-person-finally")
-    public TableDataInfo positionPersonFinally(LanyaCoreAlarm lanyaCoreAlarm) throws JsonProcessingException {
+    public Object positionPersonFinally(LanyaCoreAlarm lanyaCoreAlarm) throws JsonProcessingException {
         Map<String, Object> body = new HashMap<>();
-        List<?> map = (List<?>) thirdPartyAuth.callThirdParty("/api-service/position/currentList", HttpMethod.POST, body);
-        return getDataTable(map);
+        return thirdPartyAuth.callThirdParty("/api-service/position/currentList", HttpMethod.POST, body);
     }
 
+    /**
+     * 获取字典数据
+     */
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
     @GetMapping("/dict/findData")
-    public AjaxResult dictFindData() throws JsonProcessingException {
+    public Object dictFindData() throws JsonProcessingException {
         Map<String, Object> body = new HashMap<>();
-        Map<?, ?> map = (Map<?, ?>) thirdPartyAuth.callThirdParty("/system/dict/findData", HttpMethod.POST, body);
-        return AjaxResult.success(map);
+        return thirdPartyAuth.callThirdParty("/system/dict/findData", HttpMethod.POST, body);
     }
 
+    /**
+     * 获取设备列表
+     */
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
     @GetMapping("/machine/listPage")
-    public AjaxResult machineListPage() throws JsonProcessingException {
+    public Object machineListPage() throws JsonProcessingException {
         Map<String, Object> body = new HashMap<>();
         body.put("pageNum", 1);
         body.put("total", 0);
         body.put("pageFlag", "Y");
-        List<?> map = (List<?>) thirdPartyAuth.callThirdParty("/monitor-service/cardSender/listPage", HttpMethod.POST, body);
-        return AjaxResult.success(map);
+        return thirdPartyAuth.callThirdParty("/monitor-service/cardSender/listPage", HttpMethod.POST, body);
     }
 
+    /**
+     * 内部员工与机器绑定
+     */
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
-    @GetMapping("/machine/config-relation/edit-by-person")
-    public AjaxResult machineConfigRelationEditByPerson(@RequestBody JSONObject body) throws JsonProcessingException {
-        List<?> map = (List<?>) thirdPartyAuth.callThirdParty("/monitor-service/cardSenderConfigRelation/editByPerson", HttpMethod.POST, body);
-        return AjaxResult.success(map);
+    @PostMapping("/machine/config-relation/detail-by-person")
+    public Object machineConfigRelationDetailByPerson(@RequestBody JSONObject body) throws JsonProcessingException {
+        return thirdPartyAuth.callThirdParty("/monitor-service/cardSenderConfigRelation/detailByPerson", HttpMethod.POST, body);
+    }
+
+    /**
+     * 添加员工与设备绑定关系
+     */
+    @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
+    @PostMapping("/machine/config-relation/edit-by-person")
+    public Object machineConfigRelationEditByPerson(@RequestBody JSONObject body) throws JsonProcessingException {
+        Object obj = thirdPartyAuth.callThirdParty("/monitor-service/cardSenderConfigRelation/editByPerson", HttpMethod.POST, body);
+        return obj;
+    }
+
+    /**
+     * 获取内部员工列表
+     */
+    @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
+    @PostMapping("/person/staff/listPage")
+    public Object personStaffListPage(@RequestBody JSONObject body) throws JsonProcessingException {
+        return thirdPartyAuth.callThirdParty("/person/staff/listPage", HttpMethod.POST, body);
+    }
+
+    /**
+     * 添加内部员工
+     */
+    @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
+    @PostMapping("/person/staff/addStaff")
+    public Object personStaffAddStaff(@RequestBody JSONObject body) throws JsonProcessingException {
+        return thirdPartyAuth.callThirdParty("/person/staff/addStaff", HttpMethod.POST, body);
+    }
+
+    /**
+     * 修改内部员工
+     */
+    @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
+    @PostMapping("/person/staff/updateStaff")
+    public Object personStaffUpdateStaff(@RequestBody JSONObject body) throws JsonProcessingException {
+        return thirdPartyAuth.callThirdParty("/person/staff/updateStaff", HttpMethod.POST, body);
+    }
+
+    /**
+     * 删除内部员工
+     */
+    @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
+    @PostMapping("/person/staff/delStaff")
+    public Object personStaffDelStaff(@RequestBody JSONObject body) throws JsonProcessingException {
+        return thirdPartyAuth.callThirdParty("/person/staff/delStaff", HttpMethod.POST, body);
+    }
+
+    /**
+     * 获取设备卡列表
+     */
+    @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
+    @PostMapping("/device/card/listPage")
+    public Object deviceCardListPage(@RequestBody JSONObject body) throws JsonProcessingException {
+        return thirdPartyAuth.callThirdParty("/device/card/listPage", HttpMethod.POST, body);
+    }
+
+    /**
+     * 添加设备卡
+     */
+    @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
+    @PostMapping("/device/card/addCard")
+    public Object deviceCardAddCard(@RequestBody JSONObject body) throws JsonProcessingException {
+        return thirdPartyAuth.callThirdParty("/device/card/addCard", HttpMethod.POST, body);
+    }
+
+    /**
+     * 修改设备卡
+     */
+    @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
+    @PostMapping("/device/card/updateCard")
+    public Object deviceCardUpdateCard(@RequestBody JSONObject body) throws JsonProcessingException {
+        return thirdPartyAuth.callThirdParty("/device/card/updateCard", HttpMethod.POST, body);
+    }
+
+    /**
+     * 删除设备卡
+     */
+    @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
+    @PostMapping("/device/card/delCard")
+    public Object deviceCardDelCard(@RequestBody JSONObject body) throws JsonProcessingException {
+        return thirdPartyAuth.callThirdParty("/device/card/delCard", HttpMethod.POST, body);
+    }
+
+    /**
+     * 人员发卡记录
+     *
+     * @param body
+     * @return
+     * @throws JsonProcessingException
+     */
+    @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
+    @PostMapping("/cardSender/cardSenderLog")
+    public Object cardSenderLog(@RequestBody JSONObject body) throws JsonProcessingException {
+        HashMap<?, ?> res = (HashMap<?, ?>) thirdPartyAuth.callThirdParty("/monitor-service/cardSender/cardSenderLog", HttpMethod.POST, body);
+        ArrayList<?> data = (ArrayList<?>) res.get("data");
+
+        HashMap<String, Object> sending = new HashMap<>();
+        List<HashMap<String, Object>> complete = new ArrayList<>();
+        for (int i = data.size() - 1; i >= 0; i--) {
+            HashMap<String, Object> obj = (HashMap<String, Object>) data.get(i);
+
+            // 过滤掉没有人员关联和发卡中的记录
+            if (obj.get("personId") == null || obj.get("realName") == null || obj.get("cardSenderStatus").equals("3")) {
+                continue;
+            }
+
+            if (obj.get("cardSenderType").equals("0")) {
+                // cardSenderType 0:还卡记录
+                if (sending.containsKey((String) obj.get("cardId"))) {
+                    HashMap<String, Object> send = (HashMap<String, Object>) sending.remove(obj.get("cardId"));
+                    send.put("return_card_time", obj.get("createTime"));
+                    complete.add(send);
+                }else{
+                    obj.put("return_card_time", obj.get("createTime"));
+
+                }
+            }
+        }
+        return data;
+    }
+
+    /**
+     * 获取图片
+     */
+    @GetMapping("/files/image")
+    public void filesStatic(String path, HttpServletResponse response) throws IOException {
+        String target = thirdPartyAuth.baseUrl + "/fileStatic/" + path;
+        byte[] bytes = thirdPartyAuth.restTemplate.execute(
+                target,
+                HttpMethod.GET,
+                null,
+                clientHttpResponse -> StreamUtils.copyToByteArray(clientHttpResponse.getBody())
+        );
+        response.reset();
+        response.setContentType("image/jpeg");
+        response.setContentLength(bytes.length);
+        StreamUtils.copy(bytes, response.getOutputStream());
+    }
+
+    /**
+     * 文件上传
+     */
+    @PostMapping("/files/upload")
+    public Object filesUpload(String module, Boolean compress, @RequestParam("files") MultipartFile[] files) throws IOException {
+
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("module", module);
+        body.add("compress", compress);
+
+        // 2. 把 MultipartFile 转成 Resource（关键）
+        for (MultipartFile file : files) {
+            ByteArrayResource resource = new ByteArrayResource(file.getBytes()) {
+                @Override
+                public String getFilename() {
+                    return file.getOriginalFilename();   // 必须给文件名
+                }
+            };
+            body.add("files", resource);   // 与接收方字段名保持一致
+        }
+
+        // 1. 组装 body
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        HttpEntity<MultiValueMap<String, Object>> entity = new HttpEntity<>(body, headers);
+        return thirdPartyAuth.callThirdParty("/file/files/upload", HttpMethod.POST, entity);
     }
 }
