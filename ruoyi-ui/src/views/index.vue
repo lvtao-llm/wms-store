@@ -1180,7 +1180,9 @@ export default {
     },
     remoteSearchUser(a, b, c) {
       listLanya_device_card_sender_log_by_name_card_type({param: a}).then(response => {
-        this.selectData = response.rows.forEach(item => item.label = item.realName + '-' + item.cardId + '-' + item.personTypeName);
+        response.rows.forEach(item => item.label = item.realName + '-' + item.cardId + '-' + item.personTypeName);
+        console.log(response.rows)
+        this.selectData = response.rows
       })
     },
     // 清除所有标记
@@ -1419,7 +1421,7 @@ export default {
 ::v-deep.controls .el-select-dropdown__item {
   background: transparent;
   border: none;
-  color: #fff !important;
+  color: #000 !important;
 }
 
 ::v-deep.el-popper.is-light .el-popper__arrow::before {
