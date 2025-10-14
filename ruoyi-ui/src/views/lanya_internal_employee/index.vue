@@ -118,11 +118,10 @@
       <el-table-column label="发卡机" align="center"/>
       <el-table-column label="照片" align="center" width="100">
         <template slot-scope="scope">
-          <el-image
-            style="width: 40px; height: 40px; border-radius: 50%;"
-            :src="scope.row.personPhoto"
-            :preview-src-list="[scope.row.personPhoto]"
-            fit="cover">
+          <el-image v-if="scope.row.personPhoto"
+                    style="width: 40px; height: 40px; border-radius: 5%;"
+                    :src="imgSrc(scope.row)"
+                    fit="cover">
             <!-- 加载失败时显示默认图 -->
             <div slot="error" class="image-slot">
               <i class="el-icon-picture-outline"/>
@@ -136,7 +135,7 @@
             size="mini"
             type="text"
             icon="el-icon-edit"
-            @click="handleBind(scope.row)"
+            @click="handleBindDialog(scope.row)"
             v-hasPermi="['system:lanya_internal_employee:remove']"
           >绑定
           </el-button>
@@ -172,7 +171,7 @@
     <el-dialog :title="title" :visible.sync="openBind" width="600px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="180px">
         <el-form-item label="发卡类型" prop="userName">
-          <el-select v-model="bindForm.cardId" placeholder="请选择卡号">
+          <el-select v-model="bindForm.cardModelMulti" placeholder="请选择卡号" multiple>
             <el-option
               v-for="dict in lanyaDict.card_model"
               :key="dict.dictValue"
@@ -181,7 +180,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="发卡方式" prop="userName">
-          <el-select v-model="bindForm.cardId" placeholder="请选择卡号">
+          <el-select v-model="bindForm.sendCardMode" placeholder="请选择卡号">
             <el-option
               v-for="dict in lanyaDict.send_card_mode"
               :key="dict.dictValue"
@@ -190,7 +189,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="指定发卡机" prop="userName">
-          <el-select v-model="bindForm.cardId" placeholder="请选择卡号">
+          <el-select v-model="bindForm.cardSenderIdList" placeholder="请选择卡号" multiple>
             <el-option
               v-for="dict in lanyaMachineListPage"
               :key="dict.cardSenderId"
@@ -200,7 +199,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button type="primary" @click="handleMachineConfigRelationEditByPerson">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -212,7 +211,10 @@
           <el-input v-model="form.realName" placeholder="请输入姓名"/>
         </el-form-item>
         <el-form-item label="性别" prop="sex">
-          <el-input v-model="form.sex" placeholder="请输入性别"/>
+          <el-select v-model="form.sex" placeholder="请选择">
+            <el-option label="男" value="男"/>
+            <el-option label="女" value="女"/>
+          </el-select>
         </el-form-item>
         <el-form-item label="即时通工号">
           <el-input placeholder="请输入即时通工号"/>
@@ -235,14 +237,15 @@
         <el-form-item label="照片" prop="personPhoto">
           <el-upload
             class="avatar-uploader"
-            :action="uploadUrl"
+            :action="uploadImageUrl"
+            name="files"
+            :data="uploadData"
             :show-file-list="false"
-            :on-success="handleAvatarSuccess">
+            :on-success="handleUploadImage">
             <el-image
-              v-if="form.avatar"
-              style="width: 40px; height: 40px; border-radius: 50%;"
-              :src="form.personPhoto"
-              :preview-src-list="[form.personPhoto]"
+              v-if="form.personPhoto"
+              style="width: 40px; height: 40px; border-radius: 5%;"
+              :src="imgSrc(form)"
               fit="cover">
               <!-- 加载失败时显示默认图 -->
               <div slot="error" class="image-slot">
@@ -263,18 +266,26 @@
 
 <script>
 import {
-  listLanya_internal_employee,
-  getLanya_internal_employee,
-  delLanya_internal_employee,
-  addLanya_internal_employee,
-  updateLanya_internal_employee
-} from "@/api/system/lanya_internal_employee"
-import {list_dict_findData, machine_list_page} from "@/api/lanya_transfer"
+  list_dict_findData,
+  machine_list_page,
+  machineConfigRelationDetailByPerson,
+  machineConfigRelationEditByPerson,
+  listPersonStaffPage,
+  personStaffUpdateStaff,
+  personStaffAddStaff,
+  personStaffDelStaff
+} from "@/api/lanya_transfer"
 
 export default {
   name: "Lanya_internal_employee",
   data() {
     return {
+      imgPrefix: process.env.VUE_APP_BASE_API,
+      uploadImageUrl: process.env.VUE_APP_BASE_API + '/system/lanya-transfer/files/upload',
+      uploadData: {
+        compress: true,
+        module: 'xrkc'
+      },
       // 遮罩层
       loading: true,
       // 选中数组
@@ -372,13 +383,20 @@ export default {
     this.getList()
   },
   methods: {
+    imgSrc(row) {
+      console.log(process)
+      return `${process.env.VUE_APP_BASE_URL}/system/lanya-transfer/files/image?path=${
+        encodeURIComponent(row.personPhoto)
+      }`;
+    },
     /** 查询内部员工列表 */
     getList() {
       this.loading = true
       list_dict_findData().then(response => {
         this.lanyaDict = response.data
-        listLanya_internal_employee(this.queryParams).then(response => {
-          this.lanya_internal_employeeList = response.rows
+        listPersonStaffPage(this.queryParams).then(response => {
+          this.lanya_internal_employeeList = response.data
+          console.log(this.lanya_internal_employeeList)
           this.total = response.total
           this.loading = false
         })
@@ -387,8 +405,7 @@ export default {
     // 取消按钮
     cancel() {
       this.openDialog = false
-      this.openCard = false
-      this.openMachine = false
+      this.openBind = false
       this.reset()
     },
     // 表单重置
@@ -472,26 +489,42 @@ export default {
     /** 新增按钮操作 */
     handleAdd() {
       this.reset()
+      this.form = {}
       this.openDialog = true
       this.title = "添加内部员工"
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset()
-      const personId = row.personId || this.ids
-      getLanya_internal_employee(personId).then(response => {
-        this.form = response.data
-        this.openDialog = true
-        this.title = "修改内部员工"
-      })
+      this.form = row
+      this.openDialog = true
+      this.title = "修改内部员工"
     },
     /** 绑定卡 */
-    handleBind(row) {
-      this.reset()
-      machine_list_page().then(response => {
-        this.lanyaMachineListPage = response.data
-        this.openBind = true
-        this.title = "绑定定位卡"
+    handleBindDialog(row) {
+      console.log(row)
+      // this.reset()
+      machineConfigRelationDetailByPerson({sourceId: row.personId + ""}).then(resDetail => {
+        this.bindForm = resDetail.data
+        this.bindForm.cardModelMulti = this.bindForm.cardModelMulti.split(",")
+        this.bindForm.sourceId = row.personId
+        machine_list_page().then(response => {
+          this.lanyaMachineListPage = response.data
+          this.openBind = true
+          this.title = "绑定定位卡"
+        })
+      })
+
+    },
+    /** 绑定发卡机 */
+    handleMachineConfigRelationEditByPerson(row) {
+      let data = this.bindForm
+      data.cardModelMulti = data.cardModelMulti.join(",")
+      console.log(data)
+      machineConfigRelationEditByPerson(data).then(response => {
+        this.$modal.msgSuccess(response.data.msg)
+        this.openBind = false
+        this.getList()
       })
     },
     /** 提交按钮 */
@@ -499,13 +532,13 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.personId != null) {
-            updateLanya_internal_employee(this.form).then(response => {
+            personStaffUpdateStaff(this.form).then(response => {
               this.$modal.msgSuccess("修改成功")
               this.openDialog = false
               this.getList()
             })
           } else {
-            addLanya_internal_employee(this.form).then(response => {
+            personStaffAddStaff(this.form).then(response => {
               this.$modal.msgSuccess("新增成功")
               this.openDialog = false
               this.getList()
@@ -518,7 +551,7 @@ export default {
     handleDelete(row) {
       const personIds = row.personId || this.ids
       this.$modal.confirm('是否确认删除内部员工编号为"' + personIds + '"的数据项？').then(function () {
-        return delLanya_internal_employee(personIds)
+        return personStaffDelStaff({personIds: [row.personId]})
       }).then(() => {
         this.getList()
         this.$modal.msgSuccess("删除成功")
@@ -530,6 +563,16 @@ export default {
       this.download('system/lanya_internal_employee/export', {
         ...this.queryParams
       }, `lanya_internal_employee_${new Date().getTime()}.xlsx`)
+    },
+    handleUploadImage(res, file) {
+      // res 就是后端返回的 JSON
+      console.log(res)
+      if (res.code === 200) {
+        this.form.personPhoto = res.data[0].filePath
+        this.$modal.msgSuccess('上传成功')
+      } else {
+        this.$modal.msgError(res.msg || '上传失败')
+      }
     }
   }
 }

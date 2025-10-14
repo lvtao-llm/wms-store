@@ -8,11 +8,102 @@ export function list_dict_findData(query) {
     params: query
   })
 }
+
 // 卡机列表
 export function machine_list_page(query) {
   return request({
     url: '/system/lanya-transfer/machine/listPage',
     method: 'get',
     params: query
+  })
+}
+
+// 获取绑定卡机详细
+export function machineConfigRelationDetailByPerson(data) {
+  return request({
+    url: '/system/lanya-transfer/machine/config-relation/detail-by-person',
+    method: 'post',
+    data: data
+  })
+}
+
+// 绑定卡机
+export function machineConfigRelationEditByPerson(data) {
+  return request({
+    url: '/system/lanya-transfer/machine/config-relation/edit-by-person',
+    method: 'post',
+    data: data
+  })
+}
+
+// 获取内部员工
+export function listPersonStaffPage(data) {
+  return request({
+    url: '/system/lanya-transfer/person/staff/listPage',
+    method: 'post',
+    data: data
+  })
+}
+
+// 新增内部员工
+export function personStaffAddStaff(data) {
+  return request({
+    url: '/system/lanya-transfer/person/staff/addStaff',
+    method: 'post',
+    data: data
+  })
+}
+
+// 修改内部员工
+export function personStaffUpdateStaff(data) {
+  return request({
+    url: '/system/lanya-transfer/person/staff/updateStaff',
+    method: 'post',
+    data: data
+  })
+}
+
+// 删除内部员工
+export function personStaffDelStaff(data) {
+  return request({
+    url: '/system/lanya-transfer/person/staff/delStaff',
+    method: 'post',
+    data: data
+  })
+}
+
+// 获取定位卡列表
+export function deviceCardListPage(data) {
+  return request({
+    url: '/system/lanya-transfer/device/card/listPage',
+    method: 'post',
+    data: data
+  })
+}
+
+// 新增定位卡
+export function deviceCardAddCard(data) {
+  return request({
+    url: '/system/lanya-transfer/device/card/addCard',
+    method: 'post',
+    data: data
+  })
+}
+
+// 修改定位卡
+export function deviceCardUpdateCard(data) {
+  return request({
+    url: '/system/lanya-transfer/device/card/updateCard',
+    method: 'post',
+    data: data
+  })
+}
+
+// 删除定位卡
+export function deviceCardDelCard(data) {
+  return request({
+    url: '/system/lanya-transfer/device/card/delCard',
+    method: 'post',
+    data: data
   })
 }
