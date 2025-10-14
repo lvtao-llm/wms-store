@@ -171,7 +171,7 @@ export const dynamicRoutes = [
       {
         path: 'index',
         component: () => import('@/views/lanya_core_area/index'),
-        name: 'Area',
+        name: '区域管理',
         meta: {title: '区域管理'}
       }
     ]
@@ -185,7 +185,7 @@ export const dynamicRoutes = [
       {
         path: 'index',
         component: () => import('@/views/person/index'),
-        name: 'Area',
+        name: '员工档案',
         meta: {title: '员工档案'}
       }
     ]
@@ -199,7 +199,7 @@ export const dynamicRoutes = [
       {
         path: 'index',
         component: () => import('@/views/lanya_vehicleInfo_visitor/index'),
-        name: 'Area',
+        name: '访客车辆',
         meta: {title: '访客车辆'}
       }
     ]
@@ -213,7 +213,7 @@ export const dynamicRoutes = [
       {
         path: 'index',
         component: () => import('@/views/gatepass/index'),
-        name: 'Area',
+        name: '车辆预约',
         meta: {title: '车辆预约'}
       }
     ]
@@ -227,7 +227,7 @@ export const dynamicRoutes = [
       {
         path: 'index',
         component: () => import('@/views/route_set/index'),
-        name: 'Area',
+        name: '路线规划',
         meta: {title: '路线规划'}
       }
     ]
@@ -241,7 +241,7 @@ export const dynamicRoutes = [
       {
         path: 'index',
         component: () => import('@/views/lanya_core_visitor/index'),
-        name: 'Area',
+        name: '访客信息',
         meta: {title: '访客信息'}
       }
     ]
@@ -255,20 +255,20 @@ export const dynamicRoutes = [
       {
         path: 'core',
         component: () => import('@/views/lanya_core_alarm/index'),
-        name: 'Area',
-        meta: {title: '报警记录'}
+        name: '核心报警记录',
+        meta: {title: '核心报警记录'}
       },
       {
         path: 'vehicle',
         component: () => import('@/views/lanya_vehicle_alarm/index'),
-        name: 'Area',
-        meta: {title: '报警记录'}
+        name: '车辆报警记录',
+        meta: {title: '车辆报警记录'}
       },
       {
         path: 'people',
         component: () => import('@/views/lanya_core_alarm_people/index'),
-        name: 'Area',
-        meta: {title: '报警记录'}
+        name: '人员报警记录',
+        meta: {title: '人员报警记录'}
       }
     ]
   },
@@ -281,13 +281,13 @@ export const dynamicRoutes = [
       {
         path: 'people',
         component: () => import('@/views/lanya_device_card_sender_log/index'),
-        name: 'Area',
+        name: '人员发卡记录',
         meta: {title: '人员发卡记录'}
       },
       {
         path: 'vehicle',
         component: () => import('@/views/lanya_device_card_sender_vehicle_log/index'),
-        name: 'Area',
+        name: '车辆发卡记录',
         meta: {title: '车辆发卡记录'}
       }
     ]
@@ -301,7 +301,7 @@ export const dynamicRoutes = [
       {
         path: 'index',
         component: () => import('@/views/material/index'),
-        name: 'Area',
+        name: '物料档案',
         meta: {title: '物料档案'}
       }
     ]
@@ -315,7 +315,7 @@ export const dynamicRoutes = [
       {
         path: 'index',
         component: () => import('@/views/lanya_position_history/index'),
-        name: 'Area',
+        name: '车辆轨迹',
         meta: {title: '轨迹'}
       }
     ]
@@ -329,7 +329,7 @@ export const dynamicRoutes = [
       {
         path: 'index',
         component: () => import('@/views/lanya_core_person/index'),
-        name: 'Area',
+        name: '人员轨迹',
         meta: {title: '轨迹'}
       }
     ]
@@ -343,13 +343,13 @@ export const dynamicRoutes = [
       {
         path: 'card-manage',
         component: () => import('@/views/lanya_device_card/index'),
-        name: 'Area',
+        name: '定位卡管理',
         meta: {title: '定位卡管理'}
       },
       {
         path: 'machine-manage',
         component: () => import('@/views/lanya_device_machine/index'),
-        name: 'Area',
+        name: '发卡机管理',
         meta: {title: '发卡机管理'}
       }
     ]
@@ -363,14 +363,14 @@ export const dynamicRoutes = [
       {
         path: 'internal-employee',
         component: () => import('@/views/lanya_internal_employee/index'),
-        name: 'Area',
+        name: '内部员工',
         meta: {title: '内部员工'}
       },
       {
         path: 'person-in-out-record',
         component: () => import('@/views/lanya_person_in_out_record/index'),
-        name: 'Area',
-        meta: {title: '内部员工'}
+        name: '人员进出记录',
+        meta: {title: '人员进出记录'}
       }
     ]
   }
