@@ -365,6 +365,12 @@ export const dynamicRoutes = [
         component: () => import('@/views/lanya_internal_employee/index'),
         name: 'Area',
         meta: {title: '内部员工'}
+      },
+      {
+        path: 'person-in-out-record',
+        component: () => import('@/views/lanya_person_in_out_record/index'),
+        name: 'Area',
+        meta: {title: '内部员工'}
       }
     ]
   }

@@ -205,31 +205,49 @@ public class LanyaTransferController extends BaseController {
     @PostMapping("/cardSender/cardSenderLog")
     public Object cardSenderLog(@RequestBody JSONObject body) throws JsonProcessingException {
         HashMap<?, ?> res = (HashMap<?, ?>) thirdPartyAuth.callThirdParty("/monitor-service/cardSender/cardSenderLog", HttpMethod.POST, body);
-        ArrayList<?> data = (ArrayList<?>) res.get("data");
+        ArrayList<HashMap<String, Object>> data = (ArrayList<HashMap<String, Object>>) res.get("data");
 
-        HashMap<String, Object> sending = new HashMap<>();
+        HashMap<Integer, HashMap<String, Object>> sending = new HashMap<>();
         List<HashMap<String, Object>> complete = new ArrayList<>();
         for (int i = data.size() - 1; i >= 0; i--) {
-            HashMap<String, Object> obj = (HashMap<String, Object>) data.get(i);
+            HashMap<String, Object> obj = data.get(i);
 
             // 过滤掉没有人员关联和发卡中的记录
-            if (obj.get("personId") == null || obj.get("realName") == null || obj.get("cardSenderStatus").equals("3")) {
+            if (obj.get("personId") == null || obj.get("realName") == null || ((Integer) obj.get("cardSenderType")) == 3) {
                 continue;
             }
 
-            if (obj.get("cardSenderType").equals("0")) {
+            if (((Integer) obj.get("cardSenderType")) == 0) {
                 // cardSenderType 0:还卡记录
-                if (sending.containsKey((String) obj.get("cardId"))) {
-                    HashMap<String, Object> send = (HashMap<String, Object>) sending.remove(obj.get("cardId"));
-                    send.put("return_card_time", obj.get("createTime"));
-                    complete.add(send);
-                }else{
-                    obj.put("return_card_time", obj.get("createTime"));
+                if (sending.containsKey((Integer) obj.get("cardId"))) {
+                    HashMap<String, Object> send = sending.remove(obj.get("cardId"));
+                    send.put("returnCardTime", obj.get("createTime"));
+                    send.put("returnCardId", obj.get("id"));
+                    complete.add(0, send);
+                } else {
+                    obj.put("returnCardTime", obj.get("createTime"));
+                    obj.put("return_card_id", obj.get("id"));
+                    obj.put("sendCardTime", null);
+                    obj.put("sendCardId", null);
+                    complete.add(0, obj);
+                }
+            }
 
+            if (((Integer) obj.get("cardSenderType")) == 1) {
+                // cardSenderType 1:发卡记录
+                if (sending.containsKey((Integer) obj.get("cardId"))) {
+                    // 如果有发卡记录有可能是卡机那头的错误（不好理解卡机的记录）导致的重复发卡
+                    continue;
+                } else {
+                    obj.put("returnCardTime", null);
+                    obj.put("returnCardId", null);
+                    obj.put("sendCardTime", obj.get("createTime"));
+                    obj.put("sendCardId", obj.get("id"));
+                    sending.put((Integer) obj.get("cardId"), obj);
                 }
             }
         }
-        return data;
+        return AjaxResult.success(complete);
     }
 
     /**

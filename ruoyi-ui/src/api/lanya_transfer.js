@@ -107,3 +107,11 @@ export function deviceCardDelCard(data) {
     data: data
   })
 }
+
+export function personInOutRecordPage(data) {
+  return request({
+    url: '/system/lanya-transfer/cardSender/cardSenderLog',
+    method: 'post',
+    data: data
+  })
+}
