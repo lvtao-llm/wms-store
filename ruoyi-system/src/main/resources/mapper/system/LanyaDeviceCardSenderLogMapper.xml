@@ -32,6 +32,35 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="notifyStatus"    column="notify_status"    />
     </resultMap>
 
+    <resultMap type="LanyaDeviceCardSenderLog" id="LanyaDeviceCardSenderLogWithPersonResult">
+        <result property="id"    column="id"    />
+        <result property="deviceSn"    column="device_sn"    />
+        <result property="deviceName"    column="device_name"    />
+        <result property="deviceNum"    column="device_num"    />
+        <result property="cardId"    column="card_id"    />
+        <result property="personPhoto"    column="person_photo"    />
+        <result property="commandTime"    column="command_time"    />
+        <result property="cardSenderType"    column="card_sender_type"    />
+        <result property="result"    column="result"    />
+        <result property="remark"    column="remark"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="personId"    column="person_id"    />
+        <result property="realName"    column="real_name"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="deptName"    column="dept_name"    />
+        <result property="jobNumber"    column="job_number"    />
+        <result property="idNumber"    column="id_number"    />
+        <result property="personIc"    column="person_ic"    />
+        <result property="deviceAims"    column="device_aims"    />
+        <result property="identifyType"    column="identify_type"    />
+        <result property="rentType"    column="rent_type"    />
+        <result property="identifyTime"    column="identify_time"    />
+        <result property="closedTime"    column="closed_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="notifyStatus"    column="notify_status"    />
+        <result property="personTypeName"    column="person_type_name"    />
+    </resultMap>
+
     <sql id="selectLanyaDeviceCardSenderLogVo">
         select id, device_sn, device_name, device_num, card_id, person_photo, command_time, card_sender_type, result, remark, create_time, person_id, real_name, dept_id, dept_name, job_number, id_number, person_ic, device_aims, identify_type, rent_type, identify_time, closed_time, update_time, notify_status from device_card_sender_log
     </sql>
@@ -66,6 +95,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectLanyaDeviceCardSenderLogById" parameterType="Long" resultMap="LanyaDeviceCardSenderLogResult">
         <include refid="selectLanyaDeviceCardSenderLogVo"/>
         where id = #{id}
+    </select>
+
+    <select id="selectLanyaDeviceCardSenderLogListByNameCardType" parameterType="String" resultMap="LanyaDeviceCardSenderLogWithPersonResult">
+        select log.*, dict.dict_label 'person_type_name' from device_card_sender_log log
+        left join core_person person on log.person_id = person.person_id
+        left join system_dict dict on dict.dict_type = 'person_type' and dict.dict_value = person.person_type
+        where log.card_sender_type = 1 and (log.card_id LIKE CONCAT('%', #{param}, '%') or log.real_name LIKE CONCAT('%', #{param}, '%'))
     </select>
 
     <insert id="insertLanyaDeviceCardSenderLog" parameterType="LanyaDeviceCardSenderLog">

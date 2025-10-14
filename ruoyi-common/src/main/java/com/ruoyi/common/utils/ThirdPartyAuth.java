@@ -69,6 +69,8 @@ public class ThirdPartyAuth {
     public Object callThirdParty(String path, HttpMethod method, Map<String, Object> body) throws JsonProcessingException {
         String url = baseUrl + path;
 
+        System.out.println(url);
+
         // 4. 发 POST
         Object object = exchange(url, method, entity(body, MediaType.APPLICATION_JSON));
 

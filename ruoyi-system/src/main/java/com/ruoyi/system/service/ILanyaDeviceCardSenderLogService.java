@@ -58,4 +58,7 @@ public interface ILanyaDeviceCardSenderLogService
      * @return 结果
      */
     public int deleteLanyaDeviceCardSenderLogById(Long id);
+
+    List<LanyaDeviceCardSenderLog> selectLanyaDeviceCardSenderLogListByNameCardType(String param);
 }
+

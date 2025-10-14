@@ -58,4 +58,6 @@ public interface LanyaDeviceCardSenderLogMapper
      * @return 结果
      */
     public int deleteLanyaDeviceCardSenderLogByIds(Long[] ids);
+
+    List<LanyaDeviceCardSenderLog> selectLanyaDeviceCardSenderLogListByNameCardType(String param);
 }

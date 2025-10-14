@@ -9,6 +9,14 @@ export function listLanya_device_card_sender_log(query) {
   })
 }
 
+export function listLanya_device_card_sender_log_by_name_card_type(query) {
+  return request({
+    url: '/system/lanya_device_card_sender_log/list-by-name-card-type',
+    method: 'get',
+    params: query
+  })
+}
+
 // 查询人脸发卡记录详细
 export function getLanya_device_card_sender_log(id) {
   return request({
@@ -42,3 +50,5 @@ export function delLanya_device_card_sender_log(id) {
     method: 'delete'
   })
 }
+
+

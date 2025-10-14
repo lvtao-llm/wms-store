@@ -51,6 +51,18 @@ public class LanyaDeviceCardSenderLogController extends BaseController
     }
 
     /**
+     * 查询人脸发卡记录列表
+     */
+    @PreAuthorize("@ss.hasPermi('system:lanya_device_card_sender_log:list')")
+    @GetMapping("/list-by-name-card-type")
+    public TableDataInfo listByNameCardType(String param)
+    {
+        startPage();
+        List<LanyaDeviceCardSenderLog> list = lanyaDeviceCardSenderLogService.selectLanyaDeviceCardSenderLogListByNameCardType(param);
+        return getDataTable(list);
+    }
+
+    /**
      * 导出人脸发卡记录列表
      */
     @PreAuthorize("@ss.hasPermi('system:lanya_device_card_sender_log:export')")

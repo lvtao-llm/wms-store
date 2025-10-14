@@ -6,7 +6,13 @@
         <el-form-item class="width25">
           <el-select
             popper-class="popperClass"
+            placeholder="请输入关键词搜索用户"
+            filterable
+            remote
+            reserve-keyword
             :popper-append-to-body="false"
+            :remote-method="remoteSearchUser"
+            :loading="userLoading"
             class="searchSelect"
             v-model="queryParams.status"
             clearable
@@ -14,9 +20,9 @@
           >
             <el-option
               v-for="dict in selectData"
-              :key="dict.value"
+              :key="dict.id"
               :label="dict.label"
-              :value="dict.value"
+              :value="dict.id"
             />
           </el-select>
         </el-form-item>
@@ -154,7 +160,7 @@ import {
   showPresetLinesData,
   // showAnimatedLineData,
 } from "./data";
-import { resData } from "./data1";
+import {resData} from "./data1";
 import {
   DynamicCanvasLayer,
   simplifyPath,
@@ -162,6 +168,8 @@ import {
   calculateSegmentAngle,
   createSvgIcon,
 } from "./utils";
+
+import {listLanya_device_card_sender_log_by_name_card_type} from '@/api/system/lanya_device_card_sender_log'
 
 export default {
   name: "MapIndex",
@@ -174,9 +182,9 @@ export default {
       // 响应式数据
       queryParams: {},
       selectData: [
-        { label: "data1", value: "1" },
-        { label: "data2", value: "2" },
-        { label: "data3", value: "3" },
+        {label: "data1", value: "1"},
+        {label: "data2", value: "2"},
+        {label: "data3", value: "3"},
       ],
       dateRange: [],
       selectedMultiplier: 10,
@@ -393,7 +401,7 @@ export default {
       const bPoints = optimizedData.map(
         (item) => new window.BMap.Point(item.longitude, item.latitude)
       );
-      this.map.setViewport(bPoints, { padding: [50, 50, 50, 50] });
+      this.map.setViewport(bPoints, {padding: [50, 50, 50, 50]});
 
       // 设置时间范围
       this.time_range = [
@@ -537,15 +545,15 @@ export default {
 
             const icon = createSvgIcon(
               svgStr,
-              { width: size, height: size },
-              { width: size / 2, height: size / 2 }
+              {width: size, height: size},
+              {width: size / 2, height: size / 2}
             );
             return icon;
           };
 
           const icon = createPointIcon(isStart, isEnd);
 
-          const marker = new BMap.Marker(point, { icon });
+          const marker = new BMap.Marker(point, {icon});
           this.map.addOverlay(marker);
           this.presetOverlays.items.push(marker);
         }
@@ -605,9 +613,9 @@ export default {
           } else {
             const currentPos = new BMap.Point(
               arrow.start.lng +
-                (arrow.end.lng - arrow.start.lng) * arrow.progress,
+              (arrow.end.lng - arrow.start.lng) * arrow.progress,
               arrow.start.lat +
-                (arrow.end.lat - arrow.start.lat) * arrow.progress
+              (arrow.end.lat - arrow.start.lat) * arrow.progress
             );
             arrow.marker.setPosition(currentPos);
           }
@@ -637,10 +645,10 @@ export default {
 
       const icon = createSvgIcon(
         svgStr,
-        { width: 8, height: 8 },
-        { width: 4, height: 4 }
+        {width: 8, height: 8},
+        {width: 4, height: 4}
       );
-      return new BMap.Marker(point, { icon });
+      return new BMap.Marker(point, {icon});
     },
 
     // 使用Canvas渲染静态路径
@@ -709,10 +717,10 @@ export default {
 
       const icon = createSvgIcon(
         svgStr,
-        { width: 24, height: 24 },
-        { width: 12, height: 12 }
+        {width: 24, height: 24},
+        {width: 12, height: 12}
       );
-      return new BMap.Marker(new BMap.Point(lng, lat), { icon });
+      return new BMap.Marker(new BMap.Point(lng, lat), {icon});
     },
 
     // 初始化箭头动画
@@ -754,9 +762,9 @@ export default {
           } else {
             const currentPos = new BMap.Point(
               arrow.start.lng +
-                (arrow.end.lng - arrow.start.lng) * arrow.progress,
+              (arrow.end.lng - arrow.start.lng) * arrow.progress,
               arrow.start.lat +
-                (arrow.end.lat - arrow.start.lat) * arrow.progress
+              (arrow.end.lat - arrow.start.lat) * arrow.progress
             );
             arrow.marker.setPosition(currentPos);
           }
@@ -786,10 +794,10 @@ export default {
 
       const icon = createSvgIcon(
         svgStr,
-        { width: 12, height: 12 },
-        { width: 6, height: 6 }
+        {width: 12, height: 12},
+        {width: 6, height: 6}
       );
-      return new BMap.Marker(point, { icon });
+      return new BMap.Marker(point, {icon});
     },
 
     // 检查方向是否变化
@@ -876,7 +884,7 @@ export default {
           return new BMap.Icon(
             "data:image/svg+xml;charset=utf-8," + encodedSvg,
             new BMap.Size(24, 24),
-            { anchor: new BMap.Size(12, 12) }
+            {anchor: new BMap.Size(12, 12)}
           );
         };
         // 计算位置和角度
@@ -905,7 +913,7 @@ export default {
         );
 
         if (this.presetOverlays.isTracking) {
-          this.map.panTo(currentPos, { noAnimation: true });
+          this.map.panTo(currentPos, {noAnimation: true});
         }
       };
 
@@ -1113,7 +1121,7 @@ export default {
 
     addNewMarker(point) {
       const BMap = window.BMap;
-      const marker = new BMap.Marker(point, { enableDragging: true });
+      const marker = new BMap.Marker(point, {enableDragging: true});
 
       const labelNumber = this.points.length + 1;
       const label = new BMap.Label(labelNumber.toString(), {
@@ -1130,7 +1138,7 @@ export default {
         borderRadius: "10px",
       });
 
-      this.points.push({ lat: point.lat, lng: point.lng });
+      this.points.push({lat: point.lat, lng: point.lng});
       marker.setLabel(label);
       this.map.addOverlay(marker);
       this.markers.push(marker);
@@ -1138,7 +1146,7 @@ export default {
       marker.addEventListener("dragend", (e) => {
         const index = this.markers.indexOf(marker);
         if (index !== -1) {
-          this.points[index] = { lat: e.point.lat, lng: e.point.lng };
+          this.points[index] = {lat: e.point.lat, lng: e.point.lng};
         }
         this.updatePolyline();
       });
@@ -1171,7 +1179,11 @@ export default {
 
       this.map.addOverlay(this.polyline);
     },
-
+    remoteSearchUser(a, b, c) {
+      listLanya_device_card_sender_log_by_name_card_type({param: a}).then(response => {
+        this.selectData = response.rows.forEach(item => item.label = item.realName + '-' + item.cardId + '-' + item.personTypeName);
+      })
+    },
     // 清除所有标记
     clearAll() {
       this.map.clearOverlays();
@@ -1197,6 +1209,7 @@ export default {
   width: 100%;
   height: 100%;
 }
+
 #porBox:hover #hoverPor {
   display: block;
 }
@@ -1204,14 +1217,17 @@ export default {
 #hoverPor {
   display: none;
 }
+
 #hoverPor2 {
   display: block;
 }
+
 #porBox {
   width: 36%;
 
   padding-left: 18%;
   position: relative;
+
   #hoverPor {
     position: absolute;
     left: 0;
@@ -1220,6 +1236,7 @@ export default {
     width: 180px;
     background-color: rgba(27, 26, 26, 0.2);
     border-radius: 10px;
+
     .porItem {
       vertical-align: middle;
       color: #fff;
@@ -1232,6 +1249,7 @@ export default {
       border-radius: 10px;
     }
   }
+
   #hoverPor2 {
     position: absolute;
     left: 180px;
@@ -1244,6 +1262,7 @@ export default {
     border: 1px solid #409eff;
   }
 }
+
 .porItem .el-icon {
   vertical-align: middle; /* 图标垂直居中 */
   margin-right: 5px; /* 图标右侧间距 */
@@ -1252,6 +1271,7 @@ export default {
 .width25 {
   width: 25%;
 }
+
 .width33 {
   width: 30%;
 }
@@ -1268,11 +1288,13 @@ export default {
   height: 50px;
   border-radius: 30px;
   background-color: black;
+
   .form {
     width: 100%;
     margin: 9px 0 0 9px;
   }
 }
+
 .timeline {
   position: absolute;
   bottom: 1px;
@@ -1281,6 +1303,7 @@ export default {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
+
   .timeAn2 {
     position: absolute;
     left: 10px;
@@ -1288,6 +1311,7 @@ export default {
     color: #fff;
     font-size: 20px;
   }
+
   .timeAn {
     position: absolute;
     left: 60px;
@@ -1296,6 +1320,7 @@ export default {
     font-size: 20px;
   }
 }
+
 // .searchIcon {
 //   color: #fff;
 //   width: 25px;
@@ -1305,20 +1330,25 @@ export default {
   vertical-align: top;
   // height: 25px;
 }
+
 .searchIconBox .searchIcon {
   padding-top: 5px;
 }
+
 ::v-deep .el-date-editor,
 .el-range-editor,
 .el-input__inner,
 .el-date-editor--datetimerange,
 .el-range-editor--medium {
   width: 150%;
+
   .el-range-input {
     background-color: black;
   }
+
   background-color: black;
 }
+
 ::v-deep .el-input__icon,
 .el-range__icon,
 .el-icon-time .el-range-input {
@@ -1330,6 +1360,7 @@ export default {
 .el-icon-arrow-up {
   display: none;
 }
+
 ::v-deep.el-range-input {
   background-color: black;
 }
@@ -1352,6 +1383,7 @@ export default {
   background-color: #f5f5f5;
   transform: translateY(-1px);
 }
+
 ::v-deep.searchSelect .el-input__inner {
   width: 100%;
   border-radius: 30px;
@@ -1373,15 +1405,18 @@ export default {
   opacity: 0.92;
   color: #fff;
 }
+
 ::v-deep.el-popper.is-light {
   background: black;
   border: 1px solid #273f70;
 }
+
 ::v-deep.controls .el-select-dropdown__item.hover {
   background: transparent;
   border: none;
   color: #04faa0;
 }
+
 ::v-deep.controls .el-select-dropdown__item {
   background: transparent;
   border: none;
@@ -1393,13 +1428,16 @@ export default {
   background: black;
   right: 0;
 }
+
 ::v-deep.controls .el-select__selected-item,
 ::v-deep.controls .el-select__placeholder {
   color: #fff !important;
   font-weight: 400;
 }
+
 ::v-deep.el-range-input {
   color: #fff !important;
+
   &::placeholder {
     color: #fff;
   }

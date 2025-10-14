@@ -81,6 +81,10 @@ public class LanyaDeviceCardSenderLog extends BaseEntity
     @Excel(name = "人员IC号")
     private String personIc;
 
+    /** 人员IC号 */
+    @Excel(name = "人员类型名称")
+    private String personTypeName;
+
     /** 设备主板 */
     @Excel(name = "设备主板")
     private Integer deviceAims;
@@ -356,5 +360,13 @@ public class LanyaDeviceCardSenderLog extends BaseEntity
             .append("updateTime", getUpdateTime())
             .append("notifyStatus", getNotifyStatus())
             .toString();
+    }
+
+    public String getPersonTypeName() {
+        return personTypeName;
+    }
+
+    public void setPersonTypeName(String personTypeName) {
+        this.personTypeName = personTypeName;
     }
 }
