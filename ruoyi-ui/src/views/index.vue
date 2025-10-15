@@ -3,118 +3,128 @@
     <div id="container"></div>
     <div class="controls">
       <el-form class="form" :model="queryParams" ref="queryRef" :inline="true">
-        <el-form-item class="width25">
-          <el-select
-            popper-class="popperClass"
-            placeholder="请输入关键词搜索用户"
-            filterable
-            remote
-            reserve-keyword
-            :popper-append-to-body="false"
-            :remote-method="remoteSearchUser"
-            class="searchSelect"
-            v-model="queryParams.status"
-            clearable
-            style=""
-          >
-            <el-option
-              v-for="dict in selectData"
-              :key="dict.id"
-              :label="dict.label"
-              :value="dict"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item class="width33">
-          <el-date-picker
-            value-format="yyyy-MM-dd HH:mm:ss"
-            v-model="dateRange"
-            popper-class="customDatePicker"
-            type="datetimerange"
-            range-separator="To"
-            start-placeholder="开始时间"
-            end-placeholder="结束时间"
-          />
-        </el-form-item>
-        <el-form-item class="width33">
-          <el-button @click="handleSelectChange">查询</el-button>
-        </el-form-item>
-        <el-form-item id="porBox">
-          <span class="searchIconBox" style="color: #fff; cursor: pointer">
-            <i
-              class="el-icon-setting searchIcon"
-              style="vertical-align: top; font-size: 20px"
-            ></i>
-            历史轨迹播放设置</span
-          >
+        <el-row>
+          <el-col :span="6">
+            <el-form-item>
+              <el-select
+                popper-class="popperClass"
+                placeholder="请输入关键词搜索用户"
+                filterable
+                remote
+                @change="handleSelectChange"
+                reserve-keyword
+                :popper-append-to-body="false"
+                :remote-method="remoteSearchUser"
+                class="searchSelect"
+                v-model="queryParams.status"
+                clearable
+                style=""
+              >
+                <el-option
+                  v-for="dict in selectData"
+                  :key="dict.id"
+                  :label="dict.label"
+                  :value="dict"
+                />
+              </el-select> </el-form-item
+          ></el-col>
+          <el-col :span="12">
+            <el-form-item>
+              <el-date-picker
+                @change="handleSelectChange"
+                value-format="yyyy-MM-dd HH:mm:ss"
+                v-model="dateRange"
+                popper-class="customDatePicker"
+                type="datetimerange"
+                range-separator="To"
+                start-placeholder="开始时间"
+                end-placeholder="结束时间"
+              /> </el-form-item
+          ></el-col>
+          <!-- <el-col :span="2">
+            <el-button class="queryBtn" @click="handleSelectChange"
+              >查询</el-button
+            >
+          </el-col> -->
+          <el-col :span="6">
+            <el-form-item id="porBox">
+              <span class="searchIconBox" style="color: #fff; cursor: pointer">
+                <i
+                  class="el-icon-setting searchIcon"
+                  style="vertical-align: top; font-size: 20px"
+                ></i>
+                历史轨迹播放设置</span
+              >
 
-          <div id="hoverPor">
-            <div class="porItem" @click="savePoints">
-              <i class="el-icon-upload" style="font-size: 20px"></i>
-              保存当前标记点
-            </div>
-            <div class="porItem" @click="clearAll">
-              <i class="el-icon-delete" style="font-size: 20px"></i>
-              清除全部标记
-            </div>
-            <div class="porItem" @click="showPresetPoints">
-              <i
-                class="el-icon-success"
-                style="font-size: 20px"
-                v-if="isShowD"
-              ></i>
-              <i
-                class="el-icon-circle-close"
-                style="font-size: 20px"
-                v-else
-              ></i>
-              加载预设点
-            </div>
-            <div class="porItem" @click="showPresetLines">
-              <i
-                class="el-icon-success"
-                style="font-size: 20px"
-                v-if="isShowX"
-              ></i>
-              <i
-                class="el-icon-circle-close"
-                style="font-size: 20px"
-                v-else
-              ></i>
-              加载预设线
-            </div>
-            <div class="porItem" @click="showAnimatedLine">
-              <i
-                class="el-icon-success"
-                style="font-size: 20px"
-                v-if="isShowQ"
-              ></i>
-              <i
-                class="el-icon-circle-close"
-                style="font-size: 20px"
-                v-else
-              ></i>
-              起止
-            </div>
-            <div v-if="isShowQ" class="porItem" @click="toggleTrack">
-              <i
-                class="el-icon-success"
-                style="font-size: 20px"
-                v-if="isToggle"
-              ></i>
-              <i
-                class="el-icon-circle-close"
-                style="font-size: 20px"
-                v-else
-              ></i>
-              视角跟踪
-            </div>
-          </div>
-          <div v-if="isShowQ" id="hoverPor2">
-            <div>当前时间:{{ inDate }}</div>
-            <div>停留时间:</div>
-          </div>
-        </el-form-item>
+              <div id="hoverPor">
+                <div class="porItem" @click="savePoints">
+                  <i class="el-icon-upload" style="font-size: 20px"></i>
+                  保存当前标记点
+                </div>
+                <div class="porItem" @click="clearAll">
+                  <i class="el-icon-delete" style="font-size: 20px"></i>
+                  清除全部标记
+                </div>
+                <div class="porItem" @click="showPresetPoints">
+                  <i
+                    class="el-icon-success"
+                    style="font-size: 20px"
+                    v-if="isShowD"
+                  ></i>
+                  <i
+                    class="el-icon-circle-close"
+                    style="font-size: 20px"
+                    v-else
+                  ></i>
+                  加载预设点
+                </div>
+                <div class="porItem" @click="showPresetLines">
+                  <i
+                    class="el-icon-success"
+                    style="font-size: 20px"
+                    v-if="isShowX"
+                  ></i>
+                  <i
+                    class="el-icon-circle-close"
+                    style="font-size: 20px"
+                    v-else
+                  ></i>
+                  加载预设线
+                </div>
+                <div class="porItem" @click="showAnimatedLine">
+                  <i
+                    class="el-icon-success"
+                    style="font-size: 20px"
+                    v-if="isShowQ"
+                  ></i>
+                  <i
+                    class="el-icon-circle-close"
+                    style="font-size: 20px"
+                    v-else
+                  ></i>
+                  起止
+                </div>
+                <div v-if="isShowQ" class="porItem" @click="toggleTrack">
+                  <i
+                    class="el-icon-success"
+                    style="font-size: 20px"
+                    v-if="isToggle"
+                  ></i>
+                  <i
+                    class="el-icon-circle-close"
+                    style="font-size: 20px"
+                    v-else
+                  ></i>
+                  视角跟踪
+                </div>
+              </div>
+              <div v-if="isShowQ" id="hoverPor2">
+                <div>当前时间:{{ inDate }}</div>
+                <div>停留时间:</div>
+              </div>
+            </el-form-item></el-col
+          >
+        </el-row>
       </el-form>
     </div>
     <div class="timeline">
@@ -154,19 +164,17 @@
 </template>
 
 <script>
-import dayjs from 'dayjs'
+import dayjs from "dayjs";
 import TimeLine from "@/components/TimeLine/timeline-canvas.vue";
 import MultiplierSelector from "@/components/Preset/index";
 // import { resData as animatedLineData } from "../codeApplication/data";
-import {
-  positionHistoryPositionFindPersonHistoryList
-} from "@/api/lanya_transfer";
+import { positionHistoryPositionFindPersonHistoryList } from "@/api/lanya_transfer";
 import {
   showPresetPointsData,
   showPresetLinesData,
   // showAnimatedLineData,
 } from "./data";
-import {resData} from "./data1";
+import { resData } from "./data1";
 import {
   DynamicCanvasLayer,
   simplifyPath,
@@ -175,7 +183,7 @@ import {
   createSvgIcon,
 } from "./utils";
 
-import {listLanya_device_card_sender_log_by_name_card_type} from '@/api/system/lanya_device_card_sender_log'
+import { listLanya_device_card_sender_log_by_name_card_type } from "@/api/system/lanya_device_card_sender_log";
 
 export default {
   name: "MapIndex",
@@ -185,15 +193,16 @@ export default {
   },
   data() {
     const start = new Date();
-    start.setHours(0, 0, 0, 0);          // 当天 00:00:00
+    start.setHours(0, 0, 0, 0); // 当天 00:00:00
     const end = new Date();
     return {
       // 响应式数据
       queryParams: {},
       selectData: [],
+      tableData: [],
       dateRange: [
-        '2025-05-23 00:00:00', // 可换任意格式化函数
-        '2025-05-23 24:00:00'
+        "2025-05-23 00:00:00", // 可换任意格式化函数
+        "2025-05-23 24:00:00",
       ],
       selectedMultiplier: 10,
       isAutoPlay: true,
@@ -271,15 +280,18 @@ export default {
     //预设点
     showPresetPoints() {
       const deepData = !this.isShowD
-        ? JSON.parse(JSON.stringify(showPresetPointsData))
+        ? JSON.parse(JSON.stringify(this.tableData))
         : [];
 
       this.clearPresetOverlays();
 
       if (deepData.length > 0 && !this.isShowD) {
         const allPoints = deepData.flat();
+        console.log(allPoints, 123);
         this.map.setViewport(
-          allPoints.map((coord) => new BMap.Point(coord[0], coord[1]))
+          allPoints.map(
+            (coord) => new BMap.Point(coord.longitude, coord.latitude)
+          )
         );
       }
       setTimeout(() => {
@@ -288,16 +300,13 @@ export default {
       const pointsCanvas = new DynamicCanvasLayer(this.map, (ctx, canvas) => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = "#FF5722";
-
         deepData.forEach((group) => {
-          group.forEach((coord) => {
-            const pixel = this.map.pointToOverlayPixel(
-              new BMap.Point(coord[0], coord[1])
-            );
-            ctx.beginPath();
-            ctx.arc(pixel.x, pixel.y, 4, 0, Math.PI * 2);
-            ctx.fill();
-          });
+          const pixel = this.map.pointToOverlayPixel(
+            new BMap.Point(group.longitude, group.latitude)
+          );
+          ctx.beginPath();
+          ctx.arc(pixel.x, pixel.y, 2, 0, Math.PI * 2);
+          ctx.fill();
         });
       });
 
@@ -314,15 +323,16 @@ export default {
     //预设线
     showPresetLines() {
       const deepData = !this.isShowX
-        ? JSON.parse(JSON.stringify(showPresetLinesData))
+        ? JSON.parse(JSON.stringify(this.tableData))
         : [];
 
       this.clearPresetOverlays();
 
       if (deepData.length > 0 && !this.isShowX) {
-        const allPoints = deepData.flat();
         this.map.setViewport(
-          allPoints.map((coord) => new BMap.Point(coord[0], coord[1]))
+          deepData.map(
+            (coord) => new BMap.Point(coord.longitude, coord.latitude)
+          )
         );
       }
       setTimeout(() => {
@@ -332,38 +342,25 @@ export default {
       const linesCanvas = new DynamicCanvasLayer(this.map, (ctx, canvas) => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        deepData.forEach((group) => {
-          if (group.length < 2) return;
+        if (deepData.length < 2) return;
 
-          // 绘制连线
-          ctx.beginPath();
-          const firstPixel = this.map.pointToOverlayPixel(
-            new BMap.Point(group[0][0], group[0][1])
+        // 绘制连线（顺序连接所有点）
+        ctx.beginPath();
+        const firstPixel = this.map.pointToOverlayPixel(
+          new BMap.Point(deepData[0].longitude, deepData[0].latitude)
+        );
+        ctx.moveTo(firstPixel.x, firstPixel.y);
+
+        for (let i = 1; i < deepData.length; i++) {
+          const pixel = this.map.pointToOverlayPixel(
+            new BMap.Point(deepData[i].longitude, deepData[i].latitude)
           );
-          ctx.moveTo(firstPixel.x, firstPixel.y);
+          ctx.lineTo(pixel.x, pixel.y);
+        }
 
-          for (let i = 1; i < group.length; i++) {
-            const pixel = this.map.pointToOverlayPixel(
-              new BMap.Point(group[i][0], group[i][1])
-            );
-            ctx.lineTo(pixel.x, pixel.y);
-          }
-
-          ctx.strokeStyle = "#2196F3";
-          ctx.lineWidth = 3;
-          ctx.stroke();
-
-          // 绘制点
-          ctx.fillStyle = "#FF5722";
-          group.forEach((coord) => {
-            const pixel = this.map.pointToOverlayPixel(
-              new BMap.Point(coord[0], coord[1])
-            );
-            ctx.beginPath();
-            ctx.arc(pixel.x, pixel.y, 4, 0, Math.PI * 2);
-            ctx.fill();
-          });
-        });
+        ctx.strokeStyle = "#2196F3";
+        ctx.lineWidth = 3;
+        ctx.stroke();
       });
 
       this.presetOverlays.items.push({
@@ -392,7 +389,7 @@ export default {
 
       // 使用预设的动画路线数据，转换为正确的格式
       // const rawData = showAnimatedLineData;
-      let optimizedData = resData.data;
+      let optimizedData = JSON.parse(JSON.stringify(this.tableData));
 
       // 数据预处理 - 如果数据量很大，进行采样
       if (optimizedData.length > 1000) {
@@ -409,7 +406,7 @@ export default {
       const bPoints = optimizedData.map(
         (item) => new window.BMap.Point(item.longitude, item.latitude)
       );
-      this.map.setViewport(bPoints, {padding: [50, 50, 50, 50]});
+      this.map.setViewport(bPoints, { padding: [50, 50, 50, 50] });
 
       // 设置时间范围
       this.time_range = [
@@ -553,15 +550,15 @@ export default {
 
             const icon = createSvgIcon(
               svgStr,
-              {width: size, height: size},
-              {width: size / 2, height: size / 2}
+              { width: size, height: size },
+              { width: size / 2, height: size / 2 }
             );
             return icon;
           };
 
           const icon = createPointIcon(isStart, isEnd);
 
-          const marker = new BMap.Marker(point, {icon});
+          const marker = new BMap.Marker(point, { icon });
           this.map.addOverlay(marker);
           this.presetOverlays.items.push(marker);
         }
@@ -621,9 +618,9 @@ export default {
           } else {
             const currentPos = new BMap.Point(
               arrow.start.lng +
-              (arrow.end.lng - arrow.start.lng) * arrow.progress,
+                (arrow.end.lng - arrow.start.lng) * arrow.progress,
               arrow.start.lat +
-              (arrow.end.lat - arrow.start.lat) * arrow.progress
+                (arrow.end.lat - arrow.start.lat) * arrow.progress
             );
             arrow.marker.setPosition(currentPos);
           }
@@ -653,10 +650,10 @@ export default {
 
       const icon = createSvgIcon(
         svgStr,
-        {width: 8, height: 8},
-        {width: 4, height: 4}
+        { width: 8, height: 8 },
+        { width: 4, height: 4 }
       );
-      return new BMap.Marker(point, {icon});
+      return new BMap.Marker(point, { icon });
     },
 
     // 使用Canvas渲染静态路径
@@ -725,10 +722,10 @@ export default {
 
       const icon = createSvgIcon(
         svgStr,
-        {width: 24, height: 24},
-        {width: 12, height: 12}
+        { width: 24, height: 24 },
+        { width: 12, height: 12 }
       );
-      return new BMap.Marker(new BMap.Point(lng, lat), {icon});
+      return new BMap.Marker(new BMap.Point(lng, lat), { icon });
     },
 
     // 初始化箭头动画
@@ -770,9 +767,9 @@ export default {
           } else {
             const currentPos = new BMap.Point(
               arrow.start.lng +
-              (arrow.end.lng - arrow.start.lng) * arrow.progress,
+                (arrow.end.lng - arrow.start.lng) * arrow.progress,
               arrow.start.lat +
-              (arrow.end.lat - arrow.start.lat) * arrow.progress
+                (arrow.end.lat - arrow.start.lat) * arrow.progress
             );
             arrow.marker.setPosition(currentPos);
           }
@@ -802,10 +799,10 @@ export default {
 
       const icon = createSvgIcon(
         svgStr,
-        {width: 12, height: 12},
-        {width: 6, height: 6}
+        { width: 12, height: 12 },
+        { width: 6, height: 6 }
       );
-      return new BMap.Marker(point, {icon});
+      return new BMap.Marker(point, { icon });
     },
 
     // 检查方向是否变化
@@ -892,7 +889,7 @@ export default {
           return new BMap.Icon(
             "data:image/svg+xml;charset=utf-8," + encodedSvg,
             new BMap.Size(24, 24),
-            {anchor: new BMap.Size(12, 12)}
+            { anchor: new BMap.Size(12, 12) }
           );
         };
         // 计算位置和角度
@@ -921,7 +918,7 @@ export default {
         );
 
         if (this.presetOverlays.isTracking) {
-          this.map.panTo(currentPos, {noAnimation: true});
+          this.map.panTo(currentPos, { noAnimation: true });
         }
       };
 
@@ -1129,7 +1126,7 @@ export default {
 
     addNewMarker(point) {
       const BMap = window.BMap;
-      const marker = new BMap.Marker(point, {enableDragging: true});
+      const marker = new BMap.Marker(point, { enableDragging: true });
 
       const labelNumber = this.points.length + 1;
       const label = new BMap.Label(labelNumber.toString(), {
@@ -1146,7 +1143,7 @@ export default {
         borderRadius: "10px",
       });
 
-      this.points.push({lat: point.lat, lng: point.lng});
+      this.points.push({ lat: point.lat, lng: point.lng });
       marker.setLabel(label);
       this.map.addOverlay(marker);
       this.markers.push(marker);
@@ -1154,7 +1151,7 @@ export default {
       marker.addEventListener("dragend", (e) => {
         const index = this.markers.indexOf(marker);
         if (index !== -1) {
-          this.points[index] = {lat: e.point.lat, lng: e.point.lng};
+          this.points[index] = { lat: e.point.lat, lng: e.point.lng };
         }
         this.updatePolyline();
       });
@@ -1188,26 +1185,33 @@ export default {
       this.map.addOverlay(this.polyline);
     },
     remoteSearchUser(a, b, c) {
-      console.log(this.dateRange)
-      console.log(this.queryParams.status)
-      listLanya_device_card_sender_log_by_name_card_type({param: a}).then(response => {
-        response.rows.forEach(item => item.label = item.realName + '-' + item.cardId + '-' + item.personTypeName);
-        console.log(response.rows)
-        this.selectData = response.rows
-      })
+      console.log(this.dateRange);
+      console.log(this.queryParams.status);
+      listLanya_device_card_sender_log_by_name_card_type({ param: a }).then(
+        (response) => {
+          response.rows.forEach(
+            (item) =>
+              (item.label =
+                item.realName + "-" + item.cardId + "-" + item.personTypeName)
+          );
+          console.log(response.rows);
+          this.selectData = response.rows;
+        }
+      );
     },
 
     handleSelectChange(val) {
-      console.log('aaaaaaaaaa', this.queryParams.status)
       positionHistoryPositionFindPersonHistoryList({
         personId: this.queryParams.status.personId,
         date: "",
         time: [],
         beginTime: this.dateRange[0],
-        endTime: this.dateRange[1]
-      }).then(response => {
-        console.log(response)
-      })
+        endTime: this.dateRange[1],
+      }).then((res) => {
+        if (res.code == 200) {
+          this.tableData = res.data;
+        }
+      });
     },
     // 清除所有标记
     clearAll() {
@@ -1248,9 +1252,9 @@ export default {
 }
 
 #porBox {
-  width: 36%;
+  // width: 33%;
 
-  padding-left: 18%;
+  // padding-left: 5%;
   position: relative;
 
   #hoverPor {
@@ -1466,5 +1470,31 @@ export default {
   &::placeholder {
     color: #fff;
   }
+}
+.queryBtn {
+  width: 30px;
+  height: 30px;
+}
+.queryBtn span {
+  font-size: 10px;
+}
+::v-deep .el-button,
+.queryBtn,
+.el-button--default,
+.el-button--medium {
+  span {
+    font-size: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #409eff;
+  }
+}
+::v-deep .el-form-item__content .el-date-editor,
+.el-range-editor,
+.el-input__inner,
+.el-date-editor--datetimerange,
+.el-range-editor--medium {
+  width: 100%;
 }
 </style>
