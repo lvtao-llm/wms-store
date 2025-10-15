@@ -502,12 +502,20 @@ export default {
     },
     /** 绑定卡 */
     handleBindDialog(row) {
-      console.log(row)
       // this.reset()
       machineConfigRelationDetailByPerson({sourceId: row.personId + ""}).then(resDetail => {
         this.bindForm = resDetail.data
-        this.bindForm.cardModelMulti = this.bindForm.cardModelMulti.split(",")
-        this.bindForm.sourceId = row.personId
+        if (this.bindForm) {
+          this.bindForm.cardModelMulti = this.bindForm.cardModelMulti.split(",")
+          this.bindForm.sourceId = row.personId
+        }
+        machine_list_page().then(response => {
+          this.lanyaMachineListPage = response.data
+          this.openBind = true
+          this.title = "绑定定位卡"
+        })
+      }).catch(e => {
+        this.bindForm = {sourceId: row.personId}
         machine_list_page().then(response => {
           this.lanyaMachineListPage = response.data
           this.openBind = true
