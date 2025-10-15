@@ -55,6 +55,7 @@ public class LanyaDeviceCardSenderLog extends BaseEntity
 
     /** 人员id */
     @Excel(name = "人员id")
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long personId;
 
     /** 姓名 */

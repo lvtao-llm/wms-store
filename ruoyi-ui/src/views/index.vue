@@ -21,7 +21,7 @@
               v-for="dict in selectData"
               :key="dict.id"
               :label="dict.label"
-              :value="dict.id"
+              :value="dict"
             />
           </el-select>
         </el-form-item>
@@ -35,6 +35,9 @@
             start-placeholder="开始时间"
             end-placeholder="结束时间"
           />
+        </el-form-item>
+        <el-form-item class="width33">
+          <el-button @click="handleSelectChange">查询</el-button>
         </el-form-item>
         <el-form-item id="porBox">
           <span class="searchIconBox" style="color: #fff; cursor: pointer">
@@ -151,9 +154,13 @@
 </template>
 
 <script>
+import dayjs from 'dayjs'
 import TimeLine from "@/components/TimeLine/timeline-canvas.vue";
 import MultiplierSelector from "@/components/Preset/index";
 // import { resData as animatedLineData } from "../codeApplication/data";
+import {
+  positionHistoryPositionFindPersonHistoryList
+} from "@/api/lanya_transfer";
 import {
   showPresetPointsData,
   showPresetLinesData,
@@ -177,15 +184,17 @@ export default {
     MultiplierSelector,
   },
   data() {
+    const start = new Date();
+    start.setHours(0, 0, 0, 0);          // 当天 00:00:00
+    const end = new Date();
     return {
       // 响应式数据
       queryParams: {},
-      selectData: [
-        {label: "data1", value: "1"},
-        {label: "data2", value: "2"},
-        {label: "data3", value: "3"},
+      selectData: [],
+      dateRange: [
+        '2025-05-23 00:00:00', // 可换任意格式化函数
+        '2025-05-23 24:00:00'
       ],
-      dateRange: [],
       selectedMultiplier: 10,
       isAutoPlay: true,
       time_line: null,
@@ -1179,10 +1188,25 @@ export default {
       this.map.addOverlay(this.polyline);
     },
     remoteSearchUser(a, b, c) {
+      console.log(this.dateRange)
+      console.log(this.queryParams.status)
       listLanya_device_card_sender_log_by_name_card_type({param: a}).then(response => {
         response.rows.forEach(item => item.label = item.realName + '-' + item.cardId + '-' + item.personTypeName);
         console.log(response.rows)
         this.selectData = response.rows
+      })
+    },
+
+    handleSelectChange(val) {
+      console.log('aaaaaaaaaa', this.queryParams.status)
+      positionHistoryPositionFindPersonHistoryList({
+        personId: this.queryParams.status.personId,
+        date: "",
+        time: [],
+        beginTime: this.dateRange[0],
+        endTime: this.dateRange[1]
+      }).then(response => {
+        console.log(response)
       })
     },
     // 清除所有标记

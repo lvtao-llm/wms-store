@@ -295,4 +295,11 @@ public class LanyaTransferController extends BaseController {
         HttpEntity<MultiValueMap<String, Object>> entity = new HttpEntity<>(body, headers);
         return thirdPartyAuth.callThirdParty("/file/files/upload", HttpMethod.POST, entity);
     }
+
+
+    @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
+    @PostMapping("/position/historyPosition/findPersonHistoryList")
+    public Object positionHistoryPositionFindPersonHistoryList(@RequestBody JSONObject body) throws JsonProcessingException {
+        return thirdPartyAuth.callThirdParty("/position/historyPosition/findPersonHistoryList", HttpMethod.POST, body);
+    }
 }
