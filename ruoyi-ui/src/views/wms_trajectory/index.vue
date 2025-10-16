@@ -1,10 +1,26 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="路线编号" prop="routeNo">
+      <el-form-item label="开始时间" prop="trajectoryBegin">
+        <el-date-picker clearable
+          v-model="queryParams.trajectoryBegin"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="请选择开始时间">
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item label="结束时间" prop="trajectoryEnd">
+        <el-date-picker clearable
+          v-model="queryParams.trajectoryEnd"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="请选择结束时间">
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item label="卡ID" prop="cardRecordId">
         <el-input
-          v-model="queryParams.routeNo"
-          placeholder="请输入路线编号 业务唯一"
+          v-model="queryParams.cardRecordId"
+          placeholder="请输入发卡记录ID"
           clearable
           @keyup.enter.native="handleQuery"
         />
@@ -23,7 +39,7 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['system:route:add']"
+          v-hasPermi="['system:trajectory:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -34,7 +50,7 @@
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['system:route:edit']"
+          v-hasPermi="['system:trajectory:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -45,7 +61,7 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['system:route:remove']"
+          v-hasPermi="['system:trajectory:remove']"
         >删除</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -55,17 +71,28 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          v-hasPermi="['system:route:export']"
+          v-hasPermi="['system:trajectory:export']"
         >导出</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="routeList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="trajectoryList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="主键ID" align="center" prop="routeId" />
-      <el-table-column label="路线编号 业务唯一" align="center" prop="routeNo" />
-      <el-table-column label="途经点序列" align="center" prop="routeWaypoints" />
+      <el-table-column label="主键ID" align="center" prop="trajectoryId" />
+      <el-table-column label="轨迹类型" align="center" prop="trajectoryType" />
+      <el-table-column label="开始时间" align="center" prop="trajectoryBegin" width="180">
+        <template slot-scope="scope">
+          <span>{{ parseTime(scope.row.trajectoryBegin, '{y}-{m}-{d}') }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="结束时间" align="center" prop="trajectoryEnd" width="180">
+        <template slot-scope="scope">
+          <span>{{ parseTime(scope.row.trajectoryEnd, '{y}-{m}-{d}') }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="轨迹" align="center" prop="trajectoryPoints" />
+      <el-table-column label="卡ID" align="center" prop="cardRecordId" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -73,14 +100,14 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['system:route:edit']"
+            v-hasPermi="['system:trajectory:edit']"
           >修改</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['system:route:remove']"
+            v-hasPermi="['system:trajectory:remove']"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -94,14 +121,30 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改车辆路线规划对话框 -->
+    <!-- 添加或修改轨迹对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="路线编号 业务唯一" prop="routeNo">
-          <el-input v-model="form.routeNo" placeholder="请输入路线编号 业务唯一" />
+        <el-form-item label="开始时间" prop="trajectoryBegin">
+          <el-date-picker clearable
+            v-model="form.trajectoryBegin"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="请选择开始时间">
+          </el-date-picker>
         </el-form-item>
-        <el-form-item label="${comment}" prop="delFlag">
-          <el-input v-model="form.delFlag" placeholder="请输入${comment}" />
+        <el-form-item label="结束时间" prop="trajectoryEnd">
+          <el-date-picker clearable
+            v-model="form.trajectoryEnd"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="请选择结束时间">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="轨迹：[{x,y,t}]" prop="trajectoryPoints">
+          <el-input v-model="form.trajectoryPoints" type="textarea" placeholder="请输入内容" />
+        </el-form-item>
+        <el-form-item label="发卡记录ID" prop="cardRecordId">
+          <el-input v-model="form.cardRecordId" placeholder="请输入发卡记录ID" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -113,10 +156,10 @@
 </template>
 
 <script>
-import { listRoute, getRoute, delRoute, addRoute, updateRoute } from "@/api/system/route"
+import { listTrajectory, getTrajectory, delTrajectory, addTrajectory, updateTrajectory } from "@/api/system/wms_trajectory"
 
 export default {
-  name: "Route",
+  name: "Trajectory",
   data() {
     return {
       // 遮罩层
@@ -131,8 +174,8 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
-      // 车辆路线规划表格数据
-      routeList: [],
+      // 轨迹表格数据
+      trajectoryList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -141,24 +184,24 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        routeNo: null,
-        routeWaypoints: null,
+        trajectoryType: null,
+        trajectoryBegin: null,
+        trajectoryEnd: null,
+        trajectoryPoints: null,
+        cardRecordId: null
       },
       // 表单参数
       form: {},
       // 表单校验
       rules: {
-        routeNo: [
-          { required: true, message: "路线编号 业务唯一不能为空", trigger: "blur" }
+        trajectoryType: [
+          { required: true, message: "轨迹类型。1人员 2车辆不能为空", trigger: "change" }
         ],
-        createTime: [
-          { required: true, message: "$comment不能为空", trigger: "blur" }
+        trajectoryBegin: [
+          { required: true, message: "开始时间不能为空", trigger: "blur" }
         ],
-        updateTime: [
-          { required: true, message: "$comment不能为空", trigger: "blur" }
-        ],
-        delFlag: [
-          { required: true, message: "$comment不能为空", trigger: "blur" }
+        cardRecordId: [
+          { required: true, message: "发卡记录ID不能为空", trigger: "blur" }
         ]
       }
     }
@@ -167,11 +210,11 @@ export default {
     this.getList()
   },
   methods: {
-    /** 查询车辆路线规划列表 */
+    /** 查询轨迹列表 */
     getList() {
       this.loading = true
-      listRoute(this.queryParams).then(response => {
-        this.routeList = response.rows
+      listTrajectory(this.queryParams).then(response => {
+        this.trajectoryList = response.rows
         this.total = response.total
         this.loading = false
       })
@@ -184,14 +227,12 @@ export default {
     // 表单重置
     reset() {
       this.form = {
-        routeId: null,
-        routeNo: null,
-        routeWaypoints: null,
-        createBy: null,
-        createTime: null,
-        updateBy: null,
-        updateTime: null,
-        delFlag: null
+        trajectoryId: null,
+        trajectoryType: null,
+        trajectoryBegin: null,
+        trajectoryEnd: null,
+        trajectoryPoints: null,
+        cardRecordId: null
       }
       this.resetForm("form")
     },
@@ -207,7 +248,7 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.routeId)
+      this.ids = selection.map(item => item.trajectoryId)
       this.single = selection.length!==1
       this.multiple = !selection.length
     },
@@ -215,30 +256,30 @@ export default {
     handleAdd() {
       this.reset()
       this.open = true
-      this.title = "添加车辆路线规划"
+      this.title = "添加轨迹"
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset()
-      const routeId = row.routeId || this.ids
-      getRoute(routeId).then(response => {
+      const trajectoryId = row.trajectoryId || this.ids
+      getTrajectory(trajectoryId).then(response => {
         this.form = response.data
         this.open = true
-        this.title = "修改车辆路线规划"
+        this.title = "修改轨迹"
       })
     },
     /** 提交按钮 */
     submitForm() {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          if (this.form.routeId != null) {
-            updateRoute(this.form).then(response => {
+          if (this.form.trajectoryId != null) {
+            updateTrajectory(this.form).then(response => {
               this.$modal.msgSuccess("修改成功")
               this.open = false
               this.getList()
             })
           } else {
-            addRoute(this.form).then(response => {
+            addTrajectory(this.form).then(response => {
               this.$modal.msgSuccess("新增成功")
               this.open = false
               this.getList()
@@ -249,9 +290,9 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const routeIds = row.routeId || this.ids
-      this.$modal.confirm('是否确认删除车辆路线规划编号为"' + routeIds + '"的数据项？').then(function() {
-        return delRoute(routeIds)
+      const trajectoryIds = row.trajectoryId || this.ids
+      this.$modal.confirm('是否确认删除轨迹编号为"' + trajectoryIds + '"的数据项？').then(function() {
+        return delTrajectory(trajectoryIds)
       }).then(() => {
         this.getList()
         this.$modal.msgSuccess("删除成功")
@@ -259,9 +300,9 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('system/route/export', {
+      this.download('system/trajectory/export', {
         ...this.queryParams
-      }, `route_${new Date().getTime()}.xlsx`)
+      }, `trajectory_${new Date().getTime()}.xlsx`)
     }
   }
 }

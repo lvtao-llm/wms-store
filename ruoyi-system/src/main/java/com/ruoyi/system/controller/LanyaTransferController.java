@@ -302,4 +302,46 @@ public class LanyaTransferController extends BaseController {
     public Object positionHistoryPositionFindPersonHistoryList(@RequestBody JSONObject body) throws JsonProcessingException {
         return thirdPartyAuth.callThirdParty("/position/historyPosition/findPersonHistoryList", HttpMethod.POST, body);
     }
+
+    @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
+    @PostMapping("/system/risk/listPage")
+    public Object systemRiskListPage(@RequestBody JSONObject body) throws JsonProcessingException {
+        return thirdPartyAuth.callThirdParty("/system/risk/listPage", HttpMethod.POST, body);
+    }
+
+    @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
+    @PostMapping("/system/risk/findRisk")
+    public Object systemRiskFindRisk(@RequestBody JSONObject body) throws JsonProcessingException {
+        return thirdPartyAuth.callThirdParty("/system/risk/findRisk", HttpMethod.POST, body);
+    }
+
+    @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
+    @PostMapping("/system/risk/addRisk")
+    public Object systemRiskAddRisk(@RequestBody JSONObject body) throws JsonProcessingException {
+        return thirdPartyAuth.callThirdParty("/system/risk/addRisk", HttpMethod.POST, body);
+    }
+
+    @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
+    @PostMapping("/system/risk/updateRisk")
+    public Object systemRiskUpdateRisk(@RequestBody JSONObject body) throws JsonProcessingException {
+        return thirdPartyAuth.callThirdParty("/system/risk/updateRisk", HttpMethod.POST, body);
+    }
+
+    @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
+    @PostMapping("/system/risk/delRisk")
+    public Object systemRiskDelRisk(@RequestBody JSONObject body) throws JsonProcessingException {
+        return thirdPartyAuth.callThirdParty("/system/risk/delRisk", HttpMethod.POST, body);
+    }
+
+    @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
+    @PostMapping("/device/layer/listLayer")
+    public Object deviceLayerListLayer(@RequestBody JSONObject body) throws JsonProcessingException {
+        return thirdPartyAuth.callThirdParty("/device/layer/listLayer", HttpMethod.POST, body);
+    }
+
+    @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
+    @PostMapping("/device/beacon/preview")
+    public Object deviceBeaconPreview(@RequestBody JSONObject body) throws JsonProcessingException {
+        return thirdPartyAuth.callThirdParty("/device/beacon/preview", HttpMethod.POST, body);
+    }
 }

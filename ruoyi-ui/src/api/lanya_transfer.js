@@ -116,10 +116,68 @@ export function personInOutRecordPage(data) {
   })
 }
 
-export function positionHistoryPositionFindPersonHistoryList(data) {
+// 获取风险
+export function systemRiskListPage(data) {
   return request({
-    url: '/system/lanya-transfer/position/historyPosition/findPersonHistoryList',
+    url: '/system/lanya-transfer/system/risk/listPage',
     method: 'post',
     data: data
   })
 }
+
+// 获取风险
+export function systemRiskFindRisk(data) {
+  return request({
+    url: '/system/lanya-transfer/system/risk/findRisk',
+    method: 'post',
+    data: data
+  })
+}
+
+// 新增风险
+export function systemRiskAddRisk(data) {
+  return request({
+    url: '/system/lanya-transfer/system/risk/addRisk',
+    method: 'post',
+    data: data
+  })
+}
+
+// 修改风险
+export function systemRiskUpdateRisk(data) {
+  return request({
+    url: '/system/lanya-transfer/system/risk/updateRisk',
+    method: 'post',
+    data: data
+  })
+}
+
+// 删除风险
+export function systemRiskDelRisk(data) {
+  return request({
+    url: '/system/lanya-transfer/system/risk/delRisk',
+    method: 'post',
+    data: data
+  })
+}
+
+// 层列表
+export function deviceLayerListLayer(data) {
+  return request({
+    url: '/device/layer/listLayer',
+    method: 'post',
+    data: data
+  })
+}
+
+// 定位卡预览
+export function deviceBeaconPreview(data) {
+  return request({
+    url: '/device/beacon/preview',
+    method: 'post',
+    data: data
+  })
+}
+
+
+

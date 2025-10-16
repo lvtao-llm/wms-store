@@ -184,7 +184,7 @@ export const dynamicRoutes = [
     children: [
       {
         path: 'index',
-        component: () => import('@/views/person/index'),
+        component: () => import('@/views/wms_person/index'),
         name: '员工档案',
         meta: {title: '员工档案'}
       }
@@ -212,7 +212,7 @@ export const dynamicRoutes = [
     children: [
       {
         path: 'index',
-        component: () => import('@/views/gatepass/index'),
+        component: () => import('@/views/wms_gatepass/index'),
         name: '车辆预约',
         meta: {title: '车辆预约'}
       }
@@ -226,7 +226,7 @@ export const dynamicRoutes = [
     children: [
       {
         path: 'index',
-        component: () => import('@/views/route_set/index'),
+        component: () => import('@/views/wms_route_set/index'),
         name: '路线规划',
         meta: {title: '路线规划'}
       }
@@ -300,7 +300,7 @@ export const dynamicRoutes = [
     children: [
       {
         path: 'index',
-        component: () => import('@/views/material/index'),
+        component: () => import('@/views/wms_material/index'),
         name: '物料档案',
         meta: {title: '物料档案'}
       }
@@ -371,6 +371,46 @@ export const dynamicRoutes = [
         component: () => import('@/views/lanya_person_in_out_record/index'),
         name: '人员进出记录',
         meta: {title: '人员进出记录'}
+      }
+    ]
+  },
+  {
+    path: '/core-area',
+    component: Layout,
+    hidden: true,
+    permissions: ['system:role:edit'],
+    children: [
+      {
+        path: 'area-draw',
+        component: () => import('@/views/wms_area/index'),
+        name: '区域绘制',
+        meta: {title: '区域绘制'}
+      },
+      {
+        path: 'person-in-out-record',
+        component: () => import('@/views/lanya_person_in_out_record/index'),
+        name: '人员进出记录',
+        meta: {title: '人员进出记录'}
+      }
+    ]
+  },
+  {
+    path: '/alarm-manage',
+    component: Layout,
+    hidden: true,
+    permissions: ['system:role:edit'],
+    children: [
+      {
+        path: 'area-draw',
+        component: () => import('@/views/wms_area/index'),
+        name: '区域绘制',
+        meta: {title: '区域绘制'}
+      },
+      {
+        path: 'people-log',
+        component: () => import('@/views/wms_alarm_people_log/index'),
+        name: '人员报警记录',
+        meta: {title: '人员报警记录'}
       }
     ]
   }

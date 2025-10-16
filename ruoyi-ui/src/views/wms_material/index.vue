@@ -228,7 +228,7 @@
 </template>
 
 <script>
-import { listMaterial, getMaterial, delMaterial, addMaterial, updateMaterial } from "@/api/system/material"
+import { listMaterial, getMaterial, delMaterial, addMaterial, updateMaterial } from "@/api/system/wms_material"
 
 export default {
   name: "Material",

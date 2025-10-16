@@ -217,7 +217,7 @@
 </template>
 
 <script>
-import { listPerson, getPerson, delPerson, addPerson, updatePerson } from "@/api/system/person"
+import { listPerson, getPerson, delPerson, addPerson, updatePerson } from "@/api/system/wms_person"
 
 export default {
   name: "Person",

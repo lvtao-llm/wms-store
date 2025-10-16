@@ -1,50 +1,50 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="区域编码" prop="areaCode">
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="100px">
+      <el-form-item label="车牌号" prop="vehiclePlateNo">
         <el-input
-          v-model="queryParams.areaCode"
-          placeholder="请输入区域编码"
+          v-model="queryParams.vehiclePlateNo"
+          placeholder="请输入车牌号"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="区域名称" prop="areaName">
+      <el-form-item label="车轴数" prop="vehicleAxleNum">
         <el-input
-          v-model="queryParams.areaName"
-          placeholder="请输入区域名称"
+          v-model="queryParams.vehicleAxleNum"
+          placeholder="请输入车轴数"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="区域功能" prop="areaFunction">
+      <el-form-item label="承运商" prop="vehicleCompany">
         <el-input
-          v-model="queryParams.areaFunction"
-          placeholder="请输入区域功能"
+          v-model="queryParams.vehicleCompany"
+          placeholder="请输入承运商"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="安全提示" prop="areaSafetyNotice">
+      <el-form-item label="驾驶员姓名" prop="vehicleDriverName">
         <el-input
-          v-model="queryParams.areaSafetyNotice"
-          placeholder="请输入安全提示"
+          v-model="queryParams.vehicleDriverName"
+          placeholder="请输入驾驶员姓名"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="风险等级" prop="areaRiskLevel">
+      <el-form-item label="驾驶员手机" prop="vehicleDriverPhone">
         <el-input
-          v-model="queryParams.areaRiskLevel"
-          placeholder="请输入风险等级 0低 1中 2高"
+          v-model="queryParams.vehicleDriverPhone"
+          placeholder="请输入驾驶员手机"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="启用状态" prop="enabled">
+      <el-form-item label="核载(kg)" prop="maxWeight">
         <el-input
-          v-model="queryParams.enabled"
-          placeholder="请输入启用状态"
+          v-model="queryParams.maxWeight"
+          placeholder="请输入核载(kg)"
           clearable
           @keyup.enter.native="handleQuery"
         />
@@ -63,7 +63,7 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['system:area:add']"
+          v-hasPermi="['system:vehicle:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -74,7 +74,7 @@
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['system:area:edit']"
+          v-hasPermi="['system:vehicle:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -85,7 +85,7 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['system:area:remove']"
+          v-hasPermi="['system:vehicle:remove']"
         >删除</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -95,23 +95,24 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          v-hasPermi="['system:area:export']"
+          v-hasPermi="['system:vehicle:export']"
         >导出</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="areaList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="vehicleList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="区域ID" align="center" prop="areaId" />
-      <el-table-column label="区域编码" align="center" prop="areaCode" />
-      <el-table-column label="区域名称" align="center" prop="areaName" />
-      <el-table-column label="区域类型" align="center" prop="areaType" />
-      <el-table-column label="区域功能" align="center" prop="areaFunction" />
-      <el-table-column label="安全提示" align="center" prop="areaSafetyNotice" />
-      <el-table-column label="风险等级" align="center" prop="areaRiskLevel" />
-      <el-table-column label="启用状态" align="center" prop="enabled" />
-      <el-table-column label="备注" align="center" prop="remark" />
+      <el-table-column label="ID" align="center" prop="vehicleId" />
+      <el-table-column label="车牌号" align="center" prop="vehiclePlateNo" />
+      <el-table-column label="车型" align="center" prop="vehicleType" />
+      <el-table-column label="车轴数" align="center" prop="vehicleAxleNum" />
+      <el-table-column label="承运商" align="center" prop="vehicleCompany" />
+      <el-table-column label="驾驶员姓名" align="center" prop="vehicleDriverName" />
+      <el-table-column label="驾驶员手机" align="center" prop="vehicleDriverPhone" />
+      <el-table-column label="核载(kg)" align="center" prop="maxWeight" />
+      <el-table-column label="可进入区域" align="center" prop="authArea" />
+      <el-table-column label="删除" align="center" prop="status" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -119,14 +120,14 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['system:area:edit']"
+            v-hasPermi="['system:vehicle:edit']"
           >修改</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['system:area:remove']"
+            v-hasPermi="['system:vehicle:remove']"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -140,35 +141,32 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改区域对话框 -->
+    <!-- 添加或修改车辆档案对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="区域编码" prop="areaCode">
-          <el-input v-model="form.areaCode" placeholder="请输入区域编码" />
+        <el-form-item label="车牌号" prop="vehiclePlateNo">
+          <el-input v-model="form.vehiclePlateNo" placeholder="请输入车牌号" />
         </el-form-item>
-        <el-form-item label="区域名称" prop="areaName">
-          <el-input v-model="form.areaName" placeholder="请输入区域名称" />
+        <el-form-item label="车轴数" prop="vehicleAxleNum">
+          <el-input v-model="form.vehicleAxleNum" placeholder="请输入车轴数" />
         </el-form-item>
-        <el-form-item label="区域功能" prop="areaFunction">
-          <el-input v-model="form.areaFunction" placeholder="请输入区域功能" />
+        <el-form-item label="承运商" prop="vehicleCompany">
+          <el-input v-model="form.vehicleCompany" placeholder="请输入承运商" />
         </el-form-item>
-        <el-form-item label="安全提示" prop="areaSafetyNotice">
-          <el-input v-model="form.areaSafetyNotice" placeholder="请输入安全提示" />
+        <el-form-item label="驾驶员姓名" prop="vehicleDriverName">
+          <el-input v-model="form.vehicleDriverName" placeholder="请输入驾驶员姓名" />
         </el-form-item>
-        <el-form-item label="多边形边界JSON" prop="areaPolygon">
-          <el-input v-model="form.areaPolygon" type="textarea" placeholder="请输入内容" />
+        <el-form-item label="驾驶员手机" prop="vehicleDriverPhone">
+          <el-input v-model="form.vehicleDriverPhone" placeholder="请输入驾驶员手机" />
         </el-form-item>
-        <el-form-item label="风险等级" prop="areaRiskLevel">
-          <el-input v-model="form.areaRiskLevel" placeholder="请输入风险等级 0低 1中 2高" />
+        <el-form-item label="核载(kg)" prop="maxWeight">
+          <el-input v-model="form.maxWeight" placeholder="请输入核载(kg)" />
         </el-form-item>
-        <el-form-item label="启用状态" prop="enabled">
-          <el-input v-model="form.enabled" placeholder="请输入启用状态" />
+        <el-form-item label="可进入区域：json数组" prop="authArea">
+          <el-input v-model="form.authArea" type="textarea" placeholder="请输入内容" />
         </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" placeholder="请输入备注" />
-        </el-form-item>
-        <el-form-item label="删除标志" prop="delFlag">
-          <el-input v-model="form.delFlag" placeholder="请输入删除标志" />
+        <el-form-item label="${comment}" prop="delFlag">
+          <el-input v-model="form.delFlag" placeholder="请输入${comment}" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -180,10 +178,10 @@
 </template>
 
 <script>
-import { listArea, getArea, delArea, addArea, updateArea } from "@/api/system/area"
+import { listVehicle, getVehicle, delVehicle, addVehicle, updateVehicle } from "@/api/system/wms_vehicle"
 
 export default {
-  name: "Area",
+  name: "Vehicle",
   data() {
     return {
       // 遮罩层
@@ -198,8 +196,8 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
-      // 区域表格数据
-      areaList: [],
+      // 车辆档案表格数据
+      vehicleList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -208,33 +206,22 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        areaCode: null,
-        areaName: null,
-        areaType: null,
-        areaFunction: null,
-        areaSafetyNotice: null,
-        areaPolygon: null,
-        areaRiskLevel: null,
-        enabled: null,
+        vehiclePlateNo: null,
+        vehicleType: null,
+        vehicleAxleNum: null,
+        vehicleCompany: null,
+        vehicleDriverName: null,
+        vehicleDriverPhone: null,
+        maxWeight: null,
+        authArea: null,
+        status: null,
       },
       // 表单参数
       form: {},
       // 表单校验
       rules: {
-        areaCode: [
-          { required: true, message: "区域编码不能为空", trigger: "blur" }
-        ],
-        areaName: [
-          { required: true, message: "区域名称不能为空", trigger: "blur" }
-        ],
-        areaType: [
-          { required: true, message: "1库区 2料场 3办公 4作业 5高风险不能为空", trigger: "change" }
-        ],
-        areaFunction: [
-          { required: true, message: "区域功能不能为空", trigger: "blur" }
-        ],
-        areaSafetyNotice: [
-          { required: true, message: "安全提示不能为空", trigger: "blur" }
+        vehiclePlateNo: [
+          { required: true, message: "车牌号不能为空", trigger: "blur" }
         ],
       }
     }
@@ -243,11 +230,11 @@ export default {
     this.getList()
   },
   methods: {
-    /** 查询区域列表 */
+    /** 查询车辆档案列表 */
     getList() {
       this.loading = true
-      listArea(this.queryParams).then(response => {
-        this.areaList = response.rows
+      listVehicle(this.queryParams).then(response => {
+        this.vehicleList = response.rows
         this.total = response.total
         this.loading = false
       })
@@ -260,16 +247,16 @@ export default {
     // 表单重置
     reset() {
       this.form = {
-        areaId: null,
-        areaCode: null,
-        areaName: null,
-        areaType: null,
-        areaFunction: null,
-        areaSafetyNotice: null,
-        areaPolygon: null,
-        areaRiskLevel: null,
-        enabled: null,
-        remark: null,
+        vehicleId: null,
+        vehiclePlateNo: null,
+        vehicleType: null,
+        vehicleAxleNum: null,
+        vehicleCompany: null,
+        vehicleDriverName: null,
+        vehicleDriverPhone: null,
+        maxWeight: null,
+        authArea: null,
+        status: null,
         createBy: null,
         createTime: null,
         updateBy: null,
@@ -290,7 +277,7 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.areaId)
+      this.ids = selection.map(item => item.vehicleId)
       this.single = selection.length!==1
       this.multiple = !selection.length
     },
@@ -298,30 +285,30 @@ export default {
     handleAdd() {
       this.reset()
       this.open = true
-      this.title = "添加区域"
+      this.title = "添加车辆档案"
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset()
-      const areaId = row.areaId || this.ids
-      getArea(areaId).then(response => {
+      const vehicleId = row.vehicleId || this.ids
+      getVehicle(vehicleId).then(response => {
         this.form = response.data
         this.open = true
-        this.title = "修改区域"
+        this.title = "修改车辆档案"
       })
     },
     /** 提交按钮 */
     submitForm() {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          if (this.form.areaId != null) {
-            updateArea(this.form).then(response => {
+          if (this.form.vehicleId != null) {
+            updateVehicle(this.form).then(response => {
               this.$modal.msgSuccess("修改成功")
               this.open = false
               this.getList()
             })
           } else {
-            addArea(this.form).then(response => {
+            addVehicle(this.form).then(response => {
               this.$modal.msgSuccess("新增成功")
               this.open = false
               this.getList()
@@ -332,9 +319,9 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const areaIds = row.areaId || this.ids
-      this.$modal.confirm('是否确认删除区域编号为"' + areaIds + '"的数据项？').then(function() {
-        return delArea(areaIds)
+      const vehicleIds = row.vehicleId || this.ids
+      this.$modal.confirm('是否确认删除车辆档案编号为"' + vehicleIds + '"的数据项？').then(function() {
+        return delVehicle(vehicleIds)
       }).then(() => {
         this.getList()
         this.$modal.msgSuccess("删除成功")
@@ -342,9 +329,9 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('system/area/export', {
+      this.download('system/vehicle/export', {
         ...this.queryParams
-      }, `area_${new Date().getTime()}.xlsx`)
+      }, `vehicle_${new Date().getTime()}.xlsx`)
     }
   }
 }

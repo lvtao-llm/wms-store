@@ -9,6 +9,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="areaCode"    column="area_code"    />
         <result property="areaName"    column="area_name"    />
         <result property="areaType"    column="area_type"    />
+        <result property="areaColor"    column="area_color"    />
         <result property="areaFunction"    column="area_function"    />
         <result property="areaSafetyNotice"    column="area_safety_notice"    />
         <result property="areaPolygon"    column="area_polygon"    />
@@ -23,15 +24,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectWmsAreaVo">
-        select area_id, area_code, area_name, area_type, area_function, area_safety_notice, area_polygon, area_risk_level, enabled, remark, create_by, create_time, update_by, update_time, del_flag from wms_area
+        select area_id, area_code, area_name, area_type, area_color, area_function, area_safety_notice, area_polygon, area_risk_level, enabled, remark, create_by, create_time, update_by, update_time, del_flag from wms_area
     </sql>
 
     <select id="selectWmsAreaList" parameterType="WmsArea" resultMap="WmsAreaResult">
         <include refid="selectWmsAreaVo"/>
-        <where>  
+        <where>
             <if test="areaCode != null  and areaCode != ''"> and area_code = #{areaCode}</if>
             <if test="areaName != null  and areaName != ''"> and area_name like concat('%', #{areaName}, '%')</if>
             <if test="areaType != null  and areaType != ''"> and area_type = #{areaType}</if>
+            <if test="areaColor != null and areaColor != ''"> and area_color = #{areaColor}</if>
             <if test="areaFunction != null  and areaFunction != ''"> and area_function = #{areaFunction}</if>
             <if test="areaSafetyNotice != null  and areaSafetyNotice != ''"> and area_safety_notice = #{areaSafetyNotice}</if>
             <if test="areaPolygon != null  and areaPolygon != ''"> and area_polygon = #{areaPolygon}</if>
@@ -51,6 +53,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="areaCode != null and areaCode != ''">area_code,</if>
             <if test="areaName != null and areaName != ''">area_name,</if>
             <if test="areaType != null and areaType != ''">area_type,</if>
+            <if test="areaColor != null and areaColor != ''">area_color,</if>
             <if test="areaFunction != null and areaFunction != ''">area_function,</if>
             <if test="areaSafetyNotice != null and areaSafetyNotice != ''">area_safety_notice,</if>
             <if test="areaPolygon != null">area_polygon,</if>
@@ -67,6 +70,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="areaCode != null and areaCode != ''">#{areaCode},</if>
             <if test="areaName != null and areaName != ''">#{areaName},</if>
             <if test="areaType != null and areaType != ''">#{areaType},</if>
+            <if test="areaColor != null and areaColor != ''">#{areaColor},</if>
             <if test="areaFunction != null and areaFunction != ''">#{areaFunction},</if>
             <if test="areaSafetyNotice != null and areaSafetyNotice != ''">#{areaSafetyNotice},</if>
             <if test="areaPolygon != null">#{areaPolygon},</if>
@@ -87,6 +91,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="areaCode != null and areaCode != ''">area_code = #{areaCode},</if>
             <if test="areaName != null and areaName != ''">area_name = #{areaName},</if>
             <if test="areaType != null and areaType != ''">area_type = #{areaType},</if>
+            <if test="areaColor != null and areaColor != ''">area_color = #{areaColor},</if>
             <if test="areaFunction != null and areaFunction != ''">area_function = #{areaFunction},</if>
             <if test="areaSafetyNotice != null and areaSafetyNotice != ''">area_safety_notice = #{areaSafetyNotice},</if>
             <if test="areaPolygon != null">area_polygon = #{areaPolygon},</if>

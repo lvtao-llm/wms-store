@@ -265,7 +265,7 @@
 </template>
 
 <script>
-import { listGatepass, getGatepass, delGatepass, addGatepass, updateGatepass } from "@/api/system/gatepass"
+import { listGatepass, getGatepass, delGatepass, addGatepass, updateGatepass } from "@/api/system/wms_gatepass"
 
 export default {
   name: "Gatepass",

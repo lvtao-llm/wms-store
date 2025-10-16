@@ -189,7 +189,7 @@
 </template>
 
 <script>
-import { listVisitor, getVisitor, delVisitor, addVisitor, updateVisitor } from "@/api/system/visitor"
+import { listVisitor, getVisitor, delVisitor, addVisitor, updateVisitor } from "@/api/system/wms_visitor"
 
 export default {
   name: "Visitor",

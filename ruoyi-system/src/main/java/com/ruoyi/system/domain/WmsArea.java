@@ -7,170 +7,186 @@ import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
  * 区域对象 wms_area
- * 
+ *
  * @author ruoyi
  * @date 2025-09-26
  */
-public class WmsArea extends BaseEntity
-{
+public class WmsArea extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
-    /** 区域ID */
+    /**
+     * 区域ID
+     */
     private Long areaId;
 
-    /** 区域编码 */
+    /**
+     * 区域编码
+     */
     @Excel(name = "区域编码")
     private String areaCode;
 
-    /** 区域名称 */
+    /**
+     * 区域名称
+     */
     @Excel(name = "区域名称")
     private String areaName;
 
-    /** 1库区 2料场 3办公 4作业 5高风险 */
+    /**
+     * 1库区 2料场 3办公 4作业 5高风险
+     */
     @Excel(name = "1库区 2料场 3办公 4作业 5高风险")
     private String areaType;
 
-    /** 区域功能 */
+    /**
+     * 区域颜色
+     */
+    @Excel(name = "区域颜色")
+    private String areaColor;
+
+    /**
+     * 区域功能
+     */
     @Excel(name = "区域功能")
     private String areaFunction;
 
-    /** 安全提示 */
+    /**
+     * 安全提示
+     */
     @Excel(name = "安全提示")
     private String areaSafetyNotice;
 
-    /** 多边形边界JSON */
+    /**
+     * 多边形边界JSON
+     */
     @Excel(name = "多边形边界JSON")
     private String areaPolygon;
 
-    /** 风险等级 0低 1中 2高 */
+    /**
+     * 风险等级 0低 1中 2高
+     */
     @Excel(name = "风险等级 0低 1中 2高")
     private String areaRiskLevel;
 
-    /** 启用状态 */
+    /**
+     * 启用状态
+     */
     @Excel(name = "启用状态")
     private String enabled;
 
-    /** 删除标志 */
+    /**
+     * 删除标志
+     */
     private String delFlag;
 
-    public void setAreaId(Long areaId) 
-    {
+    public void setAreaId(Long areaId) {
         this.areaId = areaId;
     }
 
-    public Long getAreaId() 
-    {
+    public Long getAreaId() {
         return areaId;
     }
 
-    public void setAreaCode(String areaCode) 
-    {
+    public void setAreaCode(String areaCode) {
         this.areaCode = areaCode;
     }
 
-    public String getAreaCode() 
-    {
+    public String getAreaCode() {
         return areaCode;
     }
 
-    public void setAreaName(String areaName) 
-    {
+    public void setAreaName(String areaName) {
         this.areaName = areaName;
     }
 
-    public String getAreaName() 
-    {
+    public String getAreaName() {
         return areaName;
     }
 
-    public void setAreaType(String areaType) 
-    {
+    public void setAreaType(String areaType) {
         this.areaType = areaType;
     }
 
-    public String getAreaType() 
-    {
+    public String getAreaType() {
         return areaType;
     }
 
-    public void setAreaFunction(String areaFunction) 
-    {
+    public String getAreaColor() {
+        return areaColor;
+    }
+
+    public void setAreaColor(String areaColor) {
+        this.areaColor = areaColor;
+    }
+
+    public void setAreaFunction(String areaFunction) {
         this.areaFunction = areaFunction;
     }
 
-    public String getAreaFunction() 
-    {
+    public String getAreaFunction() {
         return areaFunction;
     }
 
-    public void setAreaSafetyNotice(String areaSafetyNotice) 
-    {
+    public void setAreaSafetyNotice(String areaSafetyNotice) {
         this.areaSafetyNotice = areaSafetyNotice;
     }
 
-    public String getAreaSafetyNotice() 
-    {
+    public String getAreaSafetyNotice() {
         return areaSafetyNotice;
     }
 
-    public void setAreaPolygon(String areaPolygon) 
-    {
+    public void setAreaPolygon(String areaPolygon) {
         this.areaPolygon = areaPolygon;
     }
 
-    public String getAreaPolygon() 
-    {
+    public String getAreaPolygon() {
         return areaPolygon;
     }
 
-    public void setAreaRiskLevel(String areaRiskLevel) 
-    {
+    public void setAreaRiskLevel(String areaRiskLevel) {
         this.areaRiskLevel = areaRiskLevel;
     }
 
-    public String getAreaRiskLevel() 
-    {
+    public String getAreaRiskLevel() {
         return areaRiskLevel;
     }
 
-    public void setEnabled(String enabled) 
-    {
+    public void setEnabled(String enabled) {
         this.enabled = enabled;
     }
 
-    public String getEnabled() 
-    {
+    public String getEnabled() {
         return enabled;
     }
 
-    public void setDelFlag(String delFlag) 
-    {
+    public void setDelFlag(String delFlag) {
         this.delFlag = delFlag;
     }
 
-    public String getDelFlag() 
-    {
+    public String getDelFlag() {
         return delFlag;
     }
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("areaId", getAreaId())
-            .append("areaCode", getAreaCode())
-            .append("areaName", getAreaName())
-            .append("areaType", getAreaType())
-            .append("areaFunction", getAreaFunction())
-            .append("areaSafetyNotice", getAreaSafetyNotice())
-            .append("areaPolygon", getAreaPolygon())
-            .append("areaRiskLevel", getAreaRiskLevel())
-            .append("enabled", getEnabled())
-            .append("remark", getRemark())
-            .append("createBy", getCreateBy())
-            .append("createTime", getCreateTime())
-            .append("updateBy", getUpdateBy())
-            .append("updateTime", getUpdateTime())
-            .append("delFlag", getDelFlag())
-            .toString();
+        return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+                .append("areaId", getAreaId())
+                .append("areaCode", getAreaCode())
+                .append("areaName", getAreaName())
+                .append("areaType", getAreaType())
+                .append("areaColor", getAreaColor())
+                .append("areaFunction", getAreaFunction())
+                .append("areaSafetyNotice", getAreaSafetyNotice())
+                .append("areaPolygon", getAreaPolygon())
+                .append("areaRiskLevel", getAreaRiskLevel())
+                .append("enabled", getEnabled())
+                .append("remark", getRemark())
+                .append("createBy", getCreateBy())
+                .append("createTime", getCreateTime())
+                .append("updateBy", getUpdateBy())
+                .append("updateTime", getUpdateTime())
+                .append("delFlag", getDelFlag())
+                .toString();
     }
+
+
 }

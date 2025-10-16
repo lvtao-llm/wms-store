@@ -75,7 +75,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -97,7 +97,7 @@
 </template>
 
 <script>
-import { listRecord, getRecord, delRecord, addRecord, updateRecord } from "@/api/system/record"
+import { listRecord, getRecord, delRecord, addRecord, updateRecord } from "@/api/system/wms_record"
 
 export default {
   name: "Record",

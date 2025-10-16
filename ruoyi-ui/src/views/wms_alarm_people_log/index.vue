@@ -256,7 +256,7 @@
 </template>
 
 <script>
-import { listAlarm, getAlarm, delAlarm, addAlarm, updateAlarm } from "@/api/system/alarm"
+import { listAlarm, getAlarm, delAlarm, addAlarm, updateAlarm } from "@/api/system/wms_alarm_people_log"
 
 export default {
   name: "Alarm",
