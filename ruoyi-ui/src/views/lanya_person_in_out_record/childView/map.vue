@@ -1,189 +1,66 @@
 <template>
   <div class="map-container">
-    <div id="container"></div>
-    <div class="controls">
-      <el-form class="form" :model="queryParams" ref="queryRef" :inline="true">
-        <el-row>
-          <el-col :span="6">
-            <el-form-item>
-              <el-select
-                popper-class="popperClass"
-                placeholder="请输入关键词搜索用户"
-                filterable
-                remote
-                @change="handleSelectChange"
-                reserve-keyword
-                :popper-append-to-body="false"
-                :remote-method="remoteSearchUser"
-                class="searchSelect"
-                v-model="queryParams.status"
-                clearable
-                style=""
-              >
-                <el-option
-                  v-for="dict in selectData"
-                  :key="dict.id"
-                  :label="dict.label"
-                  :value="dict"
-                />
-              </el-select> </el-form-item
-          ></el-col>
-          <el-col :span="12">
-            <el-form-item>
-              <el-date-picker
-                @change="handleSelectChange"
-                value-format="yyyy-MM-dd HH:mm:ss"
-                v-model="dateRange"
-                popper-class="customDatePicker"
-                type="datetimerange"
-                range-separator="To"
-                start-placeholder="开始时间"
-                end-placeholder="结束时间"
-              /> </el-form-item
-          ></el-col>
-          <!-- <el-col :span="2">
-            <el-button class="queryBtn" @click="handleSelectChange"
-              >查询</el-button
-            >
-          </el-col> -->
-          <el-col :span="6">
-            <el-form-item id="porBox">
-              <span class="searchIconBox" style="color: #fff; cursor: pointer">
-                <i
-                  class="el-icon-setting searchIcon"
-                  style="vertical-align: top; font-size: 20px"
-                ></i>
-                历史轨迹播放设置</span
-              >
+    <el-dialog
+      :visible.sync="show"
+      width="95%"
+      @close="close"
+      append-to-body
+      :close-on-click-modal="false"
+    >
+      <div style="height: 80vh; width: 100%" id="container"></div>
+      <div class="timeline">
+        <div class="timeAn">
+          <i
+            class="el-icon-video-play"
+            @click="timeLinePlay"
+            v-if="isBf"
+            style="font-size: 20px"
+          ></i>
+          <i
+            class="el-icon-video-pause"
+            @click="timeLinePlay"
+            v-else
+            style="font-size: 20px"
+          ></i>
+        </div>
+        <div class="timeAn2">
+          <MultiplierSelector
+            v-if="isShowQ"
+            @cb="handleMultiplierChange"
+            :modelValue="selectedMultiplier"
+          />
+        </div>
 
-              <div id="hoverPor">
-                <div class="porItem" @click="savePoints">
-                  <i class="el-icon-upload" style="font-size: 20px"></i>
-                  保存当前标记点
-                </div>
-                <div class="porItem" @click="clearAll">
-                  <i class="el-icon-delete" style="font-size: 20px"></i>
-                  清除全部标记
-                </div>
-                <div class="porItem" @click="showPresetPoints">
-                  <i
-                    class="el-icon-success"
-                    style="font-size: 20px"
-                    v-if="isShowD"
-                  ></i>
-                  <i
-                    class="el-icon-circle-close"
-                    style="font-size: 20px"
-                    v-else
-                  ></i>
-                  加载预设点
-                </div>
-                <div class="porItem" @click="showPresetLines">
-                  <i
-                    class="el-icon-success"
-                    style="font-size: 20px"
-                    v-if="isShowX"
-                  ></i>
-                  <i
-                    class="el-icon-circle-close"
-                    style="font-size: 20px"
-                    v-else
-                  ></i>
-                  加载预设线
-                </div>
-                <div class="porItem" @click="showAnimatedLine">
-                  <i
-                    class="el-icon-success"
-                    style="font-size: 20px"
-                    v-if="isShowQ"
-                  ></i>
-                  <i
-                    class="el-icon-circle-close"
-                    style="font-size: 20px"
-                    v-else
-                  ></i>
-                  起止
-                </div>
-                <div v-if="isShowQ" class="porItem" @click="toggleTrack">
-                  <i
-                    class="el-icon-success"
-                    style="font-size: 20px"
-                    v-if="isToggle"
-                  ></i>
-                  <i
-                    class="el-icon-circle-close"
-                    style="font-size: 20px"
-                    v-else
-                  ></i>
-                  视角跟踪
-                </div>
-              </div>
-              <div v-if="isShowQ" id="hoverPor2">
-                <div>当前时间:{{ inDate }}</div>
-                <div>停留时间:</div>
-              </div>
-            </el-form-item></el-col
-          >
-        </el-row>
-      </el-form>
-    </div>
-    <div class="timeline">
-      <div class="timeAn">
-        <i
-          class="el-icon-video-play"
-          @click="timeLinePlay"
-          v-if="isBf"
-          style="font-size: 20px"
-        ></i>
-        <i
-          class="el-icon-video-pause"
-          @click="timeLinePlay"
-          v-else
-          style="font-size: 20px"
-        ></i>
-      </div>
-      <div class="timeAn2">
-        <MultiplierSelector
+        <TimeLine
+          style="width: 97%"
+          :markTime="time_range"
           v-if="isShowQ"
-          @cb="handleMultiplierChange"
-          :modelValue="selectedMultiplier"
+          :key="timeIndex"
+          ref="time_line"
+          @change="changeDate"
+          :time-range="dateRange"
+          :isAutoPlay="isAutoPlay"
         />
       </div>
-
-      <TimeLine
-        :markTime="time_range"
-        v-if="isShowQ"
-        :key="timeIndex"
-        ref="time_line"
-        @change="changeDate"
-        :time-range="dateRange"
-        :isAutoPlay="isAutoPlay"
-      />
-    </div>
+    </el-dialog>
   </div>
 </template>
-
 <script>
 import dayjs from "dayjs";
 import TimeLine from "@/components/TimeLine/timeline-canvas.vue";
 import MultiplierSelector from "@/components/Preset/index";
 // import { resData as animatedLineData } from "../codeApplication/data";
 import { positionHistoryPositionFindPersonHistoryList } from "@/api/lanya_transfer";
-import {
-  showPresetPointsData,
-  showPresetLinesData,
-  // showAnimatedLineData,
-} from "./data";
-import { resData } from "./data1";
+
+import { listLanya_device_card_sender_log_by_name_card_type } from "@/api/system/lanya_device_card_sender_log";
+
 import {
   DynamicCanvasLayer,
   simplifyPath,
   parseTimeString,
   calculateSegmentAngle,
   createSvgIcon,
-} from "./utils";
-
-import { listLanya_device_card_sender_log_by_name_card_type } from "@/api/system/lanya_device_card_sender_log";
+} from "../../utils";
 
 export default {
   name: "MapIndex",
@@ -197,6 +74,7 @@ export default {
     const end = new Date();
     return {
       // 响应式数据
+      show: false,
       queryParams: {},
       selectData: [],
       tableData: [],
@@ -231,39 +109,97 @@ export default {
       },
     };
   },
-  mounted() {
+  async mounted() {
     this.loadSavedGroups();
-    this.initMap();
-    this.showAllSavedGroups();
+    // 延迟初始化地图，确保DOM已渲染
+    this.$nextTick(async () => {
+      setTimeout(async () => {
+        await this.initMap();
+        this.showAllSavedGroups();
+      }, 100);
+    });
+  },
+  watch: {
+    async show(newVal) {
+      if (newVal) {
+        // 对话框打开时，确保地图容器已准备好
+        this.$nextTick(async () => {
+          setTimeout(async () => {
+            if (!this.map) {
+              await this.initMap();
+            }
+          }, 100);
+        });
+      } else {
+        // 对话框关闭时清理
+        this.cleanupAnimation();
+      }
+    },
   },
   beforeDestroy() {
     this.cleanupAnimation();
   },
   methods: {
-    // 初始化地图
-    initMap() {
-      const BMap = window.BMap;
-      this.map = new BMap.Map("container");
-      this.map.centerAndZoom(new BMap.Point(124.87612, 46.64195), 15);
-      this.map.setMinZoom(11);
-      this.map.setMaxZoom(19);
-      this.map.enableScrollWheelZoom(true);
-
-      // 添加控件
-      this.map.addControl(
-        new BMap.NavigationControl({
-          anchor: window.BMAP_ANCHOR_TOP_RIGHT,
-          type: window.BMAP_NAVIGATION_CONTROL_SMALL,
-        })
-      );
-      this.map.addControl(new BMap.ScaleControl());
-      this.map.addControl(new BMap.OverviewMapControl());
-
-      // 右键添加标记
-      this.map.addEventListener("rightclick", (e) => {
-        this.addNewMarker(e.point);
-        this.updatePolyline();
+    // 等待百度地图API加载完成
+    waitForBMap() {
+      return new Promise((resolve) => {
+        const checkBMap = () => {
+          if (window.BMap) {
+            resolve();
+          } else {
+            setTimeout(checkBMap, 100);
+          }
+        };
+        checkBMap();
       });
+    },
+
+    // 初始化地图
+    async initMap() {
+      try {
+        console.log("开始初始化地图...");
+
+        // 等待百度地图API加载
+        await this.waitForBMap();
+        console.log("百度地图API已加载");
+
+        // 检查容器是否存在
+        const container = document.getElementById("container");
+        if (!container) {
+          console.error("地图容器不存在");
+          return;
+        }
+        console.log("地图容器存在:", container);
+
+        const BMap = window.BMap;
+        this.map = new BMap.Map("container");
+        console.log("地图初始化成功", this.map);
+
+        this.map.centerAndZoom(new BMap.Point(124.87612, 46.64195), 15);
+        this.map.setMinZoom(11);
+        this.map.setMaxZoom(19);
+        this.map.enableScrollWheelZoom(true);
+
+        // 添加控件
+        this.map.addControl(
+          new BMap.NavigationControl({
+            anchor: window.BMAP_ANCHOR_TOP_RIGHT,
+            type: window.BMAP_NAVIGATION_CONTROL_SMALL,
+          })
+        );
+        this.map.addControl(new BMap.ScaleControl());
+        this.map.addControl(new BMap.OverviewMapControl());
+
+        // 右键添加标记
+        this.map.addEventListener("rightclick", (e) => {
+          this.addNewMarker(e.point);
+          this.updatePolyline();
+        });
+
+        console.log("地图控件添加完成");
+      } catch (error) {
+        console.error("地图初始化失败:", error);
+      }
     },
 
     // 数据预处理
@@ -275,102 +211,6 @@ export default {
       }
 
       return simplifyPath(sampledData, 0.0001);
-    },
-
-    //预设点
-    showPresetPoints() {
-      const deepData = !this.isShowD
-        ? JSON.parse(JSON.stringify(this.tableData))
-        : [];
-
-      this.clearPresetOverlays();
-
-      if (deepData.length > 0 && !this.isShowD) {
-        const allPoints = deepData.flat();
-        console.log(allPoints, 123);
-        this.map.setViewport(
-          allPoints.map(
-            (coord) => new BMap.Point(coord.longitude, coord.latitude)
-          )
-        );
-      }
-      setTimeout(() => {
-        this.map.panBy(0, 0); // 轻微移动触发重绘
-      }, 100);
-      const pointsCanvas = new DynamicCanvasLayer(this.map, (ctx, canvas) => {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = "#FF5722";
-        deepData.forEach((group) => {
-          const pixel = this.map.pointToOverlayPixel(
-            new BMap.Point(group.longitude, group.latitude)
-          );
-          ctx.beginPath();
-          ctx.arc(pixel.x, pixel.y, 2, 0, Math.PI * 2);
-          ctx.fill();
-        });
-      });
-
-      this.presetOverlays.items.push({
-        type: "canvas",
-        instance: pointsCanvas,
-      });
-
-      this.isShowD = !this.isShowD;
-      this.isShowX = false;
-      this.isShowQ = false;
-    },
-
-    //预设线
-    showPresetLines() {
-      const deepData = !this.isShowX
-        ? JSON.parse(JSON.stringify(this.tableData))
-        : [];
-
-      this.clearPresetOverlays();
-
-      if (deepData.length > 0 && !this.isShowX) {
-        this.map.setViewport(
-          deepData.map(
-            (coord) => new BMap.Point(coord.longitude, coord.latitude)
-          )
-        );
-      }
-      setTimeout(() => {
-        this.map.panBy(0, 0); // 轻微移动触发重绘
-      }, 100);
-
-      const linesCanvas = new DynamicCanvasLayer(this.map, (ctx, canvas) => {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        if (deepData.length < 2) return;
-
-        // 绘制连线（顺序连接所有点）
-        ctx.beginPath();
-        const firstPixel = this.map.pointToOverlayPixel(
-          new BMap.Point(deepData[0].longitude, deepData[0].latitude)
-        );
-        ctx.moveTo(firstPixel.x, firstPixel.y);
-
-        for (let i = 1; i < deepData.length; i++) {
-          const pixel = this.map.pointToOverlayPixel(
-            new BMap.Point(deepData[i].longitude, deepData[i].latitude)
-          );
-          ctx.lineTo(pixel.x, pixel.y);
-        }
-
-        ctx.strokeStyle = "#2196F3";
-        ctx.lineWidth = 3;
-        ctx.stroke();
-      });
-
-      this.presetOverlays.items.push({
-        type: "canvas",
-        instance: linesCanvas,
-      });
-
-      this.isShowX = !this.isShowX;
-      this.isShowD = false;
-      this.isShowQ = false;
     },
 
     // 显示动画轨迹 - 类似高德地图的路线效果（性能优化版本）
@@ -1200,18 +1040,44 @@ export default {
       );
     },
 
-    handleSelectChange(val) {
+    async handleSelectChange(val) {
+      console.log(val);
+      this.show = true;
       positionHistoryPositionFindPersonHistoryList({
-        personId: this.queryParams.status.personId,
+        personId: "1972900380282490881",
         date: "",
         time: [],
-        beginTime: this.dateRange[0],
-        endTime: this.dateRange[1],
-      }).then((res) => {
+        beginTime: "2025-05-23 00:00:00",
+        endTime: "2025-05-23 24:00:00",
+        // personId: val.id,
+        // date: "",
+        // time: [],
+        // beginTime: val.identifyTime || "",
+        // endTime: val.returnCardTime || "",
+      }).then(async (res) => {
         if (res.code == 200) {
           this.tableData = res.data;
+          // 确保地图已初始化后再显示动画轨迹
+          this.$nextTick(async () => {
+            setTimeout(async () => {
+              if (this.map) {
+                this.showAnimatedLine();
+                this.toggleTrack();
+              } else {
+                await this.initMap();
+                setTimeout(() => {
+                  this.showAnimatedLine();
+                  this.toggleTrack();
+                }, 200);
+              }
+            }, 100);
+          });
         }
       });
+    },
+
+    close() {
+      this.show = false;
     },
     // 清除所有标记
     clearAll() {
@@ -1226,7 +1092,6 @@ export default {
   },
 };
 </script>
-
 <style scoped lang="scss">
 .map-container {
   position: relative;
