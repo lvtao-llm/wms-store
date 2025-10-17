@@ -60,6 +60,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </select>
 
+    <select id="selectLanyaPositionHistoryListStartById" parameterType="Long" resultMap="LanyaPositionHistoryResult">
+        <include refid="selectLanyaPositionHistoryVo"/>
+        where id >= #{id}
+    </select>
+
     <insert id="insertLanyaPositionHistory" parameterType="LanyaPositionHistory" useGeneratedKeys="true" keyProperty="id">
         insert into position_history
         <trim prefix="(" suffix=")" suffixOverrides=",">

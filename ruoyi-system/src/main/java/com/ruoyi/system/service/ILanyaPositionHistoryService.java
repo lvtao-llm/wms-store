@@ -28,6 +28,14 @@ public interface ILanyaPositionHistoryService
     public List<LanyaPositionHistory> selectLanyaPositionHistoryList(LanyaPositionHistory lanyaPositionHistory);
 
     /**
+     * 查询历史轨迹列表
+     *
+     * @param id 历史轨迹
+     * @return 历史轨迹集合
+     */
+    public List<LanyaPositionHistory> selectLanyaPositionHistoryListStartById(Long id);
+
+    /**
      * 新增历史轨迹
      * 
      * @param lanyaPositionHistory 历史轨迹

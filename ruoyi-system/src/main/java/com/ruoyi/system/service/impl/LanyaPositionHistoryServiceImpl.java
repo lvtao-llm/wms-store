@@ -44,6 +44,11 @@ public class LanyaPositionHistoryServiceImpl implements ILanyaPositionHistorySer
         return lanyaPositionHistoryMapper.selectLanyaPositionHistoryList(lanyaPositionHistory);
     }
 
+    @Override
+    public List<LanyaPositionHistory> selectLanyaPositionHistoryListStartById(Long id) {
+        return lanyaPositionHistoryMapper.selectLanyaPositionHistoryListStartById(id);
+    }
+
     /**
      * 新增历史轨迹
      * 

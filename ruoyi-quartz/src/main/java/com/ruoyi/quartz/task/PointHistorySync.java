@@ -8,6 +8,7 @@ import com.ruoyi.quartz.service.ISysJobLogService;
 import com.ruoyi.quartz.service.impl.MlPositionHistoryServiceImpl;
 import com.ruoyi.quartz.util.AbstractQuartzJob;
 import com.ruoyi.system.domain.WmsTrajectory;
+import com.ruoyi.system.lanya.data.LanyaPositionSync;
 import com.ruoyi.system.service.IWmsTrajectoryService;
 import org.quartz.JobExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,14 +24,10 @@ import java.util.List;
  */
 @Component
 public class PointHistorySync {
+    @Autowired
+    LanyaPositionSync lanyaPositionSync;
     public void PointHistoryIncrementSync() {
-        IMlPositionHistoryService mlPositionHistoryService = SpringUtils.getBean(IMlPositionHistoryService.class);
-        IWmsTrajectoryService trajectoryService = SpringUtils.getBean(IWmsTrajectoryService.class);
-        System.out.println("开始同步");
-        List<MlPositionHistory> mlPositionHistories = mlPositionHistoryService.selectMlPositionHistoryListFromId(0L);
-        for (MlPositionHistory mlPositionHistory : mlPositionHistories) {
-            trajectoryService.insertWmsTrajectory(ConvertWmsTrajectory(mlPositionHistory));
-        }
+        lanyaPositionSync.sync();
     }
 
     public WmsTrajectory ConvertWmsTrajectory(MlPositionHistory mlPositionHistory) {

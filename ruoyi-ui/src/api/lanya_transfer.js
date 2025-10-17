@@ -179,5 +179,14 @@ export function deviceBeaconPreview(data) {
   })
 }
 
+// 定位卡行动轨迹历史历史
+export function positionHistoryPositionFindPersonHistoryList(data) {
+  return request({
+    url: '/system/lanya-transfer/position/historyPosition/findPersonHistoryList',
+    method: 'post',
+    data: data
+  })
+}
+
 
 

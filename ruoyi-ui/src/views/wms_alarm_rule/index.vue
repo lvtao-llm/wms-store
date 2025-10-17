@@ -68,8 +68,8 @@
     <el-table v-loading="loading" :data="wms_alarm_ruleList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center"/>
       <el-table-column label="规则名称" align="center" prop="alarmRuleName"/>
-      <el-table-column label="时间阈值" align="center" prop="alarmRuleTimeThreshold"/>
-      <el-table-column label="距离阈值" align="center" prop="alarmRuleDistThreshold"/>
+      <el-table-column label="时间阈值(秒)" align="center" prop="alarmRuleTimeThreshold"/>
+      <el-table-column label="距离阈值(米)" align="center" prop="alarmRuleDistThreshold"/>
       <el-table-column label="目标区域" align="center" prop="alarmRuleTargetAreaName"/>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">

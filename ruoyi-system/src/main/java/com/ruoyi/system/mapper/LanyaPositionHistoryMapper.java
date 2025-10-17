@@ -58,4 +58,6 @@ public interface LanyaPositionHistoryMapper
      * @return 结果
      */
     public int deleteLanyaPositionHistoryByIds(Long[] ids);
+
+    List<LanyaPositionHistory> selectLanyaPositionHistoryListStartById(Long id);
 }
