@@ -370,7 +370,7 @@ export default {
       //TODO 弹出层中绘制多边形及颜色
       this.$refs.maps.openDia(row);
     },
-    handleShow() {
+    handleShow(areaPolygons) {
 
     },
     /** 删除按钮操作 */
