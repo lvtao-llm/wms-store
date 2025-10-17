@@ -46,7 +46,7 @@ import com.ruoyi.generator.service.IGenTableService;
  */
 @RestController
 @RequestMapping("/tool/gen")
-@DataSource(DataSourceType.SLAVE)
+@DataSource(DataSourceType.MASTER)
 public class GenController extends BaseController
 {
     @Autowired

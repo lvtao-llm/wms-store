@@ -1185,8 +1185,6 @@ export default {
       this.map.addOverlay(this.polyline);
     },
     remoteSearchUser(a, b, c) {
-      console.log(this.dateRange);
-      console.log(this.queryParams.status);
       listLanya_device_card_sender_log_by_name_card_type({ param: a }).then(
         (response) => {
           response.rows.forEach(
@@ -1194,7 +1192,6 @@ export default {
               (item.label =
                 item.realName + "-" + item.cardId + "-" + item.personTypeName)
           );
-          console.log(response.rows);
           this.selectData = response.rows;
         }
       );

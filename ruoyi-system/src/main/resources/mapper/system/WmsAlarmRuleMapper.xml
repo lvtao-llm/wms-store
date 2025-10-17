@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.WmsAlarmRuleMapper">
+    
+    <resultMap type="WmsAlarmRule" id="WmsAlarmRuleResult">
+        <result property="alarmRuleId"    column="alarm_rule_id"    />
+        <result property="alarmRuleName"    column="alarm_rule_name"    />
+        <result property="alarmRuleTimeThreshold"    column="alarm_rule_time_threshold"    />
+        <result property="alarmRuleDistThreshold"    column="alarm_rule_dist_threshold"    />
+        <result property="alarmRuleTargetAreaCode"    column="alarm_rule_target_area_code"    />
+    </resultMap>
+
+    <sql id="selectWmsAlarmRuleVo">
+        select alarm_rule_id, alarm_rule_name, alarm_rule_time_threshold, alarm_rule_dist_threshold, alarm_rule_target_area_code from wms_alarm_rule
+    </sql>
+
+    <select id="selectWmsAlarmRuleList" parameterType="WmsAlarmRule" resultMap="WmsAlarmRuleResult">
+        <include refid="selectWmsAlarmRuleVo"/>
+        <where>  
+            <if test="alarmRuleId != null "> and alarm_rule_id = #{alarmRuleId}</if>
+            <if test="alarmRuleName != null  and alarmRuleName != ''"> and alarm_rule_name like concat('%', #{alarmRuleName}, '%')</if>
+            <if test="alarmRuleTimeThreshold != null  and alarmRuleTimeThreshold != ''"> and alarm_rule_time_threshold = #{alarmRuleTimeThreshold}</if>
+            <if test="alarmRuleDistThreshold != null  and alarmRuleDistThreshold != ''"> and alarm_rule_dist_threshold = #{alarmRuleDistThreshold}</if>
+            <if test="alarmRuleTargetAreaCode != null  and alarmRuleTargetAreaCode != ''"> and alarm_rule_target_area_code = #{alarmRuleTargetAreaCode}</if>
+        </where>
+    </select>
+    
+    <select id="selectWmsAlarmRuleByAlarmRuleId" parameterType="Long" resultMap="WmsAlarmRuleResult">
+        <include refid="selectWmsAlarmRuleVo"/>
+        where alarm_rule_id = #{alarmRuleId}
+    </select>
+
+    <insert id="insertWmsAlarmRule" parameterType="WmsAlarmRule">
+        insert into wms_alarm_rule
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="alarmRuleId != null">alarm_rule_id,</if>
+            <if test="alarmRuleName != null">alarm_rule_name,</if>
+            <if test="alarmRuleTimeThreshold != null">alarm_rule_time_threshold,</if>
+            <if test="alarmRuleDistThreshold != null">alarm_rule_dist_threshold,</if>
+            <if test="alarmRuleTargetAreaCode != null">alarm_rule_target_area_code,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="alarmRuleId != null">#{alarmRuleId},</if>
+            <if test="alarmRuleName != null">#{alarmRuleName},</if>
+            <if test="alarmRuleTimeThreshold != null">#{alarmRuleTimeThreshold},</if>
+            <if test="alarmRuleDistThreshold != null">#{alarmRuleDistThreshold},</if>
+            <if test="alarmRuleTargetAreaCode != null">#{alarmRuleTargetAreaCode},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWmsAlarmRule" parameterType="WmsAlarmRule">
+        update wms_alarm_rule
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="alarmRuleName != null">alarm_rule_name = #{alarmRuleName},</if>
+            <if test="alarmRuleTimeThreshold != null">alarm_rule_time_threshold = #{alarmRuleTimeThreshold},</if>
+            <if test="alarmRuleDistThreshold != null">alarm_rule_dist_threshold = #{alarmRuleDistThreshold},</if>
+            <if test="alarmRuleTargetAreaCode != null">alarm_rule_target_area_code = #{alarmRuleTargetAreaCode},</if>
+        </trim>
+        where alarm_rule_id = #{alarmRuleId}
+    </update>
+
+    <delete id="deleteWmsAlarmRuleByAlarmRuleId" parameterType="Long">
+        delete from wms_alarm_rule where alarm_rule_id = #{alarmRuleId}
+    </delete>
+
+    <delete id="deleteWmsAlarmRuleByAlarmRuleIds" parameterType="String">
+        delete from wms_alarm_rule where alarm_rule_id in 
+        <foreach item="alarmRuleId" collection="array" open="(" separator="," close=")">
+            #{alarmRuleId}
+        </foreach>
+    </delete>
+</mapper>

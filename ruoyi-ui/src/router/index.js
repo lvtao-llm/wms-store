@@ -401,14 +401,14 @@ export const dynamicRoutes = [
     permissions: ['system:role:edit'],
     children: [
       {
-        path: 'area-draw',
-        component: () => import('@/views/wms_area/index'),
-        name: '区域绘制',
-        meta: {title: '区域绘制'}
+        path: 'people-rule',
+        component: () => import('@/views/wms_alarm_rule/index'),
+        name: '人员报警规则',
+        meta: {title: '人员报警规则'}
       },
       {
         path: 'people-log',
-        component: () => import('@/views/wms_alarm_people_log/index'),
+        component: () => import('@/views/wms_alarm_log/index'),
         name: '人员报警记录',
         meta: {title: '人员报警记录'}
       }
