@@ -8,7 +8,7 @@
       :close-on-click-modal="false"
     >
       <div style="height: 80vh; width: 100%" id="container"></div>
-      <div style="margin-top: 10px">
+      <div style="margin-top: 10px" v-if="this.pageType !== 'view'">
         <el-button type="primary" size="mini" @click="savePoints">
           保存当前标记点</el-button
         >
@@ -62,6 +62,7 @@ export default {
       isShowQ: false,
       isToggle: false,
       inDate: "",
+      pageType: "add",
 
       // 地图相关
       map: null,
@@ -115,8 +116,9 @@ export default {
     this.cleanupAnimation();
   },
   methods: {
-    openDia(row) {
+    openDia(row, type = "add") {
       this.show = true;
+      this.pageType = type;
       getArea(row.areaId).then((response) => {
         this.form = response.data;
         if (this.form.areaPolygon) {
@@ -124,7 +126,6 @@ export default {
             this.savedPointGroups = JSON.parse(this.form.areaPolygon);
             // this.choosePoints = JSON.parse(this.form.areaPolygon);
             this.points = this.savedPointGroups[0].points;
-            console.log(this.points, 111);
             // 等待对话框和地图完全初始化后再显示标记点
             this.$nextTick(() => {
               setTimeout(() => {
@@ -145,6 +146,26 @@ export default {
             this.$modal.msgError("区域数据格式错误");
           }
         }
+      });
+    },
+    openDiaAll(data, type = "view") {
+      this.show = true;
+      this.pageType = type;
+      this.savedPointGroups = data;
+      this.$nextTick(() => {
+        setTimeout(() => {
+          if (this.map) {
+            this.showAllSavedGroups();
+          } else {
+            // 如果地图还没初始化，等待地图初始化完成
+            const checkMap = setInterval(() => {
+              if (this.map) {
+                clearInterval(checkMap);
+                this.showAllSavedGroups();
+              }
+            }, 100);
+          }
+        }, 200);
       });
     },
     // 等待百度地图API加载完成
