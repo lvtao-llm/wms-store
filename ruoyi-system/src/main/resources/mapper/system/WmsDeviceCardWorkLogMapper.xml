@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.WmsDeviceCardWorkLogMapper">
+    
+    <resultMap type="WmsDeviceCardWorkLog" id="WmsDeviceCardWorkLogResult">
+        <result property="id"    column="id"    />
+        <result property="cardId"    column="card_id"    />
+        <result property="personPhoto"    column="person_photo"    />
+        <result property="personId"    column="person_id"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="realName"    column="real_name"    />
+        <result property="deptName"    column="dept_name"    />
+        <result property="idNumber"    column="id_number"    />
+        <result property="identifyType"    column="identify_type"    />
+        <result property="senderDeviceSn"    column="sender_device_sn"    />
+        <result property="senderDeviceName"    column="sender_device_name"    />
+        <result property="senderDeviceNum"    column="sender_device_num"    />
+        <result property="senderCommandTime"    column="sender_command_time"    />
+        <result property="senderRentType"    column="sender_rent_type"    />
+        <result property="senderIdentifyTime"    column="sender_identify_time"    />
+        <result property="senderLanyaLogId"    column="sender_lanya_log_id"    />
+        <result property="returnDeviceSn"    column="return_device_sn"    />
+        <result property="returnDeviceName"    column="return_device_name"    />
+        <result property="returnDeviceNum"    column="return_device_num"    />
+        <result property="returnCommandTime"    column="return_command_time"    />
+        <result property="returnLanyaLogId"    column="return_lanya_log_id"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="positionHistoryBeginId"    column="position_history_begin_id"    />
+        <result property="positionHistoryEndId"    column="position_history_end_id"    />
+    </resultMap>
+
+    <sql id="selectWmsDeviceCardWorkLogVo">
+        select id, card_id, person_photo, person_id, dept_id, real_name, dept_name, id_number, identify_type, sender_device_sn, sender_device_name, sender_device_num, sender_command_time, sender_rent_type, sender_identify_time, sender_lanya_log_id, return_device_sn, return_device_name, return_device_num, return_command_time, return_lanya_log_id, create_time, update_time, position_history_begin_id, position_history_end_id from wms_device_card_work_log
+    </sql>
+
+    <select id="selectWmsDeviceCardWorkLogList" parameterType="WmsDeviceCardWorkLog" resultMap="WmsDeviceCardWorkLogResult">
+        <include refid="selectWmsDeviceCardWorkLogVo"/>
+        <where>  
+            <if test="cardId != null "> and card_id = #{cardId}</if>
+            <if test="personPhoto != null  and personPhoto != ''"> and person_photo = #{personPhoto}</if>
+            <if test="personId != null "> and person_id = #{personId}</if>
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+            <if test="realName != null  and realName != ''"> and real_name like concat('%', #{realName}, '%')</if>
+            <if test="deptName != null  and deptName != ''"> and dept_name like concat('%', #{deptName}, '%')</if>
+            <if test="idNumber != null  and idNumber != ''"> and id_number = #{idNumber}</if>
+            <if test="identifyType != null  and identifyType != ''"> and identify_type = #{identifyType}</if>
+            <if test="senderDeviceSn != null  and senderDeviceSn != ''"> and sender_device_sn = #{senderDeviceSn}</if>
+            <if test="senderDeviceName != null  and senderDeviceName != ''"> and sender_device_name like concat('%', #{senderDeviceName}, '%')</if>
+            <if test="senderDeviceNum != null "> and sender_device_num = #{senderDeviceNum}</if>
+            <if test="senderCommandTime != null "> and sender_command_time = #{senderCommandTime}</if>
+            <if test="senderRentType != null  and senderRentType != ''"> and sender_rent_type = #{senderRentType}</if>
+            <if test="senderIdentifyTime != null "> and sender_identify_time = #{senderIdentifyTime}</if>
+            <if test="senderLanyaLogId != null "> and sender_lanya_log_id = #{senderLanyaLogId}</if>
+            <if test="returnDeviceSn != null  and returnDeviceSn != ''"> and return_device_sn = #{returnDeviceSn}</if>
+            <if test="returnDeviceName != null  and returnDeviceName != ''"> and return_device_name like concat('%', #{returnDeviceName}, '%')</if>
+            <if test="returnDeviceNum != null "> and return_device_num = #{returnDeviceNum}</if>
+            <if test="returnCommandTime != null "> and return_command_time = #{returnCommandTime}</if>
+            <if test="returnLanyaLogId != null "> and return_lanya_log_id = #{returnLanyaLogId}</if>
+            <if test="positionHistoryBeginId != null "> and position_history_begin_id = #{positionHistoryBeginId}</if>
+            <if test="positionHistoryEndId != null "> and position_history_end_id = #{positionHistoryEndId}</if>
+        </where>
+    </select>
+
+    <select id="selectWmsDeviceCardWorkLogListEnd" parameterType="WmsDeviceCardWorkLog" resultMap="WmsDeviceCardWorkLogResult">
+        <include refid="selectWmsDeviceCardWorkLogVo"/>
+        <where>
+            return_command_time is null
+            <if test="cardId != null "> and card_id = #{cardId}</if>
+            <if test="personPhoto != null  and personPhoto != ''"> and person_photo = #{personPhoto}</if>
+            <if test="personId != null "> and person_id = #{personId}</if>
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+            <if test="realName != null  and realName != ''"> and real_name like concat('%', #{realName}, '%')</if>
+            <if test="deptName != null  and deptName != ''"> and dept_name like concat('%', #{deptName}, '%')</if>
+            <if test="idNumber != null  and idNumber != ''"> and id_number = #{idNumber}</if>
+            <if test="identifyType != null  and identifyType != ''"> and identify_type = #{identifyType}</if>
+            <if test="senderDeviceSn != null  and senderDeviceSn != ''"> and sender_device_sn = #{senderDeviceSn}</if>
+            <if test="senderDeviceName != null  and senderDeviceName != ''"> and sender_device_name like concat('%', #{senderDeviceName}, '%')</if>
+            <if test="senderDeviceNum != null "> and sender_device_num = #{senderDeviceNum}</if>
+            <if test="senderCommandTime != null "> and sender_command_time = #{senderCommandTime}</if>
+            <if test="senderRentType != null  and senderRentType != ''"> and sender_rent_type = #{senderRentType}</if>
+            <if test="senderIdentifyTime != null "> and sender_identify_time = #{senderIdentifyTime}</if>
+            <if test="senderLanyaLogId != null "> and sender_lanya_log_id = #{senderLanyaLogId}</if>
+            <if test="positionHistoryBeginId != null "> and position_history_begin_id = #{positionHistoryBeginId}</if>
+            <if test="positionHistoryEndId != null "> and position_history_end_id = #{positionHistoryEndId}</if>
+        </where>
+    </select>
+    
+    <select id="selectWmsDeviceCardWorkLogById" parameterType="Long" resultMap="WmsDeviceCardWorkLogResult">
+        <include refid="selectWmsDeviceCardWorkLogVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectWmsDeviceCardWorkLogIdInTimeByCardAndName" resultMap="WmsDeviceCardWorkLogResult">
+        <include refid="selectWmsDeviceCardWorkLogVo"/>
+        where sender_command_time >= #{time} and return_command_time <![CDATA[ <= ]]> #{time} and card_id = #{cardId} and real_name = #{realName}
+    </select>
+
+    <insert id="insertWmsDeviceCardWorkLog" parameterType="WmsDeviceCardWorkLog">
+        insert into wms_device_card_work_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="cardId != null">card_id,</if>
+            <if test="personPhoto != null">person_photo,</if>
+            <if test="personId != null">person_id,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="realName != null">real_name,</if>
+            <if test="deptName != null">dept_name,</if>
+            <if test="idNumber != null">id_number,</if>
+            <if test="identifyType != null">identify_type,</if>
+            <if test="senderDeviceSn != null">sender_device_sn,</if>
+            <if test="senderDeviceName != null">sender_device_name,</if>
+            <if test="senderDeviceNum != null">sender_device_num,</if>
+            <if test="senderCommandTime != null">sender_command_time,</if>
+            <if test="senderRentType != null">sender_rent_type,</if>
+            <if test="senderIdentifyTime != null">sender_identify_time,</if>
+            <if test="senderLanyaLogId != null">sender_lanya_log_id,</if>
+            <if test="returnDeviceSn != null">return_device_sn,</if>
+            <if test="returnDeviceName != null">return_device_name,</if>
+            <if test="returnDeviceNum != null">return_device_num,</if>
+            <if test="returnCommandTime != null">return_command_time,</if>
+            <if test="returnLanyaLogId != null">return_lanya_log_id,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="positionHistoryBeginId != null">position_history_begin_id,</if>
+            <if test="positionHistoryEndId != null">position_history_end_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="cardId != null">#{cardId},</if>
+            <if test="personPhoto != null">#{personPhoto},</if>
+            <if test="personId != null">#{personId},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="realName != null">#{realName},</if>
+            <if test="deptName != null">#{deptName},</if>
+            <if test="idNumber != null">#{idNumber},</if>
+            <if test="identifyType != null">#{identifyType},</if>
+            <if test="senderDeviceSn != null">#{senderDeviceSn},</if>
+            <if test="senderDeviceName != null">#{senderDeviceName},</if>
+            <if test="senderDeviceNum != null">#{senderDeviceNum},</if>
+            <if test="senderCommandTime != null">#{senderCommandTime},</if>
+            <if test="senderRentType != null">#{senderRentType},</if>
+            <if test="senderIdentifyTime != null">#{senderIdentifyTime},</if>
+            <if test="senderLanyaLogId != null">#{senderLanyaLogId},</if>
+            <if test="returnDeviceSn != null">#{returnDeviceSn},</if>
+            <if test="returnDeviceName != null">#{returnDeviceName},</if>
+            <if test="returnDeviceNum != null">#{returnDeviceNum},</if>
+            <if test="returnCommandTime != null">#{returnCommandTime},</if>
+            <if test="returnLanyaLogId != null">#{returnLanyaLogId},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="positionHistoryBeginId != null">#{positionHistoryBeginId},</if>
+            <if test="positionHistoryEndId != null">#{positionHistoryEndId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWmsDeviceCardWorkLog" parameterType="WmsDeviceCardWorkLog">
+        update wms_device_card_work_log
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="cardId != null">card_id = #{cardId},</if>
+            <if test="personPhoto != null">person_photo = #{personPhoto},</if>
+            <if test="personId != null">person_id = #{personId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="realName != null">real_name = #{realName},</if>
+            <if test="deptName != null">dept_name = #{deptName},</if>
+            <if test="idNumber != null">id_number = #{idNumber},</if>
+            <if test="identifyType != null">identify_type = #{identifyType},</if>
+            <if test="senderDeviceSn != null">sender_device_sn = #{senderDeviceSn},</if>
+            <if test="senderDeviceName != null">sender_device_name = #{senderDeviceName},</if>
+            <if test="senderDeviceNum != null">sender_device_num = #{senderDeviceNum},</if>
+            <if test="senderCommandTime != null">sender_command_time = #{senderCommandTime},</if>
+            <if test="senderRentType != null">sender_rent_type = #{senderRentType},</if>
+            <if test="senderIdentifyTime != null">sender_identify_time = #{senderIdentifyTime},</if>
+            <if test="senderLanyaLogId != null">sender_lanya_log_id = #{senderLanyaLogId},</if>
+            <if test="returnDeviceSn != null">return_device_sn = #{returnDeviceSn},</if>
+            <if test="returnDeviceName != null">return_device_name = #{returnDeviceName},</if>
+            <if test="returnDeviceNum != null">return_device_num = #{returnDeviceNum},</if>
+            <if test="returnCommandTime != null">return_command_time = #{returnCommandTime},</if>
+            <if test="returnLanyaLogId != null">return_lanya_log_id = #{returnLanyaLogId},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="positionHistoryBeginId != null">position_history_begin_id = #{positionHistoryBeginId},</if>
+            <if test="positionHistoryEndId != null">position_history_end_id = #{positionHistoryEndId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWmsDeviceCardWorkLogById" parameterType="Long">
+        delete from wms_device_card_work_log where id = #{id}
+    </delete>
+
+    <delete id="deleteWmsDeviceCardWorkLogByIds" parameterType="String">
+        delete from wms_device_card_work_log where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

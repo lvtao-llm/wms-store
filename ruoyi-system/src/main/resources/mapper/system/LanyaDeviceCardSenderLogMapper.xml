@@ -1,107 +1,145 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.system.mapper.LanyaDeviceCardSenderLogMapper">
-    
+
     <resultMap type="LanyaDeviceCardSenderLog" id="LanyaDeviceCardSenderLogResult">
-        <result property="id"    column="id"    />
-        <result property="deviceSn"    column="device_sn"    />
-        <result property="deviceName"    column="device_name"    />
-        <result property="deviceNum"    column="device_num"    />
-        <result property="cardId"    column="card_id"    />
-        <result property="personPhoto"    column="person_photo"    />
-        <result property="commandTime"    column="command_time"    />
-        <result property="cardSenderType"    column="card_sender_type"    />
-        <result property="result"    column="result"    />
-        <result property="remark"    column="remark"    />
-        <result property="createTime"    column="create_time"    />
-        <result property="personId"    column="person_id"    />
-        <result property="realName"    column="real_name"    />
-        <result property="deptId"    column="dept_id"    />
-        <result property="deptName"    column="dept_name"    />
-        <result property="jobNumber"    column="job_number"    />
-        <result property="idNumber"    column="id_number"    />
-        <result property="personIc"    column="person_ic"    />
-        <result property="deviceAims"    column="device_aims"    />
-        <result property="identifyType"    column="identify_type"    />
-        <result property="rentType"    column="rent_type"    />
-        <result property="identifyTime"    column="identify_time"    />
-        <result property="closedTime"    column="closed_time"    />
-        <result property="updateTime"    column="update_time"    />
-        <result property="notifyStatus"    column="notify_status"    />
+        <result property="id" column="id"/>
+        <result property="deviceSn" column="device_sn"/>
+        <result property="deviceName" column="device_name"/>
+        <result property="deviceNum" column="device_num"/>
+        <result property="cardId" column="card_id"/>
+        <result property="personPhoto" column="person_photo"/>
+        <result property="commandTime" column="command_time"/>
+        <result property="cardSenderType" column="card_sender_type"/>
+        <result property="result" column="result"/>
+        <result property="remark" column="remark"/>
+        <result property="createTime" column="create_time"/>
+        <result property="personId" column="person_id"/>
+        <result property="realName" column="real_name"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="deptName" column="dept_name"/>
+        <result property="jobNumber" column="job_number"/>
+        <result property="idNumber" column="id_number"/>
+        <result property="personIc" column="person_ic"/>
+        <result property="deviceAims" column="device_aims"/>
+        <result property="identifyType" column="identify_type"/>
+        <result property="rentType" column="rent_type"/>
+        <result property="identifyTime" column="identify_time"/>
+        <result property="closedTime" column="closed_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="notifyStatus" column="notify_status"/>
     </resultMap>
 
     <resultMap type="LanyaDeviceCardSenderLog" id="LanyaDeviceCardSenderLogWithPersonResult">
-        <result property="id"    column="id"    />
-        <result property="deviceSn"    column="device_sn"    />
-        <result property="deviceName"    column="device_name"    />
-        <result property="deviceNum"    column="device_num"    />
-        <result property="cardId"    column="card_id"    />
-        <result property="personPhoto"    column="person_photo"    />
-        <result property="commandTime"    column="command_time"    />
-        <result property="cardSenderType"    column="card_sender_type"    />
-        <result property="result"    column="result"    />
-        <result property="remark"    column="remark"    />
-        <result property="createTime"    column="create_time"    />
-        <result property="personId"    column="person_id"    />
-        <result property="realName"    column="real_name"    />
-        <result property="deptId"    column="dept_id"    />
-        <result property="deptName"    column="dept_name"    />
-        <result property="jobNumber"    column="job_number"    />
-        <result property="idNumber"    column="id_number"    />
-        <result property="personIc"    column="person_ic"    />
-        <result property="deviceAims"    column="device_aims"    />
-        <result property="identifyType"    column="identify_type"    />
-        <result property="rentType"    column="rent_type"    />
-        <result property="identifyTime"    column="identify_time"    />
-        <result property="closedTime"    column="closed_time"    />
-        <result property="updateTime"    column="update_time"    />
-        <result property="notifyStatus"    column="notify_status"    />
-        <result property="personTypeName"    column="person_type_name"    />
+        <result property="id" column="id"/>
+        <result property="deviceSn" column="device_sn"/>
+        <result property="deviceName" column="device_name"/>
+        <result property="deviceNum" column="device_num"/>
+        <result property="cardId" column="card_id"/>
+        <result property="personPhoto" column="person_photo"/>
+        <result property="commandTime" column="command_time"/>
+        <result property="cardSenderType" column="card_sender_type"/>
+        <result property="result" column="result"/>
+        <result property="remark" column="remark"/>
+        <result property="createTime" column="create_time"/>
+        <result property="personId" column="person_id"/>
+        <result property="realName" column="real_name"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="deptName" column="dept_name"/>
+        <result property="jobNumber" column="job_number"/>
+        <result property="idNumber" column="id_number"/>
+        <result property="personIc" column="person_ic"/>
+        <result property="deviceAims" column="device_aims"/>
+        <result property="identifyType" column="identify_type"/>
+        <result property="rentType" column="rent_type"/>
+        <result property="identifyTime" column="identify_time"/>
+        <result property="closedTime" column="closed_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="notifyStatus" column="notify_status"/>
+        <result property="personTypeName" column="person_type_name"/>
     </resultMap>
 
     <sql id="selectLanyaDeviceCardSenderLogVo">
-        select id, device_sn, device_name, device_num, card_id, person_photo, command_time, card_sender_type, result, remark, create_time, person_id, real_name, dept_id, dept_name, job_number, id_number, person_ic, device_aims, identify_type, rent_type, identify_time, closed_time, update_time, notify_status from device_card_sender_log
+        select id,
+               device_sn,
+               device_name,
+               device_num,
+               card_id,
+               person_photo,
+               command_time,
+               card_sender_type,
+               result,
+               remark,
+               create_time,
+               person_id,
+               real_name,
+               dept_id,
+               dept_name,
+               job_number,
+               id_number,
+               person_ic,
+               device_aims,
+               identify_type,
+               rent_type,
+               identify_time,
+               closed_time,
+               update_time,
+               notify_status
+        from device_card_sender_log
     </sql>
 
-    <select id="selectLanyaDeviceCardSenderLogList" parameterType="LanyaDeviceCardSenderLog" resultMap="LanyaDeviceCardSenderLogResult">
+    <select id="selectLanyaDeviceCardSenderLogList" parameterType="LanyaDeviceCardSenderLog"
+            resultMap="LanyaDeviceCardSenderLogResult">
         <include refid="selectLanyaDeviceCardSenderLogVo"/>
-        <where>  
-            <if test="deviceSn != null  and deviceSn != ''"> and device_sn = #{deviceSn}</if>
-            <if test="deviceName != null  and deviceName != ''"> and device_name like concat('%', #{deviceName}, '%')</if>
-            <if test="deviceNum != null "> and device_num = #{deviceNum}</if>
-            <if test="cardId != null "> and card_id = #{cardId}</if>
-            <if test="personPhoto != null  and personPhoto != ''"> and person_photo = #{personPhoto}</if>
-            <if test="commandTime != null "> and command_time = #{commandTime}</if>
-            <if test="cardSenderType != null "> and card_sender_type = #{cardSenderType}</if>
-            <if test="result != null  and result != ''"> and result = #{result}</if>
-            <if test="personId != null "> and person_id = #{personId}</if>
-            <if test="realName != null  and realName != ''"> and real_name like concat('%', #{realName}, '%')</if>
-            <if test="deptId != null "> and dept_id = #{deptId}</if>
-            <if test="deptName != null  and deptName != ''"> and dept_name like concat('%', #{deptName}, '%')</if>
-            <if test="jobNumber != null  and jobNumber != ''"> and job_number = #{jobNumber}</if>
-            <if test="idNumber != null  and idNumber != ''"> and id_number = #{idNumber}</if>
-            <if test="personIc != null  and personIc != ''"> and person_ic = #{personIc}</if>
-            <if test="deviceAims != null "> and device_aims = #{deviceAims}</if>
-            <if test="identifyType != null  and identifyType != ''"> and identify_type = #{identifyType}</if>
-            <if test="rentType != null  and rentType != ''"> and rent_type = #{rentType}</if>
-            <if test="identifyTime != null "> and identify_time = #{identifyTime}</if>
-            <if test="closedTime != null "> and closed_time = #{closedTime}</if>
-            <if test="notifyStatus != null  and notifyStatus != ''"> and notify_status = #{notifyStatus}</if>
+        <where>
+            <if test="deviceSn != null  and deviceSn != ''">and device_sn = #{deviceSn}</if>
+            <if test="deviceName != null  and deviceName != ''">and device_name like concat('%', #{deviceName}, '%')
+            </if>
+            <if test="deviceNum != null ">and device_num = #{deviceNum}</if>
+            <if test="cardId != null ">and card_id = #{cardId}</if>
+            <if test="personPhoto != null  and personPhoto != ''">and person_photo = #{personPhoto}</if>
+            <if test="commandTime != null ">and command_time = #{commandTime}</if>
+            <if test="cardSenderType != null ">and card_sender_type = #{cardSenderType}</if>
+            <if test="result != null  and result != ''">and result = #{result}</if>
+            <if test="personId != null ">and person_id = #{personId}</if>
+            <if test="realName != null  and realName != ''">and real_name like concat('%', #{realName}, '%')</if>
+            <if test="deptId != null ">and dept_id = #{deptId}</if>
+            <if test="deptName != null  and deptName != ''">and dept_name like concat('%', #{deptName}, '%')</if>
+            <if test="jobNumber != null  and jobNumber != ''">and job_number = #{jobNumber}</if>
+            <if test="idNumber != null  and idNumber != ''">and id_number = #{idNumber}</if>
+            <if test="personIc != null  and personIc != ''">and person_ic = #{personIc}</if>
+            <if test="deviceAims != null ">and device_aims = #{deviceAims}</if>
+            <if test="identifyType != null  and identifyType != ''">and identify_type = #{identifyType}</if>
+            <if test="rentType != null  and rentType != ''">and rent_type = #{rentType}</if>
+            <if test="identifyTime != null ">and identify_time = #{identifyTime}</if>
+            <if test="closedTime != null ">and closed_time = #{closedTime}</if>
+            <if test="notifyStatus != null  and notifyStatus != ''">and notify_status = #{notifyStatus}</if>
         </where>
     </select>
-    
+
+    <select id="selectLanyaDeviceCardSenderLogListStartId" resultMap="LanyaDeviceCardSenderLogResult">
+        select *
+        from device_card_sender_log
+        where id > #{cardLogOffset}
+        order by id asc
+            limit #{count}
+    </select>
+
     <select id="selectLanyaDeviceCardSenderLogById" parameterType="Long" resultMap="LanyaDeviceCardSenderLogResult">
         <include refid="selectLanyaDeviceCardSenderLogVo"/>
         where id = #{id}
     </select>
 
-    <select id="selectLanyaDeviceCardSenderLogListByNameCardType" parameterType="String" resultMap="LanyaDeviceCardSenderLogWithPersonResult">
-        select log.*, dict.dict_label 'person_type_name' from device_card_sender_log log
-        left join core_person person on log.person_id = person.person_id
-        left join system_dict dict on dict.dict_type = 'person_type' and dict.dict_value = person.person_type
-        where log.card_sender_type = 1 and (log.card_id LIKE CONCAT('%', #{param}, '%') or log.real_name LIKE CONCAT('%', #{param}, '%'))
+    <select id="selectLanyaDeviceCardSenderLogListByNameCardType" parameterType="String"
+            resultMap="LanyaDeviceCardSenderLogWithPersonResult">
+        select log.*, dict.dict_label 'person_type_name'
+        from device_card_sender_log log
+                 left join core_person person on log.person_id = person.person_id
+                 left join system_dict dict on dict.dict_type = 'person_type' and dict.dict_value = person.person_type
+        where log.card_sender_type = 1
+          and (log.card_id LIKE CONCAT('%', #{param}, '%') or log.real_name LIKE CONCAT('%', #{param}, '%'))
     </select>
 
     <insert id="insertLanyaDeviceCardSenderLog" parameterType="LanyaDeviceCardSenderLog">
@@ -132,7 +170,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="closedTime != null">closed_time,</if>
             <if test="updateTime != null">update_time,</if>
             <if test="notifyStatus != null">notify_status,</if>
-         </trim>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">#{id},</if>
             <if test="deviceSn != null">#{deviceSn},</if>
@@ -159,7 +197,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="closedTime != null">#{closedTime},</if>
             <if test="updateTime != null">#{updateTime},</if>
             <if test="notifyStatus != null">#{notifyStatus},</if>
-         </trim>
+        </trim>
     </insert>
 
     <update id="updateLanyaDeviceCardSenderLog" parameterType="LanyaDeviceCardSenderLog">
@@ -194,11 +232,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
     <delete id="deleteLanyaDeviceCardSenderLogById" parameterType="Long">
-        delete from device_card_sender_log where id = #{id}
+        delete
+        from device_card_sender_log
+        where id = #{id}
     </delete>
 
     <delete id="deleteLanyaDeviceCardSenderLogByIds" parameterType="String">
-        delete from device_card_sender_log where id in 
+        delete from device_card_sender_log where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>

@@ -1,19 +1,19 @@
 package com.ruoyi.system.mapper;
 
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 import com.ruoyi.common.core.domain.entity.SysDictData;
 
 /**
  * 字典表 数据层
- * 
+ *
  * @author ruoyi
  */
-public interface SysDictDataMapper
-{
+public interface SysDictDataMapper {
     /**
      * 根据条件分页查询字典数据
-     * 
+     *
      * @param dictData 字典数据信息
      * @return 字典数据集合信息
      */
@@ -21,7 +21,7 @@ public interface SysDictDataMapper
 
     /**
      * 根据字典类型查询字典数据
-     * 
+     *
      * @param dictType 字典类型
      * @return 字典数据集合信息
      */
@@ -29,8 +29,8 @@ public interface SysDictDataMapper
 
     /**
      * 根据字典类型和字典键值查询字典数据信息
-     * 
-     * @param dictType 字典类型
+     *
+     * @param dictType  字典类型
      * @param dictValue 字典键值
      * @return 字典标签
      */
@@ -38,7 +38,7 @@ public interface SysDictDataMapper
 
     /**
      * 根据字典数据ID查询信息
-     * 
+     *
      * @param dictCode 字典数据ID
      * @return 字典数据
      */
@@ -46,7 +46,7 @@ public interface SysDictDataMapper
 
     /**
      * 查询字典数据
-     * 
+     *
      * @param dictType 字典类型
      * @return 字典数据
      */
@@ -54,7 +54,7 @@ public interface SysDictDataMapper
 
     /**
      * 通过字典ID删除字典数据信息
-     * 
+     *
      * @param dictCode 字典数据ID
      * @return 结果
      */
@@ -62,7 +62,7 @@ public interface SysDictDataMapper
 
     /**
      * 批量删除字典数据信息
-     * 
+     *
      * @param dictCodes 需要删除的字典数据ID
      * @return 结果
      */
@@ -70,7 +70,7 @@ public interface SysDictDataMapper
 
     /**
      * 新增字典数据信息
-     * 
+     *
      * @param dictData 字典数据信息
      * @return 结果
      */
@@ -78,7 +78,7 @@ public interface SysDictDataMapper
 
     /**
      * 修改字典数据信息
-     * 
+     *
      * @param dictData 字典数据信息
      * @return 结果
      */
@@ -86,10 +86,40 @@ public interface SysDictDataMapper
 
     /**
      * 同步修改字典类型
-     * 
+     *
      * @param oldDictType 旧字典类型
      * @param newDictType 新旧字典类型
      * @return 结果
      */
     public int updateDictDataType(@Param("oldDictType") String oldDictType, @Param("newDictType") String newDictType);
+
+    /**
+     * 同步修改字典标签
+     *
+     * @param dictType 字典类型
+     * @param oldLabel 旧标签
+     * @param newLabel 新标签
+     * @return 结果
+     */
+    int updateDictDataLabel(@Param("dictType") String dictType, @Param("oldLabel") String oldLabel, @Param("newLabel") String newLabel);
+
+    /**
+     * 同步修改字典值
+     *
+     * @param dictType 字典类型
+     * @param label    字典标签
+     * @param value    字典值
+     * @return 结果
+     */
+    int updateDictDataValue(@Param("dictType") String dictType, @Param("label") String label, @Param("value") String value);
+
+    /**
+     * 根据字典类型和字典标签查询字典数据信息
+     *
+     * @param type 字典类型
+     * @return 字典数据信息
+     */
+    Long selectDictMaxSortByType(@Param("type") String type);
+
+    int deleteDictDataByTypeAndLabel(@Param("dictType") String dictType, @Param("dictLabel") String dictLabel);
 }

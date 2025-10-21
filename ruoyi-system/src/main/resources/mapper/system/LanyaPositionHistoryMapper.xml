@@ -60,9 +60,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </select>
 
-    <select id="selectLanyaPositionHistoryListStartById" parameterType="Long" resultMap="LanyaPositionHistoryResult">
+    <select id="selectLanyaPositionHistoryListStartId" resultMap="LanyaPositionHistoryResult">
+        select id, accept_time, card_id, card_type, beacon_id, longitude, latitude, distance, layer_id, layer_height, create_time, person_id, person_type, staff_type, real_name, dept_id, post_id, contractor_id, altitude, rtk_position_mode
+        from ${tableName}
+        where id > #{id}
+        order by id asc
+        limit #{count}
+    </select>
+
+    <select id="selectLanyaPositionHistoryListStartTimeByCardAndName" resultMap="LanyaPositionHistoryResult">
         <include refid="selectLanyaPositionHistoryVo"/>
-        where id >= #{id}
+        where accept_time >= #{beginTime} and card_id = #{cardId} and real_name = #{realName}
+        <if test="endTime != null "> and accept_time <![CDATA[ <= ]]> #{endTime}</if>
+        order by id asc
+    </select>
+
+    <select id="showPositionHistoryTableNames" resultType="string">
+        SHOW TABLES LIKE 'position_history_%'
     </select>
 
     <insert id="insertLanyaPositionHistory" parameterType="LanyaPositionHistory" useGeneratedKeys="true" keyProperty="id">

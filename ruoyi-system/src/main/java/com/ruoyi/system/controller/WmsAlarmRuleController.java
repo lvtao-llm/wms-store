@@ -25,7 +25,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * 报警信息规则Controller
  * 
  * @author ruoyi
- * @date 2025-10-17
+ * @date 2025-10-20
  */
 @RestController
 @RequestMapping("/system/wms_alarm_rule")

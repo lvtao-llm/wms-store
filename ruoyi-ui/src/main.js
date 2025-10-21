@@ -12,13 +12,13 @@ import store from './store'
 import router from './router'
 import directive from './directive' // directive
 import plugins from './plugins' // plugins
-import { download } from '@/utils/request'
+import {download} from '@/utils/request'
 
 import './assets/icons' // icon
 import './permission' // permission control
-import { getDicts } from "@/api/system/dict/data"
-import { getConfigKey } from "@/api/system/config"
-import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, handleTree } from "@/utils/ruoyi"
+import {getDicts} from "@/api/system/dict/data"
+import {getConfigKey} from "@/api/system/config"
+import {parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, handleTree} from "@/utils/ruoyi"
 // 分页组件
 import Pagination from "@/components/Pagination"
 // 自定义表格工具组件
@@ -35,6 +35,8 @@ import ImagePreview from "@/components/ImagePreview"
 import DictTag from '@/components/DictTag'
 // 字典数据组件
 import DictData from '@/components/DictData'
+// cron时间组件
+import vcrontab from 'vcrontab'
 
 // 全局方法挂载
 Vue.prototype.getDicts = getDicts
@@ -58,6 +60,7 @@ Vue.component('ImagePreview', ImagePreview)
 
 Vue.use(directive)
 Vue.use(plugins)
+Vue.use(vcrontab)
 DictData.install()
 
 /**

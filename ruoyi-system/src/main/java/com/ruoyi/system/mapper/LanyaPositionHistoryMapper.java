@@ -1,19 +1,21 @@
 package com.ruoyi.system.mapper;
 
+import java.util.Date;
 import java.util.List;
+
 import com.ruoyi.system.domain.LanyaPositionHistory;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 历史轨迹Mapper接口
- * 
+ *
  * @author ruoyi
  * @date 2025-10-10
  */
-public interface LanyaPositionHistoryMapper 
-{
+public interface LanyaPositionHistoryMapper {
     /**
      * 查询历史轨迹
-     * 
+     *
      * @param id 历史轨迹主键
      * @return 历史轨迹
      */
@@ -21,7 +23,7 @@ public interface LanyaPositionHistoryMapper
 
     /**
      * 查询历史轨迹列表
-     * 
+     *
      * @param lanyaPositionHistory 历史轨迹
      * @return 历史轨迹集合
      */
@@ -29,7 +31,7 @@ public interface LanyaPositionHistoryMapper
 
     /**
      * 新增历史轨迹
-     * 
+     *
      * @param lanyaPositionHistory 历史轨迹
      * @return 结果
      */
@@ -37,7 +39,7 @@ public interface LanyaPositionHistoryMapper
 
     /**
      * 修改历史轨迹
-     * 
+     *
      * @param lanyaPositionHistory 历史轨迹
      * @return 结果
      */
@@ -45,7 +47,7 @@ public interface LanyaPositionHistoryMapper
 
     /**
      * 删除历史轨迹
-     * 
+     *
      * @param id 历史轨迹主键
      * @return 结果
      */
@@ -53,11 +55,15 @@ public interface LanyaPositionHistoryMapper
 
     /**
      * 批量删除历史轨迹
-     * 
+     *
      * @param ids 需要删除的数据主键集合
      * @return 结果
      */
     public int deleteLanyaPositionHistoryByIds(Long[] ids);
 
-    List<LanyaPositionHistory> selectLanyaPositionHistoryListStartById(Long id);
+    List<LanyaPositionHistory> selectLanyaPositionHistoryListStartId(@Param("id") Long id, @Param("count") int count, @Param("tableName") String tableName);
+
+    List<LanyaPositionHistory> selectLanyaPositionHistoryListStartTimeByCardAndName(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime, @Param("cardId") Long cardId, @Param("realName") String realName);
+
+    List<String> showPositionHistoryTableNames();
 }

@@ -11,7 +11,7 @@ import com.ruoyi.system.service.IWmsAlarmRuleService;
  * 报警信息规则Service业务层处理
  * 
  * @author ruoyi
- * @date 2025-10-17
+ * @date 2025-10-20
  */
 @Service
 public class WmsAlarmRuleServiceImpl implements IWmsAlarmRuleService 

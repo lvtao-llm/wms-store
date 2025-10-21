@@ -7,7 +7,7 @@ import com.ruoyi.system.domain.WmsAlarmRule;
  * 报警信息规则Mapper接口
  * 
  * @author ruoyi
- * @date 2025-10-17
+ * @date 2025-10-20
  */
 public interface WmsAlarmRuleMapper 
 {

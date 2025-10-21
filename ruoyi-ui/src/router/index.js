@@ -387,6 +387,12 @@ export const dynamicRoutes = [
         meta: {title: '区域绘制'}
       },
       {
+        path: 'area-material-manage',
+        component: () => import('@/views/wms_area_material_manage/index'),
+        name: '物料区域管理',
+        meta: {title: '物料区域管理'}
+      },
+      {
         path: 'person-in-out-record',
         component: () => import('@/views/lanya_person_in_out_record/index'),
         name: '人员进出记录',

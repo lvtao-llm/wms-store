@@ -80,6 +80,7 @@ public class WmsAlarmLog extends BaseEntity
 
     /** $column.columnComment */
     private String delFlag;
+    private Long workId;
 
     public void setAlarmId(Long alarmId) 
     {
@@ -263,5 +264,13 @@ public class WmsAlarmLog extends BaseEntity
             .append("updateTime", getUpdateTime())
             .append("delFlag", getDelFlag())
             .toString();
+    }
+
+    public void setWorkId(Long workId) {
+        this.workId = workId;
+    }
+
+    public Long getWorkId() {
+        return workId;
     }
 }

@@ -2,6 +2,9 @@ package com.ruoyi.system.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.common.core.domain.entity.SysDictData;
+import com.ruoyi.system.service.ISysDictDataService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,24 +26,27 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 区域Controller
- * 
+ *
  * @author ruoyi
  * @date 2025-09-26
  */
 @RestController
 @RequestMapping("/system/area")
-public class WmsAreaController extends BaseController
-{
+public class WmsAreaController extends BaseController {
     @Autowired
     private IWmsAreaService wmsAreaService;
+
+    @Autowired
+    private ISysDictDataService dictDataService;
+
+    String dictType = "wms_area_name";
 
     /**
      * 查询区域列表
      */
     @PreAuthorize("@ss.hasPermi('system:area:list')")
     @GetMapping("/list")
-    public TableDataInfo list(WmsArea wmsArea)
-    {
+    public TableDataInfo list(WmsArea wmsArea) {
         startPage();
         List<WmsArea> list = wmsAreaService.selectWmsAreaList(wmsArea);
         return getDataTable(list);
@@ -52,8 +58,7 @@ public class WmsAreaController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:area:export')")
     @Log(title = "区域", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, WmsArea wmsArea)
-    {
+    public void export(HttpServletResponse response, WmsArea wmsArea) {
         List<WmsArea> list = wmsAreaService.selectWmsAreaList(wmsArea);
         ExcelUtil<WmsArea> util = new ExcelUtil<WmsArea>(WmsArea.class);
         util.exportExcel(response, list, "区域数据");
@@ -64,8 +69,7 @@ public class WmsAreaController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('system:area:query')")
     @GetMapping(value = "/{areaId}")
-    public AjaxResult getInfo(@PathVariable("areaId") Long areaId)
-    {
+    public AjaxResult getInfo(@PathVariable("areaId") Long areaId) {
         return success(wmsAreaService.selectWmsAreaByAreaId(areaId));
     }
 
@@ -75,8 +79,7 @@ public class WmsAreaController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:area:add')")
     @Log(title = "区域", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody WmsArea wmsArea)
-    {
+    public AjaxResult add(@RequestBody WmsArea wmsArea) {
         return toAjax(wmsAreaService.insertWmsArea(wmsArea));
     }
 
@@ -86,8 +89,7 @@ public class WmsAreaController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:area:edit')")
     @Log(title = "区域", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody WmsArea wmsArea)
-    {
+    public AjaxResult edit(@RequestBody WmsArea wmsArea) {
         return toAjax(wmsAreaService.updateWmsArea(wmsArea));
     }
 
@@ -96,9 +98,8 @@ public class WmsAreaController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('system:area:remove')")
     @Log(title = "区域", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{areaIds}")
-    public AjaxResult remove(@PathVariable Long[] areaIds)
-    {
+    @DeleteMapping("/{areaIds}")
+    public AjaxResult remove(@PathVariable Long[] areaIds) {
         return toAjax(wmsAreaService.deleteWmsAreaByAreaIds(areaIds));
     }
 }

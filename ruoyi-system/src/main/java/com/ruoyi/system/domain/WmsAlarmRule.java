@@ -7,92 +7,209 @@ import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
  * 报警信息规则对象 wms_alarm_rule
- * 
+ *
  * @author ruoyi
- * @date 2025-10-17
+ * @date 2025-10-20
  */
-public class WmsAlarmRule extends BaseEntity
-{
+public class WmsAlarmRule extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
-    /** 规则IDt */
-    @Excel(name = "规则ID", readConverterExp = "规则ID.readConverterExp()")
+    /**
+     * ID
+     */
+    @Excel(name = "ID")
     private Long alarmRuleId;
 
-    /** 规则名称 */
-    @Excel(name = "规则名称", readConverterExp = "规则名称.readConverterExp()")
+    /**
+     * 规则名
+     */
+    @Excel(name = "规则名")
     private String alarmRuleName;
 
-    /** 时间阈值 */
-    @Excel(name = "时间阈值", readConverterExp = "时间阈值.readConverterExp()")
-    private String alarmRuleTimeThreshold;
+    /**
+     * 时间阈值
+     */
+    @Excel(name = "时间阈值")
+    private Double alarmRuleTimeThreshold;
 
-    /** 距离阈值 */
-    @Excel(name = "距离阈值", readConverterExp = "距离阈值.readConverterExp()")
-    private String alarmRuleDistThreshold;
+    /**
+     * 距离阈值
+     */
+    @Excel(name = "距离阈值")
+    private Double alarmRuleDistThreshold;
 
-    /** 目标区域 */
-    @Excel(name = "目标区域", readConverterExp = "目标区域.readConverterExp()")
+    /**
+     * 目标区域
+     */
+    @Excel(name = "目标区域")
     private String alarmRuleTargetAreaCode;
 
-    public void setAlarmRuleId(Long alarmRuleId) 
-    {
+    /**
+     * 报警类型
+     */
+    @Excel(name = "报警类型")
+    private String alarmRuleType;
+
+    /**
+     * 生效周期开始时间cron
+     */
+    @Excel(name = "生效周期开始时间cron")
+    private String alarmRuleEffectivePeriodS;
+
+    /**
+     * 生效周期结束时间cron
+     */
+    @Excel(name = "生效周期结束时间cron")
+    private String alarmRuleEffectivePeriodE;
+
+    /**
+     * 是否启用
+     */
+    @Excel(name = "是否启用")
+    private String alarmRuleEnabled;
+
+    /**
+     * 关联人员
+     */
+    @Excel(name = "关联人员")
+    private String alarmRuleRelatedPeople;
+
+    /**
+     * 关联岗位
+     */
+    @Excel(name = "关联岗位")
+    private String alarmRuleRelatedDept;
+
+    /**
+     * 通知方式
+     */
+    @Excel(name = "通知方式")
+    private String alarmRuleNoticeType;
+
+    /**
+     * 最大人数
+     */
+    private Integer maxPeopleCount;
+
+    public void setAlarmRuleId(Long alarmRuleId) {
         this.alarmRuleId = alarmRuleId;
     }
 
-    public Long getAlarmRuleId() 
-    {
+    public Long getAlarmRuleId() {
         return alarmRuleId;
     }
 
-    public void setAlarmRuleName(String alarmRuleName) 
-    {
+    public void setAlarmRuleName(String alarmRuleName) {
         this.alarmRuleName = alarmRuleName;
     }
 
-    public String getAlarmRuleName() 
-    {
+    public String getAlarmRuleName() {
         return alarmRuleName;
     }
 
-    public void setAlarmRuleTimeThreshold(String alarmRuleTimeThreshold) 
-    {
+    public void setAlarmRuleTimeThreshold(Double alarmRuleTimeThreshold) {
         this.alarmRuleTimeThreshold = alarmRuleTimeThreshold;
     }
 
-    public String getAlarmRuleTimeThreshold() 
-    {
+    public Double getAlarmRuleTimeThreshold() {
         return alarmRuleTimeThreshold;
     }
 
-    public void setAlarmRuleDistThreshold(String alarmRuleDistThreshold) 
-    {
+    public void setAlarmRuleDistThreshold(Double alarmRuleDistThreshold) {
         this.alarmRuleDistThreshold = alarmRuleDistThreshold;
     }
 
-    public String getAlarmRuleDistThreshold()
-    {
+    public Double getAlarmRuleDistThreshold() {
         return alarmRuleDistThreshold;
     }
 
-    public void setAlarmRuleTargetAreaCode(String alarmRuleTargetAreaCode) 
-    {
+    public void setAlarmRuleTargetAreaCode(String alarmRuleTargetAreaCode) {
         this.alarmRuleTargetAreaCode = alarmRuleTargetAreaCode;
     }
 
-    public String getAlarmRuleTargetAreaCode() 
-    {
+    public String getAlarmRuleTargetAreaCode() {
         return alarmRuleTargetAreaCode;
+    }
+
+    public void setAlarmRuleType(String alarmRuleType) {
+        this.alarmRuleType = alarmRuleType;
+    }
+
+    public String getAlarmRuleType() {
+        return alarmRuleType;
+    }
+
+    public void setAlarmRuleEffectivePeriodS(String alarmRuleEffectivePeriodS) {
+        this.alarmRuleEffectivePeriodS = alarmRuleEffectivePeriodS;
+    }
+
+    public String getAlarmRuleEffectivePeriodS() {
+        return alarmRuleEffectivePeriodS;
+    }
+
+    public void setAlarmRuleEffectivePeriodE(String alarmRuleEffectivePeriodE) {
+        this.alarmRuleEffectivePeriodE = alarmRuleEffectivePeriodE;
+    }
+
+    public String getAlarmRuleEffectivePeriodE() {
+        return alarmRuleEffectivePeriodE;
+    }
+
+    public void setAlarmRuleEnabled(String alarmRuleEnabled) {
+        this.alarmRuleEnabled = alarmRuleEnabled;
+    }
+
+    public String getAlarmRuleEnabled() {
+        return alarmRuleEnabled;
+    }
+
+    public void setAlarmRuleRelatedPeople(String alarmRuleRelatedPeople) {
+        this.alarmRuleRelatedPeople = alarmRuleRelatedPeople;
+    }
+
+    public String getAlarmRuleRelatedPeople() {
+        return alarmRuleRelatedPeople;
+    }
+
+    public void setAlarmRuleRelatedDept(String alarmRuleRelatedDept) {
+        this.alarmRuleRelatedDept = alarmRuleRelatedDept;
+    }
+
+    public String getAlarmRuleRelatedDept() {
+        return alarmRuleRelatedDept;
+    }
+
+    public void setAlarmRuleNoticeType(String alarmRuleNoticeType) {
+        this.alarmRuleNoticeType = alarmRuleNoticeType;
+    }
+
+    public String getAlarmRuleNoticeType() {
+        return alarmRuleNoticeType;
     }
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("alarmRuleId", getAlarmRuleId())
-            .append("alarmRuleName", getAlarmRuleName())
-            .append("alarmRuleTimeThreshold", getAlarmRuleTimeThreshold())
-            .append("alarmRuleDistThreshold", getAlarmRuleDistThreshold())
-            .append("alarmRuleTargetAreaCode", getAlarmRuleTargetAreaCode())
-            .toString();
+        return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+                .append("alarmRuleId", getAlarmRuleId())
+                .append("alarmRuleName", getAlarmRuleName())
+                .append("alarmRuleTimeThreshold", getAlarmRuleTimeThreshold())
+                .append("alarmRuleDistThreshold", getAlarmRuleDistThreshold())
+                .append("alarmRuleTargetAreaCode", getAlarmRuleTargetAreaCode())
+                .append("alarmRuleType", getAlarmRuleType())
+                .append("alarmRuleEffectivePeriodS", getAlarmRuleEffectivePeriodS())
+                .append("alarmRuleEffectivePeriodE", getAlarmRuleEffectivePeriodE())
+                .append("alarmRuleEnabled", getAlarmRuleEnabled())
+                .append("alarmRuleRelatedPeople", getAlarmRuleRelatedPeople())
+                .append("alarmRuleRelatedDept", getAlarmRuleRelatedDept())
+                .append("alarmRuleNoticeType", getAlarmRuleNoticeType())
+                .toString();
+    }
+
+    public Integer getMaxPeopleCount() {
+        return maxPeopleCount;
+    }
+
+    public void setMaxPeopleCount(Integer maxPeopleCount) {
+        this.maxPeopleCount = maxPeopleCount;
     }
 }

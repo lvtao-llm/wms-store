@@ -4,96 +4,299 @@ import com.ruoyi.system.domain.WmsAlarmRule;
 import com.ruoyi.system.domain.WmsArea;
 import com.ruoyi.system.service.IWmsAlarmRuleService;
 import com.ruoyi.system.service.IWmsAreaService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.locationtech.jts.geom.*;
+import org.locationtech.jts.geom.Point;
 
 import javax.annotation.PostConstruct;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.*;
 
-/**
- * @author 吕涛
- * @version 1.0
- * @since 2025/10/17
- */
 @Component
 public class AlarmDetection {
 
+    private static final Logger log = LoggerFactory.getLogger(AlarmDetection.class);
+
     @Autowired
     private IWmsAlarmRuleService wmsAlarmRuleService;
+
     @Autowired
     private IWmsAreaService wmsAreaService;
-    private Map<WmsAlarmRule, List<WmsArea>> rules = new HashMap<>();
+
+    private final Map<WmsAlarmRule, RuleAreaWrap> rules = new HashMap<>();
+    private final Map<Long, LiveCard> liveCards = new HashMap<>();
+    private final GeometryFactory geometryFactory = new GeometryFactory();
+
+
+    private boolean isInitialized = false;
+
 
     @PostConstruct
-    private void loadAlarmRules() {
+    public void loadAlarmRules() {
+        if (isInitialized) {
+            return;
+        }
+
         WmsArea queryArea = new WmsArea();
         List<WmsArea> wmsAreas = wmsAreaService.selectWmsAreaList(queryArea);
-        WmsAlarmRule queryRule = new WmsAlarmRule();
-        List<WmsAlarmRule> wmsAlarmRules = wmsAlarmRuleService.selectWmsAlarmRuleList(queryRule);
-        for (WmsAlarmRule r : wmsAlarmRules) {
-            String[] targetCodes = r.getAlarmRuleTargetAreaCode().split(",");
+
+        // 初始化区域Geometry
+        for (WmsArea area : wmsAreas) {
+            if (area.getAreaPolygon() != null && area.getAreaPolygonDouble().size() > 2) {
+                // 创建JTS多边形
+                Geometry polygon = createPolygonFromArea(area.getAreaPolygonDouble());
+                area.setGeometry(polygon);
+            }
+        }
+
+        List<WmsAlarmRule> wmsAlarmRules = wmsAlarmRuleService.selectWmsAlarmRuleList(new WmsAlarmRule());
+
+        // 遍历规则
+        for (WmsAlarmRule rule : wmsAlarmRules) {
+            if (rule.getAlarmRuleTargetAreaCode() == null) {
+                // 跳过无效规则
+                continue;
+            }
+
+            // 获取区域数组
+            String[] targetCodes = rule.getAlarmRuleTargetAreaCode().split(",");
+
+            // 规则的目标区域列表
             List<WmsArea> value = new ArrayList<>();
+
+            // 遍历目标区域Code
             for (String c : targetCodes) {
-                List<WmsArea> result = wmsAreas.stream()
-                        .filter(obj -> obj.getId() == 2)
-                        .collect(Collectors.toList());
+
+                // 匹配目标区域的WmsArea对象
+                for (WmsArea area : wmsAreas) {
+                    if (area.getAreaId() == Integer.parseInt(c) && area.getGeometry() != null) {
+                        rules.put(rule, new RuleAreaWrap(area, area.getGeometry()));
+                        break;
+                    }
+                }
             }
         }
-    }
 
-    private final Region region;
-    private Long enterTime; // null=当前不在区域内
-
-    public PointDistanceTimer(Region region) {
-        this.region = region;
+        isInitialized = true;
     }
 
     /**
-     * 每收到一个点位调用一次，返回是否触发报警
+     * 从区域坐标点创建JTS多边形
      */
-    public boolean update(double x, double y, long nowMs) {
-        double dist = region.minDistToEdge(x, y);
-        boolean inside = region.contains(x, y);
-
-        /* 1. 距离阈值过滤：最近边 < 阈值 视为“不在” */
-        if (dist < region.getDistThreshold()) {
-            if (enterTime != null) {     // 之前算在区域内，现在被挤出
-                enterTime = null;
+    private Geometry createPolygonFromArea(List<double[]> polygonPoints) {
+        try {
+            Coordinate[] coordinates = new Coordinate[polygonPoints.size() + 1];
+            for (int i = 0; i < polygonPoints.size(); i++) {
+                coordinates[i] = new Coordinate(polygonPoints.get(i)[0], polygonPoints.get(i)[1]);
             }
-            return false;                // 肯定不报警
-        }
+            // 闭合多边形
+            coordinates[coordinates.length - 1] = new Coordinate(polygonPoints.get(0)[0], polygonPoints.get(0)[1]);
 
-        /* 2. 真正在区域内 */
-        if (inside) {
-            if (enterTime == null) {     // 首次进入
-                enterTime = nowMs;
-                return false;            // 还未超时
+            LinearRing ring = geometryFactory.createLinearRing(coordinates);
+            return geometryFactory.createPolygon(ring);
+        } catch (Exception e) {
+            log.error("Error createPolygonFromArea", e);
+            return null;
+        }
+    }
+
+    public List<AlarmResult> detect(Long cardId, Long personId, Date time, Long beaconId, double longitude, double latitude) {
+        // 发现的告警规则
+        List<AlarmResult> detected = new ArrayList<>();
+
+        // 当前卡的geometry对象
+        Point point = geometryFactory.createPoint(new Coordinate(longitude, latitude));
+
+        if (!liveCards.containsKey(cardId)) {
+            liveCards.put(cardId, new LiveCard());
+        }
+        LiveCard liveCard = liveCards.get(cardId);
+        liveCard.point = point;
+
+
+        // 遍历所有告警规则
+        for (Map.Entry<WmsAlarmRule, RuleAreaWrap> entry : rules.entrySet()) {
+
+            // 规则
+            WmsAlarmRule rule = entry.getKey();
+
+            // 目标区域
+            RuleAreaWrap targetAreaWrap = entry.getValue();
+
+            // 是否发生了报警
+            boolean isAlarm = false;
+
+            // 根据规则类型使用不同的检测方法
+            switch (rule.getAlarmRuleType()) {
+                case "进入报警": {
+                    // 判断点是否在多边形内
+                    boolean inside = targetAreaWrap.geometry.contains(point);
+                    // 计算点到多边形边界的距离(度单位)
+                    double dist = point.distance(targetAreaWrap.geometry) * 111320;
+                    if (inside && dist < rule.getAlarmRuleDistThreshold()) {
+                        if (!targetAreaWrap.enterTime.containsKey(cardId)) {
+                            targetAreaWrap.enterTime.put(cardId, time.getTime());
+                        }
+                        Long enterTime = targetAreaWrap.enterTime.get(cardId);
+                        isAlarm = (time.getTime() - enterTime) >= rule.getAlarmRuleTimeThreshold();
+                    }
+                    break;
+                }
+                case "越界报警": {
+                    // 判断点是否在多边形内
+                    boolean inside = targetAreaWrap.geometry.contains(point);
+                    // 计算点到多边形边界的距离(度单位)
+                    double dist = point.distance(targetAreaWrap.geometry) * 111320;
+                    if (inside && dist < rule.getAlarmRuleDistThreshold()) {
+                        if (!targetAreaWrap.enterTime.containsKey(cardId)) {
+                            targetAreaWrap.enterTime.put(cardId, time.getTime());
+                        }
+                        Long enterTime = targetAreaWrap.enterTime.get(cardId);
+                        isAlarm = (time.getTime() - enterTime) >= rule.getAlarmRuleTimeThreshold();
+                    }
+                    break;
+                }
+                case "滞留报警": {
+                    // 判断点是否在多边形内
+                    boolean inside = targetAreaWrap.geometry.contains(point);
+                    // 计算点到多边形边界的距离(度单位)
+                    double dist = point.distance(targetAreaWrap.geometry) * 111320;
+                    if (inside && dist < rule.getAlarmRuleDistThreshold()) {
+                        if (!targetAreaWrap.enterTime.containsKey(cardId)) {
+                            targetAreaWrap.enterTime.put(cardId, time.getTime());
+                        }
+                        Long enterTime = targetAreaWrap.enterTime.get(cardId);
+                        isAlarm = (time.getTime() - enterTime) >= rule.getAlarmRuleTimeThreshold();
+                    }
+                    break;
+                }
+                case "超员报警": {
+                    // 判断点是否在多边形内
+                    boolean inside = targetAreaWrap.geometry.contains(point);
+                    // 计算点到多边形边界的距离(度单位)
+                    double dist = point.distance(targetAreaWrap.geometry) * 111320;
+                    if (inside && dist < rule.getAlarmRuleDistThreshold()) {
+
+
+                        if (!targetAreaWrap.enterTime.containsKey(cardId)) {
+                            targetAreaWrap.enterTime.put(cardId, time.getTime());
+                        }
+                        Long enterTime = targetAreaWrap.enterTime.get(cardId);
+                        Long stayTime = time.getTime() - enterTime;
+                        if (stayTime >= rule.getAlarmRuleTimeThreshold()) {
+                            if (liveCard.onAreaWrap == null) {
+                                liveCard.onAreaWrap = targetAreaWrap;
+                            }
+                            if (liveCard.onAreaWrap != targetAreaWrap) {
+                                liveCard.onAreaWrap.enterTime.remove(cardId);
+                                liveCard.onAreaWrap = targetAreaWrap;
+                            }
+
+                            if (!targetAreaWrap.enterTime.containsKey(cardId)) {
+                                targetAreaWrap.enterTime.put(cardId, time.getTime());
+                                isAlarm = targetAreaWrap.enterTime.size() > rule.getMaxPeopleCount();
+                            }
+                        }
+                    }
+                    break;
+                }
+                case "聚集报警": {
+                    if (rule.getMaxPeopleCount() == null) {
+                        break;
+                    }
+                    List<List<Point>> lists = groupPointsByDistance(liveCards.values().stream()
+                            .map(c -> c.point)
+                            .filter(Objects::nonNull)
+                            .toArray(Point[]::new), rule.getAlarmRuleDistThreshold());
+                    for (List<Point> list : lists) {
+                        isAlarm = list.size() > rule.getMaxPeopleCount() || isAlarm;
+                    }
+                    break;
+                }
             }
-            // 已在区域内，检查是否超时
-            return (nowMs - enterTime) >= region.getTimeThresholdMs();
-        }
+            if (isAlarm) {
+                detected.add(new AlarmResult(entry.getKey(), entry.getValue().area));
+            }
 
-        /* 3. 在“缓冲区”外且不在多边形内 */
-        if (enterTime != null) {         // 离开区域
-            enterTime = null;
+
         }
-        return false;
+        return detected;
     }
 
     /**
-     * 手动重置（可选）
+     * 根据距离将坐标点分组，距离不超过指定阈值的点归为一组
+     *
+     * @param points            经纬度坐标点数组
+     * @param distanceThreshold 距离阈值(米)
+     * @return 分组后的点列表
      */
-    public void reset() {
-        enterTime = null;
+    public List<List<Point>> groupPointsByDistance(Point[] points, double distanceThreshold) {
+        List<List<Point>> groups = new ArrayList<>();
+        boolean[] visited = new boolean[points.length];
+
+        for (int i = 0; i < points.length; i++) {
+            if (visited[i]) continue;
+
+            // 创建新组
+            List<Point> group = new ArrayList<>();
+            group.add(points[i]);
+            visited[i] = true;
+
+            // 使用队列进行广度优先搜索
+            Queue<Integer> queue = new LinkedList<>();
+            queue.offer(i);
+
+            while (!queue.isEmpty()) {
+                int currentIndex = queue.poll();
+                Point currentPoint = points[currentIndex];
+
+                // 检查未访问的点
+                for (int j = 0; j < points.length; j++) {
+                    if (visited[j]) continue;
+
+                    Point otherPoint = points[j];
+                    // 计算两点间距离(转换为米)
+                    double distance = currentPoint.distance(otherPoint) * 111320;
+
+                    // 如果距离小于等于阈值，归为同一组
+                    if (distance <= distanceThreshold) {
+                        group.add(points[j]);
+                        visited[j] = true;
+                        queue.offer(j);
+                    }
+                }
+            }
+
+            groups.add(group);
+        }
+
+        return groups;
     }
 
-    public WmsAlarmRule[] detect(Long cardId, Long personId, Long beaconId, BigDecimal longitude, BigDecimal latitude) {
-
-
+    public boolean isInitialized() {
+        return isInitialized;
     }
+
+    public void setInitialized(boolean initialized) {
+        isInitialized = initialized;
+    }
+
+    static class RuleAreaWrap {
+        public WmsArea area;
+        public Geometry geometry;
+        public Map<Long, Long> enterTime = new HashMap<>();
+
+        public RuleAreaWrap(WmsArea area, Geometry geometry) {
+            this.area = area;
+            this.geometry = geometry;
+        }
+    }
+
+    private class LiveCard {
+        public RuleAreaWrap onAreaWrap;
+        public Point point;
+    }
+
 }

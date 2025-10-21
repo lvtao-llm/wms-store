@@ -40,15 +40,15 @@ public class LanyaPositionHistory extends BaseEntity
 
     /** 经度 */
     @Excel(name = "经度")
-    private BigDecimal longitude;
+    private double longitude;
 
     /** 纬度 */
     @Excel(name = "纬度")
-    private BigDecimal latitude;
+    private double latitude;
 
     /** 距离 */
     @Excel(name = "距离")
-    private BigDecimal distance;
+    private double distance;
 
     /** 楼层 */
     @Excel(name = "楼层")
@@ -139,37 +139,37 @@ public class LanyaPositionHistory extends BaseEntity
         this.beaconId = beaconId;
     }
 
-    public Long getBeaconId() 
+    public Long getBeaconId()
     {
         return beaconId;
     }
 
-    public void setLongitude(BigDecimal longitude) 
+    public void setLongitude(double longitude)
     {
         this.longitude = longitude;
     }
 
-    public BigDecimal getLongitude() 
+    public double getLongitude()
     {
         return longitude;
     }
 
-    public void setLatitude(BigDecimal latitude) 
+    public void setLatitude(double latitude)
     {
         this.latitude = latitude;
     }
 
-    public BigDecimal getLatitude() 
+    public double getLatitude()
     {
         return latitude;
     }
 
-    public void setDistance(BigDecimal distance) 
+    public void setDistance(double distance)
     {
         this.distance = distance;
     }
 
-    public BigDecimal getDistance() 
+    public double getDistance()
     {
         return distance;
     }

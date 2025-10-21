@@ -1,9 +1,17 @@
 package com.ruoyi.system.domain;
 
+import com.alibaba.fastjson2.JSONArray;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
+import org.locationtech.jts.geom.Geometry;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 区域对象 wms_area
@@ -72,6 +80,9 @@ public class WmsArea extends BaseEntity {
      */
     @Excel(name = "启用状态")
     private String enabled;
+
+    @JsonIgnore
+    private Geometry geometry;
 
     /**
      * 删除标志
@@ -189,4 +200,28 @@ public class WmsArea extends BaseEntity {
     }
 
 
+    public List<double[]> getAreaPolygonDouble() {
+        List<double[]> list = new ArrayList<>();
+        if (areaPolygon != null) {
+            JSONArray array = JSONArray.parseArray(areaPolygon);
+            if (array.size() > 0 && array.getJSONObject(0).containsKey("points")) {
+                JSONArray points = array.getJSONObject(0).getJSONArray("points");
+                for (int i = 0; i < points.size(); i++) {
+                    if (!points.getJSONObject(i).containsKey("lng") || !points.getJSONObject(i).containsKey("lat")) {
+                        return new ArrayList<>();
+                    }
+                    list.add(new double[]{points.getJSONObject(i).getDouble("lng"), points.getJSONObject(i).getDouble("lat")});
+                }
+            }
+        }
+        return list;
+    }
+
+    public Geometry getGeometry() {
+        return geometry;
+    }
+
+    public void setGeometry(Geometry geometry) {
+        this.geometry = geometry;
+    }
 }

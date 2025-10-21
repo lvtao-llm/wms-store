@@ -2,20 +2,9 @@ package com.ruoyi.quartz.task;
 
 import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.quartz.domain.MlPositionHistory;
-import com.ruoyi.quartz.domain.SysJob;
-import com.ruoyi.quartz.service.IMlPositionHistoryService;
-import com.ruoyi.quartz.service.ISysJobLogService;
-import com.ruoyi.quartz.service.impl.MlPositionHistoryServiceImpl;
-import com.ruoyi.quartz.util.AbstractQuartzJob;
 import com.ruoyi.system.domain.WmsTrajectory;
-import com.ruoyi.system.lanya.data.LanyaPositionSync;
-import com.ruoyi.system.service.IWmsTrajectoryService;
-import org.quartz.JobExecutionContext;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.ruoyi.system.lanya.data.LanyaDataSync;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * @author 吕涛
@@ -24,10 +13,34 @@ import java.util.List;
  */
 @Component
 public class PointHistorySync {
-    @Autowired
-    LanyaPositionSync lanyaPositionSync;
     public void PointHistoryIncrementSync() {
-        lanyaPositionSync.sync();
+        LanyaDataSync bean = SpringUtils.getBean(LanyaDataSync.class);
+        try {
+            bean.PositionSync("position_history");
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void CardLogIncrementSync() {
+        LanyaDataSync bean = SpringUtils.getBean(LanyaDataSync.class);
+        try {
+            bean.CardLogSync();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void MockPositionHistoryData() {
+        LanyaDataSync bean = SpringUtils.getBean(LanyaDataSync.class);
+        try {
+            bean.generateMockPositionHistoryData();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 
     public WmsTrajectory ConvertWmsTrajectory(MlPositionHistory mlPositionHistory) {
