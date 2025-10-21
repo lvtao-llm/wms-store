@@ -143,7 +143,7 @@
                   <div
                     :style="{ color: isWl ? 'rgb(30, 150, 224)' : '' }"
                     class="porItem"
-                    @click=""
+                    @click="isWl = !isWl"
                   >
                     电子围栏
                   </div></el-col
@@ -161,7 +161,7 @@
                   <div
                     :style="{ color: isJj ? 'rgb(30, 150, 224)' : '' }"
                     class="porItem"
-                    @click=""
+                    @click="isJj = !isJj"
                   >
                     聚集报警
                   </div></el-col
@@ -170,7 +170,7 @@
                   <div
                     :style="{ color: isLy ? 'rgb(30, 150, 224)' : '' }"
                     class="porItem"
-                    @click=""
+                    @click="isLy = !isLy"
                   >
                     楼宇
                   </div></el-col
@@ -225,7 +225,7 @@
       </div>
       <!-- 右上 -->
       <div
-        :style="{ right: isMovedOutTr ? '0' : '-500px' }"
+        :style="{ right: isMovedOutTr ? '0' : '-50vw' }"
         class="right-top-dialog"
       >
         <img
@@ -308,7 +308,7 @@
 
       <!-- 右下 -->
       <div
-        :style="{ right: isMovedOutBr ? '0' : '-500px' }"
+        :style="{ right: isMovedOutBr ? '0' : '-50vw' }"
         class="right-bottom-dialog"
       >
         <img
@@ -505,6 +505,244 @@ export default {
       // 设置配置项并渲染图表
       this.pieChartInstance.setOption(option);
     },
+
+    handleZf() {
+      this.isZf = !this.isZf;
+      if (this.isZf) {
+        this.$nextTick(() => {
+          setTimeout(() => {
+            if (this.map) {
+              this.showAllSavedGroups();
+            } else {
+              // 如果地图还没初始化，等待地图初始化完成
+              const checkMap = setInterval(() => {
+                if (this.map) {
+                  clearInterval(checkMap);
+                  this.showAllSavedGroups();
+                }
+              }, 100);
+            }
+          }, 200);
+        });
+      } else {
+        this.map.clearOverlays();
+      }
+    },
+    // 显示所有保存的标记组
+    showAllSavedGroups() {
+      this.savedPointGroups = [
+        {
+          areaName: "啊啊",
+          id: "1760690241468",
+          points: [
+            {
+              lat: 46.6565,
+              lng: 124.823946,
+            },
+            {
+              lat: 46.654916,
+              lng: 124.920101,
+            },
+            {
+              lat: 46.622048,
+              lng: 124.911621,
+            },
+            {
+              lat: 46.622543,
+              lng: 124.854417,
+            },
+            {
+              lat: 46.631554,
+              lng: 124.823946,
+            },
+            {
+              lat: 46.644721,
+              lng: 124.81561,
+            },
+          ],
+        },
+      ];
+
+      if (!this.map) {
+        console.error("地图未初始化，无法显示标记点");
+        return;
+      }
+      if (!this.savedPointGroups || this.savedPointGroups.length === 0) {
+        console.log("没有标记组数据需要显示");
+        return;
+      }
+
+      this.map.clearOverlays();
+
+      this.savedPointGroups.forEach((group, groupIndex) => {
+        console.log(`处理第 ${groupIndex + 1} 个标记组:`, group);
+
+        // 检查数据结构
+        if (!group.points || !Array.isArray(group.points)) {
+          console.warn(`标记组 ${groupIndex + 1} 的 points 数据无效:`, group);
+          return;
+        }
+
+        const color = this.getColorByIndex(groupIndex);
+        console.log(`使用颜色: ${color}`);
+
+        group.points.forEach((point, pointIndex) => {
+          console.log(`添加标记点 ${pointIndex + 1}:`, point);
+
+          // 验证坐标数据
+          if (!point.lng || !point.lat) {
+            console.warn(`标记点 ${pointIndex + 1} 坐标数据无效:`, point);
+            return;
+          }
+
+          const bPoint = new window.BMap.Point(point.lng, point.lat);
+          this.addSavedMarker(bPoint, pointIndex + 1, color);
+        });
+
+        // 绘制多边形（包括填充和边框）
+        if (group.points.length >= 3) {
+          console.log(
+            `为标记组 ${groupIndex + 1} 绘制多边形，共 ${
+              group.points.length
+            } 个点`
+          );
+          const pathPoints = group.points.map(
+            (p) => new window.BMap.Point(p.lng, p.lat)
+          );
+
+          // 创建多边形填充
+          const polygon = new window.BMap.Polygon(pathPoints, {
+            strokeColor: color,
+            strokeWeight: 3,
+            strokeOpacity: 0.8,
+            strokeStyle: "solid",
+            fillColor: color,
+            fillOpacity: 0.3, // 半透明填充
+          });
+          this.map.addOverlay(polygon);
+
+          // 添加区域文字标签
+          const areaName = group.areaName || `区域${groupIndex + 1}`;
+          this.addAreaLabel(pathPoints, areaName, color);
+          console.log("多边形绘制完成");
+        } else if (group.points.length >= 2) {
+          // 如果只有2个点，绘制线条
+          const pathPoints = group.points.map(
+            (p) => new window.BMap.Point(p.lng, p.lat)
+          );
+          const groupPolyline = new window.BMap.Polyline(pathPoints, {
+            strokeColor: color,
+            strokeWeight: 3,
+            strokeOpacity: 0.8,
+            strokeStyle: "solid",
+          });
+          this.map.addOverlay(groupPolyline);
+          console.log("线条绘制完成");
+        }
+      });
+
+      console.log("所有标记组显示完成");
+    },
+
+    // 为不同组生成不同颜色
+    getColorByIndex(index) {
+      const colors = [
+        "#FF5722",
+        "#4CAF50",
+        "#2196F3",
+        "#9C27B0",
+        "#FF9800",
+        "#607D8B",
+        "#795548",
+        "#E91E63",
+      ];
+      return colors[index % colors.length];
+    },
+    // 添加已保存的标记
+    addSavedMarker(point, label, color) {
+      try {
+        const BMap = window.BMap;
+        const marker = new BMap.Marker(point);
+
+        const markerLabel = new BMap.Label(label.toString(), {
+          offset: new BMap.Size(15, -10),
+          position: point,
+        });
+
+        markerLabel.setStyle({
+          color: "white",
+          fontSize: "12px",
+          backgroundColor: color,
+          padding: "2px 5px",
+          border: "none",
+          borderRadius: "10px",
+        });
+
+        marker.setLabel(markerLabel);
+        this.map.addOverlay(marker);
+        console.log(
+          `标记点 ${label} 添加成功，坐标: (${point.lng}, ${point.lat})`
+        );
+      } catch (error) {
+        console.error(`添加标记点 ${label} 失败:`, error);
+      }
+    },
+
+    // 添加区域文字标签
+    addAreaLabel(points, text, color) {
+      try {
+        const BMap = window.BMap;
+
+        // 计算多边形的中心点
+        const centerPoint = this.calculatePolygonCenter(points);
+
+        // 创建文字标签
+        const label = new BMap.Label(text, {
+          position: centerPoint,
+          offset: new BMap.Size(0, 0),
+        });
+
+        // 设置标签样式
+        label.setStyle({
+          color: "white",
+          fontSize: "16px",
+          fontWeight: "bold",
+          backgroundColor: "rgba(0, 0, 0, 0.6)",
+          padding: "8px 12px",
+          border: `2px solid ${color}`,
+          borderRadius: "6px",
+          textAlign: "center",
+          boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
+        });
+
+        // 添加标签到地图
+        this.map.addOverlay(label);
+        console.log(
+          `区域标签 "${text}" 添加成功，位置: (${centerPoint.lng}, ${centerPoint.lat})`
+        );
+
+        return label;
+      } catch (error) {
+        console.error(`添加区域标签 "${text}" 失败:`, error);
+      }
+    },
+    // 计算多边形中心点
+    calculatePolygonCenter(points) {
+      const BMap = window.BMap;
+      let sumLng = 0;
+      let sumLat = 0;
+
+      points.forEach((point) => {
+        sumLng += point.lng;
+        sumLat += point.lat;
+      });
+
+      const centerLng = sumLng / points.length;
+      const centerLat = sumLat / points.length;
+
+      return new BMap.Point(centerLng, centerLat);
+    },
+
     toggleDialog1() {
       this.isMovedOutTf = !this.isMovedOutTf;
     },
@@ -542,9 +780,6 @@ export default {
         this.updatePolyline();
       });
     },
-    handleZf() {
-      // this.
-    },
   },
 };
 </script>
@@ -555,12 +790,12 @@ export default {
     position: absolute;
     top: 10%;
     left: 0;
-    width: 250px;
-    height: 350px;
+    width: 12vw;
+    height: 35vh;
     background-color: rgba(0, 0, 0, 0.5);
     color: white;
     display: flex;
-    font-size: 18px;
+    font-size: 1rem;
     /* 关键：添加过渡动画，让 left 改变时平滑移动 */
     transition: left 0.5s ease-in-out;
     .content {
@@ -571,14 +806,14 @@ export default {
         justify-content: center;
         align-items: center;
         .type-item {
-          margin: 0px 10px 0 10px;
+          margin: 0px 1% 0 1%;
           .title {
             font-size: 13px;
           }
           .num {
             margin-top: 10px;
-            width: 50px;
-            height: 50px;
+            width: 3vw;
+            height: 3vh;
             border: 1px solid white;
             border-radius: 10px;
           }
@@ -586,7 +821,7 @@ export default {
       }
       .echarts1 {
         width: 90%; // 或固定像素，比如 200px
-        height: 200px; // 必须有明确高度，否则图表无法显示
+        height: 20vh; // 必须有明确高度，否则图表无法显示
         margin-top: 10px;
       }
     }
@@ -601,12 +836,12 @@ export default {
   }
   .left-top-dialog-btn {
     position: absolute;
-    top: 18%;
+    top: 18vh;
     display: flex;
     justify-content: center;
     align-items: center;
     .title {
-      width: 45px;
+      width: 50px;
       // height: 60px;
       padding: 15px 13px;
       border-radius: 28px;
@@ -625,8 +860,8 @@ export default {
     position: absolute;
     top: 10%;
     right: 0;
-    width: 350px;
-    height: 350px;
+    width: 30vw;
+    height: 35vh;
     background-color: rgba(0, 0, 0, 0.5);
     color: white;
     display: flex;
@@ -672,14 +907,14 @@ export default {
 
   .left-bottom-dialog {
     position: absolute;
-    top: 50%;
+    top: 55%;
     left: 0;
-    width: 250px;
-    height: 350px;
+    width: 12vw;
+    height: 35vh;
     background-color: rgba(0, 0, 0, 0.5);
     color: white;
     display: flex;
-    font-size: 18px;
+    font-size: 1rem;
     /* 关键：添加过渡动画，让 left 改变时平滑移动 */
     transition: left 0.5s ease-in-out;
     .content {
@@ -705,7 +940,7 @@ export default {
       }
       .echarts1 {
         width: 90%; // 或固定像素，比如 200px
-        height: 200px; // 必须有明确高度，否则图表无法显示
+        height: 20vh; // 必须有明确高度，否则图表无法显示
         margin-top: 10px;
       }
     }
@@ -743,10 +978,10 @@ export default {
 
   .right-bottom-dialog {
     position: absolute;
-    top: 50%;
+    top: 55%;
     right: 0;
-    width: 350px;
-    height: 350px;
+    width: 30vw;
+    height: 35vh;
     background-color: rgba(0, 0, 0, 0.5);
     color: white;
     display: flex;
@@ -885,6 +1120,10 @@ export default {
       }
     }
   }
+}
+
+::v-deep .el-form-item__label {
+  color: white;
 }
 
 ::v-deep .el-date-editor,

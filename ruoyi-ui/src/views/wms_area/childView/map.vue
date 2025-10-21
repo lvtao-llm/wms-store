@@ -145,6 +145,8 @@ export default {
           } catch (error) {
             this.$modal.msgError("区域数据格式错误");
           }
+        } else {
+          this.map.clearOverlays();
         }
       });
     },
@@ -203,7 +205,7 @@ export default {
         this.map = new BMap.Map("container");
         console.log("地图初始化成功", this.map);
 
-        this.map.centerAndZoom(new BMap.Point(124.87612, 46.64195), 15);
+        this.map.centerAndZoom(new BMap.Point(124.87612, 46.64195), 13);
         this.map.setMinZoom(11);
         this.map.setMaxZoom(19);
         this.map.enableScrollWheelZoom(true);
@@ -288,13 +290,13 @@ export default {
         console.error("地图未初始化，无法显示标记点");
         return;
       }
-      console.log(this.savedPointGroups);
       if (!this.savedPointGroups || this.savedPointGroups.length === 0) {
         console.log("没有标记组数据需要显示");
         return;
       }
 
       this.map.clearOverlays();
+      console.log(this.savedPointGroups);
 
       this.savedPointGroups.forEach((group, groupIndex) => {
         console.log(`处理第 ${groupIndex + 1} 个标记组:`, group);
@@ -498,6 +500,50 @@ export default {
         }
         this.updatePolyline();
       });
+    },
+    // 清理动画
+    cleanupAnimation() {
+      if (this.presetOverlays.animationId) {
+        cancelAnimationFrame(this.presetOverlays.animationId);
+        this.presetOverlays.animationId = null;
+      }
+
+      // 清除箭头
+      if (this.presetOverlays.arrows) {
+        this.presetOverlays.arrows.forEach((arrow) => {
+          try {
+            this.map.removeOverlay(arrow.marker);
+          } catch (e) {
+            console.warn("移除箭头标记时出错:", e);
+          }
+        });
+        this.presetOverlays.arrows = [];
+      }
+
+      // 清除其他覆盖物
+      this.clearPresetOverlays();
+    },
+
+    clearPresetOverlays() {
+      if (!this.map) return;
+
+      this.presetOverlays.items.forEach((item) => {
+        if (item.type === "canvas") {
+          item.instance.destroy();
+        } else if (
+          item instanceof BMap.Marker ||
+          item instanceof BMap.Polyline
+        ) {
+          this.map.removeOverlay(item);
+        }
+      });
+
+      if (this.presetOverlays.character) {
+        this.map.removeOverlay(this.presetOverlays.character);
+      }
+
+      this.presetOverlays.items = [];
+      delete this.presetOverlays.character;
     },
 
     // 更新连线
