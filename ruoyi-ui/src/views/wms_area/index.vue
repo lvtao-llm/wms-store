@@ -38,13 +38,11 @@
           icon="el-icon-search"
           size="mini"
           @click="handleQuery"
-        >搜索
-        </el-button
-        >
+          >搜索
+        </el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
-        >重置
-        </el-button
-        >
+          >重置
+        </el-button>
       </el-form-item>
     </el-form>
 
@@ -57,7 +55,7 @@
           size="mini"
           @click="handleAdd"
           v-hasPermi="['system:area:add']"
-        >新增
+          >新增
         </el-button>
       </el-col>
       <el-col :span="1.5">
@@ -69,7 +67,7 @@
           :disabled="single"
           @click="handleUpdate"
           v-hasPermi="['system:area:edit']"
-        >修改
+          >修改
         </el-button>
       </el-col>
       <el-col :span="1.5">
@@ -81,7 +79,7 @@
           :disabled="multiple"
           @click="handleDelete"
           v-hasPermi="['system:area:remove']"
-        >删除
+          >删除
         </el-button>
       </el-col>
       <el-col :span="1.5">
@@ -92,7 +90,7 @@
           size="mini"
           @click="handleExport"
           v-hasPermi="['system:area:export']"
-        >导出
+          >导出
         </el-button>
       </el-col>
       <el-col :span="1.5">
@@ -103,7 +101,7 @@
           size="mini"
           @click="getList(handleShow)"
           v-hasPermi="['system:area:export']"
-        >展示全部
+          >展示全部
         </el-button>
       </el-col>
       <right-toolbar
@@ -117,12 +115,12 @@
       :data="areaList"
       @selection-change="handleSelectionChange"
     >
-      <el-table-column type="selection" width="55" align="center"/>
-      <el-table-column label="区域名称" align="center" prop="areaName"/>
-      <el-table-column label="区域类型" align="center" prop="areaType"/>
-      <el-table-column label="风险等级" align="center" prop="areaRiskLevel"/>
-      <el-table-column label="启用状态" align="center" prop="enabled"/>
-      <el-table-column label="备注" align="center" prop="remark"/>
+      <el-table-column type="selection" width="55" align="center" />
+      <el-table-column label="区域名称" align="center" prop="areaName" />
+      <el-table-column label="区域类型" align="center" prop="areaType" />
+      <el-table-column label="风险等级" align="center" prop="areaRiskLevel" />
+      <el-table-column label="启用状态" align="center" prop="enabled" />
+      <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column
         label="操作"
         align="center"
@@ -135,7 +133,7 @@
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['system:area:edit']"
-          >修改
+            >修改
           </el-button>
           <el-button
             size="mini"
@@ -143,7 +141,7 @@
             icon="el-icon-no-smoking"
             @click="handleAreaPolygon(scope.row)"
             v-hasPermi="['system:area:edit']"
-          >绘制
+            >绘制
           </el-button>
           <el-button
             size="mini"
@@ -151,7 +149,7 @@
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['system:area:remove']"
-          >删除
+            >删除
           </el-button>
         </template>
       </el-table-column>
@@ -169,13 +167,13 @@
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="区域名称" prop="areaName">
-          <el-input v-model="form.areaName" placeholder="请输入区域名称"/>
+          <el-input v-model="form.areaName" placeholder="请输入区域名称" />
         </el-form-item>
         <el-form-item label="区域类型" prop="areaFunction">
           <el-select v-model="form.areaType" placeholder="请选择区域类型">
-            <el-option label="办公区域" value="办公区域"/>
-            <el-option label="高危区域" value="高危区域"/>
-            <el-option label="料场区域" value="料场区域"/>
+            <el-option label="办公区域" value="办公区域" />
+            <el-option label="高危区域" value="高危区域" />
+            <el-option label="料场区域" value="料场区域" />
           </el-select>
         </el-form-item>
         <el-form-item label="安全提示" prop="areaSafetyNotice">
@@ -186,19 +184,19 @@
         </el-form-item>
         <el-form-item label="风险等级" prop="areaRiskLevel">
           <el-select v-model="form.areaRiskLevel" placeholder="请选择区域类型">
-            <el-option label="低" value="低"/>
-            <el-option label="中" value="中"/>
-            <el-option label="高" value="高"/>
+            <el-option label="低" value="低" />
+            <el-option label="中" value="中" />
+            <el-option label="高" value="高" />
           </el-select>
         </el-form-item>
         <el-form-item label="启用状态" prop="enabled">
           <el-select v-model="form.enabled" placeholder="请选择启用状态">
-            <el-option label="启用" value="启用"/>
-            <el-option label="禁用" value="禁用"/>
+            <el-option label="启用" value="启用" />
+            <el-option label="禁用" value="禁用" />
           </el-select>
         </el-form-item>
         <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" placeholder="请输入备注"/>
+          <el-input v-model="form.remark" placeholder="请输入备注" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -264,10 +262,10 @@ export default {
       // 表单校验
       rules: {
         areaName: [
-          {required: true, message: "区域名称不能为空", trigger: "blur"},
+          { required: true, message: "区域名称不能为空", trigger: "blur" },
         ],
         areaType: [
-          {required: true, message: "区域类型不能为空", trigger: "blur"},
+          { required: true, message: "区域类型不能为空", trigger: "blur" },
         ],
       },
     };
@@ -284,7 +282,7 @@ export default {
         this.total = response.total;
         this.loading = false;
         if (callback) {
-          callback(response.rows.map(row => row.areaPolygon));
+          callback(response.rows.map((row) => row.areaPolygon));
         }
       });
     },
@@ -370,8 +368,17 @@ export default {
       //TODO 弹出层中绘制多边形及颜色
       this.$refs.maps.openDia(row);
     },
+    handleAreaPolygonAll(row) {
+      //TODO 弹出层中绘制多边形及颜色
+      this.$refs.maps.openDiaAll(row);
+    },
     handleShow(areaPolygons) {
-
+      const arr = areaPolygons;
+      const result = [];
+      arr.forEach((i) => {
+        result.push(JSON.parse(i)[0]);
+      });
+      this.handleAreaPolygonAll(result);
     },
     /** 删除按钮操作 */
     handleDelete(row) {
@@ -385,8 +392,7 @@ export default {
           this.getList();
           this.$modal.msgSuccess("删除成功");
         })
-        .catch(() => {
-        });
+        .catch(() => {});
     },
     /** 导出按钮操作 */
     handleExport() {
