@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.WmsInspectionTaskMapper">
+    
+    <resultMap type="WmsInspectionTask" id="WmsInspectionTaskResult">
+        <result property="id"    column="id"    />
+        <result property="ruleId"    column="rule_id"    />
+        <result property="ruleName"    column="rule_name"    />
+        <result property="taskTime"    column="task_time"    />
+        <result property="actualInspectionData"    column="actual_inspection_data"    />
+        <result property="inspectionResult"    column="inspection_result"    />
+        <result property="taskStatus"    column="task_status"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectWmsInspectionTaskVo">
+        select id, rule_id, rule_name, task_time, actual_inspection_data, inspection_result, task_status, create_time, update_time from wms_inspection_task
+    </sql>
+
+    <select id="selectWmsInspectionTaskList" parameterType="WmsInspectionTask" resultMap="WmsInspectionTaskResult">
+        <include refid="selectWmsInspectionTaskVo"/>
+        <where>  
+            <if test="ruleId != null "> and rule_id = #{ruleId}</if>
+            <if test="ruleName != null  and ruleName != ''"> and rule_name like concat('%', #{ruleName}, '%')</if>
+            <if test="taskTime != null "> and task_time = #{taskTime}</if>
+            <if test="actualInspectionData != null  and actualInspectionData != ''"> and actual_inspection_data = #{actualInspectionData}</if>
+            <if test="inspectionResult != null  and inspectionResult != ''"> and inspection_result = #{inspectionResult}</if>
+            <if test="taskStatus != null  and taskStatus != ''"> and task_status = #{taskStatus}</if>
+        </where>
+    </select>
+    
+    <select id="selectWmsInspectionTaskById" parameterType="Long" resultMap="WmsInspectionTaskResult">
+        <include refid="selectWmsInspectionTaskVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertWmsInspectionTask" parameterType="WmsInspectionTask" useGeneratedKeys="true" keyProperty="id">
+        insert into wms_inspection_task
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="ruleId != null">rule_id,</if>
+            <if test="ruleName != null and ruleName != ''">rule_name,</if>
+            <if test="taskTime != null">task_time,</if>
+            <if test="actualInspectionData != null">actual_inspection_data,</if>
+            <if test="inspectionResult != null and inspectionResult != ''">inspection_result,</if>
+            <if test="taskStatus != null and taskStatus != ''">task_status,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="ruleId != null">#{ruleId},</if>
+            <if test="ruleName != null and ruleName != ''">#{ruleName},</if>
+            <if test="taskTime != null">#{taskTime},</if>
+            <if test="actualInspectionData != null">#{actualInspectionData},</if>
+            <if test="inspectionResult != null and inspectionResult != ''">#{inspectionResult},</if>
+            <if test="taskStatus != null and taskStatus != ''">#{taskStatus},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWmsInspectionTask" parameterType="WmsInspectionTask">
+        update wms_inspection_task
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="ruleId != null">rule_id = #{ruleId},</if>
+            <if test="ruleName != null and ruleName != ''">rule_name = #{ruleName},</if>
+            <if test="taskTime != null">task_time = #{taskTime},</if>
+            <if test="actualInspectionData != null">actual_inspection_data = #{actualInspectionData},</if>
+            <if test="inspectionResult != null and inspectionResult != ''">inspection_result = #{inspectionResult},</if>
+            <if test="taskStatus != null and taskStatus != ''">task_status = #{taskStatus},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWmsInspectionTaskById" parameterType="Long">
+        delete from wms_inspection_task where id = #{id}
+    </delete>
+
+    <delete id="deleteWmsInspectionTaskByIds" parameterType="String">
+        delete from wms_inspection_task where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

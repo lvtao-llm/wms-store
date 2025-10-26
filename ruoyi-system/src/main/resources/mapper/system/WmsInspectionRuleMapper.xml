@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.WmsInspectionRuleMapper">
+    
+    <resultMap type="WmsInspectionRule" id="WmsInspectionRuleResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="cron"    column="cron"    />
+        <result property="timeTolerance"    column="time_tolerance"    />
+        <result property="pathPoints"    column="path_points"    />
+        <result property="pointTolerance"    column="point_tolerance"    />
+        <result property="sequentialInspection"    column="sequential_inspection"    />
+        <result property="inspectors"    column="inspectors"    />
+        <result property="status"    column="status"    />
+        <result property="nextTaskID"    column="next_task_id"    />
+        <result property="nextTaskTime"    column="next_task_time"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectWmsInspectionRuleVo">
+        select id, name, cron, time_tolerance, path_points, point_tolerance, sequential_inspection, inspectors, status, create_time, update_time, next_task_id, next_task_time from wms_inspection_rule
+    </sql>
+
+    <select id="selectWmsInspectionRuleList" parameterType="WmsInspectionRule" resultMap="WmsInspectionRuleResult">
+        <include refid="selectWmsInspectionRuleVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="cron != null  and cron != ''"> and cron = #{cron}</if>
+            <if test="timeTolerance != null "> and time_tolerance = #{timeTolerance}</if>
+            <if test="pathPoints != null  and pathPoints != ''"> and path_points = #{pathPoints}</if>
+            <if test="pointTolerance != null "> and point_tolerance = #{pointTolerance}</if>
+            <if test="sequentialInspection != null "> and sequential_inspection = #{sequentialInspection}</if>
+            <if test="inspectors != null  and inspectors != ''"> and inspectors = #{inspectors}</if>
+            <if test="status != null "> and status = #{status}</if>
+             <if test="nextTaskID != null "> and next_task_id = #{nextTaskID}</if>
+              <if test="nextTaskTime != null "> and next_task_time = #{nextTaskTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectWmsInspectionRuleById" parameterType="Long" resultMap="WmsInspectionRuleResult">
+        <include refid="selectWmsInspectionRuleVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertWmsInspectionRule" parameterType="WmsInspectionRule" useGeneratedKeys="true" keyProperty="id">
+        insert into wms_inspection_rule
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">name,</if>
+            <if test="cron != null and cron != ''">cron,</if>
+            <if test="timeTolerance != null">time_tolerance,</if>
+            <if test="pathPoints != null">path_points,</if>
+            <if test="pointTolerance != null">point_tolerance,</if>
+            <if test="sequentialInspection != null">sequential_inspection,</if>
+            <if test="inspectors != null">inspectors,</if>
+            <if test="status != null">status,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="cron != null and cron != ''">#{cron},</if>
+            <if test="timeTolerance != null">#{timeTolerance},</if>
+            <if test="pathPoints != null">#{pathPoints},</if>
+            <if test="pointTolerance != null">#{pointTolerance},</if>
+            <if test="sequentialInspection != null">#{sequentialInspection},</if>
+            <if test="inspectors != null">#{inspectors},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWmsInspectionRule" parameterType="WmsInspectionRule">
+        update wms_inspection_rule
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="cron != null and cron != ''">cron = #{cron},</if>
+            <if test="timeTolerance != null">time_tolerance = #{timeTolerance},</if>
+            <if test="pathPoints != null">path_points = #{pathPoints},</if>
+            <if test="pointTolerance != null">point_tolerance = #{pointTolerance},</if>
+            <if test="sequentialInspection != null">sequential_inspection = #{sequentialInspection},</if>
+            <if test="inspectors != null">inspectors = #{inspectors},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="updateWmsInspectionRuleNext" parameterType="WmsInspectionRule">
+        update wms_inspection_rule
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="nextTaskID != null">next_task_id = #{nextTaskID},</if>
+            <if test="nextTaskTime != null">next_task_time = #{nextTaskTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWmsInspectionRuleById" parameterType="Long">
+        delete from wms_inspection_rule where id = #{id}
+    </delete>
+
+    <delete id="deleteWmsInspectionRuleByIds" parameterType="String">
+        delete from wms_inspection_rule where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.WmsInspectionIssueMapper">
+    
+    <resultMap type="WmsInspectionIssue" id="WmsInspectionIssueResult">
+        <result property="id"    column="id"    />
+        <result property="taskId"    column="task_id"    />
+        <result property="ruleId"    column="rule_id"    />
+        <result property="ruleName"    column="rule_name"    />
+        <result property="reporterId"    column="reporter_id"    />
+        <result property="cardId"    column="card_id"    />
+        <result property="issueTime"    column="issue_time"    />
+        <result property="description"    column="description"    />
+        <result property="issuePhotos"    column="issue_photos"    />
+        <result property="resolverId"    column="resolver_id"    />
+        <result property="resolverName"    column="resolver_name"    />
+        <result property="resolveTime"    column="resolve_time"    />
+        <result property="resolveDescription"    column="resolve_description"    />
+        <result property="resolvePhotos"    column="resolve_photos"    />
+        <result property="isResolved"    column="is_resolved"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectWmsInspectionIssueVo">
+        select id, task_id, rule_id, rule_name, reporter_id, card_id, issue_time, description, issue_photos, resolver_id, resolver_name, resolve_time, resolve_description, resolve_photos, is_resolved, create_time, update_time from wms_inspection_issue
+    </sql>
+
+    <select id="selectWmsInspectionIssueList" parameterType="WmsInspectionIssue" resultMap="WmsInspectionIssueResult">
+        <include refid="selectWmsInspectionIssueVo"/>
+        <where>  
+            <if test="taskId != null "> and task_id = #{taskId}</if>
+            <if test="ruleId != null "> and rule_id = #{ruleId}</if>
+            <if test="ruleName != null  and ruleName != ''"> and rule_name like concat('%', #{ruleName}, '%')</if>
+            <if test="reporterId != null "> and reporter_id = #{reporterId}</if>
+            <if test="cardId != null "> and card_id = #{cardId}</if>
+            <if test="issueTime != null "> and issue_time = #{issueTime}</if>
+            <if test="description != null  and description != ''"> and description = #{description}</if>
+            <if test="issuePhotos != null  and issuePhotos != ''"> and issue_photos = #{issuePhotos}</if>
+            <if test="resolverId != null "> and resolver_id = #{resolverId}</if>
+            <if test="resolverName != null  and resolverName != ''"> and resolver_name like concat('%', #{resolverName}, '%')</if>
+            <if test="resolveTime != null "> and resolve_time = #{resolveTime}</if>
+            <if test="resolveDescription != null  and resolveDescription != ''"> and resolve_description = #{resolveDescription}</if>
+            <if test="resolvePhotos != null  and resolvePhotos != ''"> and resolve_photos = #{resolvePhotos}</if>
+            <if test="isResolved != null "> and is_resolved = #{isResolved}</if>
+        </where>
+    </select>
+    
+    <select id="selectWmsInspectionIssueById" parameterType="Long" resultMap="WmsInspectionIssueResult">
+        <include refid="selectWmsInspectionIssueVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertWmsInspectionIssue" parameterType="WmsInspectionIssue" useGeneratedKeys="true" keyProperty="id">
+        insert into wms_inspection_issue
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="taskId != null">task_id,</if>
+            <if test="ruleId != null">rule_id,</if>
+            <if test="ruleName != null and ruleName != ''">rule_name,</if>
+            <if test="reporterId != null">reporter_id,</if>
+            <if test="cardId != null">card_id,</if>
+            <if test="issueTime != null">issue_time,</if>
+            <if test="description != null">description,</if>
+            <if test="issuePhotos != null">issue_photos,</if>
+            <if test="resolverId != null">resolver_id,</if>
+            <if test="resolverName != null">resolver_name,</if>
+            <if test="resolveTime != null">resolve_time,</if>
+            <if test="resolveDescription != null">resolve_description,</if>
+            <if test="resolvePhotos != null">resolve_photos,</if>
+            <if test="isResolved != null">is_resolved,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="taskId != null">#{taskId},</if>
+            <if test="ruleId != null">#{ruleId},</if>
+            <if test="ruleName != null and ruleName != ''">#{ruleName},</if>
+            <if test="reporterId != null">#{reporterId},</if>
+            <if test="cardId != null">#{cardId},</if>
+            <if test="issueTime != null">#{issueTime},</if>
+            <if test="description != null">#{description},</if>
+            <if test="issuePhotos != null">#{issuePhotos},</if>
+            <if test="resolverId != null">#{resolverId},</if>
+            <if test="resolverName != null">#{resolverName},</if>
+            <if test="resolveTime != null">#{resolveTime},</if>
+            <if test="resolveDescription != null">#{resolveDescription},</if>
+            <if test="resolvePhotos != null">#{resolvePhotos},</if>
+            <if test="isResolved != null">#{isResolved},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWmsInspectionIssue" parameterType="WmsInspectionIssue">
+        update wms_inspection_issue
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="taskId != null">task_id = #{taskId},</if>
+            <if test="ruleId != null">rule_id = #{ruleId},</if>
+            <if test="ruleName != null and ruleName != ''">rule_name = #{ruleName},</if>
+            <if test="reporterId != null">reporter_id = #{reporterId},</if>
+            <if test="cardId != null">card_id = #{cardId},</if>
+            <if test="issueTime != null">issue_time = #{issueTime},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="issuePhotos != null">issue_photos = #{issuePhotos},</if>
+            <if test="resolverId != null">resolver_id = #{resolverId},</if>
+            <if test="resolverName != null">resolver_name = #{resolverName},</if>
+            <if test="resolveTime != null">resolve_time = #{resolveTime},</if>
+            <if test="resolveDescription != null">resolve_description = #{resolveDescription},</if>
+            <if test="resolvePhotos != null">resolve_photos = #{resolvePhotos},</if>
+            <if test="isResolved != null">is_resolved = #{isResolved},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWmsInspectionIssueById" parameterType="Long">
+        delete from wms_inspection_issue where id = #{id}
+    </delete>
+
+    <delete id="deleteWmsInspectionIssueByIds" parameterType="String">
+        delete from wms_inspection_issue where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
