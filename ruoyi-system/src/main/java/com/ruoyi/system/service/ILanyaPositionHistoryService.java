@@ -31,11 +31,11 @@ public interface ILanyaPositionHistoryService {
     /**
      * 查询历史轨迹列表
      *
-     * @param id        历史轨迹
+     * @param time        历史轨迹
      * @param tableName
      * @return 历史轨迹集合
      */
-    public List<LanyaPositionHistory> selectLanyaPositionHistoryListStartId(Long id, int count, String tableName);
+    public List<LanyaPositionHistory> selectLanyaPositionHistoryListStartTime(Date time, int count, String tableName);
 
     /**
      * 新增历史轨迹

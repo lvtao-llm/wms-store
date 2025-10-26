@@ -104,4 +104,9 @@ public class WmsDeviceCardWorkLogServiceImpl implements IWmsDeviceCardWorkLogSer
     public List<WmsDeviceCardWorkLog> selectWmsDeviceCardWorkLogListEnd(WmsDeviceCardWorkLog query) {
         return wmsDeviceCardWorkLogMapper.selectWmsDeviceCardWorkLogListEnd(query);
     }
+
+    @Override
+    public int selectWmsDeviceCardWorkLogCountBySenderLanyaLogId(Long id) {
+        return wmsDeviceCardWorkLogMapper.selectWmsDeviceCardWorkLogCountBySenderLanyaLogId(id);
+    }
 }

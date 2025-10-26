@@ -1,5 +1,6 @@
 package com.ruoyi.system.mapper;
 
+import java.util.Date;
 import java.util.List;
 
 import com.ruoyi.system.domain.LanyaDeviceCardSenderLog;
@@ -31,11 +32,11 @@ public interface LanyaDeviceCardSenderLogMapper {
     /**
      * 查询人脸发卡记录列表
      *
-     * @param cardLogOffset 开始ID
+     * @param time 开始ID
      * @param count         数量
      * @return 人脸发卡记录集合
      */
-    List<LanyaDeviceCardSenderLog> selectLanyaDeviceCardSenderLogListStartId(@Param("cardLogOffset") long cardLogOffset, @Param("count") int count);
+    List<LanyaDeviceCardSenderLog> selectLanyaDeviceCardSenderLogListStartTime(@Param("time") Date time, @Param("count") int count);
 
     /**
      * 新增人脸发卡记录

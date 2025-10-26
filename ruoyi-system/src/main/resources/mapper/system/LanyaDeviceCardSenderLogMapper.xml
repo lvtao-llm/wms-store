@@ -119,10 +119,10 @@
         </where>
     </select>
 
-    <select id="selectLanyaDeviceCardSenderLogListStartId" resultMap="LanyaDeviceCardSenderLogResult">
+    <select id="selectLanyaDeviceCardSenderLogListStartTime" resultMap="LanyaDeviceCardSenderLogResult">
         select *
         from device_card_sender_log
-        where id > #{cardLogOffset}
+        where create_time > #{time}
         order by id asc
             limit #{count}
     </select>

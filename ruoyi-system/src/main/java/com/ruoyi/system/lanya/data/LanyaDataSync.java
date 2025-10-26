@@ -5,11 +5,14 @@ import com.ruoyi.system.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -40,6 +43,12 @@ public class LanyaDataSync {
     @Autowired
     private IWmsDeviceCardWorkLogService wmsDeviceCardWorkLogService;
 
+    @Value("${lanya.position.sync.enabled:false}")
+    private boolean enablePosition;
+    @Value("${lanya.position.mock.enabled:false}")
+    private boolean enableMock;
+    @Value("${lanya.issuing.sync.enabled:false}")
+    private boolean enableIssuing;
 
     String positionKey = "lanya.position.sync.offset";
     String cardLogKey = "lanya.card_log.sync.offset";
@@ -47,6 +56,10 @@ public class LanyaDataSync {
     SysConfig cardLogConfig = new SysConfig(cardLogKey);
 
     Map<Long, WmsDeviceCardWorkLog> workActivities = new HashMap<>();
+
+    SimpleDateFormat sdfDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+    SimpleDateFormat sdfTableSuffix = new SimpleDateFormat("yyyyMMdd");
+
 
     // 大庆市萨尔图区中心坐标
     double centerLat = 46.6346017782;  // 纬度
@@ -64,6 +77,10 @@ public class LanyaDataSync {
      * 创建LanyaPositionHistory数据模拟器
      */
     public void generateMockPositionHistoryData() {
+        if (!enableMock) {
+            return;
+        }
+
         Random random = new Random();
         Date now = new Date();
 
@@ -132,24 +149,44 @@ public class LanyaDataSync {
                 cardLogConfig = sysConfig;
             }
         }
+
+        // 初始化未同步的layan device_sender_card_log表数据到wms_device_card_work_log表
         CardLogSync();
+
+        // 初始化未同步的layan position_history表数据到wms_alarm_log表
+        // 历史position_history 按日期分表的表名
         List<String> tableNames = lanyaPositionHistoryService.showPositionHistoryTableNames();
+
+        // 最后同步的position_history表的时间
+        Date positionOffset = sdfDateTime.parse(positionConfig.getConfigValue());
+
         for (String tableName : tableNames) {
             if ("position_history_calendar".equals(tableName)) {
                 return;
             }
-            PositionSync(tableName);
+
+            Date dateSuffix = sdfTableSuffix.parse(tableName.substring(tableName.length() - 8));
+
+            // 只有当表日期大于等于最后同步日期时才执行同步
+            if (dateSuffix.compareTo(positionOffset) >= 0) {
+                PositionSync(tableName);
+            }
         }
     }
 
     public void CardLogSync() throws Exception {
-
+        if (!enableIssuing) {
+            return;
+        }
         String cardLogOffsetVal = configService.selectConfigByKey(cardLogKey);
-        long cardLogOffset = Long.parseLong(cardLogOffsetVal);
+        Date cardLogOffset = sdfDateTime.parse(cardLogOffsetVal);
+        Long timestamp = cardLogOffset.getTime();
         boolean continueGet = true;
         while (continueGet) {
-            List<LanyaDeviceCardSenderLog> lanyaDeviceCardSenderLogs = lanyaDeviceCardSenderLogService.selectLanyaDeviceCardSenderLogListStartId(cardLogOffset, 10);
+            List<LanyaDeviceCardSenderLog> lanyaDeviceCardSenderLogs = lanyaDeviceCardSenderLogService.selectLanyaDeviceCardSenderLogListStartTime(cardLogOffset, 10);
             for (LanyaDeviceCardSenderLog lanyaDeviceCardSenderLog : lanyaDeviceCardSenderLogs) {
+
+                // 发卡
                 if (lanyaDeviceCardSenderLog.getCardSenderType() == 1) {
                     // 发卡记录
                     WmsDeviceCardWorkLog wordLog = new WmsDeviceCardWorkLog();
@@ -169,11 +206,16 @@ public class LanyaDataSync {
                     wordLog.setSenderIdentifyTime(lanyaDeviceCardSenderLog.getIdentifyTime());
                     wordLog.setSenderLanyaLogId(lanyaDeviceCardSenderLog.getId());
                     wordLog.setCreateTime(new Date());
-                    if (wmsDeviceCardWorkLogService.insertWmsDeviceCardWorkLog(wordLog) > 0) {
-                        initPosition(wordLog);
-                        workActivities.put(lanyaDeviceCardSenderLog.getId(), wordLog);
+
+                    if (wmsDeviceCardWorkLogService.selectWmsDeviceCardWorkLogCountBySenderLanyaLogId(lanyaDeviceCardSenderLog.getId()) == 0) {
+                        if (wmsDeviceCardWorkLogService.insertWmsDeviceCardWorkLog(wordLog) > 0) {
+                            initPosition(wordLog);
+                            workActivities.put(lanyaDeviceCardSenderLog.getId(), wordLog);
+                        }
                     }
                 }
+
+                // 还卡
                 if (lanyaDeviceCardSenderLog.getCardSenderType() == 0 && lanyaDeviceCardSenderLog.getRealName() != null) {
                     // 还卡记录
                     WmsDeviceCardWorkLog query = new WmsDeviceCardWorkLog();
@@ -181,28 +223,30 @@ public class LanyaDataSync {
                     query.setRealName(lanyaDeviceCardSenderLog.getRealName());
                     List<WmsDeviceCardWorkLog> wmsDeviceCardWorkLogs = wmsDeviceCardWorkLogService.selectWmsDeviceCardWorkLogListEnd(query);
                     if (wmsDeviceCardWorkLogs.isEmpty()) {
-                        throw new Exception("没有找到对应的发卡记录");
+                        log.error("--------------------------------------------------------------\r\nERROR:没有找到对应的发卡记录>\r\n{}\r\n--------------------------------------------------------------", query);
                     }
 
                     if (wmsDeviceCardWorkLogs.size() > 1) {
-                        throw new Exception("找到多个发卡记录");
+                        log.error("--------------------------------------------------------------\r\nERROR:找到多个发卡记录>\r\n{}\r\n--------------------------------------------------------------", query);
                     }
 
-                    WmsDeviceCardWorkLog workLog = wmsDeviceCardWorkLogs.get(0);
-                    workLog.setReturnDeviceSn(lanyaDeviceCardSenderLog.getDeviceSn());
-                    workLog.setReturnDeviceName(lanyaDeviceCardSenderLog.getDeviceName());
-                    workLog.setReturnDeviceNum(lanyaDeviceCardSenderLog.getDeviceNum());
-                    workLog.setReturnCommandTime(lanyaDeviceCardSenderLog.getCommandTime());
-                    workLog.setReturnLanyaLogId(lanyaDeviceCardSenderLog.getId());
-                    workLog.setUpdateTime(new Date());
-                    if (wmsDeviceCardWorkLogService.updateWmsDeviceCardWorkLog(workLog) > 0) {
-                        completePosition(workLog);
-                        workActivities.remove(workLog.getId());
+                    if (!wmsDeviceCardWorkLogs.isEmpty()) {
+                        WmsDeviceCardWorkLog workLog = wmsDeviceCardWorkLogs.get(wmsDeviceCardWorkLogs.size() - 1);
+                        workLog.setReturnDeviceSn(lanyaDeviceCardSenderLog.getDeviceSn());
+                        workLog.setReturnDeviceName(lanyaDeviceCardSenderLog.getDeviceName());
+                        workLog.setReturnDeviceNum(lanyaDeviceCardSenderLog.getDeviceNum());
+                        workLog.setReturnCommandTime(lanyaDeviceCardSenderLog.getCommandTime());
+                        workLog.setReturnLanyaLogId(lanyaDeviceCardSenderLog.getId());
+                        workLog.setUpdateTime(new Date());
+                        if (wmsDeviceCardWorkLogService.updateWmsDeviceCardWorkLog(workLog) > 0) {
+                            completePosition(workLog);
+                            workActivities.remove(workLog.getId());
+                        }
                     }
                 }
 
-                cardLogOffset = lanyaDeviceCardSenderLog.getId();
-                cardLogConfig.setConfigValue(lanyaDeviceCardSenderLog.getId().toString());
+                cardLogOffset = lanyaDeviceCardSenderLog.getCreateTime();
+                cardLogConfig.setConfigValue(sdfDateTime.format(cardLogOffset));
                 configService.updateConfig(cardLogConfig);
             }
 
@@ -216,13 +260,16 @@ public class LanyaDataSync {
     private void completePosition(WmsDeviceCardWorkLog workLog) {
     }
 
-    public void PositionSync(String tableName) {
+    public void PositionSync(String tableName) throws ParseException {
+        if (!enablePosition) {
+            return;
+        }
         if (!alarmDetection.isInitialized()) {
             alarmDetection.loadAlarmRules();
         }
         // position_history表的最后同步id
         String positionOffsetVal = configService.selectConfigByKey(positionKey);
-        long positionOffset = Long.parseLong(positionOffsetVal);
+        Date positionOffset = sdfDateTime.parse(positionOffsetVal);
 
         // 是否继续同步
         boolean continueGet = true;
@@ -232,13 +279,13 @@ public class LanyaDataSync {
 
             // 获取count条position_history数据
             int count = 100;
-            List<LanyaPositionHistory> lanyaPositionHistories = lanyaPositionHistoryService.selectLanyaPositionHistoryListStartId(positionOffset, count, tableName);
+            List<LanyaPositionHistory> lanyaPositionHistories = lanyaPositionHistoryService.selectLanyaPositionHistoryListStartTime(positionOffset, count, tableName);
 
             // 循环处理数据
             for (LanyaPositionHistory position : lanyaPositionHistories) {
 
                 // 检测是否触发告警规则
-                List<AlarmResult> alarmRules = alarmDetection.detect(position.getCardId(), position.getPersonId(), position.getAcceptTime(), position.getBeaconId(), position.getLongitude(), position.getLatitude());
+                List<AlarmResult> alarmRules = alarmDetection.detect(position);
 
 
                 // 如果有告警规则触发则在workActivities查询匹配的wms_device_card_work_log记录ID
@@ -279,9 +326,9 @@ public class LanyaDataSync {
                 }
 
                 // 更新本地position_history的offset
-                positionOffset = position.getId();
+                positionOffset = position.getAcceptTime();
                 // 更新sys_config表中最后positon_history同步的offset
-                positionConfig.setConfigValue(position.getId().toString());
+                positionConfig.setConfigValue(sdfDateTime.format(positionOffset));
                 configService.updateConfig(positionConfig);
             }
 

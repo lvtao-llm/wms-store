@@ -1,5 +1,6 @@
 package com.ruoyi.system.lanya.data;
 
+import com.ruoyi.system.domain.LanyaPositionHistory;
 import com.ruoyi.system.domain.WmsAlarmRule;
 import com.ruoyi.system.domain.WmsArea;
 import com.ruoyi.system.service.IWmsAlarmRuleService;
@@ -26,7 +27,8 @@ public class AlarmDetection {
     private IWmsAreaService wmsAreaService;
 
     private final Map<WmsAlarmRule, RuleAreaWrap> rules = new HashMap<>();
-    private final Map<Long, LiveCard> liveCards = new HashMap<>();
+    private final Map<Long, LiveCard> livePeopleCards = new HashMap<>();
+    private final Map<Long, LiveCard> liveVehicleCards = new HashMap<>();
     private final GeometryFactory geometryFactory = new GeometryFactory();
 
 
@@ -102,17 +104,20 @@ public class AlarmDetection {
         }
     }
 
-    public List<AlarmResult> detect(Long cardId, Long personId, Date time, Long beaconId, double longitude, double latitude) {
+    public List<AlarmResult> detect(LanyaPositionHistory position) {
         // 发现的告警规则
         List<AlarmResult> detected = new ArrayList<>();
 
-        // 当前卡的geometry对象
-        Point point = geometryFactory.createPoint(new Coordinate(longitude, latitude));
+        long cardId = position.getCardId();
+        Date time = position.getAcceptTime();
 
-        if (!liveCards.containsKey(cardId)) {
-            liveCards.put(cardId, new LiveCard());
+        // 当前卡的geometry对象
+        Point point = geometryFactory.createPoint(new Coordinate(position.getLongitude(), position.getLatitude()));
+
+        if (!livePeopleCards.containsKey(cardId)) {
+            livePeopleCards.put(cardId, new LiveCard(position));
         }
-        LiveCard liveCard = liveCards.get(cardId);
+        LiveCard liveCard = livePeopleCards.get(cardId);
         liveCard.point = point;
 
 
@@ -206,7 +211,7 @@ public class AlarmDetection {
                     if (rule.getMaxPeopleCount() == null) {
                         break;
                     }
-                    List<List<Point>> lists = groupPointsByDistance(liveCards.values().stream()
+                    List<List<Point>> lists = groupPointsByDistance(livePeopleCards.values().stream()
                             .map(c -> c.point)
                             .filter(Objects::nonNull)
                             .toArray(Point[]::new), rule.getAlarmRuleDistThreshold());
@@ -283,6 +288,26 @@ public class AlarmDetection {
         isInitialized = initialized;
     }
 
+    public List<Object> getLiveVehicleTotal() {
+        return new ArrayList<>();
+    }
+
+    public List<Object> getLivePeopleTotal() {
+        return new ArrayList<>();
+    }
+
+    public List<Object> getPeopleAlarmToday() {
+        return new ArrayList<>();
+    }
+
+    public List<Object> getVehicleAlarmToday() {
+        return new ArrayList<>();
+    }
+
+    public List<Object> getHeightRiskAreaTotal() {
+        return new ArrayList<>();
+    }
+
     static class RuleAreaWrap {
         public WmsArea area;
         public Geometry geometry;
@@ -295,8 +320,17 @@ public class AlarmDetection {
     }
 
     private class LiveCard {
+        public LanyaPositionHistory position;
         public RuleAreaWrap onAreaWrap;
         public Point point;
+        public Long cardId;
+        public String realName;
+
+        public LiveCard(LanyaPositionHistory position) {
+            this.position = position;
+            this.cardId = position.getCardId();
+            this.realName = position.getRealName();
+        }
     }
 
 }

@@ -11,49 +11,6 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="时间阈值" prop="alarmRuleTimeThreshold">
-        <el-input
-          v-model="queryParams.alarmRuleTimeThreshold"
-          placeholder="请输入时间阈值"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="距离阈值" prop="alarmRuleDistThreshold">
-        <el-input
-          v-model="queryParams.alarmRuleDistThreshold"
-          placeholder="请输入距离阈值"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="目标区域" prop="alarmRuleTargetAreaCode">
-        <el-select v-model="queryParams.alarmRuleTargetAreaCode" placeholder="请选择目标区域" clearable>
-          <el-option
-            v-for="dict in dict.type.wms_area_names"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
-
-      <el-form-item label="周期开始时间" prop="alarmRuleEffectivePeriodS">
-        <el-input
-          v-model="queryParams.alarmRuleEffectivePeriodS"
-          placeholder="请输入生效周期开始时间cron"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="周期结束时间" prop="alarmRuleEffectivePeriodE">
-        <el-input
-          v-model="queryParams.alarmRuleEffectivePeriodE"
-          placeholder="请输入生效周期结束时间cron"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>

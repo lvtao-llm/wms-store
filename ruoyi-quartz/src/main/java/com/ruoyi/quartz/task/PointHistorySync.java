@@ -6,6 +6,9 @@ import com.ruoyi.system.domain.WmsTrajectory;
 import com.ruoyi.system.lanya.data.LanyaDataSync;
 import org.springframework.stereotype.Component;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * @author 吕涛
  * @version 1.0
@@ -16,7 +19,8 @@ public class PointHistorySync {
     public void PointHistoryIncrementSync() {
         LanyaDataSync bean = SpringUtils.getBean(LanyaDataSync.class);
         try {
-            bean.PositionSync("position_history");
+            SimpleDateFormat sdfTableSuffix = new SimpleDateFormat("yyyyMMdd");
+            bean.PositionSync("position_history_" + sdfTableSuffix.format(new Date()));
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -42,23 +46,4 @@ public class PointHistorySync {
             throw new RuntimeException(e);
         }
     }
-
-    public WmsTrajectory ConvertWmsTrajectory(MlPositionHistory mlPositionHistory) {
-        WmsTrajectory trajectory = new WmsTrajectory();
-
-        trajectory.setTrajectoryId(mlPositionHistory.getId());
-        trajectory.setTrajectoryType(mlPositionHistory.getCardType());
-        trajectory.setTrajectoryBegin(mlPositionHistory.getAcceptTime());
-        trajectory.setTrajectoryEnd(mlPositionHistory.getAcceptTime());
-        trajectory.setCardRecordId(mlPositionHistory.getId());
-        trajectory.setTrajectoryPoints(mlPositionHistory.getLatitude() + "," + mlPositionHistory.getLongitude());
-        trajectory.setRemark("");
-        trajectory.setCreateTime(mlPositionHistory.getAcceptTime());
-        trajectory.setUpdateTime(mlPositionHistory.getAcceptTime());
-        trajectory.setCreateBy("system");
-        trajectory.setUpdateBy("system");
-
-        return trajectory;
-    }
-
 }

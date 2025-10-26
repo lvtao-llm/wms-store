@@ -61,7 +61,7 @@ public interface LanyaPositionHistoryMapper {
      */
     public int deleteLanyaPositionHistoryByIds(Long[] ids);
 
-    List<LanyaPositionHistory> selectLanyaPositionHistoryListStartId(@Param("id") Long id, @Param("count") int count, @Param("tableName") String tableName);
+    List<LanyaPositionHistory> selectLanyaPositionHistoryListStartTime(@Param("time") Date time, @Param("count") int count, @Param("tableName") String tableName);
 
     List<LanyaPositionHistory> selectLanyaPositionHistoryListStartTimeByCardAndName(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime, @Param("cardId") Long cardId, @Param("realName") String realName);
 

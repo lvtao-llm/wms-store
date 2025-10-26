@@ -135,7 +135,16 @@ xss:
   # 匹配链接
   urlPatterns: /system/*,/monitor/*,/tool/*
 
-third-party:
+lanya:
   base-url: http://112.98.110.101:8091/gateway-service
   username: admin
   password: xrkc168168
+
+  position:
+    sync:
+      enabled: false
+    mock:
+      enabled: false
+  issuing:
+    sync:
+      enabled: false

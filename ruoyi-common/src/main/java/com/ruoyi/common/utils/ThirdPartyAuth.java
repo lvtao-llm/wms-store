@@ -18,11 +18,11 @@ import java.util.Map;
  */
 @Component
 public class ThirdPartyAuth {
-    @Value("${third-party.base-url:http://112.98.110.101:8091}")
+    @Value("${lanya.base-url:http://112.98.110.101:8091}")
     public String baseUrl;
-    @Value("${third-party.username:admin}")
+    @Value("${lanya.username:admin}")
     private String username;
-    @Value("${third-party.password:xrkc168168}")
+    @Value("${lanya.password:xrkc168168}")
     private String password;
 
     public String token = null;

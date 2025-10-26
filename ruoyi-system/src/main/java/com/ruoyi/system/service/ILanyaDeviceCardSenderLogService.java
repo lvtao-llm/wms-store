@@ -1,9 +1,8 @@
 package com.ruoyi.system.service;
 
+import java.util.Date;
 import java.util.List;
 
-import com.ruoyi.common.annotation.DataSource;
-import com.ruoyi.common.enums.DataSourceType;
 import com.ruoyi.system.domain.LanyaDeviceCardSenderLog;
 
 /**
@@ -33,11 +32,11 @@ public interface ILanyaDeviceCardSenderLogService {
     /**
      * 查询人脸发卡记录列表
      *
-     * @param cardLogOffset 人脸发卡记录
+     * @param time 人脸发卡记录
      * @param count         查询数量
      * @return 人脸发卡记录集合
      */
-    List<LanyaDeviceCardSenderLog> selectLanyaDeviceCardSenderLogListStartId(long cardLogOffset, int count);
+    List<LanyaDeviceCardSenderLog> selectLanyaDeviceCardSenderLogListStartTime(Date time, int count);
 
     /**
      * 新增人脸发卡记录

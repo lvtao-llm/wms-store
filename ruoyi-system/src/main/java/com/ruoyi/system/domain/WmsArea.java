@@ -84,6 +84,12 @@ public class WmsArea extends BaseEntity {
     @JsonIgnore
     private Geometry geometry;
 
+    @Excel(name = "区域图片")
+    private String photos ;
+
+    @Excel(name = "全景图片")
+    private String photo360 ;
+
     /**
      * 删除标志
      */
@@ -223,5 +229,21 @@ public class WmsArea extends BaseEntity {
 
     public void setGeometry(Geometry geometry) {
         this.geometry = geometry;
+    }
+
+    public String getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(String photos) {
+        this.photos = photos;
+    }
+
+    public String getPhoto360() {
+        return photo360;
+    }
+
+    public void setPhoto360(String photo360) {
+        this.photo360 = photo360;
     }
 }

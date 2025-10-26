@@ -1,5 +1,6 @@
 package com.ruoyi.system.service.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import com.ruoyi.common.annotation.DataSource;
@@ -48,13 +49,13 @@ public class LanyaDeviceCardSenderLogServiceImpl implements ILanyaDeviceCardSend
     /**
      * 查询人脸发卡记录列表
      *
-     * @param cardLogOffset 开始ID
+     * @param time 开始ID
      * @param count         获取数量
      * @return 人脸发卡记录集合
      */
     @Override
-    public List<LanyaDeviceCardSenderLog> selectLanyaDeviceCardSenderLogListStartId(long cardLogOffset, int count) {
-        return lanyaDeviceCardSenderLogMapper.selectLanyaDeviceCardSenderLogListStartId(cardLogOffset, count);
+    public List<LanyaDeviceCardSenderLog> selectLanyaDeviceCardSenderLogListStartTime(Date time, int count) {
+        return lanyaDeviceCardSenderLogMapper.selectLanyaDeviceCardSenderLogListStartTime(time, count);
     }
 
     /**

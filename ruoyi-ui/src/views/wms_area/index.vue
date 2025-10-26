@@ -121,6 +121,30 @@
       <el-table-column label="风险等级" align="center" prop="areaRiskLevel" />
       <el-table-column label="启用状态" align="center" prop="enabled" />
       <el-table-column label="备注" align="center" prop="remark" />
+      <el-table-column label="照片" align="center" prop="photos" >
+        <template slot-scope="scope">
+          <div v-if="scope.row.photos">
+            <image-preview
+              v-for="(photo, index) in scope.row.photos.split(',')"
+              :key="index"
+              :src="photo.trim()"
+              :width="50"
+              :height="50"      style="margin-right: 5px; margin-bottom: 5px;"
+            />
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column label="全景" align="center" prop="photo360" >
+        <template slot-scope="scope">
+          <div v-if="scope.row.photo360">
+            <image-preview
+              :src="scope.row.photo360"
+              :width="50"
+              :height="50"      style="margin-right: 5px; margin-bottom: 5px;"
+            />
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column
         label="操作"
         align="center"
@@ -198,6 +222,12 @@
         <el-form-item label="备注" prop="remark">
           <el-input v-model="form.remark" placeholder="请输入备注" />
         </el-form-item>
+        <el-form-item label="区域照片" prop="photos">
+          <image-upload v-model="form.photos"/>
+        </el-form-item>
+        <el-form-item label="全景照片" prop="photo360">
+          <image-upload v-model="form.photo360"  :limit="1"/>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -256,6 +286,8 @@ export default {
         areaPolygon: null,
         areaRiskLevel: null,
         enabled: null,
+        photos:null,
+        photo360:null,
       },
       // 表单参数
       form: {},
@@ -309,6 +341,8 @@ export default {
         updateBy: null,
         updateTime: null,
         delFlag: null,
+        photos:null,
+        photo360:null
       };
       this.resetForm("form");
     },

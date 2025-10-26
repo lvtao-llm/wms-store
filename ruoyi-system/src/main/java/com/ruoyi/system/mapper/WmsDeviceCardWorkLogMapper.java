@@ -64,4 +64,6 @@ public interface WmsDeviceCardWorkLogMapper {
     Long selectWmsDeviceCardWorkLogIdInTimeByCardAndName(@Param("time") Date time, @Param("cardId") Long cardId, @Param("realName") String realName);
 
     List<WmsDeviceCardWorkLog> selectWmsDeviceCardWorkLogListEnd(WmsDeviceCardWorkLog query);
+
+    int selectWmsDeviceCardWorkLogCountBySenderLanyaLogId(Long id);
 }

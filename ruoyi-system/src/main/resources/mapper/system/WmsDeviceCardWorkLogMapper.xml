@@ -98,6 +98,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where sender_command_time >= #{time} and return_command_time <![CDATA[ <= ]]> #{time} and card_id = #{cardId} and real_name = #{realName}
     </select>
 
+    <select id="selectWmsDeviceCardWorkLogCountBySenderLanyaLogId" resultType="Integer">
+        select count(1) from wms_device_card_work_log where sender_lanya_log_id = #{id}
+    </select>
+
     <insert id="insertWmsDeviceCardWorkLog" parameterType="WmsDeviceCardWorkLog">
         insert into wms_device_card_work_log
         <trim prefix="(" suffix=")" suffixOverrides=",">

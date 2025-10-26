@@ -63,4 +63,6 @@ public interface IWmsDeviceCardWorkLogService
     public Long selectWmsDeviceCardWorkLogIdInTimeByCardAndName(Date acceptTime, Long cardId, String realName);
 
     List<WmsDeviceCardWorkLog> selectWmsDeviceCardWorkLogListEnd(WmsDeviceCardWorkLog query);
+
+    int selectWmsDeviceCardWorkLogCountBySenderLanyaLogId(Long id);
 }

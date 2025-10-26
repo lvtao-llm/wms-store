@@ -47,8 +47,8 @@ public class LanyaPositionHistoryServiceImpl implements ILanyaPositionHistorySer
     }
 
     @Override
-    public List<LanyaPositionHistory> selectLanyaPositionHistoryListStartId(Long id, int count, String tableName) {
-        return lanyaPositionHistoryMapper.selectLanyaPositionHistoryListStartId(id, count, tableName);
+    public List<LanyaPositionHistory> selectLanyaPositionHistoryListStartTime(Date time, int count, String tableName) {
+        return lanyaPositionHistoryMapper.selectLanyaPositionHistoryListStartTime(time, count, tableName);
     }
 
     /**
