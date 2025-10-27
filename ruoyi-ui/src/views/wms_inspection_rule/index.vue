@@ -263,7 +263,7 @@
         :expression="expression"
       ></crontab>
     </el-dialog>
-    <maps ref="maps"></maps>
+    <maps @editPoints="savePoints" ref="maps"></maps>
   </div>
 </template>
 
@@ -490,19 +490,16 @@ export default {
         this.form = response.data;
         //TODO 打开巡检点的地图标注窗体标注巡检点
         //巡检点数据格式:{"巡检顺序的序号":{经纬度坐标， 巡检点半径}}
-        let inspectionPoints = {
-          1: { 经纬度坐标: [], 巡检点半径: 10 },
-          2: { 经纬度坐标: [], 巡检点半径: 10 },
-        };
         this.$refs.maps.openDia(this.form);
-
-        // 更新巡检点 -----------------------------
-        this.form.pathPoints = inspectionPoints;
-        updateWms_inspection_rule(this.form).then((response) => {
-          this.$modal.msgSuccess("修改成功");
-          this.open = false;
-          this.getList();
-        });
+      });
+    },
+    savePoints(data) {
+      // 更新巡检点 -----------------------------
+      this.form.pathPoints = JSON.stringify(data);
+      updateWms_inspection_rule(this.form).then((response) => {
+        this.$modal.msgSuccess("修改成功");
+        this.open = false;
+        this.getList();
       });
     },
   },
