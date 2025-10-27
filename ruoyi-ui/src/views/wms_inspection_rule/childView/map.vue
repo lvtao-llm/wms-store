@@ -117,38 +117,39 @@ export default {
   },
   methods: {
     openDia(row, type = "add") {
+      console.log(row, 123);
       this.show = true;
       this.pageType = type;
-      getArea(row.areaId).then((response) => {
-        this.form = response.data;
-        if (this.form.areaPolygon) {
-          try {
-            this.savedPointGroups = JSON.parse(this.form.areaPolygon);
-            // this.choosePoints = JSON.parse(this.form.areaPolygon);
-            this.points = this.savedPointGroups[0].points;
-            // 等待对话框和地图完全初始化后再显示标记点
-            this.$nextTick(() => {
-              setTimeout(() => {
-                if (this.map) {
-                  this.showAllSavedGroups();
-                } else {
-                  // 如果地图还没初始化，等待地图初始化完成
-                  const checkMap = setInterval(() => {
-                    if (this.map) {
-                      clearInterval(checkMap);
-                      this.showAllSavedGroups();
-                    }
-                  }, 100);
-                }
-              }, 200);
-            });
-          } catch (error) {
-            this.$modal.msgError("区域数据格式错误");
-          }
-        } else {
-          this.map.clearOverlays();
-        }
-      });
+      // getArea(row.areaId).then((response) => {
+      //   this.form = response.data;
+      //   if (this.form.areaPolygon) {
+      //     try {
+      //       this.savedPointGroups = JSON.parse(this.form.areaPolygon);
+      //       // this.choosePoints = JSON.parse(this.form.areaPolygon);
+      //       this.points = this.savedPointGroups[0].points;
+      //       // 等待对话框和地图完全初始化后再显示标记点
+      //       this.$nextTick(() => {
+      //         setTimeout(() => {
+      //           if (this.map) {
+      //             this.showAllSavedGroups();
+      //           } else {
+      //             // 如果地图还没初始化，等待地图初始化完成
+      //             const checkMap = setInterval(() => {
+      //               if (this.map) {
+      //                 clearInterval(checkMap);
+      //                 this.showAllSavedGroups();
+      //               }
+      //             }, 100);
+      //           }
+      //         }, 200);
+      //       });
+      //     } catch (error) {
+      //       this.$modal.msgError("区域数据格式错误");
+      //     }
+      //   } else {
+      //     this.map.clearOverlays();
+      //   }
+      // });
     },
     openDiaAll(data, type = "view") {
       this.show = true;
@@ -223,7 +224,7 @@ export default {
         // 右键添加标记
         this.map.addEventListener("rightclick", (e) => {
           this.addNewMarker(e.point);
-          this.updatePolyline();
+          // this.updatePolyline();
         });
 
         console.log("地图控件添加完成");
@@ -320,7 +321,7 @@ export default {
           }
 
           const bPoint = new window.BMap.Point(point.lng, point.lat);
-          this.addSavedMarker(bPoint, pointIndex + 1, color);
+          this.addSavedMarker(bPoint, pointIndex + 1, point, color);
         });
 
         // 绘制多边形（包括填充和边框）
@@ -344,11 +345,6 @@ export default {
             fillOpacity: 0.3, // 半透明填充
           });
           this.map.addOverlay(polygon);
-
-          // 添加区域文字标签
-          const areaName = group.areaName || `区域${groupIndex + 1}`;
-          this.addAreaLabel(pathPoints, areaName, color);
-          console.log("多边形绘制完成");
         } else if (group.points.length >= 2) {
           // 如果只有2个点，绘制线条
           const pathPoints = group.points.map(
@@ -384,7 +380,7 @@ export default {
     },
 
     // 添加已保存的标记
-    addSavedMarker(point, label, color) {
+    addSavedMarker(point, label, size, color) {
       try {
         const BMap = window.BMap;
         const marker = new BMap.Marker(point);
@@ -410,45 +406,6 @@ export default {
         );
       } catch (error) {
         console.error(`添加标记点 ${label} 失败:`, error);
-      }
-    },
-
-    // 添加区域文字标签
-    addAreaLabel(points, text, color) {
-      try {
-        const BMap = window.BMap;
-
-        // 计算多边形的中心点
-        const centerPoint = this.calculatePolygonCenter(points);
-
-        // 创建文字标签
-        const label = new BMap.Label(text, {
-          position: centerPoint,
-          offset: new BMap.Size(0, 0),
-        });
-
-        // 设置标签样式
-        label.setStyle({
-          color: "white",
-          fontSize: "16px",
-          fontWeight: "bold",
-          backgroundColor: "rgba(0, 0, 0, 0.6)",
-          padding: "8px 12px",
-          border: `2px solid ${color}`,
-          borderRadius: "6px",
-          textAlign: "center",
-          boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
-        });
-
-        // 添加标签到地图
-        this.map.addOverlay(label);
-        console.log(
-          `区域标签 "${text}" 添加成功，位置: (${centerPoint.lng}, ${centerPoint.lat})`
-        );
-
-        return label;
-      } catch (error) {
-        console.error(`添加区域标签 "${text}" 失败:`, error);
       }
     },
 
@@ -498,7 +455,7 @@ export default {
         if (index !== -1) {
           this.points[index] = { lat: e.point.lat, lng: e.point.lng };
         }
-        this.updatePolyline();
+        // this.updatePolyline();
       });
     },
     // 清理动画
@@ -546,33 +503,33 @@ export default {
       delete this.presetOverlays.character;
     },
 
-    // 更新连线
-    updatePolyline() {
-      if (this.polyline) {
-        this.map.removeOverlay(this.polyline);
-      }
+    // // 更新连线
+    // updatePolyline() {
+    //   if (this.polyline) {
+    //     this.map.removeOverlay(this.polyline);
+    //   }
 
-      if (this.points.length < 2) return;
+    //   if (this.points.length < 2) return;
 
-      const pathPoints = this.points.map(
-        (p) => new window.BMap.Point(p.lng, p.lat)
-      );
+    //   const pathPoints = this.points.map(
+    //     (p) => new window.BMap.Point(p.lng, p.lat)
+    //   );
 
-      if (this.points.length >= 3) {
-        pathPoints.push(
-          new window.BMap.Point(this.points[0].lng, this.points[0].lat)
-        );
-      }
+    //   if (this.points.length >= 3) {
+    //     pathPoints.push(
+    //       new window.BMap.Point(this.points[0].lng, this.points[0].lat)
+    //     );
+    //   }
 
-      this.polyline = new window.BMap.Polyline(pathPoints, {
-        strokeColor: "#3388ff",
-        strokeWeight: 3,
-        strokeOpacity: 0.8,
-        strokeStyle: "solid",
-      });
+    //   this.polyline = new window.BMap.Polyline(pathPoints, {
+    //     strokeColor: "#3388ff",
+    //     strokeWeight: 3,
+    //     strokeOpacity: 0.8,
+    //     strokeStyle: "solid",
+    //   });
 
-      this.map.addOverlay(this.polyline);
-    },
+    //   this.map.addOverlay(this.polyline);
+    // },
 
     close() {
       this.show = false;

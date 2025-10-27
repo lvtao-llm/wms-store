@@ -238,9 +238,9 @@ export default {
     initMap() {
       const BMap = window.BMap;
       this.map = new BMap.Map("container");
-      this.map.centerAndZoom(new BMap.Point(124.87612, 46.64195), 15);
+      this.map.centerAndZoom(new BMap.Point(125.05, 46.59), 15);
       this.map.setMinZoom(11);
-      this.map.setMaxZoom(19);
+      this.map.setMaxZoom(17);
       this.map.enableScrollWheelZoom(true);
 
       // 添加控件

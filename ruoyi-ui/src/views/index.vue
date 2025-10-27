@@ -184,7 +184,7 @@
     <div class="dialog-box">
       <!-- 左上 -->
       <div
-        :style="{ left: isMovedOutTf ? '0' : '-300px' }"
+        :style="{ left: isMovedOutTf ? '0' : '-50vw' }"
         class="left-top-dialog"
       >
         <img
@@ -270,7 +270,7 @@
       </div>
       <!-- 左下 -->
       <div
-        :style="{ left: isMovedOutBf ? '0' : '-300px' }"
+        :style="{ left: isMovedOutBf ? '0' : '-50vw' }"
         class="left-bottom-dialog"
       >
         <img
@@ -759,9 +759,9 @@ export default {
     initMap() {
       const BMap = window.BMap;
       this.map = new BMap.Map("container");
-      this.map.centerAndZoom(new BMap.Point(124.87612, 46.64195), 15);
+      this.map.centerAndZoom(new BMap.Point(125.05, 46.59), 15);
       this.map.setMinZoom(11);
-      this.map.setMaxZoom(19);
+      this.map.setMaxZoom(17);
       this.map.enableScrollWheelZoom(true);
 
       // 添加控件
