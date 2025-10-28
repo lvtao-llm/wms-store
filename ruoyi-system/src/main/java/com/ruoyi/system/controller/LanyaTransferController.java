@@ -255,7 +255,7 @@ public class LanyaTransferController extends BaseController {
      */
     @GetMapping("/files/image")
     public void filesStatic(String path, HttpServletResponse response) throws IOException {
-        String target = thirdPartyAuth.baseUrl + "/fileStatic/" + path;
+        String target = "http://" + thirdPartyAuth.baseUrl + "/fileStatic/" + path;
         byte[] bytes = thirdPartyAuth.restTemplate.execute(
                 target,
                 HttpMethod.GET,

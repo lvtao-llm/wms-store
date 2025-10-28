@@ -454,7 +454,7 @@ export const dynamicRoutes = [
       },
       {
         path: 'issue',
-        component: () => import('@/views/wms_inspection_issue/index'),
+        component: () => import('@/views/websocket.vue'),
         name: '巡检问题管理',
         meta: {title: '巡检问题管理'}
       }

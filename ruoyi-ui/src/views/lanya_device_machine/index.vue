@@ -37,6 +37,14 @@
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="是否启用" align="center" prop="deviceEnable" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+        <el-button
+          size="mini"
+          type="text"
+          icon="el-icon-edit"
+          @click="showCardSlot(scope.row)"
+          v-hasPermi="['system:lanya_device_card:edit']"
+        >卡槽试图
+        </el-button>
       </el-table-column>
     </el-table>
 
@@ -248,6 +256,9 @@ export default {
       this.download('system/lanya_device_machine/export', {
         ...this.queryParams
       }, `lanya_device_machine_${new Date().getTime()}.xlsx`)
+    },
+    showCardSlot(row) {
+
     }
   }
 }

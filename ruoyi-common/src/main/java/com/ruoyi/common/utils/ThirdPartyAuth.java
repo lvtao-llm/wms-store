@@ -18,7 +18,7 @@ import java.util.Map;
  */
 @Component
 public class ThirdPartyAuth {
-    @Value("${lanya.base-url:http://112.98.110.101:8091}")
+    @Value("${lanya.base-url:112.98.110.101:8091/gateway-service}")
     public String baseUrl;
     @Value("${lanya.username:admin}")
     private String username;
@@ -33,7 +33,7 @@ public class ThirdPartyAuth {
 
     public Map callThirdPartyLogin() throws JsonProcessingException {
 
-        String url = baseUrl + "/auth/login";
+        String url = "http://" + baseUrl + "/auth/login";
 
         // 1. JSON 体
         Map<String, String> sendMap = new HashMap<>();
@@ -67,7 +67,7 @@ public class ThirdPartyAuth {
     }
 
     public Object callThirdParty(String path, HttpMethod method, Map<String, Object> body) throws JsonProcessingException {
-        String url = baseUrl + path;
+        String url = "http://" + baseUrl + path;
 
         System.out.println(url);
 
@@ -89,7 +89,7 @@ public class ThirdPartyAuth {
     }
 
     public Object callThirdParty(String path, HttpMethod method, HttpEntity<MultiValueMap<String, Object>> entity) throws JsonProcessingException {
-        String url = baseUrl + path;
+        String url = "http://" + baseUrl + path;
 
         HttpHeaders headers = new HttpHeaders();
         headers.putAll(entity.getHeaders());
@@ -120,7 +120,7 @@ public class ThirdPartyAuth {
     }
 
     public Object callThirdParty(String path, HttpMethod method, MediaType imageJpeg) throws JsonProcessingException {
-        String url = baseUrl + path;
+        String url = "http://" + baseUrl + path;
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(imageJpeg);
         headers.set("Authorization", token);

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.WmsDeviceMapper">
+    
+    <resultMap type="WmsDevice" id="WmsDeviceResult">
+        <result property="id"    column="id"    />
+        <result property="deviceType"    column="device_type"    />
+        <result property="deviceDescription"    column="device_description"    />
+        <result property="longitude"    column="longitude"    />
+        <result property="latitude"    column="latitude"    />
+        <result property="altitude"    column="altitude"    />
+        <result property="deviceName"    column="device_name"    />
+        <result property="model"    column="model"    />
+        <result property="specification"    column="specification"    />
+        <result property="serialNumber"    column="serial_number"    />
+        <result property="tableName"    column="table_name"    />
+        <result property="tableId"    column="table_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="delFlag"    column="del_flag"    />
+    </resultMap>
+
+    <sql id="selectWmsDeviceVo">
+        select id, device_type, device_description, longitude, latitude, altitude, device_name, model, specification, serial_number, table_name, table_id, create_by, create_time, update_by, update_time, del_flag from wms_device
+    </sql>
+
+    <select id="selectWmsDeviceList" parameterType="WmsDevice" resultMap="WmsDeviceResult">
+        <include refid="selectWmsDeviceVo"/>
+        <where>  
+            <if test="deviceType != null  and deviceType != ''"> and device_type = #{deviceType}</if>
+            <if test="deviceDescription != null  and deviceDescription != ''"> and device_description = #{deviceDescription}</if>
+            <if test="longitude != null "> and longitude = #{longitude}</if>
+            <if test="latitude != null "> and latitude = #{latitude}</if>
+            <if test="altitude != null "> and altitude = #{altitude}</if>
+            <if test="deviceName != null  and deviceName != ''"> and device_name like concat('%', #{deviceName}, '%')</if>
+            <if test="model != null  and model != ''"> and model = #{model}</if>
+            <if test="specification != null  and specification != ''"> and specification = #{specification}</if>
+            <if test="serialNumber != null  and serialNumber != ''"> and serial_number = #{serialNumber}</if>
+            <if test="tableName != null  and tableName != ''"> and table_name like concat('%', #{tableName}, '%')</if>
+            <if test="tableId != null "> and table_id = #{tableId}</if>
+        </where>
+    </select>
+    
+    <select id="selectWmsDeviceById" parameterType="Long" resultMap="WmsDeviceResult">
+        <include refid="selectWmsDeviceVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertWmsDevice" parameterType="WmsDevice" useGeneratedKeys="true" keyProperty="id">
+        insert into wms_device
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="deviceType != null">device_type,</if>
+            <if test="deviceDescription != null">device_description,</if>
+            <if test="longitude != null">longitude,</if>
+            <if test="latitude != null">latitude,</if>
+            <if test="altitude != null">altitude,</if>
+            <if test="deviceName != null">device_name,</if>
+            <if test="model != null">model,</if>
+            <if test="specification != null">specification,</if>
+            <if test="serialNumber != null">serial_number,</if>
+            <if test="tableName != null">table_name,</if>
+            <if test="tableId != null">table_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="delFlag != null">del_flag,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="deviceType != null">#{deviceType},</if>
+            <if test="deviceDescription != null">#{deviceDescription},</if>
+            <if test="longitude != null">#{longitude},</if>
+            <if test="latitude != null">#{latitude},</if>
+            <if test="altitude != null">#{altitude},</if>
+            <if test="deviceName != null">#{deviceName},</if>
+            <if test="model != null">#{model},</if>
+            <if test="specification != null">#{specification},</if>
+            <if test="serialNumber != null">#{serialNumber},</if>
+            <if test="tableName != null">#{tableName},</if>
+            <if test="tableId != null">#{tableId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWmsDevice" parameterType="WmsDevice">
+        update wms_device
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="deviceType != null">device_type = #{deviceType},</if>
+            <if test="deviceDescription != null">device_description = #{deviceDescription},</if>
+            <if test="longitude != null">longitude = #{longitude},</if>
+            <if test="latitude != null">latitude = #{latitude},</if>
+            <if test="altitude != null">altitude = #{altitude},</if>
+            <if test="deviceName != null">device_name = #{deviceName},</if>
+            <if test="model != null">model = #{model},</if>
+            <if test="specification != null">specification = #{specification},</if>
+            <if test="serialNumber != null">serial_number = #{serialNumber},</if>
+            <if test="tableName != null">table_name = #{tableName},</if>
+            <if test="tableId != null">table_id = #{tableId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWmsDeviceById" parameterType="Long">
+        delete from wms_device where id = #{id}
+    </delete>
+
+    <delete id="deleteWmsDeviceByIds" parameterType="String">
+        delete from wms_device where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

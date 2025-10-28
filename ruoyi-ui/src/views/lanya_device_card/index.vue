@@ -327,7 +327,8 @@ export default {
       this.download('system/lanya_device_card/export', {
         ...this.queryParams
       }, `lanya_device_card_${new Date().getTime()}.xlsx`)
-    }
+    },
+
   }
 }
 </script>
