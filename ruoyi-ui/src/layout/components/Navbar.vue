@@ -1,33 +1,51 @@
 <template>
   <div class="navbar">
-    <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
+    <hamburger
+      id="hamburger-container"
+      :is-active="sidebar.opened"
+      class="hamburger-container"
+      @toggleClick="toggleSideBar"
+    />
 
-    <breadcrumb v-if="!topNav" id="breadcrumb-container" class="breadcrumb-container" />
+    <breadcrumb
+      v-if="!topNav"
+      id="breadcrumb-container"
+      class="breadcrumb-container"
+    />
     <top-nav v-if="topNav" id="topmenu-container" class="topmenu-container" />
 
     <div class="right-menu">
-      <template v-if="device!=='mobile'">
-        <search id="header-search" class="right-menu-item" />
+      <template v-if="device !== 'mobile'">
+        <!-- <search id="header-search" class="right-menu-item" /> -->
 
-        <el-tooltip content="源码地址" effect="dark" placement="bottom">
-          <ruo-yi-git id="ruoyi-git" class="right-menu-item hover-effect" />
+        <el-tooltip content="车辆报警" effect="dark" placement="bottom">
+          <img
+            style="width: 23px; height: 23px"
+            class="icon-img"
+            src="@/assets/images/车辆报警.svg"
+          />
         </el-tooltip>
-
-        <el-tooltip content="文档地址" effect="dark" placement="bottom">
-          <ruo-yi-doc id="ruoyi-doc" class="right-menu-item hover-effect" />
+        <el-tooltip content="人员报警" effect="dark" placement="bottom">
+          <img
+            fill="red"
+            class="icon-img blinking-red"
+            src="@/assets/images/人员报警-red.svg"
+          />
         </el-tooltip>
-
+        <el-tooltip content="物料报警" effect="dark" placement="bottom">
+          <img class="icon-img" src="@/assets/images/报警.svg" />
+        </el-tooltip>
+        <img class="icon-img" src="@/assets/images/喇叭开.svg" />
+        <!-- <img class="icon-img" src="@/assets/images/喇叭关.svg" /> -->
         <screenfull id="screenfull" class="right-menu-item hover-effect" />
-
-        <el-tooltip content="布局大小" effect="dark" placement="bottom">
-          <size-select id="size-select" class="right-menu-item hover-effect" />
-        </el-tooltip>
-
       </template>
 
-      <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="hover">
+      <el-dropdown
+        class="avatar-container right-menu-item hover-effect"
+        trigger="hover"
+      >
         <div class="avatar-wrapper">
-          <img :src="avatar" class="user-avatar">
+          <img :src="avatar" class="user-avatar" />
           <span class="user-nickname"> {{ nickName }} </span>
         </div>
         <el-dropdown-menu slot="dropdown">
@@ -47,18 +65,18 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import Breadcrumb from '@/components/Breadcrumb'
-import TopNav from '@/components/TopNav'
-import Hamburger from '@/components/Hamburger'
-import Screenfull from '@/components/Screenfull'
-import SizeSelect from '@/components/SizeSelect'
-import Search from '@/components/HeaderSearch'
-import RuoYiGit from '@/components/RuoYi/Git'
-import RuoYiDoc from '@/components/RuoYi/Doc'
+import { mapGetters } from "vuex";
+import Breadcrumb from "@/components/Breadcrumb";
+import TopNav from "@/components/TopNav";
+import Hamburger from "@/components/Hamburger";
+import Screenfull from "@/components/Screenfull";
+import SizeSelect from "@/components/SizeSelect";
+import Search from "@/components/HeaderSearch";
+import RuoYiGit from "@/components/RuoYi/Git";
+import RuoYiDoc from "@/components/RuoYi/Doc";
 
 export default {
-  emits: ['setLayout'],
+  emits: ["setLayout"],
   components: {
     Breadcrumb,
     TopNav,
@@ -67,66 +85,87 @@ export default {
     SizeSelect,
     Search,
     RuoYiGit,
-    RuoYiDoc
+    RuoYiDoc,
   },
   computed: {
-    ...mapGetters([
-      'sidebar',
-      'avatar',
-      'device',
-      'nickName'
-    ]),
+    ...mapGetters(["sidebar", "avatar", "device", "nickName"]),
     setting: {
       get() {
-        return this.$store.state.settings.showSettings
-      }
+        return this.$store.state.settings.showSettings;
+      },
     },
     topNav: {
       get() {
-        return this.$store.state.settings.topNav
-      }
-    }
+        return this.$store.state.settings.topNav;
+      },
+    },
   },
   methods: {
     toggleSideBar() {
-      this.$store.dispatch('app/toggleSideBar')
+      this.$store.dispatch("app/toggleSideBar");
     },
     setLayout(event) {
-      this.$emit('setLayout')
+      this.$emit("setLayout");
     },
     logout() {
-      this.$confirm('确定注销并退出系统吗？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.$store.dispatch('LogOut').then(() => {
-          location.href = '/index'
+      this.$confirm("确定注销并退出系统吗？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          this.$store.dispatch("LogOut").then(() => {
+            location.href = "/index";
+          });
         })
-      }).catch(() => {})
-    }
-  }
-}
+        .catch(() => {});
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
+.blinking-red {
+  animation: slowBlinkRed 2s infinite; /* 2秒一次，速度较慢 */
+}
+
+@keyframes slowBlinkRed {
+  0%,
+  100% {
+    opacity: 1; /* 正常状态，完全不透明 */
+    filter: none; /* 不应用任何滤镜，原色 */
+  }
+  50% {
+    opacity: 0.3; /* 闪烁时变暗，增强对比 */
+    // filter: brightness(1.3) saturate(4) hue-rotate(340deg);
+  }
+}
+.icon-img {
+  display: inline-block;
+  cursor: pointer;
+  fill: #5a5e66;
+  width: 20px;
+  height: 20px;
+  vertical-align: 13px;
+  margin-right: 5px;
+}
 .navbar {
   height: 50px;
   overflow: hidden;
   position: relative;
   background: #fff;
-  box-shadow: 0 1px 4px rgba(0,21,41,.08);
+  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
 
   .hamburger-container {
     line-height: 46px;
     height: 100%;
     float: left;
     cursor: pointer;
-    transition: background .3s;
-    -webkit-tap-highlight-color:transparent;
+    transition: background 0.3s;
+    -webkit-tap-highlight-color: transparent;
 
     &:hover {
-      background: rgba(0, 0, 0, .025)
+      background: rgba(0, 0, 0, 0.025);
     }
   }
 
@@ -163,10 +202,10 @@ export default {
 
       &.hover-effect {
         cursor: pointer;
-        transition: background .3s;
+        transition: background 0.3s;
 
         &:hover {
-          background: rgba(0, 0, 0, .025)
+          background: rgba(0, 0, 0, 0.025);
         }
       }
     }
@@ -187,7 +226,7 @@ export default {
           border-radius: 50%;
         }
 
-        .user-nickname{
+        .user-nickname {
           position: relative;
           bottom: 10px;
           left: 2px;

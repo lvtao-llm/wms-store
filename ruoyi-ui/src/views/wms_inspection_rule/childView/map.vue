@@ -16,6 +16,37 @@
           清除全部标记</el-button
         >
       </div>
+      <div v-show="radiusShow" class="radiusBox">
+        <div class="radius-header">
+          <div class="header-title">
+            <i class="el-icon-location-outline"></i>
+            <span>标记点 {{ selectPoints.pointIndex || 1 }}</span>
+          </div>
+          <i class="el-icon-circle-close close-btn" @click="closeRadiusBox"></i>
+        </div>
+
+        <div class="radius-content">
+          <div class="radius-label">
+            <i class="el-icon-aim"></i>
+            <span>设置半径 (米)</span>
+          </div>
+          <el-input
+            v-model="selectPoints.radius"
+            type="number"
+            placeholder="请输入半径值"
+            class="radius-input"
+          >
+            <!-- <template slot="append">米</template> -->
+          </el-input>
+        </div>
+
+        <div class="radius-footer">
+          <el-button size="mini" @click="closeRadiusBox">取消</el-button>
+          <el-button type="primary" size="mini" @click="confirmRadius"
+            >确认</el-button
+          >
+        </div>
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -72,6 +103,9 @@ export default {
       markers: [],
       savedPointGroups: [],
       form: {},
+      selectPoints: [],
+      selectRadius: "",
+      radiusShow: false,
       presetOverlays: {
         items: [],
         animationId: null,
@@ -92,21 +126,16 @@ export default {
   watch: {
     async show(newVal) {
       if (newVal) {
-        console.log("对话框打开，开始初始化地图...");
         // 对话框打开时，确保地图容器已准备好
         this.$nextTick(async () => {
           setTimeout(async () => {
             if (!this.map) {
-              console.log("地图未初始化，开始初始化...");
               await this.initMap();
-              console.log("地图初始化完成");
             } else {
-              console.log("地图已存在，无需重新初始化");
             }
           }, 100);
         });
       } else {
-        console.log("对话框关闭");
         // 对话框关闭时清理
         this.cleanupAnimation();
       }
@@ -119,35 +148,28 @@ export default {
     openDia(row, type = "add") {
       this.show = true;
       this.pageType = type;
-      getArea(row.areaId).then((response) => {
-        this.form = response.data;
-        if (this.form.areaPolygon) {
-          try {
-            this.savedPointGroups = JSON.parse(this.form.areaPolygon);
-            // this.choosePoints = JSON.parse(this.form.areaPolygon);
-            this.points = this.savedPointGroups[0].points;
-            // 等待对话框和地图完全初始化后再显示标记点
-            this.$nextTick(() => {
-              setTimeout(() => {
-                if (this.map) {
-                  this.showAllSavedGroups();
-                } else {
-                  // 如果地图还没初始化，等待地图初始化完成
-                  const checkMap = setInterval(() => {
-                    if (this.map) {
-                      clearInterval(checkMap);
-                      this.showAllSavedGroups();
-                    }
-                  }, 100);
-                }
-              }, 200);
-            });
-          } catch (error) {
-            this.$modal.msgError("区域数据格式错误");
+      this.$nextTick(() => {
+        setTimeout(() => {
+          if (this.map) {
+            if (row.pathPoints) {
+              const point = JSON.parse(row.pathPoints);
+              const o = Object.keys(point);
+              o.forEach((i) => {
+                this.savedPointGroups.push(point[i]);
+                this.points.push(point[i].points);
+              });
+            }
+            this.showAllSavedGroups();
+          } else {
+            // 如果地图还没初始化，等待地图初始化完成
+            const checkMap = setInterval(() => {
+              if (this.map) {
+                clearInterval(checkMap);
+                this.showAllSavedGroups();
+              }
+            }, 100);
           }
-        } else {
-          this.map.clearOverlays();
-        }
+        }, 200);
       });
     },
     openDiaAll(data, type = "view") {
@@ -187,23 +209,17 @@ export default {
     // 初始化地图
     async initMap() {
       try {
-        console.log("开始初始化地图...");
-
         // 等待百度地图API加载
         await this.waitForBMap();
-        console.log("百度地图API已加载");
 
         // 检查容器是否存在
         const container = document.getElementById("container");
         if (!container) {
-          console.error("地图容器不存在");
           return;
         }
-        console.log("地图容器存在:", container);
 
         const BMap = window.BMap;
         this.map = new BMap.Map("container");
-        console.log("地图初始化成功", this.map);
 
         this.map.centerAndZoom(new BMap.Point(125.05, 46.59), 13);
         this.map.setMinZoom(11);
@@ -223,51 +239,22 @@ export default {
         // 右键添加标记
         this.map.addEventListener("rightclick", (e) => {
           this.addNewMarker(e.point);
-          this.updatePolyline();
+          // this.updatePolyline();
         });
-
-        console.log("地图控件添加完成");
-      } catch (error) {
-        console.error("地图初始化失败:", error);
-      }
+      } catch (error) {}
     },
 
     // 保存当前标记点
     savePoints() {
-      if (this.points.length === 0) {
-        alert("没有可保存的标记点！");
-        return;
-      }
-      const groupId = Date.now().toString();
-      const timestamp = new Date().toLocaleString();
-
-      // this.savedPointGroups.push({
-      //   id: groupId,
-      //   timestamp: timestamp,
-      //   areaName: this.form.areaName,
-      //   points: [...this.points],
-      // });
-      this.savedPointGroups = [
-        {
-          id: groupId,
-          timestamp: timestamp,
-          areaName: this.form.areaName,
-          points: [...this.points],
-        },
-      ];
-
-      const params = {
-        ...this.form,
-        areaPolygon: JSON.stringify(this.savedPointGroups),
-      };
-
-      updateArea(params).then((res) => {
-        this.$modal.msgSuccess("保存成功");
-        // 清空当前标记点，准备绘制下一个区域
-        // this.clearCurrentPoints();
-
-        this.showAllSavedGroups();
+      let result = {};
+      this.savedPointGroups.forEach((i, index) => {
+        result[index] = i;
       });
+
+      console.log(result);
+      this.clearAll();
+      this.close();
+      this.$emit("editPoints", result);
     },
 
     // 清空当前标记（不删除保存的组）
@@ -287,85 +274,26 @@ export default {
     // 显示所有保存的标记组
     showAllSavedGroups() {
       if (!this.map) {
-        console.error("地图未初始化，无法显示标记点");
         return;
       }
-      if (!this.savedPointGroups || this.savedPointGroups.length === 0) {
-        console.log("没有标记组数据需要显示");
-        return;
-      }
-
       this.map.clearOverlays();
-      console.log(this.savedPointGroups);
-
       this.savedPointGroups.forEach((group, groupIndex) => {
-        console.log(`处理第 ${groupIndex + 1} 个标记组:`, group);
-
-        // 检查数据结构
-        if (!group.points || !Array.isArray(group.points)) {
-          console.warn(`标记组 ${groupIndex + 1} 的 points 数据无效:`, group);
-          return;
-        }
-
-        const color = this.getColorByIndex(groupIndex);
-        console.log(`使用颜色: ${color}`);
-
         group.points.forEach((point, pointIndex) => {
-          console.log(`添加标记点 ${pointIndex + 1}:`, point);
-
           // 验证坐标数据
           if (!point.lng || !point.lat) {
-            console.warn(`标记点 ${pointIndex + 1} 坐标数据无效:`, point);
             return;
           }
-
+          console.log(group);
           const bPoint = new window.BMap.Point(point.lng, point.lat);
-          this.addSavedMarker(bPoint, pointIndex + 1, color);
+          this.addSavedMarker(
+            bPoint,
+            groupIndex + 1,
+            group.radius || 0,
+            "red",
+            groupIndex
+          );
         });
-
-        // 绘制多边形（包括填充和边框）
-        if (group.points.length >= 3) {
-          console.log(
-            `为标记组 ${groupIndex + 1} 绘制多边形，共 ${
-              group.points.length
-            } 个点`
-          );
-          const pathPoints = group.points.map(
-            (p) => new window.BMap.Point(p.lng, p.lat)
-          );
-
-          // 创建多边形填充
-          const polygon = new window.BMap.Polygon(pathPoints, {
-            strokeColor: color,
-            strokeWeight: 3,
-            strokeOpacity: 0.8,
-            strokeStyle: "solid",
-            fillColor: color,
-            fillOpacity: 0.3, // 半透明填充
-          });
-          this.map.addOverlay(polygon);
-
-          // 添加区域文字标签
-          const areaName = group.areaName || `区域${groupIndex + 1}`;
-          this.addAreaLabel(pathPoints, areaName, color);
-          console.log("多边形绘制完成");
-        } else if (group.points.length >= 2) {
-          // 如果只有2个点，绘制线条
-          const pathPoints = group.points.map(
-            (p) => new window.BMap.Point(p.lng, p.lat)
-          );
-          const groupPolyline = new window.BMap.Polyline(pathPoints, {
-            strokeColor: color,
-            strokeWeight: 3,
-            strokeOpacity: 0.8,
-            strokeStyle: "solid",
-          });
-          this.map.addOverlay(groupPolyline);
-          console.log("线条绘制完成");
-        }
       });
-
-      console.log("所有标记组显示完成");
     },
 
     // 为不同组生成不同颜色
@@ -384,15 +312,18 @@ export default {
     },
 
     // 添加已保存的标记
-    addSavedMarker(point, label, color) {
+    addSavedMarker(point, label, size, color, groupIndex) {
       try {
         const BMap = window.BMap;
         const marker = new BMap.Marker(point);
 
-        const markerLabel = new BMap.Label(label.toString(), {
-          offset: new BMap.Size(15, -10),
-          position: point,
-        });
+        const markerLabel = new BMap.Label(
+          label.toString() + "  半径: " + size,
+          {
+            offset: new BMap.Size(15, -10),
+            position: point,
+          }
+        );
 
         markerLabel.setStyle({
           color: "white",
@@ -404,69 +335,18 @@ export default {
         });
 
         marker.setLabel(markerLabel);
+        const that = this;
+        marker.addEventListener("click", function (e) {
+          that.radiusShow = true;
+          that.selectPoints = {
+            ...that.savedPointGroups[groupIndex],
+            groupIndex,
+            pointIndex: groupIndex + 1,
+            radius: that.savedPointGroups[groupIndex].radius || 0,
+          };
+        });
         this.map.addOverlay(marker);
-        console.log(
-          `标记点 ${label} 添加成功，坐标: (${point.lng}, ${point.lat})`
-        );
-      } catch (error) {
-        console.error(`添加标记点 ${label} 失败:`, error);
-      }
-    },
-
-    // 添加区域文字标签
-    addAreaLabel(points, text, color) {
-      try {
-        const BMap = window.BMap;
-
-        // 计算多边形的中心点
-        const centerPoint = this.calculatePolygonCenter(points);
-
-        // 创建文字标签
-        const label = new BMap.Label(text, {
-          position: centerPoint,
-          offset: new BMap.Size(0, 0),
-        });
-
-        // 设置标签样式
-        label.setStyle({
-          color: "white",
-          fontSize: "16px",
-          fontWeight: "bold",
-          backgroundColor: "rgba(0, 0, 0, 0.6)",
-          padding: "8px 12px",
-          border: `2px solid ${color}`,
-          borderRadius: "6px",
-          textAlign: "center",
-          boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
-        });
-
-        // 添加标签到地图
-        this.map.addOverlay(label);
-        console.log(
-          `区域标签 "${text}" 添加成功，位置: (${centerPoint.lng}, ${centerPoint.lat})`
-        );
-
-        return label;
-      } catch (error) {
-        console.error(`添加区域标签 "${text}" 失败:`, error);
-      }
-    },
-
-    // 计算多边形中心点
-    calculatePolygonCenter(points) {
-      const BMap = window.BMap;
-      let sumLng = 0;
-      let sumLat = 0;
-
-      points.forEach((point) => {
-        sumLng += point.lng;
-        sumLat += point.lat;
-      });
-
-      const centerLng = sumLng / points.length;
-      const centerLat = sumLat / points.length;
-
-      return new BMap.Point(centerLng, centerLat);
+      } catch (error) {}
     },
 
     addNewMarker(point) {
@@ -474,7 +354,7 @@ export default {
       const marker = new BMap.Marker(point, { enableDragging: true });
 
       const labelNumber = this.points.length + 1;
-      const label = new BMap.Label(labelNumber.toString(), {
+      const label = new BMap.Label(labelNumber.toString() + "  半径: 0", {
         offset: new BMap.Size(15, -10),
         position: point,
       });
@@ -489,16 +369,34 @@ export default {
       });
 
       this.points.push({ lat: point.lat, lng: point.lng });
+      this.savedPointGroups.push({
+        points: [{ lat: point.lat, lng: point.lng, radius: 0 }],
+      });
       marker.setLabel(label);
       this.map.addOverlay(marker);
       this.markers.push(marker);
+
+      const that = this;
+      marker.addEventListener("click", function (e) {
+        const groupIndex = Number(e.target.z.label.content.substring(0, 1)) - 1;
+        that.radiusShow = true;
+        that.selectPoints = {
+          ...that.savedPointGroups[groupIndex],
+          groupIndex,
+          pointIndex: groupIndex + 1,
+          radius: that.savedPointGroups[groupIndex].radius || 0,
+        };
+      });
 
       marker.addEventListener("dragend", (e) => {
         const index = this.markers.indexOf(marker);
         if (index !== -1) {
           this.points[index] = { lat: e.point.lat, lng: e.point.lng };
+          this.savedPointGroups[index] = {
+            points: [{ lat: e.point.lat, lng: e.point.lng, radius: 0 }],
+          };
         }
-        this.updatePolyline();
+        // this.updatePolyline();
       });
     },
     // 清理动画
@@ -513,9 +411,7 @@ export default {
         this.presetOverlays.arrows.forEach((arrow) => {
           try {
             this.map.removeOverlay(arrow.marker);
-          } catch (e) {
-            console.warn("移除箭头标记时出错:", e);
-          }
+          } catch (e) {}
         });
         this.presetOverlays.arrows = [];
       }
@@ -546,33 +442,33 @@ export default {
       delete this.presetOverlays.character;
     },
 
-    // 更新连线
-    updatePolyline() {
-      if (this.polyline) {
-        this.map.removeOverlay(this.polyline);
-      }
+    // // 更新连线
+    // updatePolyline() {
+    //   if (this.polyline) {
+    //     this.map.removeOverlay(this.polyline);
+    //   }
 
-      if (this.points.length < 2) return;
+    //   if (this.points.length < 2) return;
 
-      const pathPoints = this.points.map(
-        (p) => new window.BMap.Point(p.lng, p.lat)
-      );
+    //   const pathPoints = this.points.map(
+    //     (p) => new window.BMap.Point(p.lng, p.lat)
+    //   );
 
-      if (this.points.length >= 3) {
-        pathPoints.push(
-          new window.BMap.Point(this.points[0].lng, this.points[0].lat)
-        );
-      }
+    //   if (this.points.length >= 3) {
+    //     pathPoints.push(
+    //       new window.BMap.Point(this.points[0].lng, this.points[0].lat)
+    //     );
+    //   }
 
-      this.polyline = new window.BMap.Polyline(pathPoints, {
-        strokeColor: "#3388ff",
-        strokeWeight: 3,
-        strokeOpacity: 0.8,
-        strokeStyle: "solid",
-      });
+    //   this.polyline = new window.BMap.Polyline(pathPoints, {
+    //     strokeColor: "#3388ff",
+    //     strokeWeight: 3,
+    //     strokeOpacity: 0.8,
+    //     strokeStyle: "solid",
+    //   });
 
-      this.map.addOverlay(this.polyline);
-    },
+    //   this.map.addOverlay(this.polyline);
+    // },
 
     close() {
       this.show = false;
@@ -586,10 +482,201 @@ export default {
       this.savedPointGroups = [];
       this.presetOverlays = [];
     },
+
+    // 关闭半径设置弹窗
+    closeRadiusBox() {
+      this.radiusShow = false;
+      this.selectPoints = {};
+    },
+
+    // 确认半径设置
+    confirmRadius() {
+      if (!this.selectPoints.radius || this.selectPoints.radius <= 0) {
+        this.$message.warning("请输入有效的半径值");
+        return;
+      }
+
+      // 更新对应标记点的半径
+      if (
+        this.selectPoints.groupIndex !== undefined &&
+        this.selectPoints.pointIndex !== undefined
+      ) {
+        const groupIndex = this.selectPoints.groupIndex;
+        const pointIndex = this.selectPoints.pointIndex - 1;
+
+        if (
+          this.savedPointGroups[groupIndex] &&
+          this.savedPointGroups[groupIndex].points
+        ) {
+          this.savedPointGroups[groupIndex].radius = parseInt(
+            this.selectPoints.radius
+          );
+
+          // 重新显示所有标记点以更新标签
+          this.showAllSavedGroups();
+
+          this.$message.success("半径设置成功");
+        }
+      }
+
+      this.closeRadiusBox();
+    },
   },
 };
 </script>
 <style scoped lang="scss">
+.radiusBox {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 320px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  overflow: hidden;
+  animation: slideInUp 0.3s ease-out;
+
+  .radius-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px 16px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+
+    .header-title {
+      display: flex;
+      align-items: center;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+
+      i {
+        margin-right: 8px;
+        font-size: 18px;
+        color: #ffd700;
+      }
+    }
+
+    .close-btn {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      padding: 4px;
+      border-radius: 50%;
+
+      &:hover {
+        color: white;
+        background: rgba(255, 255, 255, 0.2);
+        transform: scale(1.1);
+      }
+    }
+  }
+
+  .radius-content {
+    padding: 24px;
+
+    .radius-label {
+      display: flex;
+      align-items: center;
+      margin-bottom: 16px;
+      color: white;
+      font-size: 14px;
+      font-weight: 500;
+
+      i {
+        margin-right: 8px;
+        font-size: 16px;
+        color: #ffd700;
+      }
+    }
+
+    .radius-input {
+      ::v-deep .el-input__inner {
+        background: rgba(255, 255, 255, 0.9);
+        border: 2px solid transparent;
+        border-radius: 8px;
+        color: #333;
+        font-size: 14px;
+        padding: 12px 16px;
+        transition: all 0.3s ease;
+
+        &:focus {
+          border-color: #ffd700;
+          box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
+        }
+
+        &::placeholder {
+          color: #999;
+        }
+      }
+
+      ::v-deep .el-input-group__append {
+        background: #ffd700;
+        border: none;
+        color: #333;
+        font-weight: 600;
+        border-radius: 0 8px 8px 0;
+      }
+    }
+  }
+
+  .radius-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 16px 24px 24px;
+    background: rgba(255, 255, 255, 0.05);
+
+    .el-button {
+      border-radius: 8px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+
+      &.el-button--mini {
+        padding: 8px 16px;
+      }
+
+      &:not(.el-button--primary) {
+        background: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: white;
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.3);
+          transform: translateY(-1px);
+        }
+      }
+
+      &.el-button--primary {
+        // background: linear-gradient(45deg, #ffd700, #ffed4e);
+        border: none;
+        color: #333;
+        font-weight: 600;
+
+        &:hover {
+          // background: linear-gradient(45deg, #ffed4e, #ffd700);
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+        }
+      }
+    }
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -30%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
 .map-container {
   position: relative;
   width: 100%;
