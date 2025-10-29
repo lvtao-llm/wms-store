@@ -1,14 +1,16 @@
 package com.ruoyi.framework.websocket;
 
-import java.net.URI;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Semaphore;
+import javax.annotation.PostConstruct;
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import javax.websocket.server.ServerEndpointConfig;
 
+import com.ruoyi.common.utils.ThirdPartyAuth;
+import com.ruoyi.common.utils.spring.SpringUtils;
+import com.ruoyi.system.lanya.data.LanyaDataSync;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +18,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.client.WebSocketClient;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
@@ -34,25 +35,44 @@ public class WebSocketServer {
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(WebSocketServer.class);
 
+    @Autowired
+    private ThirdPartyAuth thirdPartyAuth;
+
     @Value("${lanya.base-url:112.98.110.101:8091/gateway-service}")
     private void setBaseUrl(String baseUrl) {
         WebSocketServer.baseUrl = baseUrl;
     }
 
+    // 目标服务器地址
     private static String baseUrl;
 
     // 存储客户端会话和对应的目标WebSocket连接
     private static final Map<String, Session> clientSessions = new ConcurrentHashMap<>();
-    private static final Map<String, WebSocketSession> targetSessions = new ConcurrentHashMap<>();
+
+    // 目标WebSocket会话
+    private WebSocketSession targetSession = null;
+
     // Spring WebSocket客户端
-    private static WebSocketClient webSocketClient;
+    private WebSocketClient webSocketClient;
 
-    @Autowired
-    public void setWebSocketClient(WebSocketClient webSocketClient) {
-        WebSocketServer.webSocketClient = webSocketClient;
-    }
+    @PostConstruct
+    public void init() {
+        try {
+            thirdPartyAuth = SpringUtils.getBean(ThirdPartyAuth.class);
+            webSocketClient = SpringUtils.getBean(WebSocketClient.class);
+            String userId = thirdPartyAuth.getUserInfo().get("userId");
+            String id = "XR_" + System.currentTimeMillis() + "_" + userId;
+            // 构建目标WebSocket地址
+            String targetUrl = "ws://" + baseUrl + "/websocket/ws/" + id;
 
-    public WebSocketServer() {
+            // 使用Spring WebSocket客户端连接到目标服务器
+            WebSocketServer.TargetWebSocketHandler targetHandler = new WebSocketServer.TargetWebSocketHandler();
+            targetSession = webSocketClient.doHandshake(targetHandler, targetUrl).get();
+
+        } catch (Exception e) {
+            LOGGER.error("初始化失败", e);
+        }
+
         LOGGER.info("\n WebSocketServer 初始化成功");
     }
 
@@ -64,19 +84,8 @@ public class WebSocketServer {
         try {
             // 将客户端会话存储到Map中
             clientSessions.put(requestId, session);
-
-            // 构建目标WebSocket地址
-            String targetUrl = "ws://" + baseUrl + "/websocket/ws/" + requestId;
-
-            // 使用Spring WebSocket客户端连接到目标服务器
-            WebSocketServer.TargetWebSocketHandler targetHandler = new WebSocketServer.TargetWebSocketHandler(session, requestId);
-            WebSocketSession targetSession = webSocketClient.doHandshake(targetHandler, targetUrl).get();
-
-            // 保存目标会话
-            targetSessions.put(requestId, targetSession);
-
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("连接异常:", e);
         }
     }
 
@@ -87,18 +96,6 @@ public class WebSocketServer {
     public void onClose(Session session, @PathParam("requestId") String requestId) {
         // 清理资源
         clientSessions.remove(requestId);
-
-        WebSocketSession targetSession = targetSessions.get(requestId);
-        if (targetSession != null) {
-            try {
-                if (targetSession.isOpen()) {
-                    targetSession.close();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        targetSessions.remove(requestId);
     }
 
     /**
@@ -108,18 +105,6 @@ public class WebSocketServer {
     public void onError(Session session, @PathParam("requestId") String requestId, Throwable exception) throws Exception {
         // 清理资源
         clientSessions.remove(requestId);
-
-        WebSocketSession targetSession = targetSessions.get(requestId);
-        if (targetSession != null) {
-            try {
-                if (targetSession.isOpen()) {
-                    targetSession.close();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        targetSessions.remove(requestId);
     }
 
     /**
@@ -127,27 +112,22 @@ public class WebSocketServer {
      */
     @OnMessage
     public void onMessage(String message, Session session, @PathParam("requestId") String requestId) {
-        try {
-            // 转发消息到目标服务器
-            WebSocketSession targetSession = targetSessions.get(requestId);
-            if (targetSession != null && targetSession.isOpen()) {
-                targetSession.sendMessage(new TextMessage( message));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            // 转发消息到目标服务器
+//            if (targetSessions != null && targetSessions.isOpen()) {
+//                targetSessions.sendMessage(new TextMessage(message));
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
     /**
      * 目标WebSocket服务器的消息处理器
      */
     public static class TargetWebSocketHandler extends TextWebSocketHandler {
-        private final Session clientSession;
-        private final String clientId;
 
-        public TargetWebSocketHandler(Session clientSession, String clientId) {
-            this.clientSession = clientSession;
-            this.clientId = clientId;
+        public TargetWebSocketHandler() {
         }
 
         /**
@@ -161,17 +141,18 @@ public class WebSocketServer {
                     LOGGER.warn("接收到过大的消息，大小: {} 字节", message.getPayloadLength());
                     // 可以选择丢弃或分批处理
                 }
-                if (clientSession.isOpen()) {
-                    // 使用异步发送替代阻塞发送
-                    clientSession.getAsyncRemote().sendText(message.getPayload(), result -> {
-                        if (!result.isOK()) {
-                            LOGGER.error("异步发送消息失败: " + result.getException().getMessage());
-                        }
-                    });
+                for (Session clientSession : clientSessions.values()) {
+                    if (clientSession.isOpen()) {
+                        // 使用异步发送替代阻塞发送
+                        clientSession.getAsyncRemote().sendText(message.getPayload(), result -> {
+                            if (!result.isOK()) {
+                                LOGGER.error("异步发送消息失败: {}", result.getException().getMessage());
+                            }
+                        });
+                    }
                 }
             } catch (Exception e) {
                 LOGGER.error("处理目标服务器消息异常", e);
-                e.printStackTrace();
             }
         }
 
@@ -180,7 +161,7 @@ public class WebSocketServer {
          */
         @Override
         public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-            LOGGER.info("与目标服务器连接建立成功: {}", clientId);
+            LOGGER.info("与目标服务器连接建立成功");
         }
 
         /**
@@ -188,14 +169,7 @@ public class WebSocketServer {
          */
         @Override
         public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-            LOGGER.info("与目标服务器连接关闭: {}, 状态: {}", clientId, status);
-            try {
-                // 清理资源
-                targetSessions.remove(clientId);
-            } catch (Exception e) {
-                LOGGER.error("处理目标服务器连接关闭异常", e);
-                e.printStackTrace();
-            }
+            LOGGER.info("与目标服务器连接关闭,状态: {}", status);
         }
 
         /**
@@ -203,7 +177,7 @@ public class WebSocketServer {
          */
         @Override
         public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
-            LOGGER.error("与目标服务器传输错误: " + clientId, exception);
+            LOGGER.error("与目标服务器传输错误:", exception);
         }
     }
 }

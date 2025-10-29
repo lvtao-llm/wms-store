@@ -97,7 +97,6 @@
         align="center"
         prop="timeTolerance"
       />
-      <el-table-column label="路径点" align="center" prop="pathPoints" />
       <el-table-column
         label="巡检点距离"
         align="center"

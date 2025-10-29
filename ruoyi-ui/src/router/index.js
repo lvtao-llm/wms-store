@@ -365,6 +365,30 @@ export const dynamicRoutes = [
         component: () => import('@/views/lanya_device_machine/index'),
         name: '发卡机管理',
         meta: {title: '发卡机管理'}
+      },
+      {
+        path: 'beacon',
+        component: () => import('@/views/wms_device_beacon/index'),
+        name: '信标管理',
+        meta: {title: '信标管理'}
+      },
+      {
+        path: 'plate-recognition',
+        component: () => import('@/views/wms_device_plate/index'),
+        name: '车牌识别管理',
+        meta: {title: '车牌识别管理'}
+      },
+      {
+        path: 'diff-gps-station',
+        component: () => import('@/views/wms_device_refer/index'),
+        name: '差分基站管理',
+        meta: {title: '差分基站管理'}
+      },
+      {
+        path: 'camera',
+        component: () => import('@/views/wms_device_camera/index'),
+        name: '摄像头管理',
+        meta: {title: '摄像头管理'}
       }
     ]
   },
@@ -454,7 +478,7 @@ export const dynamicRoutes = [
       },
       {
         path: 'issue',
-        component: () => import('@/views/websocket.vue'),
+        component: () => import('@/views/wms_inspection_issue/index'),
         name: '巡检问题管理',
         meta: {title: '巡检问题管理'}
       }

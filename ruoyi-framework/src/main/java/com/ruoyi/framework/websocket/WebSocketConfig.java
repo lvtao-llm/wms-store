@@ -34,14 +34,14 @@ public class WebSocketConfig {
 
         StandardWebSocketClient client = new StandardWebSocketClient(container);
         // 设置合理的缓冲区大小
-        client.getUserProperties().put("org.apache.tomcat.websocket.textBufferSize", 1024 * 1024 * 1024); // 1MB
-        client.getUserProperties().put("org.apache.tomcat.websocket.binaryBufferSize", 1024 * 1024 * 1024); // 1MB
+        client.getUserProperties().put("org.apache.tomcat.websocket.textBufferSize", 5120000); // 1MB
+        client.getUserProperties().put("org.apache.tomcat.websocket.binaryBufferSize", 5120000); // 1MB
         // 设置连接超时
-        client.getUserProperties().put("org.apache.tomcat.websocket.CONNECT_TIMEOUT", 600000); // 30秒
+        client.getUserProperties().put("org.apache.tomcat.websocket.CONNECT_TIMEOUT", 15 * 60000L); // 30秒
         // 设置写入超时
-        client.getUserProperties().put("org.apache.tomcat.websocket.WRITE_TIMEOUT", 600000); // 10分钟
+        client.getUserProperties().put("org.apache.tomcat.websocket.WRITE_TIMEOUT", 15 * 60000L); // 10分钟
         // 设置会话超时
-        client.getUserProperties().put("javax.websocket.session.timeout", 600000); // 10分钟
+        client.getUserProperties().put("javax.websocket.session.timeout", 15 * 60000L); // 10分钟
         return client;
     }
 }

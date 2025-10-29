@@ -9,6 +9,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -30,6 +31,8 @@ public class ThirdPartyAuth {
     private ObjectMapper mapper = new ObjectMapper();
 
     public RestTemplate restTemplate = new RestTemplate();
+
+    private LinkedHashMap<String, String> userInfo = new LinkedHashMap<>();
 
     public Map callThirdPartyLogin() throws JsonProcessingException {
 
@@ -60,6 +63,7 @@ public class ThirdPartyAuth {
             Map dataMap = (Map) respMap.get("data");
             if (dataMap.containsKey("token")) {
                 token = (String) dataMap.get("token");
+                userInfo = (LinkedHashMap) dataMap.get("userInfo");
             }
             return dataMap;
         }
@@ -180,4 +184,10 @@ public class ThirdPartyAuth {
     }
 
 
+    public LinkedHashMap<String, String> getUserInfo() throws JsonProcessingException {
+        if (token == null) {
+            callThirdPartyLogin();
+        }
+        return userInfo;
+    }
 }
