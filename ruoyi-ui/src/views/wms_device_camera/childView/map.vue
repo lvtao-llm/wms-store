@@ -28,12 +28,12 @@
         <div class="radius-content">
           <div class="radius-label">
             <i class="el-icon-aim"></i>
-            <span>设置半径 (米)</span>
+            <span>设置高度 (米)</span>
           </div>
           <el-input
-            v-model="selectPoints.radius"
+            v-model="selectPoints.altitude"
             type="number"
-            placeholder="请输入半径值"
+            placeholder="请输入高度值"
             class="radius-input"
           >
             <!-- <template slot="append">米</template> -->
@@ -148,19 +148,18 @@ export default {
     openDia(row, type = "add") {
       this.show = true;
       this.pageType = type;
-      this.savedPointGroups = [];
       this.$nextTick(() => {
         setTimeout(() => {
           if (this.map) {
-            if (row.pathPoints) {
-              const point = JSON.parse(row.pathPoints);
-              const o = Object.keys(point);
-              o.forEach((i) => {
-                this.savedPointGroups.push(point[i]);
-                this.points.push(point[i].points);
-              });
+            if (row.longitude && row.latitude && row.altitude) {
+              this.savedPointGroups = [
+                {
+                  points: [{ lat: row.latitude, lng: row.longitude }],
+                  altitude: row.altitude,
+                },
+              ];
+              this.showAllSavedGroups();
             }
-            this.showAllSavedGroups();
           } else {
             // 如果地图还没初始化，等待地图初始化完成
             const checkMap = setInterval(() => {
@@ -247,15 +246,10 @@ export default {
 
     // 保存当前标记点
     savePoints() {
-      let result = {};
-      this.savedPointGroups.forEach((i, index) => {
-        result[index] = i;
-      });
-
-      console.log(result);
+      console.log(this.savedPointGroups);
+      this.$emit("editPoints", this.savedPointGroups[0]);
       this.clearAll();
       this.close();
-      this.$emit("editPoints", result);
     },
 
     // 清空当前标记（不删除保存的组）
@@ -284,12 +278,11 @@ export default {
           if (!point.lng || !point.lat) {
             return;
           }
-          console.log(group);
           const bPoint = new window.BMap.Point(point.lng, point.lat);
           this.addSavedMarker(
             bPoint,
             groupIndex + 1,
-            group.radius || 0,
+            group.altitude || 0,
             "red",
             groupIndex
           );
@@ -318,13 +311,10 @@ export default {
         const BMap = window.BMap;
         const marker = new BMap.Marker(point);
 
-        const markerLabel = new BMap.Label(
-          label.toString() + "  半径: " + size,
-          {
-            offset: new BMap.Size(15, -10),
-            position: point,
-          }
-        );
+        const markerLabel = new BMap.Label("  高度: " + size, {
+          offset: new BMap.Size(15, -10),
+          position: point,
+        });
 
         markerLabel.setStyle({
           color: "white",
@@ -343,7 +333,7 @@ export default {
             ...that.savedPointGroups[groupIndex],
             groupIndex,
             pointIndex: groupIndex + 1,
-            radius: that.savedPointGroups[groupIndex].radius || 0,
+            altitude: that.savedPointGroups[groupIndex].altitude || 0,
           };
         });
         this.map.addOverlay(marker);
@@ -351,11 +341,11 @@ export default {
     },
 
     addNewMarker(point) {
+      this.map.clearOverlays();
       const BMap = window.BMap;
       const marker = new BMap.Marker(point, { enableDragging: true });
 
-      const labelNumber = this.points.length + 1;
-      const label = new BMap.Label(labelNumber.toString() + "  半径: 0", {
+      const label = new BMap.Label("  高度: 0", {
         offset: new BMap.Size(15, -10),
         position: point,
       });
@@ -369,10 +359,17 @@ export default {
         borderRadius: "10px",
       });
 
-      this.points.push({ lat: point.lat, lng: point.lng });
-      this.savedPointGroups.push({
-        points: [{ lat: point.lat, lng: point.lng, radius: 0 }],
-      });
+      // this.points.push({ lat: point.lat, lng: point.lng });
+      this.points = { lat: point.lat, lng: point.lng };
+      // this.savedPointGroups.push({
+      //   points: [{ lat: point.lat, lng: point.lng, radius: 0 }],
+      // });
+      this.savedPointGroups = [
+        {
+          points: [{ lat: point.lat, lng: point.lng }],
+          altitude: 0,
+        },
+      ];
       marker.setLabel(label);
       this.map.addOverlay(marker);
       this.markers.push(marker);
@@ -385,7 +382,7 @@ export default {
           ...that.savedPointGroups[groupIndex],
           groupIndex,
           pointIndex: groupIndex + 1,
-          radius: that.savedPointGroups[groupIndex].radius || 0,
+          altitude: that.savedPointGroups[groupIndex].altitude || 0,
         };
       });
 
@@ -394,7 +391,8 @@ export default {
         if (index !== -1) {
           this.points[index] = { lat: e.point.lat, lng: e.point.lng };
           this.savedPointGroups[index] = {
-            points: [{ lat: e.point.lat, lng: e.point.lng, radius: 0 }],
+            points: [{ lat: e.point.lat, lng: e.point.lng }],
+            altitude: 0,
           };
         }
         // this.updatePolyline();
@@ -443,34 +441,6 @@ export default {
       delete this.presetOverlays.character;
     },
 
-    // // 更新连线
-    // updatePolyline() {
-    //   if (this.polyline) {
-    //     this.map.removeOverlay(this.polyline);
-    //   }
-
-    //   if (this.points.length < 2) return;
-
-    //   const pathPoints = this.points.map(
-    //     (p) => new window.BMap.Point(p.lng, p.lat)
-    //   );
-
-    //   if (this.points.length >= 3) {
-    //     pathPoints.push(
-    //       new window.BMap.Point(this.points[0].lng, this.points[0].lat)
-    //     );
-    //   }
-
-    //   this.polyline = new window.BMap.Polyline(pathPoints, {
-    //     strokeColor: "#3388ff",
-    //     strokeWeight: 3,
-    //     strokeOpacity: 0.8,
-    //     strokeStyle: "solid",
-    //   });
-
-    //   this.map.addOverlay(this.polyline);
-    // },
-
     close() {
       this.show = false;
     },
@@ -492,33 +462,16 @@ export default {
 
     // 确认半径设置
     confirmRadius() {
-      if (!this.selectPoints.radius || this.selectPoints.radius <= 0) {
-        this.$message.warning("请输入有效的半径值");
+      if (!this.selectPoints.altitude || this.selectPoints.altitude <= 0) {
+        this.$message.warning("请输入有效的高度值");
         return;
       }
+      this.savedPointGroups[0].altitude = parseInt(this.selectPoints.altitude);
 
-      // 更新对应标记点的半径
-      if (
-        this.selectPoints.groupIndex !== undefined &&
-        this.selectPoints.pointIndex !== undefined
-      ) {
-        const groupIndex = this.selectPoints.groupIndex;
-        const pointIndex = this.selectPoints.pointIndex - 1;
+      // 重新显示所有标记点以更新标签
+      this.showAllSavedGroups();
 
-        if (
-          this.savedPointGroups[groupIndex] &&
-          this.savedPointGroups[groupIndex].points
-        ) {
-          this.savedPointGroups[groupIndex].radius = parseInt(
-            this.selectPoints.radius
-          );
-
-          // 重新显示所有标记点以更新标签
-          this.showAllSavedGroups();
-
-          this.$message.success("半径设置成功");
-        }
-      }
+      this.$message.success("高度设置成功");
 
       this.closeRadiusBox();
     },

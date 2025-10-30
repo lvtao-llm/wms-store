@@ -168,7 +168,10 @@ import dayjs from "dayjs";
 import TimeLine from "@/components/TimeLine/timeline-canvas.vue";
 import MultiplierSelector from "@/components/Preset/index";
 // import { resData as animatedLineData } from "../codeApplication/data";
-import { positionHistoryPositionFindPersonHistoryList } from "@/api/lanya_transfer";
+import {
+  positionHistoryPositionFindPersonHistoryList,
+  queryAll,
+} from "@/api/lanya_transfer";
 import {
   DynamicCanvasLayer,
   simplifyPath,
@@ -223,17 +226,40 @@ export default {
         arrows: [],
         isTracking: false,
       },
+      ws: null,
     };
   },
   mounted() {
     this.loadSavedGroups();
     this.initMap();
     this.showAllSavedGroups();
+    this.onLoad();
   },
   beforeDestroy() {
     this.cleanupAnimation();
   },
   methods: {
+    onLoad() {
+      const wsuri = "ws://112.98.110.101:8092/system/lanya-transfer/ws/1";
+      this.ws = new WebSocket(wsuri);
+      const self = this;
+      this.ws.onopen = function (event) {
+        self.text_content = self.text_content + "已经打开连接!" + "\n";
+      };
+      this.ws.onmessage = function (event) {
+        self.text_content = event.data + "\n";
+        console.log(event.data);
+      };
+      this.ws.onclose = function (event) {
+        self.text_content = self.text_content + "已经关闭连接!" + "\n";
+      };
+    },
+    exit() {
+      if (this.ws) {
+        this.ws.close();
+        this.ws = null;
+      }
+    },
     // 初始化地图
     initMap() {
       const BMap = window.BMap;

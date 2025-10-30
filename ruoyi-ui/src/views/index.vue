@@ -450,6 +450,7 @@ export default {
     // this.showAllSavedGroups();
     this.$nextTick(() => {
       this.initPieChart();
+      this.showWarehouse();
     });
   },
   beforeDestroy() {
@@ -526,8 +527,118 @@ export default {
         });
       } else {
         this.map.clearOverlays();
+        this.showWarehouse();
       }
     },
+    showWarehouse() {
+      let arr = [
+        {
+          points: [
+            {
+              lat: 46.594102,
+              lng: 125.048662,
+            },
+            {
+              lat: 46.592294,
+              lng: 125.050638,
+            },
+            {
+              lat: 46.591526,
+              lng: 125.051087,
+            },
+            {
+              lat: 46.589817,
+              lng: 125.052973,
+            },
+            {
+              lat: 46.587488,
+              lng: 125.057016,
+            },
+            {
+              lat: 46.587315,
+              lng: 125.057716,
+            },
+            {
+              lat: 46.589012,
+              lng: 125.058076,
+            },
+            {
+              lat: 46.588702,
+              lng: 125.059495,
+            },
+            {
+              lat: 46.588107,
+              lng: 125.059836,
+            },
+            {
+              lat: 46.588504,
+              lng: 125.062244,
+            },
+            {
+              lat: 46.592009,
+              lng: 125.061489,
+            },
+            {
+              lat: 46.592529,
+              lng: 125.059621,
+            },
+            {
+              lat: 46.593074,
+              lng: 125.05919,
+            },
+            {
+              lat: 46.594313,
+              lng: 125.059369,
+            },
+            {
+              lat: 46.595985,
+              lng: 125.049308,
+            },
+            {
+              lat: 46.594102,
+              lng: 125.048662,
+            },
+          ],
+        },
+      ];
+
+      this.map.clearOverlays();
+      arr.forEach((group, groupIndex) => {
+        // 绘制多边形（包括填充和边框）
+        if (group.points.length >= 3) {
+          const pathPoints = group.points.map(
+            (p) => new window.BMap.Point(p.lng, p.lat)
+          );
+
+          // 创建多边形填充
+          const polygon = new window.BMap.Polygon(pathPoints, {
+            strokeColor: "#4CAF50",
+            strokeWeight: 3,
+            strokeOpacity: 0.8,
+            strokeStyle: "solid",
+            fillColor: "#4CAF50",
+            fillOpacity: 0.3, // 半透明填充
+          });
+          this.map.addOverlay(polygon);
+        } else if (group.points.length >= 2) {
+          // 如果只有2个点，绘制线条
+          const pathPoints = group.points.map(
+            (p) => new window.BMap.Point(p.lng, p.lat)
+          );
+          const groupPolyline = new window.BMap.Polyline(pathPoints, {
+            strokeColor: color,
+            strokeWeight: 3,
+            strokeOpacity: 0.8,
+            strokeStyle: "solid",
+          });
+          this.map.addOverlay(groupPolyline);
+          console.log("线条绘制完成");
+        }
+      });
+
+      console.log("所有标记组显示完成");
+    },
+
     // 显示所有保存的标记组
     showAllSavedGroups() {
       this.savedPointGroups = [
@@ -573,6 +684,7 @@ export default {
       }
 
       this.map.clearOverlays();
+      this.showWarehouse();
 
       this.savedPointGroups.forEach((group, groupIndex) => {
         console.log(`处理第 ${groupIndex + 1} 个标记组:`, group);
@@ -687,7 +799,6 @@ export default {
         console.error(`添加标记点 ${label} 失败:`, error);
       }
     },
-
     // 添加区域文字标签
     addAreaLabel(points, text, color) {
       try {
