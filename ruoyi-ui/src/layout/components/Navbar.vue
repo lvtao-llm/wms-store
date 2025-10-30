@@ -27,16 +27,35 @@
         </el-tooltip>
         <el-tooltip content="人员报警" effect="dark" placement="bottom">
           <img
+            @click="peopleClick"
+            v-if="peopleWarning"
             fill="red"
             class="icon-img blinking-red"
             src="@/assets/images/人员报警-red.svg"
+          />
+          <img
+            @click="peopleClick"
+            v-else
+            fill="red"
+            class="icon-img blinking"
+            src="@/assets/images/人员报警.svg"
           />
         </el-tooltip>
         <el-tooltip content="物料报警" effect="dark" placement="bottom">
           <img class="icon-img" src="@/assets/images/报警.svg" />
         </el-tooltip>
-        <img class="icon-img" src="@/assets/images/喇叭开.svg" />
-        <!-- <img class="icon-img" src="@/assets/images/喇叭关.svg" /> -->
+        <img
+          @click="radioClose"
+          v-if="radioOn"
+          class="icon-img"
+          src="@/assets/images/喇叭开.svg"
+        />
+        <img
+          @click="radioOpen"
+          v-if="!radioOn"
+          class="icon-img"
+          src="@/assets/images/喇叭关.svg"
+        />
         <screenfull id="screenfull" class="right-menu-item hover-effect" />
       </template>
 
@@ -61,6 +80,10 @@
         </el-dropdown-menu>
       </el-dropdown>
     </div>
+    <audio style="display: none" controls ref="audio" class="aud">
+      <source src="./childView/警报.mp3" />
+    </audio>
+    <peopleWarningDialog ref="people"></peopleWarningDialog>
   </div>
 </template>
 
@@ -74,6 +97,7 @@ import SizeSelect from "@/components/SizeSelect";
 import Search from "@/components/HeaderSearch";
 import RuoYiGit from "@/components/RuoYi/Git";
 import RuoYiDoc from "@/components/RuoYi/Doc";
+import peopleWarningDialog from "./childView/peopleWarningDialog.vue";
 
 export default {
   emits: ["setLayout"],
@@ -86,6 +110,13 @@ export default {
     Search,
     RuoYiGit,
     RuoYiDoc,
+    peopleWarningDialog,
+  },
+  data() {
+    return {
+      peopleWarning: false,
+      radioOn: false,
+    };
   },
   computed: {
     ...mapGetters(["sidebar", "avatar", "device", "nickName"]),
@@ -101,6 +132,18 @@ export default {
     },
   },
   methods: {
+    peopleClick() {
+      // this.peopleWarning = !this.peopleWarning;
+      this.$refs.people.openDia();
+    },
+    radioOpen() {
+      this.radioOn = true;
+      this.$refs.audio.play();
+    },
+    radioClose() {
+      this.radioOn = false;
+      this.$refs.audio.pause();
+    },
     toggleSideBar() {
       this.$store.dispatch("app/toggleSideBar");
     },
