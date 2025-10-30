@@ -12,6 +12,7 @@ import com.ruoyi.common.enums.DataSourceType;
 import com.ruoyi.common.utils.ThirdPartyAuth;
 import com.ruoyi.system.domain.LanyaCoreAlarm;
 import com.ruoyi.system.service.ILanyaCoreAlarmService;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
@@ -101,6 +102,18 @@ public class LanyaTransferController extends BaseController {
         body.put("total", 0);
         body.put("pageFlag", "Y");
         return thirdPartyAuth.callThirdParty("/monitor-service/cardSender/listPage", HttpMethod.POST, body);
+    }
+
+    /**
+     * @return
+     * @throws JsonProcessingException
+     */
+    @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
+    @GetMapping("/machine/detailPage")
+    public Object machineListDetail(@Param("deviceSn") String deviceSn) throws JsonProcessingException {
+        Map<String, Object> body = new HashMap<>();
+        body.put("deviceSn", deviceSn);
+        return thirdPartyAuth.callThirdParty("/monitor-service/cardSender/getListDetail", HttpMethod.POST, body);
     }
 
     /**

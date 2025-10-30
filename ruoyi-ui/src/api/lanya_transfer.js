@@ -18,6 +18,14 @@ export function machine_list_page(query) {
   })
 }
 
+export function machine_detail_page(query) {
+  return request({
+    url: '/system/lanya-transfer/machine/detailPage',
+    method: 'get',
+    params: query
+  })
+}
+
 // 获取绑定卡机详细
 export function machineConfigRelationDetailByPerson(data) {
   return request({

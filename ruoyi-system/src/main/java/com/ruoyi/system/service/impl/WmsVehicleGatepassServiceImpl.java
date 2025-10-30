@@ -12,7 +12,7 @@ import com.ruoyi.system.service.IWmsVehicleGatepassService;
  * 车辆预约Service业务层处理
  * 
  * @author ruoyi
- * @date 2025-09-26
+ * @date 2025-10-30
  */
 @Service
 public class WmsVehicleGatepassServiceImpl implements IWmsVehicleGatepassService 

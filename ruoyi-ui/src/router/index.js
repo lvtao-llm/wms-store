@@ -407,8 +407,8 @@ export const dynamicRoutes = [
       {
         path: 'person-in-out-record',
         component: () => import('@/views/lanya_person_in_out_record/index'),
-        name: '人员进出记录',
-        meta: {title: '人员进出记录'}
+        name: '人员进出列表',
+        meta: {title: '人员进出列表'}
       }
     ]
   },
@@ -481,6 +481,20 @@ export const dynamicRoutes = [
         component: () => import('@/views/wms_inspection_issue/index'),
         name: '巡检问题管理',
         meta: {title: '巡检问题管理'}
+      }
+    ]
+  },
+  {
+    path: 'vehicle-auth-management',
+    component: Layout,
+    hidden: true,
+    permissions: ['system:role:edit'],
+    children: [
+      {
+        path: 'appointment',
+        component: () => import('@/views/wms_vehicle_appointment/index'),
+        name: '车辆预约列表',
+        meta: {title: '车辆预约列表'}
       }
     ]
   }

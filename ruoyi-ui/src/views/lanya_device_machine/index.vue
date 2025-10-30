@@ -24,27 +24,30 @@
           size="mini"
           @click="handleExport"
           v-hasPermi="['system:lanya_device_machine:export']"
-        >导出</el-button>
+        >导出
+        </el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <el-table v-loading="loading" :data="lanya_device_machineList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="设备名称" align="center" prop="deviceName" />
-      <el-table-column label="设备sn编码" align="center" prop="deviceSn" />
-      <el-table-column label="设备版本号" align="center" prop="deviceVersion" />
-      <el-table-column label="备注" align="center" prop="remark" />
-      <el-table-column label="是否启用" align="center" prop="deviceEnable" />
+      <el-table-column type="selection" width="55" align="center"/>
+      <el-table-column label="设备名称" align="center" prop="deviceName"/>
+      <el-table-column label="设备sn编码" align="center" prop="deviceSn"/>
+      <el-table-column label="设备版本号" align="center" prop="deviceVersion"/>
+      <el-table-column label="备注" align="center" prop="remark"/>
+      <el-table-column label="是否启用" align="center" prop="deviceEnable"/>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-        <el-button
-          size="mini"
-          type="text"
-          icon="el-icon-edit"
-          @click="showCardSlot(scope.row)"
-          v-hasPermi="['system:lanya_device_card:edit']"
-        >卡槽试图
-        </el-button>
+        <template slot-scope="scope">
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="showCardSlot(scope.row)"
+            v-hasPermi="['system:lanya_device_card:edit']"
+          >卡槽试图
+          </el-button>
+        </template>
       </el-table-column>
     </el-table>
 
@@ -55,11 +58,52 @@
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
+
+    <!-- 绑定卡 -->
+    <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
+      <div class="card-slot-container">
+        <div v-for="(slot, index) in form.cardSenderDetailGroupList" :key="index" class="slot-group">
+          <div class="slot-header">
+            <span class="slot-number">{{ index + 1 }}</span>
+            <span class="slot-id">{{ slot.cardId }}</span>
+          </div>
+          <div class="slot-content">
+            <div v-for="(card, cardIndex) in slot.cardSenderDetails" :key="cardIndex" class="card-item">
+              <div class="card-index">{{ cardIndex + 1 }}</div>
+              <div class="card-status">
+                <div v-if="card.cardId" class="status-bar full">
+                  <div class="status-progress" :style="{ width: '100%' }"></div>
+                  <span class="status-text">{{ card.electricity }}</span>
+                </div>
+                <div v-else-if="card.cardId === undefined" class="status-bar empty">
+                  <div class="status-progress" :style="{ width: '0%' }"></div>
+                  <span class="status-text">0%</span>
+                </div>
+                <div v-else class="status-bar partial">
+                  <div class="status-progress" :style="{ width: card.progress + '%' }"></div>
+                  <span class="status-text">{{ card.progress }}%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="cancel">取 消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { listLanya_device_machine, getLanya_device_machine, delLanya_device_machine, addLanya_device_machine, updateLanya_device_machine } from "@/api/system/lanya_device_machine"
+import {
+  listLanya_device_machine,
+  getLanya_device_machine,
+  delLanya_device_machine,
+  addLanya_device_machine,
+  updateLanya_device_machine
+} from "@/api/system/lanya_device_machine"
+import {machine_detail_page} from '@/api/lanya_transfer'
 
 export default {
   name: "Lanya_device_machine",
@@ -112,23 +156,24 @@ export default {
         viewSort: null,
         viewRows: null,
         viewColumns: null,
-        viewData: null
+        viewData: null,
+        cardSenderDetailGroupList: []
       },
       // 表单参数
       form: {},
       // 表单校验
       rules: {
         deviceSn: [
-          { required: true, message: "设备sn编码不能为空", trigger: "blur" }
+          {required: true, message: "设备sn编码不能为空", trigger: "blur"}
         ],
         deviceName: [
-          { required: true, message: "设备名称不能为空", trigger: "blur" }
+          {required: true, message: "设备名称不能为空", trigger: "blur"}
         ],
         faceFlag: [
-          { required: true, message: "人脸相机标识不能为空", trigger: "blur" }
+          {required: true, message: "人脸相机标识不能为空", trigger: "blur"}
         ],
         deviceEnable: [
-          { required: true, message: "发卡机：是否启用 Y：启用 N：禁用不能为空", trigger: "blur" }
+          {required: true, message: "发卡机：是否启用 Y：启用 N：禁用不能为空", trigger: "blur"}
         ],
       }
     }
@@ -185,7 +230,8 @@ export default {
         viewSort: null,
         viewRows: null,
         viewColumns: null,
-        viewData: null
+        viewData: null,
+        cardSenderDetailGroupList: []
       }
       this.resetForm("form")
     },
@@ -202,7 +248,7 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.cardSenderId)
-      this.single = selection.length!==1
+      this.single = selection.length !== 1
       this.multiple = !selection.length
     },
     /** 新增按钮操作 */
@@ -244,12 +290,13 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const cardSenderIds = row.cardSenderId || this.ids
-      this.$modal.confirm('是否确认删除发卡机编号为"' + cardSenderIds + '"的数据项？').then(function() {
+      this.$modal.confirm('是否确认删除发卡机编号为"' + cardSenderIds + '"的数据项？').then(function () {
         return delLanya_device_machine(cardSenderIds)
       }).then(() => {
         this.getList()
         this.$modal.msgSuccess("删除成功")
-      }).catch(() => {})
+      }).catch(() => {
+      })
     },
     /** 导出按钮操作 */
     handleExport() {
@@ -258,8 +305,103 @@ export default {
       }, `lanya_device_machine_${new Date().getTime()}.xlsx`)
     },
     showCardSlot(row) {
-
+      this.reset()
+      machine_detail_page({'deviceSn': row.deviceSn}).then(response => {
+        this.form = response.data
+        this.title = '卡槽试图 '
+        this.open = true
+      })
     }
   }
 }
 </script>
+<style scoped>
+.card-slot-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  padding: 10px;
+}
+
+.slot-group {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #f5f5f5;
+  padding: 10px;
+}
+
+.slot-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.slot-number {
+  font-weight: bold;
+  color: #333;
+}
+
+.slot-id {
+  color: #666;
+}
+
+.slot-content {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.card-item {
+  display: flex;
+  align-items: center;
+  padding: 5px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.card-index {
+  width: 20px;
+  text-align: center;
+  color: #666;
+  font-size: 12px;
+}
+
+.card-status {
+  flex: 1;
+  position: relative;
+}
+
+.status-bar {
+  height: 8px;
+  background-color: #eee;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.status-progress {
+  height: 100%;
+  background-color: #4CAF50;
+  transition: width 0.3s ease;
+}
+
+.status-text {
+  position: absolute;
+  top: -15px;
+  right: 0;
+  color: #4CAF50;
+  font-size: 12px;
+}
+
+.full .status-progress {
+  background-color: #4CAF50;
+}
+
+.empty .status-progress {
+  background-color: #f44336;
+}
+
+.partial .status-progress {
+  background-color: #2196F3;
+}
+
+</style>

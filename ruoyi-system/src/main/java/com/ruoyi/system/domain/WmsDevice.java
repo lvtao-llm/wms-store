@@ -28,11 +28,11 @@ public class WmsDevice extends BaseEntity
 
     /** 经度 */
     @Excel(name = "经度")
-    private Long longitude;
+    private String longitude;
 
     /** 纬度 */
     @Excel(name = "纬度")
-    private Long latitude;
+    private String latitude;
 
     /** 高度 */
     @Excel(name = "高度")
@@ -95,22 +95,22 @@ public class WmsDevice extends BaseEntity
         return deviceDescription;
     }
 
-    public void setLongitude(Long longitude) 
+    public void setLongitude(String longitude)
     {
         this.longitude = longitude;
     }
 
-    public Long getLongitude() 
+    public String getLongitude()
     {
         return longitude;
     }
 
-    public void setLatitude(Long latitude) 
+    public void setLatitude(String latitude)
     {
         this.latitude = latitude;
     }
 
-    public Long getLatitude() 
+    public String getLatitude()
     {
         return latitude;
     }

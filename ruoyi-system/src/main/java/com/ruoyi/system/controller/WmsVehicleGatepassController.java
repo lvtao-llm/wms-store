@@ -25,7 +25,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * 车辆预约Controller
  * 
  * @author ruoyi
- * @date 2025-09-26
+ * @date 2025-10-30
  */
 @RestController
 @RequestMapping("/system/gatepass")

@@ -10,6 +10,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="gatepassAppointmentTime"    column="gatepass_appointment_time"    />
         <result property="areaCodes"    column="area_codes"    />
         <result property="cardRecordId"    column="card_record_id"    />
+        <result property="cardId"    column="card_id"    />
         <result property="vehicleDriverName"    column="vehicle_driver_name"    />
         <result property="vehicleDriverPhone"    column="vehicle_driver_phone"    />
         <result property="actuals"    column="actuals"    />
@@ -24,7 +25,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectWmsVehicleGatepassVo">
-        select gatepass_id, vehicle_id, gatepass_appointment_time, area_codes, card_record_id, vehicle_driver_name, vehicle_driver_phone, actuals, plans, gatepass_gate_in_time, gatepass_gate_in_photo, gatepass_gate_out_time, gatepass_gate_out_photo, gatepass_dwell_time, create_by, create_time from wms_vehicle_gatepass
+        select gatepass_id, vehicle_id, gatepass_appointment_time, area_codes, card_record_id, card_id, vehicle_driver_name, vehicle_driver_phone, actuals, plans, gatepass_gate_in_time, gatepass_gate_in_photo, gatepass_gate_out_time, gatepass_gate_out_photo, gatepass_dwell_time, create_by, create_time from wms_vehicle_gatepass
     </sql>
 
     <select id="selectWmsVehicleGatepassList" parameterType="WmsVehicleGatepass" resultMap="WmsVehicleGatepassResult">
@@ -34,6 +35,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="gatepassAppointmentTime != null "> and gatepass_appointment_time = #{gatepassAppointmentTime}</if>
             <if test="areaCodes != null  and areaCodes != ''"> and area_codes = #{areaCodes}</if>
             <if test="cardRecordId != null "> and card_record_id = #{cardRecordId}</if>
+            <if test="cardId != null "> and card_id = #{cardId}</if>
             <if test="vehicleDriverName != null  and vehicleDriverName != ''"> and vehicle_driver_name like concat('%', #{vehicleDriverName}, '%')</if>
             <if test="vehicleDriverPhone != null  and vehicleDriverPhone != ''"> and vehicle_driver_phone = #{vehicleDriverPhone}</if>
             <if test="actuals != null  and actuals != ''"> and actuals = #{actuals}</if>
@@ -58,6 +60,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="gatepassAppointmentTime != null">gatepass_appointment_time,</if>
             <if test="areaCodes != null and areaCodes != ''">area_codes,</if>
             <if test="cardRecordId != null">card_record_id,</if>
+            <if test="cardId != null">card_id,</if>
             <if test="vehicleDriverName != null and vehicleDriverName != ''">vehicle_driver_name,</if>
             <if test="vehicleDriverPhone != null and vehicleDriverPhone != ''">vehicle_driver_phone,</if>
             <if test="actuals != null">actuals,</if>
@@ -75,6 +78,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="gatepassAppointmentTime != null">#{gatepassAppointmentTime},</if>
             <if test="areaCodes != null and areaCodes != ''">#{areaCodes},</if>
             <if test="cardRecordId != null">#{cardRecordId},</if>
+            <if test="cardId != null">#{cardId},</if>
             <if test="vehicleDriverName != null and vehicleDriverName != ''">#{vehicleDriverName},</if>
             <if test="vehicleDriverPhone != null and vehicleDriverPhone != ''">#{vehicleDriverPhone},</if>
             <if test="actuals != null">#{actuals},</if>
@@ -96,6 +100,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="gatepassAppointmentTime != null">gatepass_appointment_time = #{gatepassAppointmentTime},</if>
             <if test="areaCodes != null and areaCodes != ''">area_codes = #{areaCodes},</if>
             <if test="cardRecordId != null">card_record_id = #{cardRecordId},</if>
+            <if test="cardId != null">card_id = #{cardId},</if>
             <if test="vehicleDriverName != null and vehicleDriverName != ''">vehicle_driver_name = #{vehicleDriverName},</if>
             <if test="vehicleDriverPhone != null and vehicleDriverPhone != ''">vehicle_driver_phone = #{vehicleDriverPhone},</if>
             <if test="actuals != null">actuals = #{actuals},</if>

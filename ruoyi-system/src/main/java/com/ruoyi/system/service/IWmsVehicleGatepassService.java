@@ -7,7 +7,7 @@ import com.ruoyi.system.domain.WmsVehicleGatepass;
  * 车辆预约Service接口
  * 
  * @author ruoyi
- * @date 2025-09-26
+ * @date 2025-10-30
  */
 public interface IWmsVehicleGatepassService 
 {

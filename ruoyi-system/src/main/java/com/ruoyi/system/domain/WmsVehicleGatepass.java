@@ -11,7 +11,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * 车辆预约对象 wms_vehicle_gatepass
  * 
  * @author ruoyi
- * @date 2025-09-26
+ * @date 2025-10-30
  */
 public class WmsVehicleGatepass extends BaseEntity
 {
@@ -36,6 +36,10 @@ public class WmsVehicleGatepass extends BaseEntity
     /** 发卡记录ID */
     @Excel(name = "发卡记录ID")
     private Long cardRecordId;
+
+    /** 定位卡ID */
+    @Excel(name = "定位卡ID")
+    private Long cardId;
 
     /** 驾驶员姓名 */
     @Excel(name = "驾驶员姓名")
@@ -136,6 +140,16 @@ public class WmsVehicleGatepass extends BaseEntity
         return cardRecordId;
     }
 
+    public void setCardId(Long cardId) 
+    {
+        this.cardId = cardId;
+    }
+
+    public Long getCardId() 
+    {
+        return cardId;
+    }
+
     public void setVehicleDriverName(String vehicleDriverName) 
     {
         this.vehicleDriverName = vehicleDriverName;
@@ -234,6 +248,7 @@ public class WmsVehicleGatepass extends BaseEntity
             .append("gatepassAppointmentTime", getGatepassAppointmentTime())
             .append("areaCodes", getAreaCodes())
             .append("cardRecordId", getCardRecordId())
+            .append("cardId", getCardId())
             .append("vehicleDriverName", getVehicleDriverName())
             .append("vehicleDriverPhone", getVehicleDriverPhone())
             .append("actuals", getActuals())
