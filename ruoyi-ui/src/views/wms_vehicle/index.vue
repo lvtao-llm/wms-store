@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="100px">
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
       <el-form-item label="车牌号" prop="vehiclePlateNo">
         <el-input
           v-model="queryParams.vehiclePlateNo"
@@ -8,6 +8,16 @@
           clearable
           @keyup.enter.native="handleQuery"
         />
+      </el-form-item>
+      <el-form-item label="车型" prop="vehicleType">
+        <el-select v-model="queryParams.vehicleType" placeholder="请选择车型" clearable>
+          <el-option
+            v-for="dict in dict.type.wms_vehicle_type"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="车轴数" prop="vehicleAxleNum">
         <el-input
@@ -18,20 +28,24 @@
         />
       </el-form-item>
       <el-form-item label="承运商" prop="vehicleCompany">
-        <el-input
-          v-model="queryParams.vehicleCompany"
-          placeholder="请输入承运商"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
+        <el-select v-model="queryParams.vehicleCompany" placeholder="请选择承运商" clearable>
+          <el-option
+            v-for="dict in dict.type.wms_carrier"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="驾驶员姓名" prop="vehicleDriverName">
-        <el-input
-          v-model="queryParams.vehicleDriverName"
-          placeholder="请输入驾驶员姓名"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
+        <el-select v-model="queryParams.vehicleDriverName" placeholder="请选择驾驶员姓名" clearable>
+          <el-option
+            v-for="dict in dict.type.wms_external_driver"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="驾驶员手机" prop="vehicleDriverPhone">
         <el-input
@@ -49,6 +63,26 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
+      <el-form-item label="可进入区域：json数组" prop="authArea">
+        <el-select v-model="queryParams.authArea" placeholder="请选择可进入区域：json数组" clearable>
+          <el-option
+            v-for="dict in dict.type.wms_area_name"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="状态" prop="status">
+        <el-select v-model="queryParams.status" placeholder="请选择状态" clearable>
+          <el-option
+            v-for="dict in dict.type.sys_common_status"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -63,7 +97,7 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['system:vehicle:add']"
+          v-hasPermi="['system:wms_vehicle:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -74,7 +108,7 @@
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['system:vehicle:edit']"
+          v-hasPermi="['system:wms_vehicle:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -85,7 +119,7 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['system:vehicle:remove']"
+          v-hasPermi="['system:wms_vehicle:remove']"
         >删除</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -95,24 +129,44 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          v-hasPermi="['system:vehicle:export']"
+          v-hasPermi="['system:wms_vehicle:export']"
         >导出</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="vehicleList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="wms_vehicleList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="ID" align="center" prop="vehicleId" />
+      <el-table-column label="车辆ID" align="center" prop="vehicleId" />
       <el-table-column label="车牌号" align="center" prop="vehiclePlateNo" />
-      <el-table-column label="车型" align="center" prop="vehicleType" />
+      <el-table-column label="车型" align="center" prop="vehicleType">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.wms_vehicle_type" :value="scope.row.vehicleType"/>
+        </template>
+      </el-table-column>
       <el-table-column label="车轴数" align="center" prop="vehicleAxleNum" />
-      <el-table-column label="承运商" align="center" prop="vehicleCompany" />
-      <el-table-column label="驾驶员姓名" align="center" prop="vehicleDriverName" />
+      <el-table-column label="承运商" align="center" prop="vehicleCompany">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.wms_carrier" :value="scope.row.vehicleCompany"/>
+        </template>
+      </el-table-column>
+      <el-table-column label="驾驶员姓名" align="center" prop="vehicleDriverName">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.wms_external_driver" :value="scope.row.vehicleDriverName"/>
+        </template>
+      </el-table-column>
       <el-table-column label="驾驶员手机" align="center" prop="vehicleDriverPhone" />
       <el-table-column label="核载(kg)" align="center" prop="maxWeight" />
-      <el-table-column label="可进入区域" align="center" prop="authArea" />
-      <el-table-column label="删除" align="center" prop="status" />
+      <el-table-column label="可进入区域：json数组" align="center" prop="authArea">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.wms_area_name" :value="scope.row.authArea"/>
+        </template>
+      </el-table-column>
+      <el-table-column label="状态" align="center" prop="status">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.sys_common_status" :value="scope.row.status"/>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -120,19 +174,19 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['system:vehicle:edit']"
+            v-hasPermi="['system:wms_vehicle:edit']"
           >修改</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['system:vehicle:remove']"
+            v-hasPermi="['system:wms_vehicle:remove']"
           >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
-
+    
     <pagination
       v-show="total>0"
       :total="total"
@@ -147,14 +201,38 @@
         <el-form-item label="车牌号" prop="vehiclePlateNo">
           <el-input v-model="form.vehiclePlateNo" placeholder="请输入车牌号" />
         </el-form-item>
+        <el-form-item label="车型" prop="vehicleType">
+          <el-select v-model="form.vehicleType" placeholder="请选择车型">
+            <el-option
+              v-for="dict in dict.type.wms_vehicle_type"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="车轴数" prop="vehicleAxleNum">
           <el-input v-model="form.vehicleAxleNum" placeholder="请输入车轴数" />
         </el-form-item>
         <el-form-item label="承运商" prop="vehicleCompany">
-          <el-input v-model="form.vehicleCompany" placeholder="请输入承运商" />
+          <el-select v-model="form.vehicleCompany" placeholder="请选择承运商">
+            <el-option
+              v-for="dict in dict.type.wms_carrier"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="驾驶员姓名" prop="vehicleDriverName">
-          <el-input v-model="form.vehicleDriverName" placeholder="请输入驾驶员姓名" />
+          <el-select v-model="form.vehicleDriverName" placeholder="请选择驾驶员姓名">
+            <el-option
+              v-for="dict in dict.type.wms_external_driver"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="驾驶员手机" prop="vehicleDriverPhone">
           <el-input v-model="form.vehicleDriverPhone" placeholder="请输入驾驶员手机" />
@@ -163,10 +241,34 @@
           <el-input v-model="form.maxWeight" placeholder="请输入核载(kg)" />
         </el-form-item>
         <el-form-item label="可进入区域：json数组" prop="authArea">
-          <el-input v-model="form.authArea" type="textarea" placeholder="请输入内容" />
+          <el-select v-model="form.authArea" placeholder="请选择可进入区域：json数组">
+            <el-option
+              v-for="dict in dict.type.wms_area_name"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            ></el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="${comment}" prop="delFlag">
-          <el-input v-model="form.delFlag" placeholder="请输入${comment}" />
+        <el-form-item label="状态" prop="status">
+          <el-select v-model="form.status" placeholder="请选择状态">
+            <el-option
+              v-for="dict in dict.type.sys_common_status"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="是否删除" prop="delFlag">
+          <el-select v-model="form.delFlag" placeholder="请选择是否删除">
+            <el-option
+              v-for="dict in dict.type.wms_deleted"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            ></el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -178,10 +280,11 @@
 </template>
 
 <script>
-import { listVehicle, getVehicle, delVehicle, addVehicle, updateVehicle } from "@/api/system/wms_vehicle"
+import { listWms_vehicle, getWms_vehicle, delWms_vehicle, addWms_vehicle, updateWms_vehicle } from "@/api/system/wms_vehicle"
 
 export default {
-  name: "Vehicle",
+  name: "Wms_vehicle",
+  dicts: ['wms_area_name', 'wms_external_driver', 'sys_common_status', 'wms_carrier', 'wms_vehicle_type', 'wms_deleted'],
   data() {
     return {
       // 遮罩层
@@ -197,7 +300,7 @@ export default {
       // 总条数
       total: 0,
       // 车辆档案表格数据
-      vehicleList: [],
+      wms_vehicleList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -233,8 +336,8 @@ export default {
     /** 查询车辆档案列表 */
     getList() {
       this.loading = true
-      listVehicle(this.queryParams).then(response => {
-        this.vehicleList = response.rows
+      listWms_vehicle(this.queryParams).then(response => {
+        this.wms_vehicleList = response.rows
         this.total = response.total
         this.loading = false
       })
@@ -291,7 +394,7 @@ export default {
     handleUpdate(row) {
       this.reset()
       const vehicleId = row.vehicleId || this.ids
-      getVehicle(vehicleId).then(response => {
+      getWms_vehicle(vehicleId).then(response => {
         this.form = response.data
         this.open = true
         this.title = "修改车辆档案"
@@ -302,13 +405,13 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.vehicleId != null) {
-            updateVehicle(this.form).then(response => {
+            updateWms_vehicle(this.form).then(response => {
               this.$modal.msgSuccess("修改成功")
               this.open = false
               this.getList()
             })
           } else {
-            addVehicle(this.form).then(response => {
+            addWms_vehicle(this.form).then(response => {
               this.$modal.msgSuccess("新增成功")
               this.open = false
               this.getList()
@@ -321,7 +424,7 @@ export default {
     handleDelete(row) {
       const vehicleIds = row.vehicleId || this.ids
       this.$modal.confirm('是否确认删除车辆档案编号为"' + vehicleIds + '"的数据项？').then(function() {
-        return delVehicle(vehicleIds)
+        return delWms_vehicle(vehicleIds)
       }).then(() => {
         this.getList()
         this.$modal.msgSuccess("删除成功")
@@ -329,9 +432,9 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('system/vehicle/export', {
+      this.download('system/wms_vehicle/export', {
         ...this.queryParams
-      }, `vehicle_${new Date().getTime()}.xlsx`)
+      }, `wms_vehicle_${new Date().getTime()}.xlsx`)
     }
   }
 }

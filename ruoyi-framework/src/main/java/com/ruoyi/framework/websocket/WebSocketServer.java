@@ -8,6 +8,8 @@ import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import javax.websocket.server.ServerEndpointConfig;
 
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.utils.ThirdPartyAuth;
 import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.system.lanya.data.LanyaDataSync;
@@ -15,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -120,6 +123,62 @@ public class WebSocketServer {
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
+    }
+
+    @Scheduled(cron = "0/1 * * * * ?")
+    public void mockData() {
+        for (Session clientSession : clientSessions.values()) {
+            if (clientSession.isOpen()) {
+                // 使用异步发送替代阻塞发送
+                JSONObject materialLog = new JSONObject();
+                JSONArray materialLogData = new JSONArray();
+                materialLog.put("msgType", "materialLog");
+                materialLog.put("data", materialLogData);
+                materialLog.put("total", 10);
+                for(int i = 0; i < 10; i++) {
+                    JSONObject materialLogDataItem = new JSONObject();
+                    materialLogDataItem.put("sort", i);
+                    materialLogDataItem.put("materialName", "MATERIAL_" + i);
+                    materialLogDataItem.put("materialCode", "MATERIAL_CODE_" + i);
+                    materialLogDataItem.put("materialType", "MATERIAL_TYPE_" + i);
+                    materialLogDataItem.put("stockIn", i);
+                    materialLogDataItem.put("stockOut", 0);
+                    materialLogDataItem.put("stock", 100);
+                    materialLogDataItem.put("areaName", "钢铁区");
+                    materialLogData.add(materialLogDataItem);
+                }
+
+                clientSession.getAsyncRemote().sendText(materialLog.toString(), result -> {
+                    if (!result.isOK()) {
+                        LOGGER.error("异步发送消息失败: {}", result.getException().getMessage());
+                    }
+                });
+
+
+                // 使用异步发送替代阻塞发送
+                JSONObject areaLog = new JSONObject();
+                JSONArray areaLogData = new JSONArray();
+                areaLog.put("msgType", "areaLog");
+                areaLog.put("total", 10);
+                areaLog.put("data", areaLogData);
+                for(int i = 0; i < 10; i++) {
+                    JSONObject areaLogDataItem = new JSONObject();
+                    areaLogDataItem.put("sort", i);
+                    areaLogDataItem.put("areaCode", "area_CODE_" + i);
+                    areaLogDataItem.put("areaType", "area_TYPE_" + i);
+                    areaLogDataItem.put("personCount", i);
+                    areaLogDataItem.put("vehicleCount", 0);
+                    areaLogDataItem.put("areaName", "钢铁区");
+                    areaLogData.add(areaLogDataItem);
+                }
+
+                clientSession.getAsyncRemote().sendText(areaLog.toString(), result -> {
+                    if (!result.isOK()) {
+                        LOGGER.error("异步发送消息失败: {}", result.getException().getMessage());
+                    }
+                });
+            }
+        }
     }
 
     /**

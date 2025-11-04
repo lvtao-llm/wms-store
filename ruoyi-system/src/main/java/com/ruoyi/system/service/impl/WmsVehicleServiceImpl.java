@@ -12,7 +12,7 @@ import com.ruoyi.system.service.IWmsVehicleService;
  * 车辆档案Service业务层处理
  * 
  * @author ruoyi
- * @date 2025-09-26
+ * @date 2025-10-30
  */
 @Service
 public class WmsVehicleServiceImpl implements IWmsVehicleService 

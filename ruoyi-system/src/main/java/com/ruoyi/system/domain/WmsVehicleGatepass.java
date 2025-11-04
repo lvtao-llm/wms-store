@@ -22,7 +22,7 @@ public class WmsVehicleGatepass extends BaseEntity
 
     /** 车辆ID */
     @Excel(name = "车辆ID")
-    private Long vehicleId;
+    private String vehicleId;
 
     /** 预约时间 */
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -100,12 +100,12 @@ public class WmsVehicleGatepass extends BaseEntity
         return gatepassId;
     }
 
-    public void setVehicleId(Long vehicleId) 
+    public void setVehicleId(String vehicleId)
     {
         this.vehicleId = vehicleId;
     }
 
-    public Long getVehicleId() 
+    public String getVehicleId()
     {
         return vehicleId;
     }

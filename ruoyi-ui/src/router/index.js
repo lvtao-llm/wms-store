@@ -485,7 +485,7 @@ export const dynamicRoutes = [
     ]
   },
   {
-    path: 'vehicle-auth-management',
+    path: '/vehicle-auth-management',
     component: Layout,
     hidden: true,
     permissions: ['system:role:edit'],
@@ -495,6 +495,44 @@ export const dynamicRoutes = [
         component: () => import('@/views/wms_vehicle_appointment/index'),
         name: '车辆预约列表',
         meta: {title: '车辆预约列表'}
+      },
+      {
+        path: 'blacklist',
+        component: () => import('@/views/wms_vehicle_blacklist/index'),
+        name: '车辆黑名单那列表',
+        meta: {title: '车辆黑名单那列表'}
+      },
+      {
+        path: 'vechicle-in-out-record',
+        component: () => import('@/views/wms_vehicle_record/index'),
+        name: '车辆进出记录',
+        meta: {title: '车辆进出记录'}
+      }
+    ]
+  },
+  {
+    path: '/reports',
+    component: Layout,
+    hidden: true,
+    permissions: ['system:role:edit'],
+    children: [
+      {
+        path: 'people',
+        component: () => import('@/views/wms_statistics_people/index'),
+        name: '人员统计',
+        meta: {title: '人员统计'}
+      },
+      {
+        path: 'vehicle',
+        component: () => import('@/views/wms_statistics_vehicle/index'),
+        name: '车辆统计',
+        meta: {title: '车辆统计'}
+      },
+      {
+        path: 'vechicle-in-out-record',
+        component: () => import('@/views/wms_vehicle_record/index'),
+        name: '车辆进出记录',
+        meta: {title: '车辆进出记录'}
       }
     ]
   }

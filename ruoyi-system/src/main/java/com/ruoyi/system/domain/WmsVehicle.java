@@ -9,13 +9,13 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * 车辆档案对象 wms_vehicle
  * 
  * @author ruoyi
- * @date 2025-09-26
+ * @date 2025-10-30
  */
 public class WmsVehicle extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
-    /** $column.columnComment */
+    /** 车辆ID */
     private Long vehicleId;
 
     /** 车牌号 */
@@ -50,19 +50,19 @@ public class WmsVehicle extends BaseEntity
     @Excel(name = "可进入区域：json数组")
     private String authArea;
 
-    /** $column.columnComment */
-    @Excel(name = "${comment}", readConverterExp = "$column.readConverterExp()")
+    /** 状态 */
+    @Excel(name = "状态")
     private String status;
 
-    /** $column.columnComment */
+    /** 是否删除 */
     private String delFlag;
 
-    public void setVehicleId(Long vehicleId) 
+    public void setVehicleId(Long vehicleId)
     {
         this.vehicleId = vehicleId;
     }
 
-    public Long getVehicleId() 
+    public Long getVehicleId()
     {
         return vehicleId;
     }

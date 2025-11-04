@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="100px">
       <el-form-item label="车辆" prop="vehicleId">
         <el-select v-model="queryParams.vehicleId" placeholder="请选择车辆ID" clearable>
           <el-option
@@ -50,7 +50,8 @@
           size="mini"
           @click="handleAdd"
           v-hasPermi="['system:gatepass:add']"
-        >新增</el-button>
+        >新增
+        </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -61,7 +62,8 @@
           :disabled="single"
           @click="handleUpdate"
           v-hasPermi="['system:gatepass:edit']"
-        >修改</el-button>
+        >修改
+        </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -72,7 +74,8 @@
           :disabled="multiple"
           @click="handleDelete"
           v-hasPermi="['system:gatepass:remove']"
-        >删除</el-button>
+        >删除
+        </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -82,18 +85,15 @@
           size="mini"
           @click="handleExport"
           v-hasPermi="['system:gatepass:export']"
-        >导出</el-button>
+        >导出
+        </el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <el-table v-loading="loading" :data="gatepassList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="车辆" align="center" prop="vehicleId">
-        <template slot-scope="scope">
-          <dict-tag :options="dict.type.wms_external_vehicle" :value="scope.row.vehicleId"/>
-        </template>
-      </el-table-column>
+      <el-table-column type="selection" width="55" align="center"/>
+      <el-table-column label="车辆" align="center" prop="vehicleId"/>
       <el-table-column label="预约时间" align="center" prop="gatepassAppointmentTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.gatepassAppointmentTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
@@ -104,9 +104,9 @@
           <dict-tag :options="dict.type.wms_area_name" :value="scope.row.areaCodes"/>
         </template>
       </el-table-column>
-      <el-table-column label="驾驶员姓名" align="center" prop="vehicleDriverName" />
-      <el-table-column label="驾驶员手机" align="center" prop="vehicleDriverPhone" />
-      <el-table-column label="预约物资" align="center" prop="plans" />
+      <el-table-column label="驾驶员姓名" align="center" prop="vehicleDriverName"/>
+      <el-table-column label="驾驶员手机" align="center" prop="vehicleDriverPhone"/>
+      <el-table-column label="预约物资" align="center" prop="plans"/>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -115,14 +115,16 @@
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['system:gatepass:edit']"
-          >修改</el-button>
+          >修改
+          </el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['system:gatepass:remove']"
-          >删除</el-button>
+          >删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -137,27 +139,28 @@
 
     <!-- 添加或修改车辆预约对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+      <el-form ref="form" :model="form" :rules="rules" label-width="120px">
         <el-form-item label="车辆" prop="vehicleId">
-          <el-select v-model="form.vehicleId" placeholder="请选择车辆">
-            <el-option
-              v-for="dict in dict.type.wms_external_vehicle"
-              :key="dict.value"
-              :label="dict.label"
-              :value="parseInt(dict.value)"
-            ></el-option>
-          </el-select>
+          <!-- 将原来的 el-input 替换为 el-autocomplete -->
+          <el-autocomplete
+            v-model="form.vehicleId"
+            :fetch-suggestions="queryVehicleSuggestions"
+            placeholder="请输入车辆名称"
+            :trigger-on-focus="false"
+            @select="handleVehicleSelect"
+            clearable
+          />
         </el-form-item>
         <el-form-item label="预约时间" prop="gatepassAppointmentTime">
           <el-date-picker clearable
                           v-model="form.gatepassAppointmentTime"
-                          type="date"
-                          value-format="yyyy-MM-dd"
+                          type="datetime"
+                          value-format="yyyy-MM-dd HH:mm"
                           placeholder="请选择预约时间">
           </el-date-picker>
         </el-form-item>
         <el-form-item label="预约区域" prop="areaCodes">
-          <el-select v-model="form.areaCodes" placeholder="请选择预约区域">
+          <el-select v-model="form.areaCodes" multiple placeholder="请选择预约区域">
             <el-option
               v-for="dict in dict.type.wms_area_name"
               :key="dict.value"
@@ -167,13 +170,13 @@
           </el-select>
         </el-form-item>
         <el-form-item label="驾驶员姓名" prop="vehicleDriverName">
-          <el-input v-model="form.vehicleDriverName" placeholder="请输入驾驶员姓名" />
+          <el-input v-model="form.vehicleDriverName" placeholder="请输入驾驶员姓名"/>
         </el-form-item>
         <el-form-item label="驾驶员手机" prop="vehicleDriverPhone">
-          <el-input v-model="form.vehicleDriverPhone" placeholder="请输入驾驶员手机" />
+          <el-input v-model="form.vehicleDriverPhone" placeholder="请输入驾驶员手机"/>
         </el-form-item>
         <el-form-item label="预约物资" prop="plans">
-          <el-input v-model="form.plans" type="textarea" placeholder="请输入内容" />
+          <el-input v-model="form.plans" type="textarea" placeholder="请输入内容"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -185,7 +188,21 @@
 </template>
 
 <script>
-import { listGatepass, getGatepass, delGatepass, addGatepass, updateGatepass } from "@/api/system/gatepass"
+import {listGatepass, getGatepass, delGatepass, addGatepass, updateGatepass} from "@/api/system/gatepass"
+import {
+  listWms_vehicle,
+  getWms_vehicle,
+  delWms_vehicle,
+  addWms_vehicle,
+  updateWms_vehicle
+} from "@/api/system/wms_vehicle"
+import {
+  listArea,
+  getArea,
+  delArea,
+  addArea,
+  updateArea,
+} from "@/api/system/wms_area";
 
 export default {
   name: "Gatepass",
@@ -231,26 +248,27 @@ export default {
       },
       // 表单参数
       form: {},
+      vehicles: [],
       // 表单校验
       rules: {
-        vehicleId: [
-          { required: true, message: "车辆ID不能为空", trigger: "change" }
-        ],
-        gatepassAppointmentTime: [
-          { required: true, message: "预约时间不能为空", trigger: "blur" }
-        ],
-        areaCodes: [
-          { required: true, message: "预约区域编码的json数组[]不能为空", trigger: "change" }
-        ],
-        vehicleDriverName: [
-          { required: true, message: "驾驶员姓名不能为空", trigger: "blur" }
-        ],
-        vehicleDriverPhone: [
-          { required: true, message: "驾驶员手机不能为空", trigger: "blur" }
-        ],
-        plans: [
-          { required: true, message: "预约物资", trigger: "blur" }
-        ],
+        // vehicleId: [
+        //   {required: true, message: "车辆ID不能为空", trigger: "change"}
+        // ],
+        // gatepassAppointmentTime: [
+        //   {required: true, message: "预约时间不能为空", trigger: "blur"}
+        // ],
+        // areaCodes: [
+        //   {required: true, message: "预约区域编码的json数组[]不能为空", trigger: "change"}
+        // ],
+        // vehicleDriverName: [
+        //   {required: true, message: "驾驶员姓名不能为空", trigger: "blur"}
+        // ],
+        // vehicleDriverPhone: [
+        //   {required: true, message: "驾驶员手机不能为空", trigger: "blur"}
+        // ],
+        // plans: [
+        //   {required: true, message: "预约物资", trigger: "blur"}
+        // ],
       }
     }
   },
@@ -261,10 +279,27 @@ export default {
     /** 查询车辆预约列表 */
     getList() {
       this.loading = true
-      listGatepass(this.queryParams).then(response => {
-        this.gatepassList = response.rows
-        this.total = response.total
-        this.loading = false
+      listWms_vehicle(this.queryParams).then(response => {
+        this.vehicles = response.rows;
+        listArea(this.queryParams).then(response => {
+          this.dict.type.wms_area_name = response.rows.map(item => {
+            return {
+              value: item.areaId + "",  // 确保是字符串
+              label: item.areaName,
+              raw: {...item, listClass: 'primary'},
+            }
+          })
+          listGatepass(this.queryParams).then(response => {
+            this.gatepassList = response.rows.map(item => {
+              return {
+                ...item,
+                areaCodes: item.areaCodes ? item.areaCodes.split(",") : []
+              }
+            })
+            this.total = response.total
+            this.loading = false
+          })
+        })
       })
     },
     // 取消按钮
@@ -308,60 +343,99 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.gatepassId)
-      this.single = selection.length!==1
+      this.single = selection.length !== 1
       this.multiple = !selection.length
     },
     /** 新增按钮操作 */
     handleAdd() {
       this.reset()
-      this.open = true
-      this.title = "添加车辆预约"
+      listWms_vehicle(this.queryParams).then(response => {
+        this.vehicles = response.rows
+        this.open = true
+        this.title = "添加车辆预约"
+      })
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset()
       const gatepassId = row.gatepassId || this.ids
-      getGatepass(gatepassId).then(response => {
-        this.form = response.data
-        this.open = true
-        this.title = "修改车辆预约"
+      listWms_vehicle(this.queryParams).then(response => {
+        this.vehicles = response.rows
+        getGatepass(gatepassId).then(response => {
+          this.form = response.data
+          this.form.areaCodes = response.data.areaCodes ? response.data.areaCodes.split(",") : []
+          this.open = true
+          this.title = "修改车辆预约"
+        })
       })
     },
     /** 提交按钮 */
     submitForm() {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          if (this.form.gatepassId != null) {
-            updateGatepass(this.form).then(response => {
-              this.$modal.msgSuccess("修改成功")
-              this.open = false
-              this.getList()
-            })
-          } else {
-            addGatepass(this.form).then(response => {
-              this.$modal.msgSuccess("新增成功")
-              this.open = false
-              this.getList()
-            })
-          }
+          listWms_vehicle({vehiclePlateNo: this.form.vehicleId}).then(response => {
+            if (response.rows.length == 0) {
+              addWms_vehicle({vehiclePlateNo: this.form.vehicleId})
+              listWms_vehicle({vehiclePlateNo: this.form.vehicleId}).then(res => {
+                response = res
+              })
+            }
+            console.log(this.form.areaCodes)
+            this.form.areaCodes = this.form.areaCodes ? this.form.areaCodes.join(",") : ''
+            console.log(this.form.areaCodes)
+            if (this.form.gatepassId != null) {
+              updateGatepass(this.form).then(response => {
+                this.$modal.msgSuccess("修改成功")
+                this.open = false
+                this.getList()
+              })
+            } else {
+              addGatepass(this.form).then(response => {
+                this.$modal.msgSuccess("新增成功")
+                this.open = false
+                this.getList()
+              })
+            }
+          })
+
         }
       })
     },
     /** 删除按钮操作 */
     handleDelete(row) {
       const gatepassIds = row.gatepassId || this.ids
-      this.$modal.confirm('是否确认删除车辆预约编号为"' + gatepassIds + '"的数据项？').then(function() {
+      this.$modal.confirm('是否确认删除车辆预约编号为"' + gatepassIds + '"的数据项？').then(function () {
         return delGatepass(gatepassIds)
       }).then(() => {
         this.getList()
         this.$modal.msgSuccess("删除成功")
-      }).catch(() => {})
+      }).catch(() => {
+      })
     },
     /** 导出按钮操作 */
     handleExport() {
       this.download('system/gatepass/export', {
         ...this.queryParams
       }, `gatepass_${new Date().getTime()}.xlsx`)
+    },
+    queryVehicleSuggestions(queryString, cb) {
+      // 这里需要调用获取车辆列表的API
+      // 示例数据，需要替换为实际API调用
+      const vehicles = this.vehicles;
+      const results = queryString ? vehicles.filter(vehicle =>
+        vehicle.vehiclePlateNo.toLowerCase().includes(queryString.toLowerCase())
+      ) : vehicles;
+
+      // 调用回调函数返回建议列表
+      cb(results.map(item => ({
+        value: item.vehiclePlateNo,
+        id: item.vehiclePlateNo
+      })));
+    },
+    // 选择车辆后的处理
+    handleVehicleSelect(item) {
+      // 将选中车辆的ID保存到表单中
+      this.form.vehicleId = item.value;
     }
   }
 }

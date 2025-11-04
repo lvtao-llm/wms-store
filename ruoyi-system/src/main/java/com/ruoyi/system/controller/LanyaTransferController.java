@@ -357,4 +357,43 @@ public class LanyaTransferController extends BaseController {
     public Object deviceBeaconPreview(@RequestBody JSONObject body) throws JsonProcessingException {
         return thirdPartyAuth.callThirdParty("/device/beacon/preview", HttpMethod.POST, body);
     }
+
+    /**
+     * 获取今日位置统计
+     */
+    @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
+    @PostMapping("/statistics/personStatistics/todayPerson")
+    public Object statisticsPersonStatisticsTodayPerson(@RequestBody JSONObject body) throws JsonProcessingException {
+        return thirdPartyAuth.callThirdParty("/statistics/personStatistics/todayPerson", HttpMethod.POST, body);
+    }
+
+    /**
+     * 获取当前月位置统计
+     */
+    @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
+    @PostMapping("/statistics/personStatistics/monthPerson")
+    public Object statisticsPersonStatisticsMonthPerson(@RequestBody JSONObject body) throws JsonProcessingException {
+        return thirdPartyAuth.callThirdParty("/statistics/personStatistics/monthPerson", HttpMethod.POST, body);
+    }
+
+    /**
+     *
+     * @param body
+     * @return
+     * @throws JsonProcessingException
+     */
+    @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
+    @PostMapping("/statistics/personStatistics/staffStatistics")
+    public Object statisticsPersonStatisticsStaffStatistics(@RequestBody JSONObject body) throws JsonProcessingException {
+        return thirdPartyAuth.callThirdParty("/statistics/personStatistics/staffStatistics", HttpMethod.POST, body);
+    }
+
+    /**
+     * 获取当前位置统计
+     */
+    @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
+    @PostMapping("/statistics/positionStatistics/currentStatistics")
+    public Object statisticsPositionStatisticsCurrentStatistics(@RequestBody JSONObject body) throws JsonProcessingException {
+        return thirdPartyAuth.callThirdParty("/statistics/positionStatistics/currentStatistics", HttpMethod.POST, body);
+    }
 }
