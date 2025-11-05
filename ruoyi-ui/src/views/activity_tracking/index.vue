@@ -4,11 +4,11 @@
     <div class="controls">
       <el-form class="form" :model="queryParams" ref="queryRef" :inline="true">
         <el-row>
-          <el-col :span="6">
+          <el-col :span="5">
             <el-form-item>
               <el-select
                 popper-class="popperClass"
-                placeholder="请输入关键词搜索用户"
+                placeholder="请输入人员姓名/卡号 搜索"
                 filterable
                 remote
                 @change="handleSelectChange"
@@ -28,7 +28,31 @@
                 />
               </el-select> </el-form-item
           ></el-col>
-          <el-col :span="12">
+          <el-col :span="5">
+            <el-form-item>
+              <el-select
+                popper-class="popperClass"
+                placeholder="请输入车牌号 搜索"
+                filterable
+                remote
+                @change="handleSelectChange"
+                reserve-keyword
+                :popper-append-to-body="false"
+                :remote-method="remoteSearchUser"
+                class="searchSelect"
+                v-model="queryParams.status"
+                clearable
+                style=""
+              >
+                <el-option
+                  v-for="dict in selectData"
+                  :key="dict.id"
+                  :label="dict.label"
+                  :value="dict"
+                />
+              </el-select> </el-form-item
+          ></el-col>
+          <el-col :span="6">
             <el-form-item>
               <el-date-picker
                 @change="handleSelectChange"
@@ -41,11 +65,11 @@
                 end-placeholder="结束时间"
               /> </el-form-item
           ></el-col>
-          <!-- <el-col :span="2">
+          <el-col :span="2">
             <el-button class="queryBtn" @click="handleSelectChange"
               >查询</el-button
             >
-          </el-col> -->
+          </el-col>
           <el-col :span="6">
             <el-form-item id="porBox">
               <span class="searchIconBox" style="color: #fff; cursor: pointer">
@@ -57,14 +81,14 @@
               >
 
               <div id="hoverPor">
-                <div class="porItem" @click="savePoints">
+                <!-- <div class="porItem" @click="savePoints">
                   <i class="el-icon-upload" style="font-size: 20px"></i>
                   保存当前标记点
                 </div>
                 <div class="porItem" @click="clearAll">
                   <i class="el-icon-delete" style="font-size: 20px"></i>
                   清除全部标记
-                </div>
+                </div> -->
                 <div class="porItem" @click="showPresetPoints">
                   <i
                     class="el-icon-success"
@@ -102,7 +126,7 @@
                     style="font-size: 20px"
                     v-else
                   ></i>
-                  起止
+                  加载预设线路
                 </div>
                 <div v-if="isShowQ" class="porItem" @click="toggleTrack">
                   <i
@@ -240,7 +264,7 @@ export default {
   },
   methods: {
     onLoad() {
-      const wsuri = "ws://112.98.110.101:8092/system/lanya-transfer/ws/1";
+      const wsuri = "ws://112.98.110.101:10030/system/lanya-transfer/ws/aaa";
       this.ws = new WebSocket(wsuri);
       const self = this;
       this.ws.onopen = function (event) {
@@ -1325,12 +1349,12 @@ export default {
 .controls {
   position: absolute;
   top: 20px;
-  left: 30%;
+  left: 20%;
   z-index: 1000;
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
-  width: 45vw;
+  width: 50vw;
   height: 50px;
   border-radius: 30px;
   background-color: black;
@@ -1500,6 +1524,7 @@ export default {
 .queryBtn,
 .el-button--default,
 .el-button--medium {
+  margin-top: 5px;
   span {
     font-size: 10px;
     display: flex;

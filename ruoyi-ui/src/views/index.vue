@@ -1,7 +1,7 @@
 <template>
   <div class="map-container">
     <div id="container"></div>
-    <div class="controls">
+    <!-- <div class="controls">
       <div class="controls-left">
         <el-form
           class="form"
@@ -180,7 +180,7 @@
           </el-row>
         </el-form>
       </div>
-    </div>
+    </div> -->
     <div class="dialog-box">
       <!-- 左上 -->
       <div
@@ -199,19 +199,67 @@
           <div class="type-box">
             <div class="type-item">
               <span class="title">承包商</span>
-              <div class="num">1人</div>
+              <div class="num">
+                {{
+                  this.tableDataTl && this.tableDataTl.personTypeStatistics
+                    ? this.tableDataTl.personTypeStatistics.find(
+                        (i) => i.personType == "contractor"
+                      ).count
+                    : 0
+                }}人
+              </div>
             </div>
             <div class="type-item">
-              <span class="title">正式员工</span>
-              <div class="num">12人</div>
+              <span class="title">员工</span>
+              <div class="num">
+                {{
+                  this.tableDataTl && this.tableDataTl.personTypeStatistics
+                    ? this.tableDataTl.personTypeStatistics.find(
+                        (i) => i.personType == "staff"
+                      ).count
+                    : 0
+                }}人
+              </div>
             </div>
             <div class="type-item">
-              <span class="title">临时作业</span>
-              <div class="num">2人</div>
+              <span class="title">访客</span>
+              <div class="num">
+                {{
+                  this.tableDataTl && this.tableDataTl.personTypeStatistics
+                    ? this.tableDataTl.personTypeStatistics.find(
+                        (i) => i.personType == "visitor"
+                      ).count
+                    : 0
+                }}人
+              </div>
             </div>
           </div>
 
-          <div class="echarts1"></div>
+          <!-- <div class="echarts1"></div> -->
+          <div class="table-wrapper">
+            <el-table height="100%" :data="tableDataTl.data" class="dark-table">
+              <el-table-column
+                label="序号"
+                width="60"
+                type="index"
+              ></el-table-column>
+              <el-table-column
+                width="50"
+                prop="personTypeName"
+                label="类型"
+              ></el-table-column>
+              <el-table-column
+                show-overflow-tooltip
+                prop="realName"
+                label="姓名"
+              ></el-table-column>
+              <el-table-column
+                show-overflow-tooltip
+                prop="phone"
+                label="联系方式"
+              ></el-table-column>
+            </el-table>
+          </div>
         </div>
       </div>
 
@@ -236,28 +284,51 @@
         />
 
         <div class="content">
-          <h5>重大风险分区统计</h5>
-          <el-table
-            style="
-               {
-                height: 80% !important;
-              }
-            "
-            height="60%"
-            :data="tableDataTr"
-          >
-            <el-table-column prop="deptName" label="分区名称"></el-table-column>
-            <el-table-column prop="orderNum" label="总人数"></el-table-column>
-            <el-table-column prop="orderNum" label="正式员工"></el-table-column>
-            <el-table-column prop="orderNum" label="临时作业"></el-table-column>
-          </el-table>
-          <pagination
-            layout="prev, pager, next, total"
-            :total="page.total"
-            :page.sync="page.pageNum"
-            :limit.sync="page.pageSize"
-            @pagination=""
-          />
+          <h5>物料统计</h5>
+          <div class="table-wrapper">
+            <el-table
+              :header-cell-style="{ 'text-align': 'center' }"
+              :cell-style="{ 'text-align': 'center' }"
+              height="100%"
+              :data="tableDataTr"
+              class="dark-table"
+            >
+              <el-table-column
+                label="序号"
+                width="60"
+                type="index"
+              ></el-table-column>
+              <el-table-column
+                prop="areaName"
+                label="物料区名称"
+              ></el-table-column>
+              <el-table-column
+                prop="materialType"
+                label="物料类型"
+                show-overflow-tooltip
+              ></el-table-column>
+              <el-table-column
+                width="50"
+                prop="stockIn"
+                label="入库"
+              ></el-table-column>
+              <el-table-column
+                width="50"
+                prop="stockOut"
+                label="出库"
+              ></el-table-column>
+              <el-table-column
+                width="50"
+                prop="stock"
+                label="存库"
+              ></el-table-column>
+              <el-table-column width="80" prop="cz" label="详情">
+                <template #default="{ row }">
+                  <el-button type="text" size="mini">查看 </el-button></template
+                ></el-table-column
+              >
+            </el-table>
+          </div>
         </div>
       </div>
       <div
@@ -266,7 +337,7 @@
         class="right-top-dialog-btn"
       >
         <img class="" src="../assets/images/展开.png" alt="" />
-        <div class="title">重大风险区域统计</div>
+        <div class="title">物料统计</div>
       </div>
       <!-- 左下 -->
       <div
@@ -284,16 +355,53 @@
           <h5>车辆统计</h5>
           <div class="type-box">
             <div class="type-item">
-              <span class="title">车牌号</span>
-              <div class="num">12人</div>
+              <span class="title">内部</span>
+              <div class="num">
+                {{
+                  this.tableDataBl && this.tableDataBl.categoryStatistics
+                    ? this.tableDataBl.categoryStatistics.find(
+                        (i) => i.type == "internal"
+                      ).count
+                    : 0
+                }}辆
+              </div>
             </div>
             <div class="type-item">
-              <span class="title">入出时间</span>
-              <div class="num">2人</div>
+              <span class="title">访客</span>
+              <div class="num">
+                {{
+                  this.tableDataBl && this.tableDataBl.categoryStatistics
+                    ? this.tableDataBl.categoryStatistics.find(
+                        (i) => i.type == "visitor"
+                      ).count
+                    : 0
+                }}辆
+              </div>
             </div>
           </div>
-
-          <div class="echarts1"></div>
+          <div class="table-wrapper">
+            <el-table height="100%" :data="tableDataBl.data" class="dark-table">
+              <el-table-column
+                label="序号"
+                width="60"
+                type="index"
+              ></el-table-column>
+              <el-table-column
+                prop="personTypeName"
+                label="类型"
+              ></el-table-column>
+              <el-table-column
+                show-overflow-tooltip
+                prop="realName"
+                label="姓名"
+              ></el-table-column>
+              <el-table-column
+                show-overflow-tooltip
+                prop="phone"
+                label="联系方式"
+              ></el-table-column>
+            </el-table>
+          </div>
         </div>
       </div>
 
@@ -302,7 +410,7 @@
         v-show="!isMovedOutBf"
         class="left-bottom-dialog-btn"
       >
-        <div class="title">人员统计类别</div>
+        <div class="title">车辆统计</div>
         <img class="" src="../assets/images/展开.png" alt="" />
       </div>
 
@@ -319,28 +427,51 @@
         />
 
         <div class="content">
-          <h5>单区统计</h5>
-          <el-table
-            style="
-               {
-                height: 80% !important;
-              }
-            "
-            height="60%"
-            :data="tableDataBr"
-          >
-            <el-table-column prop="deptName" label="分区名称"></el-table-column>
-            <el-table-column prop="orderNum" label="总人数"></el-table-column>
-            <el-table-column prop="orderNum" label="正式员工"></el-table-column>
-            <el-table-column prop="orderNum" label="临时作业"></el-table-column>
-          </el-table>
-          <pagination
-            layout="prev, pager, next, total"
-            :total="page.total"
-            :page.sync="page.pageNum"
-            :limit.sync="page.pageSize"
-            @pagination=""
-          />
+          <h5>区域统计</h5>
+          <div class="table-wrapper">
+            <el-table
+              :header-cell-style="{ 'text-align': 'center' }"
+              :cell-style="{ 'text-align': 'center' }"
+              height="100%"
+              :data="tableDataTr"
+              class="dark-table"
+            >
+              <el-table-column
+                label="序号"
+                width="60"
+                type="index"
+              ></el-table-column>
+              <el-table-column
+                prop="areaName"
+                label="物料区名称"
+              ></el-table-column>
+              <el-table-column
+                prop="materialType"
+                label="物料类型"
+                show-overflow-tooltip
+              ></el-table-column>
+              <el-table-column
+                width="50"
+                prop="stockIn"
+                label="入库"
+              ></el-table-column>
+              <el-table-column
+                width="50"
+                prop="stockOut"
+                label="出库"
+              ></el-table-column>
+              <el-table-column
+                width="50"
+                prop="stock"
+                label="存库"
+              ></el-table-column>
+              <el-table-column width="80" prop="cz" label="详情">
+                <template #default="{ row }">
+                  <el-button type="text" size="mini">查看 </el-button></template
+                ></el-table-column
+              >
+            </el-table>
+          </div>
         </div>
       </div>
       <div
@@ -349,7 +480,7 @@
         class="right-bottom-dialog-btn"
       >
         <img class="" src="../assets/images/展开.png" alt="" />
-        <div class="title">单区统计</div>
+        <div class="title">区域统计</div>
       </div>
     </div>
   </div>
@@ -400,8 +531,10 @@ export default {
       // 响应式数据
       queryParams: {},
       selectData: [],
+      tableDataTl: [],
       tableDataTr: [],
       tableDataBr: [],
+      tableDataBl: [],
       page: {
         pageSize: 10,
         pageNum: 1,
@@ -445,6 +578,7 @@ export default {
     };
   },
   mounted() {
+    this.onLoad();
     // this.loadSavedGroups();
     this.initMap();
     // this.showAllSavedGroups();
@@ -457,6 +591,55 @@ export default {
     // this.cleanupAnimation();
   },
   methods: {
+    onLoad() {
+      const wsuri = "ws://112.98.110.101:10030/system/lanya-transfer/ws/aaa";
+      this.ws = new WebSocket(wsuri);
+      const that = this;
+      this.ws.onopen = function (event) {
+        that.text_content = that.text_content + "已经打开连接!" + "\n";
+      };
+      this.ws.onmessage = function (event) {
+        that.text_content = event.data + "\n";
+        const data = JSON.parse(event.data);
+        const map = [
+          [
+            () => data.msgType === "currentPersonLocation", //人员
+            () => {
+              that.tableDataTl = data;
+            },
+          ],
+          [
+            () => data.msgType === "currentVehicleLocation", //车辆
+            () => {
+              that.tableDataBl = data;
+            },
+          ],
+          [
+            () => data.msgType === "materialLog", //物料
+            () => {
+              that.tableDataTr = data.data;
+            },
+          ],
+          [
+            () => data.msgType === "areaLog", //物料
+            () => {
+              that.tableDataBr = data.data;
+            },
+          ],
+        ];
+        const target = map.find((m) => m[0]());
+        if (target) target[1]();
+      };
+      this.ws.onclose = function (event) {
+        this.text_content = this.text_content + "已经关闭连接!" + "\n";
+      };
+    },
+    exit() {
+      if (this.ws) {
+        this.ws.close();
+        this.ws = null;
+      }
+    },
     initPieChart() {
       // 获取 .echarts1 容器 DOM 元素
       const chartDom = document.querySelector(".echarts1");
@@ -901,7 +1084,7 @@ export default {
     position: absolute;
     top: 10%;
     left: 0;
-    width: 12vw;
+    width: 25vw;
     height: 35vh;
     background-color: rgba(0, 0, 0, 0.5);
     color: white;
@@ -934,6 +1117,12 @@ export default {
         width: 90%; // 或固定像素，比如 200px
         height: 20vh; // 必须有明确高度，否则图表无法显示
         margin-top: 10px;
+      }
+      .table-wrapper {
+        width: 95%;
+        height: 20vh; // 固定高度，确保表格可以滚动
+        margin-top: 10px;
+        overflow: hidden;
       }
     }
 
@@ -990,6 +1179,12 @@ export default {
       text-align: center;
       width: 98%;
       padding-left: 5%;
+      .table-wrapper {
+        width: 100%;
+        height: 25vh; // 固定高度，确保表格可以滚动
+        margin-top: 10px;
+        overflow: hidden;
+      }
     }
   }
   .right-top-dialog-btn {
@@ -1020,7 +1215,7 @@ export default {
     position: absolute;
     top: 55%;
     left: 0;
-    width: 12vw;
+    width: 25vw;
     height: 35vh;
     background-color: rgba(0, 0, 0, 0.5);
     color: white;
@@ -1036,23 +1231,24 @@ export default {
         justify-content: center;
         align-items: center;
         .type-item {
-          margin: 0px 10px 0 10px;
+          margin: 0px 1% 0 1%;
           .title {
             font-size: 13px;
           }
           .num {
             margin-top: 10px;
-            width: 50px;
-            height: 50px;
+            width: 3vw;
+            height: 3vh;
             border: 1px solid white;
             border-radius: 10px;
           }
         }
       }
-      .echarts1 {
-        width: 90%; // 或固定像素，比如 200px
-        height: 20vh; // 必须有明确高度，否则图表无法显示
+      .table-wrapper {
+        width: 95%;
+        height: 20vh; // 固定高度，确保表格可以滚动
         margin-top: 10px;
+        overflow: hidden;
       }
     }
 
@@ -1110,6 +1306,12 @@ export default {
       text-align: center;
       width: 98%;
       padding-left: 5%;
+      .table-wrapper {
+        width: 100%;
+        height: 25vh; // 固定高度，确保表格可以滚动
+        margin-top: 10px;
+        overflow: hidden;
+      }
     }
   }
   .right-bottom-dialog-btn {
@@ -1136,12 +1338,12 @@ export default {
     }
   }
 
-  button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-  }
+  // button {
+  //   margin-top: 20px;
+  //   padding: 10px 20px;
+  //   font-size: 16px;
+  //   cursor: pointer;
+  // }
 }
 .map-container {
   position: relative;
@@ -1321,5 +1523,97 @@ export default {
 }
 ::v-deep .el-input__inner {
   color: white;
+}
+
+// 深色表格样式
+::v-deep .dark-table {
+  background-color: transparent !important;
+  color: #fff !important;
+
+  // 表格主体
+  .el-table__body-wrapper {
+    background-color: rgba(0, 0, 0, 0.3) !important;
+    &::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: rgba(255, 255, 255, 0.3);
+      border-radius: 3px;
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.5);
+      }
+    }
+    &::-webkit-scrollbar-track {
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  // 表头
+  .el-table__header-wrapper {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+
+    th {
+      background-color: rgba(0, 0, 0, 0.5) !important;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+      color: #fff !important;
+
+      .cell {
+        color: #fff !important;
+        font-weight: 500;
+      }
+    }
+  }
+
+  // 表格行
+  .el-table__body {
+    tr {
+      background-color: transparent !important;
+
+      td {
+        background-color: transparent !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+        color: #fff !important;
+
+        .cell {
+          color: #fff !important;
+        }
+      }
+
+      &:hover {
+        td {
+          background-color: rgba(255, 255, 255, 0.1) !important;
+        }
+      }
+    }
+
+    // 斑马纹样式（如果需要）
+    tr.el-table__row--striped {
+      td {
+        background-color: rgba(255, 255, 255, 0.05) !important;
+      }
+
+      &:hover {
+        td {
+          background-color: rgba(255, 255, 255, 0.15) !important;
+        }
+      }
+    }
+  }
+
+  // 边框
+  &::before {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+  }
+
+  // 空数据提示
+  .el-table__empty-block {
+    background-color: transparent !important;
+    color: #fff !important;
+
+    .el-table__empty-text {
+      color: rgba(255, 255, 255, 0.6) !important;
+    }
+  }
 }
 </style>

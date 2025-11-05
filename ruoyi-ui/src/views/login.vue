@@ -174,7 +174,7 @@ export default {
             .dispatch("Login", this.loginForm)
             .then(() => {
               // window.open("http://112.98.110.101:8093", "_self");
-              this.$router.push({ path: this.redirect || "/" }).catch(()=>{})
+              this.$router.push({ path: this.redirect || "/" }).catch(() => {});
             })
             .catch(() => {
               this.loading = false;
