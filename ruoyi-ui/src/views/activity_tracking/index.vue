@@ -5,57 +5,56 @@
       <el-form class="form" :model="queryParams" ref="queryRef" :inline="true">
         <el-row>
           <el-col :span="5">
-            <el-form-item>
+            <el-form-item style="width: 100%">
               <el-select
+                style="width: 100%"
                 popper-class="popperClass"
                 placeholder="请输入人员姓名/卡号 搜索"
                 filterable
                 remote
-                @change="handleSelectChange"
+                @change="changePerson"
                 reserve-keyword
                 :popper-append-to-body="false"
                 :remote-method="remoteSearchUser"
                 class="searchSelect"
                 v-model="queryParams.status"
                 clearable
-                style=""
               >
                 <el-option
                   v-for="dict in selectData"
                   :key="dict.id"
-                  :label="dict.label"
+                  :label="dict.fuzzy"
                   :value="dict"
                 />
               </el-select> </el-form-item
           ></el-col>
           <el-col :span="5">
-            <el-form-item>
+            <el-form-item style="width: 100%">
               <el-select
+                style="width: 100%"
                 popper-class="popperClass"
                 placeholder="请输入车牌号 搜索"
                 filterable
                 remote
-                @change="handleSelectChange"
+                @change="changeCar"
                 reserve-keyword
                 :popper-append-to-body="false"
-                :remote-method="remoteSearchUser"
+                :remote-method="remoteSearchCar"
                 class="searchSelect"
-                v-model="queryParams.status"
+                v-model="queryParams.vehiclePlateNo"
                 clearable
-                style=""
               >
                 <el-option
-                  v-for="dict in selectData"
+                  v-for="dict in selectCarData"
                   :key="dict.id"
-                  :label="dict.label"
-                  :value="dict"
+                  :label="dict.fuzzy"
+                  :value="dict.id"
                 />
               </el-select> </el-form-item
           ></el-col>
           <el-col :span="6">
             <el-form-item>
               <el-date-picker
-                @change="handleSelectChange"
                 value-format="yyyy-MM-dd HH:mm:ss"
                 v-model="dateRange"
                 popper-class="customDatePicker"
@@ -204,7 +203,10 @@ import {
   createSvgIcon,
 } from "../utils";
 
-import { listLanya_device_card_sender_log_by_name_card_type } from "@/api/system/lanya_device_card_sender_log";
+import {
+  listLanya_device_card_sender_log_by_name_card_type,
+  wms_vehicle_record,
+} from "@/api/system/lanya_device_card_sender_log";
 
 export default {
   name: "MapIndex",
@@ -220,6 +222,7 @@ export default {
       // 响应式数据
       queryParams: {},
       selectData: [],
+      selectCarData: [],
       tableData: [],
       dateRange: [
         "2025-05-23 00:00:00", // 可换任意格式化函数
@@ -257,33 +260,11 @@ export default {
     this.loadSavedGroups();
     this.initMap();
     this.showAllSavedGroups();
-    this.onLoad();
   },
   beforeDestroy() {
     this.cleanupAnimation();
   },
   methods: {
-    onLoad() {
-      const wsuri = "ws://112.98.110.101:10030/system/lanya-transfer/ws/aaa";
-      this.ws = new WebSocket(wsuri);
-      const self = this;
-      this.ws.onopen = function (event) {
-        self.text_content = self.text_content + "已经打开连接!" + "\n";
-      };
-      this.ws.onmessage = function (event) {
-        self.text_content = event.data + "\n";
-        console.log(event.data);
-      };
-      this.ws.onclose = function (event) {
-        self.text_content = self.text_content + "已经关闭连接!" + "\n";
-      };
-    },
-    exit() {
-      if (this.ws) {
-        this.ws.close();
-        this.ws = null;
-      }
-    },
     // 初始化地图
     initMap() {
       const BMap = window.BMap;
@@ -1229,7 +1210,7 @@ export default {
       this.map.addOverlay(this.polyline);
     },
     remoteSearchUser(a, b, c) {
-      listLanya_device_card_sender_log_by_name_card_type({ param: a }).then(
+      listLanya_device_card_sender_log_by_name_card_type({ key: a }).then(
         (response) => {
           response.rows.forEach(
             (item) =>
@@ -1240,10 +1221,34 @@ export default {
         }
       );
     },
+    remoteSearchCar(a, b, c) {
+      wms_vehicle_record({ key: a }).then((response) => {
+        response.rows.forEach(
+          (item) =>
+            (item.label =
+              item.realName + "-" + item.cardId + "-" + item.personTypeName)
+        );
+        this.selectCarData = response.rows;
+      });
+    },
+
+    changePerson(e) {
+      this.queryParams.vehiclePlateNo = "";
+      console.log(this.queryParams.status);
+      this.tableData = JSON.parse(this.queryParams.status.trajectoryPoints);
+    },
+    changeCar() {
+      this.queryParams.status = "";
+      console.log(this.queryParams.vehiclePlateNo);
+      this.tableData = JSON.parse(
+        this.queryParams.vehiclePlateNo.trajectoryPoints
+      );
+    },
 
     handleSelectChange(val) {
       positionHistoryPositionFindPersonHistoryList({
         personId: this.queryParams.status.personId,
+        vehiclePlateNo: this.queryParams.vehiclePlateNo.personId,
         date: "",
         time: [],
         beginTime: this.dateRange[0],
@@ -1354,7 +1359,7 @@ export default {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
-  width: 50vw;
+  width: 70vw;
   height: 50px;
   border-radius: 30px;
   background-color: black;
@@ -1462,6 +1467,9 @@ export default {
   background-color: black;
 }
 
+::v-deep .controls .el-form-item__content {
+  width: 100%;
+}
 ::v-deep.controls .el-select__wrapper,
 .el-tooltip__trigger,
 .el-tooltip__trigger {

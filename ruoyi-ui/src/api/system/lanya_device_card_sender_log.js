@@ -11,7 +11,14 @@ export function listLanya_device_card_sender_log(query) {
 
 export function listLanya_device_card_sender_log_by_name_card_type(query) {
   return request({
-    url: '/system/lanya_device_card_sender_log/list-by-name-card-type',
+    url: '/system/trajectory/personFuzzyList',
+    method: 'get',
+    params: query
+  })
+}
+export function wms_vehicle_record(query) {
+  return request({
+    url: '/system/trajectory/vehicleFuzzyList',
     method: 'get',
     params: query
   })
