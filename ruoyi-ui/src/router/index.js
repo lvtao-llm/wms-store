@@ -293,14 +293,32 @@ export const dynamicRoutes = [
     ]
   },
   {
-    path: '/material',
+    path: '/material-area-manage',
     component: Layout,
     hidden: true,
     permissions: ['system:role:edit'],
     children: [
       {
-        path: 'index',
-        component: () => import('@/views/wms_material/index'),
+        path: 'inbound',
+        component: () => import('@/views/wms_material_in/index'),
+        name: '入库档案',
+        meta: {title: '入库档案'}
+      },
+      {
+        path: 'outbound',
+        component: () => import('@/views/wms_material_out/index'),
+        name: '出库档案',
+        meta: {title: '出库档案'}
+      },
+      {
+        path: 'inventory',
+        component: () => import('@/views/wms_material_stock/index'),
+        name: '库存档案',
+        meta: {title: '库存档案'}
+      },
+      {
+        path: 'material-desc',
+        component: () => import('@/views/wms_material_desc/index'),
         name: '物料档案',
         meta: {title: '物料档案'}
       }
@@ -435,7 +453,7 @@ export const dynamicRoutes = [
         component: () => import('@/views/lanya_person_in_out_record/index'),
         name: '人员进出记录',
         meta: {title: '人员进出记录'}
-      }
+      },
     ]
   },
   {

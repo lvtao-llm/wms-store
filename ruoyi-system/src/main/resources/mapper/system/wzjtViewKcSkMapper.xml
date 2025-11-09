@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.WzjtViewKcSkMapper">
+
+    <resultMap type="WmsMaterialStock" id="ViewKcSkResult">
+        <result property="inventoryId" column="库存编号"/>
+        <result property="materialCode" column="物资编码"/>
+        <result property="actualWeight" column="实存重量"/>
+        <result property="status" column="状态"/>
+        <result property="remark" column="备注"/>
+        <result property="materialName" column="物资名称"/>
+        <result property="unit" column="计量单位"/>
+        <result property="warehouse" column="库房"/>
+        <result property="bookWeight" column="账存重量"/>
+        <result property="varietyCode" column="品种编码"/>
+        <result property="varietyName" column="品种名称"/>
+        <result property="materialCategory" column="物资类别"/>
+        <result property="reservedWeight" column="预拨重量"/>
+        <result property="availableWeight" column="可拨重量"/>
+        <result property="squadron" column="中队"/>
+        <result property="team" column="班组"/>
+        <result property="company" column="所属公司"/>
+    </resultMap>
+
+    <sql id="selectViewKcSkVo">
+        SELECT
+            库存编号, 物资编码, 实存重量, 状态, 备注, 物资名称, 计量单位,
+            库房, 账存重量, 品种编码, 品种名称, 物资类别, 预拨重量, 可拨重量,
+            中队, 班组, 所属公司
+        FROM VIEW_KC_SK
+    </sql>
+
+    <select id="selectViewKcSkList" parameterType="WmsMaterialStock" resultMap="ViewKcSkResult">
+        <include refid="selectViewKcSkVo"/>
+        <where>
+            <if test="inventoryId != null and inventoryId != ''"> AND 库存编号 = #{inventoryId}</if>
+            <if test="materialCode != null and materialCode != ''"> AND 物资编码 = #{materialCode}</if>
+            <if test="actualWeight != null"> AND 实存重量 = #{actualWeight}</if>
+            <if test="status != null and status != ''"> AND 状态 = #{status}</if>
+            <if test="remark != null and remark != ''"> AND 备注 = #{remark}</if>
+            <if test="materialName != null and materialName != ''"> AND 物资名称 LIKE CONCAT('%', #{materialName}, '%')</if>
+            <if test="unit != null and unit != ''"> AND 计量单位 = #{unit}</if>
+            <if test="warehouse != null and warehouse != ''"> AND 库房 = #{warehouse}</if>
+            <if test="bookWeight != null"> AND 账存重量 = #{bookWeight}</if>
+            <if test="varietyCode != null and varietyCode != ''"> AND 品种编码 = #{varietyCode}</if>
+            <if test="varietyName != null and varietyName != ''"> AND 品种名称 LIKE CONCAT('%', #{varietyName}, '%')</if>
+            <if test="materialCategory != null and materialCategory != ''"> AND 物资类别 = #{materialCategory}</if>
+            <if test="reservedWeight != null"> AND 预拨重量 = #{reservedWeight}</if>
+            <if test="availableWeight != null"> AND 可拨重量 = #{availableWeight}</if>
+            <if test="squadron != null and squadron != ''"> AND 中队 = #{squadron}</if>
+            <if test="team != null and team != ''"> AND 班组 = #{team}</if>
+            <if test="company != null and company != ''"> AND 所属公司 = #{company}</if>
+        </where>
+    </select>
+
+</mapper>

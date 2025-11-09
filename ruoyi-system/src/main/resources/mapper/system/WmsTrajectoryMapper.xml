@@ -11,20 +11,24 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="trajectoryEnd"    column="trajectory_end"    />
         <result property="trajectoryPoints"    column="trajectory_points"    />
         <result property="cardRecordId"    column="card_record_id"    />
+        <result property="fuzzy"    column="fuzzy"    />
+        <result property="workId"    column="work_id"    />
     </resultMap>
 
     <sql id="selectWmsTrajectoryVo">
-        select trajectory_id, trajectory_type, trajectory_begin, trajectory_end, trajectory_points, card_record_id from wms_trajectory
+        select trajectory_id, trajectory_type, trajectory_begin, trajectory_end, trajectory_points, card_record_id, fuzzy, work_id from wms_trajectory
     </sql>
 
     <select id="selectWmsTrajectoryList" parameterType="WmsTrajectory" resultMap="WmsTrajectoryResult">
         <include refid="selectWmsTrajectoryVo"/>
-        <where>  
+        <where>
             <if test="trajectoryType != null  and trajectoryType != ''"> and trajectory_type = #{trajectoryType}</if>
             <if test="trajectoryBegin != null "> and trajectory_begin = #{trajectoryBegin}</if>
             <if test="trajectoryEnd != null "> and trajectory_end = #{trajectoryEnd}</if>
             <if test="trajectoryPoints != null  and trajectoryPoints != ''"> and trajectory_points = #{trajectoryPoints}</if>
             <if test="cardRecordId != null "> and card_record_id = #{cardRecordId}</if>
+             <if test="fuzzy != null  and fuzzy != ''">and fuzzy like concat('%', #{fuzzy}, '%')</if>
+             <if test="workId != null "> and work_id = #{workId}</if>
         </where>
     </select>
     
@@ -41,6 +45,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="trajectoryEnd != null">trajectory_end,</if>
             <if test="trajectoryPoints != null">trajectory_points,</if>
             <if test="cardRecordId != null">card_record_id,</if>
+            <if test="fuzzy != null">fuzzy,</if>
+            <if test="workId != null">work_id,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="trajectoryType != null and trajectoryType != ''">#{trajectoryType},</if>
@@ -48,6 +54,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="trajectoryEnd != null">#{trajectoryEnd},</if>
             <if test="trajectoryPoints != null">#{trajectoryPoints},</if>
             <if test="cardRecordId != null">#{cardRecordId},</if>
+            <if test="fuzzy != null">#{fuzzy},</if>
+            <if test="workId != null">#{workId},</if>
          </trim>
     </insert>
 
@@ -59,6 +67,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="trajectoryEnd != null">trajectory_end = #{trajectoryEnd},</if>
             <if test="trajectoryPoints != null">trajectory_points = #{trajectoryPoints},</if>
             <if test="cardRecordId != null">card_record_id = #{cardRecordId},</if>
+            <if test="fuzzy != null">fuzzy = #{fuzzy},</if>
+            <if test="workId != null">work_id = #{workId},</if>
         </trim>
         where trajectory_id = #{trajectoryId}
     </update>

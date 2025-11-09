@@ -2,6 +2,7 @@ package com.ruoyi.system.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,14 +24,13 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 轨迹Controller
- * 
+ *
  * @author ruoyi
  * @date 2025-09-26
  */
 @RestController
 @RequestMapping("/system/trajectory")
-public class WmsTrajectoryController extends BaseController
-{
+public class WmsTrajectoryController extends BaseController {
     @Autowired
     private IWmsTrajectoryService wmsTrajectoryService;
 
@@ -39,9 +39,34 @@ public class WmsTrajectoryController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('system:trajectory:list')")
     @GetMapping("/list")
-    public TableDataInfo list(WmsTrajectory wmsTrajectory)
-    {
+    public TableDataInfo list(WmsTrajectory wmsTrajectory) {
         startPage();
+        List<WmsTrajectory> list = wmsTrajectoryService.selectWmsTrajectoryList(wmsTrajectory);
+        return getDataTable(list);
+    }
+
+    /**
+     * 查询轨迹列表
+     */
+    @GetMapping("/personFuzzyList")
+    public TableDataInfo personFuzzyList(String key) {
+        startPage();
+        WmsTrajectory wmsTrajectory = new WmsTrajectory();
+        wmsTrajectory.setTrajectoryType("人员");
+        wmsTrajectory.setFuzzy(key);
+        List<WmsTrajectory> list = wmsTrajectoryService.selectWmsTrajectoryList(wmsTrajectory);
+        return getDataTable(list);
+    }
+
+    /**
+     * 查询轨迹列表
+     */
+    @GetMapping("/vehicleFuzzyList")
+    public TableDataInfo vehicleFuzzyList(String  key) {
+        startPage();
+        WmsTrajectory wmsTrajectory = new WmsTrajectory();
+        wmsTrajectory.setTrajectoryType("车辆");
+        wmsTrajectory.setFuzzy(key);
         List<WmsTrajectory> list = wmsTrajectoryService.selectWmsTrajectoryList(wmsTrajectory);
         return getDataTable(list);
     }
@@ -52,8 +77,7 @@ public class WmsTrajectoryController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:trajectory:export')")
     @Log(title = "轨迹", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, WmsTrajectory wmsTrajectory)
-    {
+    public void export(HttpServletResponse response, WmsTrajectory wmsTrajectory) {
         List<WmsTrajectory> list = wmsTrajectoryService.selectWmsTrajectoryList(wmsTrajectory);
         ExcelUtil<WmsTrajectory> util = new ExcelUtil<WmsTrajectory>(WmsTrajectory.class);
         util.exportExcel(response, list, "轨迹数据");
@@ -64,8 +88,7 @@ public class WmsTrajectoryController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('system:trajectory:query')")
     @GetMapping(value = "/{trajectoryId}")
-    public AjaxResult getInfo(@PathVariable("trajectoryId") Long trajectoryId)
-    {
+    public AjaxResult getInfo(@PathVariable("trajectoryId") Long trajectoryId) {
         return success(wmsTrajectoryService.selectWmsTrajectoryByTrajectoryId(trajectoryId));
     }
 
@@ -75,8 +98,7 @@ public class WmsTrajectoryController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:trajectory:add')")
     @Log(title = "轨迹", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody WmsTrajectory wmsTrajectory)
-    {
+    public AjaxResult add(@RequestBody WmsTrajectory wmsTrajectory) {
         return toAjax(wmsTrajectoryService.insertWmsTrajectory(wmsTrajectory));
     }
 
@@ -86,8 +108,7 @@ public class WmsTrajectoryController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:trajectory:edit')")
     @Log(title = "轨迹", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody WmsTrajectory wmsTrajectory)
-    {
+    public AjaxResult edit(@RequestBody WmsTrajectory wmsTrajectory) {
         return toAjax(wmsTrajectoryService.updateWmsTrajectory(wmsTrajectory));
     }
 
@@ -96,9 +117,8 @@ public class WmsTrajectoryController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('system:trajectory:remove')")
     @Log(title = "轨迹", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{trajectoryIds}")
-    public AjaxResult remove(@PathVariable Long[] trajectoryIds)
-    {
+    @DeleteMapping("/{trajectoryIds}")
+    public AjaxResult remove(@PathVariable Long[] trajectoryIds) {
         return toAjax(wmsTrajectoryService.deleteWmsTrajectoryByTrajectoryIds(trajectoryIds));
     }
 }

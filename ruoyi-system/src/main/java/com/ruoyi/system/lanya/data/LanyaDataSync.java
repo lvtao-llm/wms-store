@@ -1,5 +1,6 @@
 package com.ruoyi.system.lanya.data;
 
+import com.alibaba.fastjson2.JSON;
 import com.ruoyi.system.domain.*;
 import com.ruoyi.system.service.*;
 import org.slf4j.Logger;
@@ -43,6 +44,9 @@ public class LanyaDataSync {
     @Autowired
     private IWmsDeviceCardWorkLogService wmsDeviceCardWorkLogService;
 
+    @Autowired
+    private IWmsTrajectoryService wmsTrajectoryService;
+
     @Value("${lanya.position.sync.enabled:false}")
     private boolean enablePosition;
     @Value("${lanya.position.mock.enabled:false}")
@@ -56,6 +60,7 @@ public class LanyaDataSync {
     SysConfig cardLogConfig = new SysConfig(cardLogKey);
 
     Map<Long, WmsDeviceCardWorkLog> workActivities = new HashMap<>();
+    Map<Long, WmsDeviceCardWorkLog> workActivitiesByCardId = new HashMap<>();
 
     SimpleDateFormat sdfDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
     SimpleDateFormat sdfTableSuffix = new SimpleDateFormat("yyyyMMdd");
@@ -207,10 +212,12 @@ public class LanyaDataSync {
                     wordLog.setSenderLanyaLogId(lanyaDeviceCardSenderLog.getId());
                     wordLog.setCreateTime(new Date());
 
+                    // 保存workLog记录
                     if (wmsDeviceCardWorkLogService.selectWmsDeviceCardWorkLogCountBySenderLanyaLogId(lanyaDeviceCardSenderLog.getId()) == 0) {
                         if (wmsDeviceCardWorkLogService.insertWmsDeviceCardWorkLog(wordLog) > 0) {
                             initPosition(wordLog);
                             workActivities.put(lanyaDeviceCardSenderLog.getId(), wordLog);
+                            workActivitiesByCardId.put(lanyaDeviceCardSenderLog.getCardId(), wordLog);
                         }
                     }
                 }
@@ -238,9 +245,36 @@ public class LanyaDataSync {
                         workLog.setReturnCommandTime(lanyaDeviceCardSenderLog.getCommandTime());
                         workLog.setReturnLanyaLogId(lanyaDeviceCardSenderLog.getId());
                         workLog.setUpdateTime(new Date());
+
+                        // 更新workLog记录
                         if (wmsDeviceCardWorkLogService.updateWmsDeviceCardWorkLog(workLog) > 0) {
                             completePosition(workLog);
+
+                            // 轨迹记录
+                            WmsTrajectory wmsTrajectory = new WmsTrajectory();
+                            wmsTrajectory.setWorkId(workLog.getId());
+                            wmsTrajectory.setTrajectoryBegin(workLog.getCreateTime());
+                            wmsTrajectory.setTrajectoryEnd(workLog.getReturnCommandTime());
+                            wmsTrajectory.setTrajectoryType("人员");
+                            wmsTrajectory.setFuzzy(workLog.getRealName() + "-" + workLog.getSenderCommandTime() + "-内部员工");
+
+                            // 轨迹点
+                            List<Map<String, Object>> trajectoryPoints = new ArrayList<>();
+                            List<LanyaPositionHistory> trajectory = workActivitiesByCardId.get(workLog.getCardId()).getTrajectory();
+                            for (int i = 0; i < trajectory.size(); i += 2) {
+                                if (i + 1 < trajectory.size()) {
+                                    Map<String, Object> point = getStringObjectMap(trajectory, i);
+                                    trajectoryPoints.add(point);
+                                }
+                            }
+                            wmsTrajectory.setTrajectoryPoints(JSON.toJSONString(trajectoryPoints));
+
+                            // 保存轨迹
+                            wmsTrajectoryService.insertWmsTrajectory(wmsTrajectory);
+
+                            // 移除workLog
                             workActivities.remove(workLog.getId());
+                            workActivitiesByCardId.remove(workLog.getCardId());
                         }
                     }
                 }
@@ -252,6 +286,17 @@ public class LanyaDataSync {
 
             continueGet = !lanyaDeviceCardSenderLogs.isEmpty();
         }
+    }
+
+    private static Map<String, Object> getStringObjectMap(List<LanyaPositionHistory> trajectory, int i) {
+        Map<String, Object> point = new HashMap<>();
+        point.put("id", trajectory.get(i).getId());
+        point.put("longitude", trajectory.get(i).getLongitude());
+        point.put("latitude", trajectory.get(i).getLatitude());
+        point.put("distance", trajectory.get(i).getDistance());
+        point.put("time", trajectory.get(i).getAcceptTime().getTime());
+        point.put("beaconId", trajectory.get(i).getBeaconId());
+        return point;
     }
 
     private void initPosition(WmsDeviceCardWorkLog workLog) {
@@ -323,6 +368,11 @@ public class LanyaDataSync {
 
                         wmsAlarmLogService.insertWmsAlarmLog(log);
                     }
+                }
+
+                WmsDeviceCardWorkLog workLog = workActivitiesByCardId.get(position.getCardId());
+                if (workLog != null) {
+                    workLog.getTrajectory().add(position);  //经度
                 }
 
                 // 更新本地position_history的offset

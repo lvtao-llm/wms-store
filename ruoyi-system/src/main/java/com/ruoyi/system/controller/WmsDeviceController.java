@@ -37,7 +37,6 @@ public class WmsDeviceController extends BaseController
     /**
      * 查询设备列表
      */
-    @PreAuthorize("@ss.hasPermi('system:wms_device:list')")
     @GetMapping("/list")
     public TableDataInfo list(WmsDevice wmsDevice)
     {
@@ -49,7 +48,6 @@ public class WmsDeviceController extends BaseController
     /**
      * 导出设备列表
      */
-    @PreAuthorize("@ss.hasPermi('system:wms_device:export')")
     @Log(title = "设备", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, WmsDevice wmsDevice)
@@ -62,7 +60,6 @@ public class WmsDeviceController extends BaseController
     /**
      * 获取设备详细信息
      */
-    @PreAuthorize("@ss.hasPermi('system:wms_device:query')")
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id)
     {
@@ -72,7 +69,6 @@ public class WmsDeviceController extends BaseController
     /**
      * 新增设备
      */
-    @PreAuthorize("@ss.hasPermi('system:wms_device:add')")
     @Log(title = "设备", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody WmsDevice wmsDevice)
@@ -83,7 +79,6 @@ public class WmsDeviceController extends BaseController
     /**
      * 修改设备
      */
-    @PreAuthorize("@ss.hasPermi('system:wms_device:edit')")
     @Log(title = "设备", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody WmsDevice wmsDevice)
@@ -94,7 +89,6 @@ public class WmsDeviceController extends BaseController
     /**
      * 删除设备
      */
-    @PreAuthorize("@ss.hasPermi('system:wms_device:remove')")
     @Log(title = "设备", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable Long[] ids)

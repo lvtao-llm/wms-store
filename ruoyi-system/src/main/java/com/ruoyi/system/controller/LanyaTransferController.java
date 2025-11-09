@@ -322,6 +322,9 @@ public class LanyaTransferController extends BaseController {
         return thirdPartyAuth.callThirdParty("/system/risk/listPage", HttpMethod.POST, body);
     }
 
+    /**
+     * 获取风险信息
+     */
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
     @PostMapping("/system/risk/findRisk")
     public Object systemRiskFindRisk(@RequestBody JSONObject body) throws JsonProcessingException {

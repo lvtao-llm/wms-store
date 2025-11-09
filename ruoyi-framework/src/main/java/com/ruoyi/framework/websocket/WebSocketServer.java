@@ -1,7 +1,13 @@
 package com.ruoyi.framework.websocket;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingQueue;
 import javax.annotation.PostConstruct;
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
@@ -12,7 +18,14 @@ import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.utils.ThirdPartyAuth;
 import com.ruoyi.common.utils.spring.SpringUtils;
+import com.ruoyi.framework.web.domain.server.Sys;
+import com.ruoyi.system.domain.WmsAlarmRule;
+import com.ruoyi.system.domain.WmsArea;
+import com.ruoyi.system.domain.WmsDevice;
 import com.ruoyi.system.lanya.data.LanyaDataSync;
+import com.ruoyi.system.service.IWmsAlarmRuleService;
+import com.ruoyi.system.service.IWmsAreaService;
+import com.ruoyi.system.service.IWmsDeviceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,11 +65,16 @@ public class WebSocketServer {
     // 存储客户端会话和对应的目标WebSocket连接
     private static final Map<String, Session> clientSessions = new ConcurrentHashMap<>();
 
-    // 目标WebSocket会话
-    private WebSocketSession targetSession = null;
-
     // Spring WebSocket客户端
     private WebSocketClient webSocketClient;
+
+    @Autowired
+    private IWmsAlarmRuleService wmsAlarmRuleService;
+
+    @Autowired
+    private static IWmsDeviceService wmsDeviceService;
+
+    public BlockingQueue<String> messageQueue = new LinkedBlockingQueue<>(10000);
 
     @PostConstruct
     public void init() {
@@ -69,14 +87,58 @@ public class WebSocketServer {
             String targetUrl = "ws://" + baseUrl + "/websocket/ws/" + id;
 
             // 使用Spring WebSocket客户端连接到目标服务器
-            WebSocketServer.TargetWebSocketHandler targetHandler = new WebSocketServer.TargetWebSocketHandler();
-            targetSession = webSocketClient.doHandshake(targetHandler, targetUrl).get();
-
+            WebSocketServer.TargetWebSocketHandler targetHandler = new WebSocketServer.TargetWebSocketHandler(messageQueue);
+            webSocketClient.doHandshake(targetHandler, targetUrl).get();
+            startMessageProcessor();
         } catch (Exception e) {
             LOGGER.error("初始化失败", e);
         }
 
         LOGGER.info("\n WebSocketServer 初始化成功");
+
+
+    }
+
+    // 添加消息处理方法
+    private void startMessageProcessor() {
+        Thread messageProcessorThread = new Thread(() -> {
+            while (true) {
+                try {
+                    // 从队列中取出消息
+                    String message = messageQueue.take(); // 阻塞式获取
+                    if (message != null) {
+                        // 发送给所有连接的客户端
+                        broadcastMessage(message);
+                    }
+                } catch (InterruptedException e) {
+                    LOGGER.info("消息处理线程被中断");
+                    Thread.currentThread().interrupt();
+                    break;
+                } catch (Exception e) {
+                    LOGGER.error("处理消息时发生异常", e);
+                }
+            }
+        });
+        messageProcessorThread.setDaemon(true);
+        messageProcessorThread.setName("WebSocket-Message-Processor");
+        messageProcessorThread.start();
+    }
+
+    // 广播消息给所有客户端
+    private void broadcastMessage(String message) {
+        for (Session clientSession : clientSessions.values()) {
+            if (clientSession.isOpen()) {
+                try {
+                    clientSession.getAsyncRemote().sendText(message, result -> {
+                        if (!result.isOK()) {
+                            LOGGER.error("异步发送消息失败: {}", result.getException().getMessage());
+                        }
+                    });
+                } catch (Exception e) {
+                    LOGGER.error("发送消息给客户端时发生异常", e);
+                }
+            }
+        }
     }
 
     /**
@@ -86,6 +148,28 @@ public class WebSocketServer {
     public void onOpen(Session session, @PathParam("requestId") String requestId) throws Exception {
         try {
             // 将客户端会话存储到Map中
+            if (clientSessions.containsKey(requestId)) {
+                Session sess = clientSessions.remove(requestId);
+                if (sess.isOpen()) {
+                    sess.close();
+                }
+            }
+
+            IWmsDeviceService wmsDeviceService = SpringUtils.getBean(IWmsDeviceService.class);
+            WmsDevice wmsDevice = new WmsDevice();
+            wmsDevice.setDeviceType("摄像头");
+            List<WmsDevice> wmsDevicesCamera = wmsDeviceService.selectWmsDeviceList(wmsDevice);
+            wmsDevice.setDeviceType("传感器");
+            List<WmsDevice> wmsDevicesSensor = wmsDeviceService.selectWmsDeviceList(wmsDevice);
+            wmsDevicesSensor.addAll(wmsDevicesCamera);
+            Map<String, Object> personAlarm = new HashMap<String, Object>() {
+                {
+                    put("msgType", "摄像头与传感器");
+                    put("rules", wmsDevicesSensor);
+                }
+            };
+            String json = new JSONObject(personAlarm).toJSONString();
+            session.getAsyncRemote().sendText(json);
             clientSessions.put(requestId, session);
         } catch (Exception e) {
             LOGGER.error("连接异常:", e);
@@ -96,9 +180,14 @@ public class WebSocketServer {
      * 连接关闭时处理
      */
     @OnClose
-    public void onClose(Session session, @PathParam("requestId") String requestId) {
+    public void onClose(Session session, @PathParam("requestId") String requestId) throws IOException {
         // 清理资源
-        clientSessions.remove(requestId);
+        if (clientSessions.containsKey(requestId)) {
+            Session sess = clientSessions.remove(requestId);
+            if (sess.isOpen()) {
+                sess.close();
+            }
+        }
     }
 
     /**
@@ -107,7 +196,12 @@ public class WebSocketServer {
     @OnError
     public void onError(Session session, @PathParam("requestId") String requestId, Throwable exception) throws Exception {
         // 清理资源
-        clientSessions.remove(requestId);
+        if (clientSessions.containsKey(requestId)) {
+            Session sess = clientSessions.remove(requestId);
+            if (sess.isOpen()) {
+                sess.close();
+            }
+        }
     }
 
     /**
@@ -115,70 +209,153 @@ public class WebSocketServer {
      */
     @OnMessage
     public void onMessage(String message, Session session, @PathParam("requestId") String requestId) {
-//        try {
-//            // 转发消息到目标服务器
-//            if (targetSessions != null && targetSessions.isOpen()) {
-//                targetSessions.sendMessage(new TextMessage(message));
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        try {
+            // 转发消息到目标服务器
+            System.out.println("接收到[" + session.getId() + "]消息：" + message);
+            try {
+                JSONObject messageObject = JSONObject.parseObject(message);
+                Long timestamp = messageObject.getLong("timestamp");
+                if ("save".equals(messageObject.getString("method"))) {
+
+                    String type = messageObject.getString("type");
+                    switch (type) {
+                        case "摄像头": {
+                            IWmsDeviceService wmsDeviceService = SpringUtils.getBean(IWmsDeviceService.class);
+                            JSONObject jsonDevice = messageObject.getJSONObject("object");
+                            WmsDevice wmsDevice = jsonDevice.toJavaObject(WmsDevice.class);
+                            wmsDevice.setDeviceType("摄像头");
+                            if (wmsDeviceService.insertWmsDevice(wmsDevice) > 0) {
+                                session.getAsyncRemote().sendText("{code:200, msg:'保存成功', timestamp: " + timestamp + "}");
+                            } else {
+                                session.getAsyncRemote().sendText("{code:500, msg:'保存失败', timestamp: " + timestamp + "}");
+                            }
+                            break;
+                        }
+                        case "风险区域": {
+                            IWmsAreaService wmsAreaService = SpringUtils.getBean(IWmsAreaService.class);
+                            JSONObject jsonDevice = messageObject.getJSONObject("object");
+                            WmsArea wmsArea = jsonDevice.toJavaObject(WmsArea.class);
+                            if (wmsAreaService.insertWmsArea(wmsArea) > 0) {
+                                session.getAsyncRemote().sendText("{code:200, msg:'保存成功', timestamp: " + timestamp + "}");
+                            } else {
+                                session.getAsyncRemote().sendText("{code:500, msg:'保存失败', timestamp: " + timestamp + "}");
+                            }
+                            break;
+                        }
+                        case "传感器": {
+                            IWmsDeviceService wmsDeviceService = SpringUtils.getBean(IWmsDeviceService.class);
+                            JSONObject jsonDevice = messageObject.getJSONObject("object");
+                            WmsDevice wmsDevice = jsonDevice.toJavaObject(WmsDevice.class);
+                            wmsDevice.setDeviceType("传感器");
+                            if (wmsDeviceService.insertWmsDevice(wmsDevice) > 0) {
+                                session.getAsyncRemote().sendText("{code:200, msg:'保存成功', timestamp: " + timestamp + "}");
+                            } else {
+                                session.getAsyncRemote().sendText("{code:500, msg:'保存失败', timestamp: " + timestamp + "}");
+                            }
+                        }
+                    }
+                }
+                if ("delete".equals(messageObject.getString("method"))) {
+
+                    String type = messageObject.getString("type");
+                    switch (type) {
+                        case "风险区域": {
+                            IWmsAreaService wmsAreaService = SpringUtils.getBean(IWmsAreaService.class);
+                            JSONObject jsonDevice = messageObject.getJSONObject("object");
+                            WmsArea wmsArea = jsonDevice.toJavaObject(WmsArea.class);
+                            if (wmsAreaService.deleteWmsAreaByAreaId(wmsArea.getAreaId()) > 0) {
+                                session.getAsyncRemote().sendText("{code:200, msg:'保存成功', timestamp: " + timestamp + "}");
+                            } else {
+                                session.getAsyncRemote().sendText("{code:500, msg:'保存失败', timestamp: " + timestamp + "}");
+                            }
+                            break;
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                session.getAsyncRemote().sendText("{code:500, msg:'保存失败', exception:'" + e.getMessage() + "'}");
+                e.printStackTrace();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Scheduled(cron = "0/1 * * * * ?")
-    public void mockData() {
-        for (Session clientSession : clientSessions.values()) {
-            if (clientSession.isOpen()) {
-                // 使用异步发送替代阻塞发送
-                JSONObject materialLog = new JSONObject();
-                JSONArray materialLogData = new JSONArray();
-                materialLog.put("msgType", "materialLog");
-                materialLog.put("data", materialLogData);
-                materialLog.put("total", 10);
-                for(int i = 0; i < 10; i++) {
-                    JSONObject materialLogDataItem = new JSONObject();
-                    materialLogDataItem.put("sort", i);
-                    materialLogDataItem.put("materialName", "MATERIAL_" + i);
-                    materialLogDataItem.put("materialCode", "MATERIAL_CODE_" + i);
-                    materialLogDataItem.put("materialType", "MATERIAL_TYPE_" + i);
-                    materialLogDataItem.put("stockIn", i);
-                    materialLogDataItem.put("stockOut", 0);
-                    materialLogDataItem.put("stock", 100);
-                    materialLogDataItem.put("areaName", "钢铁区");
-                    materialLogData.add(materialLogDataItem);
-                }
-
-                clientSession.getAsyncRemote().sendText(materialLog.toString(), result -> {
-                    if (!result.isOK()) {
-                        LOGGER.error("异步发送消息失败: {}", result.getException().getMessage());
-                    }
-                });
-
-
-                // 使用异步发送替代阻塞发送
-                JSONObject areaLog = new JSONObject();
-                JSONArray areaLogData = new JSONArray();
-                areaLog.put("msgType", "areaLog");
-                areaLog.put("total", 10);
-                areaLog.put("data", areaLogData);
-                for(int i = 0; i < 10; i++) {
-                    JSONObject areaLogDataItem = new JSONObject();
-                    areaLogDataItem.put("sort", i);
-                    areaLogDataItem.put("areaCode", "area_CODE_" + i);
-                    areaLogDataItem.put("areaType", "area_TYPE_" + i);
-                    areaLogDataItem.put("personCount", i);
-                    areaLogDataItem.put("vehicleCount", 0);
-                    areaLogDataItem.put("areaName", "钢铁区");
-                    areaLogData.add(areaLogDataItem);
-                }
-
-                clientSession.getAsyncRemote().sendText(areaLog.toString(), result -> {
-                    if (!result.isOK()) {
-                        LOGGER.error("异步发送消息失败: {}", result.getException().getMessage());
-                    }
-                });
+    public void mockData2() {
+        Map<String, Object> vehicleAlarm = new HashMap<String, Object>() {
+            {
+                put("msgType", "vehicleAlarm");
+                put("rules", new ArrayList<WmsVehicleAlarmRule>() {{
+                    add(new WmsVehicleAlarmRule("未授权进入", 22.6, 10));
+                    add(new WmsVehicleAlarmRule("未预约进入", 22.6, 10));
+                    add(new WmsVehicleAlarmRule("轨迹异常", 22.6, 10));
+                }});
             }
+        };
+        String json = new JSONObject(vehicleAlarm).toJSONString();
+        messageQueue.add(json);
+    }
+
+    @Scheduled(cron = "0/1 * * * * ?")
+    public void mockData3() {
+        List<WmsAlarmRule> wmsAlarmRules = wmsAlarmRuleService.selectWmsAlarmRuleList(new WmsAlarmRule());
+        for (WmsAlarmRule wmsAlarmRule : wmsAlarmRules) {
+            wmsAlarmRule.setPercentage(33.1);
+            wmsAlarmRule.setCount(10);
         }
+        Map<String, Object> personAlarm = new HashMap<String, Object>() {
+            {
+                put("msgType", "personAlarm");
+                put("rules", wmsAlarmRules);
+            }
+        };
+        String json = new JSONObject(personAlarm).toJSONString();
+        messageQueue.add(json);
+    }
+
+    @Scheduled(cron = "0/1 * * * * ?")
+    public void mockData1() {
+        // 使用异步发送替代阻塞发送
+        JSONObject materialLog = new JSONObject();
+        JSONArray materialLogData = new JSONArray();
+        materialLog.put("msgType", "materialLog");
+        materialLog.put("data", materialLogData);
+        materialLog.put("total", 10);
+        for (int i = 0; i < 10; i++) {
+            JSONObject materialLogDataItem = new JSONObject();
+            materialLogDataItem.put("sort", i);
+            materialLogDataItem.put("materialName", "MATERIAL_" + i);
+            materialLogDataItem.put("materialCode", "MATERIAL_CODE_" + i);
+            materialLogDataItem.put("materialType", "MATERIAL_TYPE_" + i);
+            materialLogDataItem.put("stockIn", i);
+            materialLogDataItem.put("stockOut", 0);
+            materialLogDataItem.put("stock", 100);
+            materialLogDataItem.put("areaName", "钢铁区");
+            materialLogData.add(materialLogDataItem);
+        }
+        messageQueue.add(materialLog.toString());
+    }
+
+    @Scheduled(cron = "0/1 * * * * ?")
+    public void mockData4() {
+        // 使用异步发送替代阻塞发送
+        JSONObject areaLog = new JSONObject();
+        JSONArray areaLogData = new JSONArray();
+        areaLog.put("msgType", "areaLog");
+        areaLog.put("total", 10);
+        areaLog.put("data", areaLogData);
+        for (int i = 0; i < 10; i++) {
+            JSONObject areaLogDataItem = new JSONObject();
+            areaLogDataItem.put("sort", i);
+            areaLogDataItem.put("areaCode", "area_CODE_" + i);
+            areaLogDataItem.put("areaType", "area_TYPE_" + i);
+            areaLogDataItem.put("personCount", i);
+            areaLogDataItem.put("vehicleCount", 0);
+            areaLogDataItem.put("areaName", "钢铁区");
+            areaLogData.add(areaLogDataItem);
+        }
+        messageQueue.add(areaLog.toString());
     }
 
     /**
@@ -186,7 +363,10 @@ public class WebSocketServer {
      */
     public static class TargetWebSocketHandler extends TextWebSocketHandler {
 
-        public TargetWebSocketHandler() {
+        private final BlockingQueue<String> messageQueue;
+
+        public TargetWebSocketHandler(BlockingQueue<String> messageQueue) {
+            this.messageQueue = messageQueue;
         }
 
         /**
@@ -200,16 +380,7 @@ public class WebSocketServer {
                     LOGGER.warn("接收到过大的消息，大小: {} 字节", message.getPayloadLength());
                     // 可以选择丢弃或分批处理
                 }
-                for (Session clientSession : clientSessions.values()) {
-                    if (clientSession.isOpen()) {
-                        // 使用异步发送替代阻塞发送
-                        clientSession.getAsyncRemote().sendText(message.getPayload(), result -> {
-                            if (!result.isOK()) {
-                                LOGGER.error("异步发送消息失败: {}", result.getException().getMessage());
-                            }
-                        });
-                    }
-                }
+                messageQueue.add(message.getPayload());
             } catch (Exception e) {
                 LOGGER.error("处理目标服务器消息异常", e);
             }

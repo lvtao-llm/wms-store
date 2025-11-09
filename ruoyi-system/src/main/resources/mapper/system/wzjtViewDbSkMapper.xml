@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.WzjtViewDbSkMapper">
+
+    <resultMap type="WmsMaterialOut" id="ViewDbSkResult">
+        <result property="allotDetailId" column="调拨明细编号" />
+        <result property="storehouseId" column="库房编号" />
+        <result property="documentType" column="单据类型" />
+        <result property="carNumber" column="车号" />
+        <result property="carModel" column="车型" />
+        <result property="grossWeight" column="毛重" />
+        <result property="tareWeight" column="皮重" />
+        <result property="netWeight" column="净重" />
+        <result property="meterId" column="仪表编号" />
+        <result property="department" column="部门" />
+        <result property="measureImageFile" column="计量图片文件" />
+        <result property="measureVideoFile" column="计量录像文件" />
+        <result property="guard" column="门卫" />
+        <result property="outboundTime" column="出库时间" />
+        <result property="measurer" column="计量员" />
+        <result property="measureTime" column="计量时间" />
+        <result property="tareImageFile" column="皮重图片文件" />
+        <result property="tareVideoFile" column="皮重录像文件" />
+        <result property="documentStatus" column="单据状态" />
+        <result property="custodian" column="保管员" />
+        <result property="operateTime" column="操作时间" />
+        <result property="adjustQuantity" column="调整数量" />
+        <result property="measureCurvature" column="计量曲率" />
+        <result property="outboundId" column="出库编号" />
+        <result property="measureType" column="计量类型" />
+        <result property="pieceCount" column="件数" />
+        <result property="originalDocumentId" column="原单编号" />
+        <result property="remark" column="备注" />
+        <result property="cardId" column="卡号" />
+        <result property="allotId" column="调拨编号" />
+        <result property="allotCode" column="调拨编码" />
+        <result property="allotType" column="调拨类型" />
+        <result property="customerCode" column="客户编码" />
+        <result property="customerName" column="客户名称" />
+        <result property="materialGroup" column="物料组" />
+        <result property="materialCode" column="物资编码" />
+        <result property="materialName" column="物资名称" />
+        <result property="measureUnit" column="计量单位" />
+        <result property="salesCompany" column="销售公司" />
+        <result property="storehouse" column="库房" />
+        <result property="materialYard" column="料场" />
+        <result property="allotQuantity" column="调拨数量" />
+        <result property="actualQuantity" column="实发数量" />
+        <result property="carCount" column="车数" />
+        <result property="plannedPrice" column="计划单价" />
+        <result property="salesPrice" column="销售单价" />
+        <result property="taxRate" column="税率" />
+        <result property="allotOperator" column="调拨员" />
+        <result property="allotTime" column="调拨时间" />
+        <result property="balance" column="余额" />
+        <result property="tailMaterial" column="尾料" />
+        <result property="surplusMaterial" column="余料" />
+        <result property="carCount1" column="车数1" />
+        <result property="isMultiCar" column="是否多车" />
+        <result property="reportRemark" column="报号备注" />
+        <result property="firstTareWeight" column="首次皮重" />
+        <result property="department1" column="部门1" />
+        <result property="yardCode" column="料场编码" />
+        <result property="reporter" column="报号人" />
+        <result property="adjustRemark" column="调整备注" />
+        <result property="storehouseImage" column="库房图片" />
+        <result property="imagePath" column="图片路径" />
+        <result property="multiAllotDetail" column="多调拨单明细" />
+        <result property="netWeight1" column="净重1" />
+        <result property="businessYearMonth" column="业务年月" />
+        <result property="squad" column="中队" />
+        <result property="materialGroup1" column="物料组1" />
+        <result property="custodianId" column="保管员id" />
+        <result property="shortCode" column="简码" />
+        <result property="selfMergeCategory" column="自合并分类" />
+        <result property="custodianName" column="保管员姓名" />
+        <result property="status" column="状态" />
+    </resultMap>
+
+    <sql id="selectViewDbSkVo">
+        SELECT
+            [调拨明细编号],
+            [库房编号],
+            [单据类型],
+            [车号],
+            [车型],
+            [毛重],
+            [皮重],
+            [净重],
+            [仪表编号],
+            [部门],
+            [计量图片文件],
+            [计量录像文件],
+            [门卫],
+            [出库时间],
+            [计量员],
+            [计量时间],
+            [皮重图片文件],
+            [皮重录像文件],
+            [单据状态],
+            [保管员],
+            [操作时间],
+            [调整数量],
+            [计量曲率],
+            [出库编号],
+            [计量类型],
+            [件数],
+            [原单编号],
+            [备注],
+            [卡号],
+            [调拨编号],
+            [调拨编码],
+            [调拨类型],
+            [客户编码],
+            [客户名称],
+            [物料组],
+            [物资编码],
+            [物资名称],
+            [计量单位],
+            [销售公司],
+            [库房],
+            [料场],
+            [调拨数量],
+            [实发数量],
+            [车数],
+            [计划单价],
+            [销售单价],
+            [税率],
+            [调拨员],
+            [调拨时间],
+            [余额],
+            [尾料],
+            [余料],
+            [车数1],
+            [是否多车],
+            [报号备注],
+            [首次皮重],
+            [部门1],
+            [料场编码],
+            [报号人],
+            [调整备注],
+            [库房图片],
+            [图片路径],
+            [多调拨单明细],
+            [净重1],
+            [业务年月],
+            [中队],
+            [物料组1],
+            [保管员id],
+            [简码],
+            [自合并分类],
+            [保管员姓名],
+            [状态]
+        FROM VIEW_DB_SK
+    </sql>
+
+    <select id="selectViewDbSkList" parameterType="WmsMaterialOut" resultMap="ViewDbSkResult">
+        <include refid="selectViewDbSkVo"/>
+        <where>
+            <if test="allotDetailId != null and allotDetailId != ''">AND [调拨明细编号] = #{allotDetailId}</if>
+            <if test="storehouseId != null and storehouseId != ''">AND [库房编号] = #{storehouseId}</if>
+            <if test="documentType != null and documentType != ''">AND [单据类型] = #{documentType}</if>
+            <if test="carNumber != null and carNumber != ''">AND [车号] = #{carNumber}</if>
+            <if test="carModel != null and carModel != ''">AND [车型] = #{carModel}</if>
+            <if test="grossWeight != null">AND [毛重] = #{grossWeight}</if>
+            <if test="tareWeight != null">AND [皮重] = #{tareWeight}</if>
+            <if test="netWeight != null">AND [净重] = #{netWeight}</if>
+            <if test="meterId != null and meterId != ''">AND [仪表编号] = #{meterId}</if>
+            <if test="department != null and department != ''">AND [部门] = #{department}</if>
+            <if test="measureImageFile != null and measureImageFile != ''">AND [计量图片文件] = #{measureImageFile}</if>
+            <if test="measureVideoFile != null and measureVideoFile != ''">AND [计量录像文件] = #{measureVideoFile}</if>
+            <if test="guard != null and guard != ''">AND [门卫] = #{guard}</if>
+            <if test="outboundTime != null">AND [出库时间] > #{outboundTime}</if>
+            <if test="measurer != null and measurer != ''">AND [计量员] = #{measurer}</if>
+            <if test="measureTime != null">AND [计量时间] = #{measureTime}</if>
+            <if test="tareImageFile != null and tareImageFile != ''">AND [皮重图片文件] = #{tareImageFile}</if>
+            <if test="tareVideoFile != null and tareVideoFile != ''">AND [皮重录像文件] = #{tareVideoFile}</if>
+            <if test="documentStatus != null and documentStatus != ''">AND [单据状态] = #{documentStatus}</if>
+            <if test="custodian != null and custodian != ''">AND [保管员] = #{custodian}</if>
+            <if test="operateTime != null">AND [操作时间] = #{operateTime}</if>
+            <if test="adjustQuantity != null">AND [调整数量] = #{adjustQuantity}</if>
+            <if test="measureCurvature != null and measureCurvature != ''">AND [计量曲率] = #{measureCurvature}</if>
+            <if test="outboundId != null and outboundId != ''">AND [出库编号] = #{outboundId}</if>
+            <if test="measureType != null and measureType != ''">AND [计量类型] = #{measureType}</if>
+            <if test="pieceCount != null and pieceCount != ''">AND [件数] = #{pieceCount}</if>
+            <if test="originalDocumentId != null and originalDocumentId != ''">AND [原单编号] = #{originalDocumentId}</if>
+            <if test="remark != null and remark != ''">AND [备注] = #{remark}</if>
+            <if test="cardId != null and cardId != ''">AND [卡号] = #{cardId}</if>
+            <if test="allotId != null and allotId != ''">AND [调拨编号] = #{allotId}</if>
+            <if test="allotCode != null and allotCode != ''">AND [调拨编码] = #{allotCode}</if>
+            <if test="allotType != null and allotType != ''">AND [调拨类型] = #{allotType}</if>
+            <if test="customerCode != null and customerCode != ''">AND [客户编码] = #{customerCode}</if>
+            <if test="customerName != null and customerName != ''">AND [客户名称] = #{customerName}</if>
+            <if test="materialGroup != null and materialGroup != ''">AND [物料组] = #{materialGroup}</if>
+            <if test="materialCode != null and materialCode != ''">AND [物资编码] = #{materialCode}</if>
+            <if test="materialName != null and materialName != ''">AND [物资名称] = #{materialName}</if>
+            <if test="measureUnit != null and measureUnit != ''">AND [计量单位] = #{measureUnit}</if>
+            <if test="salesCompany != null and salesCompany != ''">AND [销售公司] = #{salesCompany}</if>
+            <if test="storehouse != null and storehouse != ''">AND [库房] = #{storehouse}</if>
+            <if test="materialYard != null and materialYard != ''">AND [料场] = #{materialYard}</if>
+            <if test="allotQuantity != null">AND [调拨数量] = #{allotQuantity}</if>
+            <if test="actualQuantity != null">AND [实发数量] = #{actualQuantity}</if>
+            <if test="carCount != null">AND [车数] = #{carCount}</if>
+            <if test="plannedPrice != null">AND [计划单价] = #{plannedPrice}</if>
+            <if test="salesPrice != null">AND [销售单价] = #{salesPrice}</if>
+            <if test="taxRate != null">AND [税率] = #{taxRate}</if>
+            <if test="allotOperator != null and allotOperator != ''">AND [调拨员] = #{allotOperator}</if>
+            <if test="allotTime != null">AND [调拨时间] = #{allotTime}</if>
+            <if test="balance != null">AND [余额] = #{balance}</if>
+            <if test="tailMaterial != null">AND [尾料] = #{tailMaterial}</if>
+            <if test="surplusMaterial != null">AND [余料] = #{surplusMaterial}</if>
+            <if test="carCount1 != null">AND [车数1] = #{carCount1}</if>
+            <if test="isMultiCar != null and isMultiCar != ''">AND [是否多车] = #{isMultiCar}</if>
+            <if test="reportRemark != null and reportRemark != ''">AND [报号备注] = #{reportRemark}</if>
+            <if test="firstTareWeight != null">AND [首次皮重] = #{firstTareWeight}</if>
+            <if test="department1 != null and department1 != ''">AND [部门1] = #{department1}</if>
+            <if test="yardCode != null and yardCode != ''">AND [料场编码] = #{yardCode}</if>
+            <if test="reporter != null and reporter != ''">AND [报号人] = #{reporter}</if>
+            <if test="adjustRemark != null and adjustRemark != ''">AND [调整备注] = #{adjustRemark}</if>
+            <if test="storehouseImage != null and storehouseImage != ''">AND [库房图片] = #{storehouseImage}</if>
+            <if test="imagePath != null and imagePath != ''">AND [图片路径] = #{imagePath}</if>
+            <if test="multiAllotDetail != null and multiAllotDetail != ''">AND [多调拨单明细] = #{multiAllotDetail}</if>
+            <if test="netWeight1 != null">AND [净重1] = #{netWeight1}</if>
+            <if test="businessYearMonth != null and businessYearMonth != ''">AND [业务年月] = #{businessYearMonth}</if>
+            <if test="squad != null and squad != ''">AND [中队] = #{squad}</if>
+            <if test="materialGroup1 != null and materialGroup1 != ''">AND [物料组1] = #{materialGroup1}</if>
+            <if test="custodianId != null and custodianId != ''">AND [保管员id] = #{custodianId}</if>
+            <if test="shortCode != null and shortCode != ''">AND [简码] = #{shortCode}</if>
+            <if test="selfMergeCategory != null and selfMergeCategory != ''">AND [自合并分类] = #{selfMergeCategory}</if>
+            <if test="custodianName != null and custodianName != ''">AND [保管员姓名] = #{custodianName}</if>
+            <if test="status != null and status != ''">AND [状态] = #{status}</if>
+
+        </where>
+        ORDER BY [出库时间]
+        OFFSET 0 ROWS
+        FETCH NEXT 100 ROWS ONLY
+    </select>
+
+    <select id="selectViewDbSkById" parameterType="String" resultMap="ViewDbSkResult">
+        <include refid="selectViewDbSkVo"/>
+        WHERE [调拨明细编号] = #{allotDetailId}
+    </select>
+</mapper>

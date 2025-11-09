@@ -1,5 +1,6 @@
 package com.ruoyi.system.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -90,6 +91,8 @@ public class WmsAlarmRule extends BaseEntity {
      * 最大人数
      */
     private Integer maxPeopleCount;
+    private double percentage;
+    private int count;
 
     public void setAlarmRuleId(Long alarmRuleId) {
         this.alarmRuleId = alarmRuleId;
@@ -211,5 +214,21 @@ public class WmsAlarmRule extends BaseEntity {
 
     public void setMaxPeopleCount(Integer maxPeopleCount) {
         this.maxPeopleCount = maxPeopleCount;
+    }
+
+    public void setPercentage(double percentage) {
+        this.percentage = percentage;
+    }
+
+    public double getPercentage() {
+        return percentage;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public int getCount() {
+        return count;
     }
 }

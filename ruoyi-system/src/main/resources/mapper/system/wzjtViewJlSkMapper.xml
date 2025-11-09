@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.WzjtViewJlSkMapper">
+
+    <!-- 结果映射 -->
+    <resultMap type="WmsMaterialIn" id="ViewJlSkResult">
+        <result property="jlBh" column="接料编号"/>
+        <result property="dhBh" column="到货编号"/>
+        <result property="hpBh" column="货票编号"/>
+        <result property="dhLx" column="到货类型"/>
+        <result property="kf" column="库房"/>
+        <result property="djLx" column="单据类型"/>
+        <result property="ch" column="车号"/>
+        <result property="cs" column="车数"/>
+        <result property="asYdh" column="AS运单号"/>
+        <result property="fysl" column="发运数量"/>
+        <result property="dhsl" column="到货数量"/>
+        <result property="jly" column="计量员"/>
+        <result property="jlsj" column="计量时间"/>
+        <result property="csMc" column="厂商名称"/>
+        <result property="wzbm" column="物资编码"/>
+        <result property="jllx" column="计量类型"/>
+        <result property="jlr" column="交料人"/>
+        <result property="jlsjR" column="交料时间"/>
+        <result property="bgy" column="保管员"/>
+        <result property="zd" column="中队"/>
+        <result property="lz" column="料组"/>
+        <result property="jlsjT" column="接料时间"/>
+        <result property="ysr" column="验收人"/>
+        <result property="yssj" column="验收时间"/>
+        <result property="jhr" column="稽核人"/>
+        <result property="jhsj" column="稽核时间"/>
+        <result property="dksj" column="到库时间"/>
+        <result property="fysj" column="发运时间"/>
+        <result property="fyfs" column="发运方式"/>
+        <result property="fz" column="发站"/>
+        <result property="dz" column="到站"/>
+        <result property="yynY" column="业务年月"/>
+        <result property="zt" column="状态"/>
+        <result property="xcbh" column="卸车编号"/>
+        <result property="pzbm" column="品种编码"/>
+        <result property="wzmc" column="物资名称"/>
+        <result property="jldw" column="计量单位"/>
+        <result property="wzlb" column="物资类别"/>
+        <result property="ysrBm" column="验收人编码"/>
+        <result property="jlrBm" column="接料人编码"/>
+        <result property="pzmc" column="品种名称"/>
+        <result property="ywfgs" column="业务分公司"/>
+        <result property="zxzdMc" column="装卸队名称"/>
+        <result property="xcfs" column="卸车方式"/>
+        <result property="xczysjQ" column="卸车作业起始时间"/>
+        <result property="xczysjZ" column="卸车作业截止时间"/>
+        <result property="cksj" column="出库时间"/>
+        <result property="xcyxm" column="现场员姓名"/>
+    </resultMap>
+
+    <!-- 查询语句 -->
+    <sql id="selectViewJlSkVo">
+        SELECT
+            接料编号, 到货编号, 货票编号, 到货类型, 库房, 单据类型, 车号, 车数,
+            AS运单号, 发运数量, 到货数量, 计量员, 计量时间, 厂商名称, 物资编码,
+            计量类型, 交料人, 交料时间, 保管员, 中队, 料组, 接料时间, 验收人,
+            验收时间, 稽核人, 稽核时间, 到库时间, 发运时间, 发运方式, 发站,
+            到站, 业务年月, 状态, 卸车编号, 品种编码, 物资名称, 计量单位,
+            物资类别, 验收人编码, 接料人编码, 品种名称, 业务分公司, 装卸队名称,
+            卸车方式, 卸车作业起始时间, 卸车作业截止时间, 出库时间, 现场员姓名
+        FROM VIEW_JL_SK
+    </sql>
+
+    <!-- 动态查询列表 -->
+    <select id="selectViewJlSkList" parameterType="WmsMaterialIn" resultMap="ViewJlSkResult">
+        <include refid="selectViewJlSkVo"/>
+        <where>
+            <if test="jlBh != null and jlBh != ''">AND 接料编号 LIKE CONCAT('%', #{jlBh}, '%')</if>
+            <if test="dhBh != null and dhBh != ''">AND 到货编号 LIKE CONCAT('%', #{dhBh}, '%')</if>
+            <if test="hpBh != null and hpBh != ''">AND 货票编号 LIKE CONCAT('%', #{hpBh}, '%')</if>
+            <if test="dhLx != null and dhLx != ''">AND 到货类型 = #{dhLx}</if>
+            <if test="kf != null and kf != ''">AND 库房 = #{kf}</if>
+            <if test="djLx != null and djLx != ''">AND 单据类型 = #{djLx}</if>
+            <if test="ch != null and ch != ''">AND 车号 LIKE CONCAT('%', #{ch}, '%')</if>
+            <if test="asYdh != null and asYdh != ''">AND AS运单号 LIKE CONCAT('%', #{asYdh}, '%')</if>
+            <if test="jly != null and jly != ''">AND 计量员 LIKE CONCAT('%', #{jly}, '%')</if>
+            <if test="csMc != null and csMc != ''">AND 厂商名称 LIKE CONCAT('%', #{csMc}, '%')</if>
+            <if test="wzbm != null and wzbm != ''">AND 物资编码 = #{wzbm}</if>
+            <if test="jllx != null and jllx != ''">AND 计量类型 = #{jllx}</if>
+            <if test="jlr != null and jlr != ''">AND 交料人 LIKE CONCAT('%', #{jlr}, '%')</if>
+            <if test="bgy != null and bgy != ''">AND 保管员 LIKE CONCAT('%', #{bgy}, '%')</if>
+            <if test="zd != null and zd != ''">AND 中队 = #{zd}</if>
+            <if test="lz != null and lz != ''">AND 料组 = #{lz}</if>
+            <if test="ysr != null and ysr != ''">AND 验收人 LIKE CONCAT('%', #{ysr}, '%')</if>
+            <if test="fyfs != null and fyfs != ''">AND 发运方式 = #{fyfs}</if>
+            <if test="fz != null and fz != ''">AND 发站 = #{fz}</if>
+            <if test="dz != null and dz != ''">AND 到站 = #{dz}</if>
+            <if test="zt != null and zt != ''">AND 状态 = #{zt}</if>
+            <if test="pzbm != null and pzbm != ''">AND 品种编码 = #{pzbm}</if>
+            <if test="wzmc != null and wzmc != ''">AND 物资名称 LIKE CONCAT('%', #{wzmc}, '%')</if>
+            <if test="jldw != null and jldw != ''">AND 计量单位 = #{jldw}</if>
+            <if test="wzlb != null and wzlb != ''">AND 物资类别 = #{wzlb}</if>
+            <if test="pzmc != null and pzmc != ''">AND 品种名称 LIKE CONCAT('%', #{pzmc}, '%')</if>
+            <if test="ywfgs != null and ywfgs != ''">AND 业务分公司 = #{ywfgs}</if>
+            <if test="zxzdMc != null and zxzdMc != ''">AND 装卸队名称 LIKE CONCAT('%', #{zxzdMc}, '%')</if>
+            <if test="xcfs != null and xcfs != ''">AND 卸车方式 = #{xcfs}</if>
+            <if test="jlsjT != null">AND 接料时间 > #{jlsjT}</if>
+        </where>
+        ORDER BY [接料时间]
+        OFFSET 0 ROWS
+        FETCH NEXT 100 ROWS ONLY
+    </select>
+
+</mapper>

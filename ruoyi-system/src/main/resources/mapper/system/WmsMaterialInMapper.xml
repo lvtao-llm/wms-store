@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.WmsMaterialInMapper">
+    
+    <resultMap type="WmsMaterialIn" id="WmsMaterialInResult">
+        <result property="jlBh"    column="jl_bh"    />
+        <result property="dhBh"    column="dh_bh"    />
+        <result property="hpBh"    column="hp_bh"    />
+        <result property="dhLx"    column="dh_lx"    />
+        <result property="kf"    column="kf"    />
+        <result property="djLx"    column="dj_lx"    />
+        <result property="ch"    column="ch"    />
+        <result property="cs"    column="cs"    />
+        <result property="asYdh"    column="as_ydh"    />
+        <result property="fysl"    column="fysl"    />
+        <result property="dhsl"    column="dhsl"    />
+        <result property="jly"    column="jly"    />
+        <result property="jlsj"    column="jlsj"    />
+        <result property="csMc"    column="cs_mc"    />
+        <result property="wzbm"    column="wzbm"    />
+        <result property="jllx"    column="jllx"    />
+        <result property="jlr"    column="jlr"    />
+        <result property="jlsjR"    column="jlsj_r"    />
+        <result property="bgy"    column="bgy"    />
+        <result property="zd"    column="zd"    />
+        <result property="lz"    column="lz"    />
+        <result property="jlsjT"    column="jlsj_t"    />
+        <result property="ysr"    column="ysr"    />
+        <result property="yssj"    column="yssj"    />
+        <result property="jhr"    column="jhr"    />
+        <result property="jhsj"    column="jhsj"    />
+        <result property="dksj"    column="dksj"    />
+        <result property="fysj"    column="fysj"    />
+        <result property="fyfs"    column="fyfs"    />
+        <result property="fz"    column="fz"    />
+        <result property="dz"    column="dz"    />
+        <result property="yynY"    column="yyn_y"    />
+        <result property="zt"    column="zt"    />
+        <result property="xcbh"    column="xcbh"    />
+        <result property="pzbm"    column="pzbm"    />
+        <result property="wzmc"    column="wzmc"    />
+        <result property="jldw"    column="jldw"    />
+        <result property="wzlb"    column="wzlb"    />
+        <result property="ysrBm"    column="ysr_bm"    />
+        <result property="jlrBm"    column="jlr_bm"    />
+        <result property="pzmc"    column="pzmc"    />
+        <result property="ywfgs"    column="ywfgs"    />
+        <result property="zxzdMc"    column="zxzd_mc"    />
+        <result property="xcfs"    column="xcfs"    />
+        <result property="xczysjQ"    column="xczysj_q"    />
+        <result property="xczysjZ"    column="xczysj_z"    />
+        <result property="cksj"    column="cksj"    />
+        <result property="xcyxm"    column="xcyxm"    />
+    </resultMap>
+
+    <sql id="selectWmsMaterialInVo">
+        select jl_bh, dh_bh, hp_bh, dh_lx, kf, dj_lx, ch, cs, as_ydh, fysl, dhsl, jly, jlsj, cs_mc, wzbm, jllx, jlr, jlsj_r, bgy, zd, lz, jlsj_t, ysr, yssj, jhr, jhsj, dksj, fysj, fyfs, fz, dz, yyn_y, zt, xcbh, pzbm, wzmc, jldw, wzlb, ysr_bm, jlr_bm, pzmc, ywfgs, zxzd_mc, xcfs, xczysj_q, xczysj_z, cksj, xcyxm from wms_material_in
+    </sql>
+
+    <select id="selectWmsMaterialInList" parameterType="WmsMaterialIn" resultMap="WmsMaterialInResult">
+        <include refid="selectWmsMaterialInVo"/>
+        <where>  
+            <if test="jlBh != null  and jlBh != ''"> and jl_bh = #{jlBh}</if>
+            <if test="dhBh != null  and dhBh != ''"> and dh_bh = #{dhBh}</if>
+            <if test="hpBh != null  and hpBh != ''"> and hp_bh = #{hpBh}</if>
+            <if test="dhLx != null  and dhLx != ''"> and dh_lx = #{dhLx}</if>
+            <if test="kf != null  and kf != ''"> and kf = #{kf}</if>
+            <if test="djLx != null  and djLx != ''"> and dj_lx = #{djLx}</if>
+            <if test="ch != null  and ch != ''"> and ch = #{ch}</if>
+            <if test="cs != null "> and cs = #{cs}</if>
+            <if test="asYdh != null  and asYdh != ''"> and as_ydh = #{asYdh}</if>
+            <if test="fysl != null "> and fysl = #{fysl}</if>
+            <if test="dhsl != null "> and dhsl = #{dhsl}</if>
+            <if test="jly != null  and jly != ''"> and jly = #{jly}</if>
+            <if test="jlsj != null "> and jlsj = #{jlsj}</if>
+            <if test="csMc != null  and csMc != ''"> and cs_mc = #{csMc}</if>
+            <if test="wzbm != null  and wzbm != ''"> and wzbm = #{wzbm}</if>
+            <if test="jllx != null  and jllx != ''"> and jllx = #{jllx}</if>
+            <if test="jlr != null  and jlr != ''"> and jlr = #{jlr}</if>
+            <if test="jlsjR != null "> and jlsj_r = #{jlsjR}</if>
+            <if test="bgy != null  and bgy != ''"> and bgy = #{bgy}</if>
+            <if test="zd != null  and zd != ''"> and zd = #{zd}</if>
+            <if test="lz != null  and lz != ''"> and lz = #{lz}</if>
+            <if test="jlsjT != null "> and jlsj_t = #{jlsjT}</if>
+            <if test="ysr != null  and ysr != ''"> and ysr = #{ysr}</if>
+            <if test="yssj != null "> and yssj = #{yssj}</if>
+            <if test="jhr != null  and jhr != ''"> and jhr = #{jhr}</if>
+            <if test="jhsj != null "> and jhsj = #{jhsj}</if>
+            <if test="dksj != null "> and dksj = #{dksj}</if>
+            <if test="fysj != null "> and fysj = #{fysj}</if>
+            <if test="fyfs != null  and fyfs != ''"> and fyfs = #{fyfs}</if>
+            <if test="fz != null  and fz != ''"> and fz = #{fz}</if>
+            <if test="dz != null  and dz != ''"> and dz = #{dz}</if>
+            <if test="yynY != null  and yynY != ''"> and yyn_y = #{yynY}</if>
+            <if test="zt != null  and zt != ''"> and zt = #{zt}</if>
+            <if test="xcbh != null  and xcbh != ''"> and xcbh = #{xcbh}</if>
+            <if test="pzbm != null  and pzbm != ''"> and pzbm = #{pzbm}</if>
+            <if test="wzmc != null  and wzmc != ''"> and wzmc = #{wzmc}</if>
+            <if test="jldw != null  and jldw != ''"> and jldw = #{jldw}</if>
+            <if test="wzlb != null  and wzlb != ''"> and wzlb = #{wzlb}</if>
+            <if test="ysrBm != null  and ysrBm != ''"> and ysr_bm = #{ysrBm}</if>
+            <if test="jlrBm != null  and jlrBm != ''"> and jlr_bm = #{jlrBm}</if>
+            <if test="pzmc != null  and pzmc != ''"> and pzmc = #{pzmc}</if>
+            <if test="ywfgs != null  and ywfgs != ''"> and ywfgs = #{ywfgs}</if>
+            <if test="zxzdMc != null  and zxzdMc != ''"> and zxzd_mc = #{zxzdMc}</if>
+            <if test="xcfs != null  and xcfs != ''"> and xcfs = #{xcfs}</if>
+            <if test="xczysjQ != null "> and xczysj_q = #{xczysjQ}</if>
+            <if test="xczysjZ != null "> and xczysj_z = #{xczysjZ}</if>
+            <if test="cksj != null "> and cksj = #{cksj}</if>
+            <if test="xcyxm != null  and xcyxm != ''"> and xcyxm = #{xcyxm}</if>
+        </where>
+    </select>
+    
+    <select id="selectWmsMaterialInByJlBh" parameterType="String" resultMap="WmsMaterialInResult">
+        <include refid="selectWmsMaterialInVo"/>
+        where jl_bh = #{jlBh}
+    </select>
+
+    <insert id="insertWmsMaterialIn" parameterType="WmsMaterialIn">
+        insert into wms_material_in
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="jlBh != null">jl_bh,</if>
+            <if test="dhBh != null">dh_bh,</if>
+            <if test="hpBh != null">hp_bh,</if>
+            <if test="dhLx != null">dh_lx,</if>
+            <if test="kf != null">kf,</if>
+            <if test="djLx != null">dj_lx,</if>
+            <if test="ch != null">ch,</if>
+            <if test="cs != null">cs,</if>
+            <if test="asYdh != null">as_ydh,</if>
+            <if test="fysl != null">fysl,</if>
+            <if test="dhsl != null">dhsl,</if>
+            <if test="jly != null">jly,</if>
+            <if test="jlsj != null">jlsj,</if>
+            <if test="csMc != null">cs_mc,</if>
+            <if test="wzbm != null">wzbm,</if>
+            <if test="jllx != null">jllx,</if>
+            <if test="jlr != null">jlr,</if>
+            <if test="jlsjR != null">jlsj_r,</if>
+            <if test="bgy != null">bgy,</if>
+            <if test="zd != null">zd,</if>
+            <if test="lz != null">lz,</if>
+            <if test="jlsjT != null">jlsj_t,</if>
+            <if test="ysr != null">ysr,</if>
+            <if test="yssj != null">yssj,</if>
+            <if test="jhr != null">jhr,</if>
+            <if test="jhsj != null">jhsj,</if>
+            <if test="dksj != null">dksj,</if>
+            <if test="fysj != null">fysj,</if>
+            <if test="fyfs != null">fyfs,</if>
+            <if test="fz != null">fz,</if>
+            <if test="dz != null">dz,</if>
+            <if test="yynY != null">yyn_y,</if>
+            <if test="zt != null">zt,</if>
+            <if test="xcbh != null">xcbh,</if>
+            <if test="pzbm != null">pzbm,</if>
+            <if test="wzmc != null">wzmc,</if>
+            <if test="jldw != null">jldw,</if>
+            <if test="wzlb != null">wzlb,</if>
+            <if test="ysrBm != null">ysr_bm,</if>
+            <if test="jlrBm != null">jlr_bm,</if>
+            <if test="pzmc != null">pzmc,</if>
+            <if test="ywfgs != null">ywfgs,</if>
+            <if test="zxzdMc != null">zxzd_mc,</if>
+            <if test="xcfs != null">xcfs,</if>
+            <if test="xczysjQ != null">xczysj_q,</if>
+            <if test="xczysjZ != null">xczysj_z,</if>
+            <if test="cksj != null">cksj,</if>
+            <if test="xcyxm != null">xcyxm,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="jlBh != null">#{jlBh},</if>
+            <if test="dhBh != null">#{dhBh},</if>
+            <if test="hpBh != null">#{hpBh},</if>
+            <if test="dhLx != null">#{dhLx},</if>
+            <if test="kf != null">#{kf},</if>
+            <if test="djLx != null">#{djLx},</if>
+            <if test="ch != null">#{ch},</if>
+            <if test="cs != null">#{cs},</if>
+            <if test="asYdh != null">#{asYdh},</if>
+            <if test="fysl != null">#{fysl},</if>
+            <if test="dhsl != null">#{dhsl},</if>
+            <if test="jly != null">#{jly},</if>
+            <if test="jlsj != null">#{jlsj},</if>
+            <if test="csMc != null">#{csMc},</if>
+            <if test="wzbm != null">#{wzbm},</if>
+            <if test="jllx != null">#{jllx},</if>
+            <if test="jlr != null">#{jlr},</if>
+            <if test="jlsjR != null">#{jlsjR},</if>
+            <if test="bgy != null">#{bgy},</if>
+            <if test="zd != null">#{zd},</if>
+            <if test="lz != null">#{lz},</if>
+            <if test="jlsjT != null">#{jlsjT},</if>
+            <if test="ysr != null">#{ysr},</if>
+            <if test="yssj != null">#{yssj},</if>
+            <if test="jhr != null">#{jhr},</if>
+            <if test="jhsj != null">#{jhsj},</if>
+            <if test="dksj != null">#{dksj},</if>
+            <if test="fysj != null">#{fysj},</if>
+            <if test="fyfs != null">#{fyfs},</if>
+            <if test="fz != null">#{fz},</if>
+            <if test="dz != null">#{dz},</if>
+            <if test="yynY != null">#{yynY},</if>
+            <if test="zt != null">#{zt},</if>
+            <if test="xcbh != null">#{xcbh},</if>
+            <if test="pzbm != null">#{pzbm},</if>
+            <if test="wzmc != null">#{wzmc},</if>
+            <if test="jldw != null">#{jldw},</if>
+            <if test="wzlb != null">#{wzlb},</if>
+            <if test="ysrBm != null">#{ysrBm},</if>
+            <if test="jlrBm != null">#{jlrBm},</if>
+            <if test="pzmc != null">#{pzmc},</if>
+            <if test="ywfgs != null">#{ywfgs},</if>
+            <if test="zxzdMc != null">#{zxzdMc},</if>
+            <if test="xcfs != null">#{xcfs},</if>
+            <if test="xczysjQ != null">#{xczysjQ},</if>
+            <if test="xczysjZ != null">#{xczysjZ},</if>
+            <if test="cksj != null">#{cksj},</if>
+            <if test="xcyxm != null">#{xcyxm},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWmsMaterialIn" parameterType="WmsMaterialIn">
+        update wms_material_in
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="dhBh != null">dh_bh = #{dhBh},</if>
+            <if test="hpBh != null">hp_bh = #{hpBh},</if>
+            <if test="dhLx != null">dh_lx = #{dhLx},</if>
+            <if test="kf != null">kf = #{kf},</if>
+            <if test="djLx != null">dj_lx = #{djLx},</if>
+            <if test="ch != null">ch = #{ch},</if>
+            <if test="cs != null">cs = #{cs},</if>
+            <if test="asYdh != null">as_ydh = #{asYdh},</if>
+            <if test="fysl != null">fysl = #{fysl},</if>
+            <if test="dhsl != null">dhsl = #{dhsl},</if>
+            <if test="jly != null">jly = #{jly},</if>
+            <if test="jlsj != null">jlsj = #{jlsj},</if>
+            <if test="csMc != null">cs_mc = #{csMc},</if>
+            <if test="wzbm != null">wzbm = #{wzbm},</if>
+            <if test="jllx != null">jllx = #{jllx},</if>
+            <if test="jlr != null">jlr = #{jlr},</if>
+            <if test="jlsjR != null">jlsj_r = #{jlsjR},</if>
+            <if test="bgy != null">bgy = #{bgy},</if>
+            <if test="zd != null">zd = #{zd},</if>
+            <if test="lz != null">lz = #{lz},</if>
+            <if test="jlsjT != null">jlsj_t = #{jlsjT},</if>
+            <if test="ysr != null">ysr = #{ysr},</if>
+            <if test="yssj != null">yssj = #{yssj},</if>
+            <if test="jhr != null">jhr = #{jhr},</if>
+            <if test="jhsj != null">jhsj = #{jhsj},</if>
+            <if test="dksj != null">dksj = #{dksj},</if>
+            <if test="fysj != null">fysj = #{fysj},</if>
+            <if test="fyfs != null">fyfs = #{fyfs},</if>
+            <if test="fz != null">fz = #{fz},</if>
+            <if test="dz != null">dz = #{dz},</if>
+            <if test="yynY != null">yyn_y = #{yynY},</if>
+            <if test="zt != null">zt = #{zt},</if>
+            <if test="xcbh != null">xcbh = #{xcbh},</if>
+            <if test="pzbm != null">pzbm = #{pzbm},</if>
+            <if test="wzmc != null">wzmc = #{wzmc},</if>
+            <if test="jldw != null">jldw = #{jldw},</if>
+            <if test="wzlb != null">wzlb = #{wzlb},</if>
+            <if test="ysrBm != null">ysr_bm = #{ysrBm},</if>
+            <if test="jlrBm != null">jlr_bm = #{jlrBm},</if>
+            <if test="pzmc != null">pzmc = #{pzmc},</if>
+            <if test="ywfgs != null">ywfgs = #{ywfgs},</if>
+            <if test="zxzdMc != null">zxzd_mc = #{zxzdMc},</if>
+            <if test="xcfs != null">xcfs = #{xcfs},</if>
+            <if test="xczysjQ != null">xczysj_q = #{xczysjQ},</if>
+            <if test="xczysjZ != null">xczysj_z = #{xczysjZ},</if>
+            <if test="cksj != null">cksj = #{cksj},</if>
+            <if test="xcyxm != null">xcyxm = #{xcyxm},</if>
+        </trim>
+        where jl_bh = #{jlBh}
+    </update>
+
+    <delete id="deleteWmsMaterialInByJlBh" parameterType="String">
+        delete from wms_material_in where jl_bh = #{jlBh}
+    </delete>
+
+    <delete id="deleteWmsMaterialInByJlBhs" parameterType="String">
+        delete from wms_material_in where jl_bh in 
+        <foreach item="jlBh" collection="array" open="(" separator="," close=")">
+            #{jlBh}
+        </foreach>
+    </delete>
+</mapper>

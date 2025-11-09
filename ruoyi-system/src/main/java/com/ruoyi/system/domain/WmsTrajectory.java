@@ -42,6 +42,14 @@ public class WmsTrajectory extends BaseEntity
     @Excel(name = "发卡记录ID")
     private Long cardRecordId;
 
+    /** 模糊查询字段 */
+    @Excel(name = "模糊查询字段")
+    private String fuzzy;
+
+    /** 发卡记录对象ID */
+    @Excel(name = "发卡记录对象ID")
+    private Long workId;
+
     public void setTrajectoryId(Long trajectoryId) 
     {
         this.trajectoryId = trajectoryId;
@@ -112,5 +120,21 @@ public class WmsTrajectory extends BaseEntity
             .append("trajectoryPoints", getTrajectoryPoints())
             .append("cardRecordId", getCardRecordId())
             .toString();
+    }
+
+    public void setFuzzy(String fuzzy) {
+        this.fuzzy = fuzzy;
+    }
+
+    public String getFuzzy() {
+        return fuzzy;
+    }
+
+    public void setWorkId(Long workId) {
+        this.workId = workId;
+    }
+
+    public Long getWorkId() {
+        return workId;
     }
 }

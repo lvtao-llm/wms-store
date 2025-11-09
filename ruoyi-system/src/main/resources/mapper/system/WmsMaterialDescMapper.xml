@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.WmsMaterialDescMapper">
+    
+    <resultMap type="WmsMaterialDesc" id="WmsMaterialDescResult">
+        <result property="materialDescId"    column="material_desc_id"    />
+        <result property="materialCode"    column="material_code"    />
+        <result property="materialName"    column="material_name"    />
+        <result property="materialSpec"    column="material_spec"    />
+        <result property="materialModel"    column="material_model"    />
+        <result property="areaCodes"    column="area_codes"    />
+        <result property="materialUnit"    column="material_unit"    />
+        <result property="materialRequirements"    column="material_requirements"    />
+        <result property="materialSafetyNotice"    column="material_safety_notice"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="keyPoints"    column="key_points"    />
+    </resultMap>
+
+    <sql id="selectWmsMaterialDescVo">
+        select material_desc_id, material_code, material_name, material_spec, material_model, area_codes, material_unit, material_requirements, material_safety_notice, create_by, create_time from wms_material_desc
+    </sql>
+
+    <select id="selectWmsMaterialDescList" parameterType="WmsMaterialDesc" resultMap="WmsMaterialDescResult">
+        <include refid="selectWmsMaterialDescVo"/>
+        <where>  
+            <if test="materialCode != null  and materialCode != ''"> and material_code = #{materialCode}</if>
+            <if test="materialName != null  and materialName != ''"> and material_name like concat('%', #{materialName}, '%')</if>
+            <if test="materialSpec != null  and materialSpec != ''"> and material_spec = #{materialSpec}</if>
+            <if test="materialModel != null  and materialModel != ''"> and material_model = #{materialModel}</if>
+            <if test="areaCodes != null  and areaCodes != ''"> and area_codes = #{areaCodes}</if>
+            <if test="materialUnit != null  and materialUnit != ''"> and material_unit = #{materialUnit}</if>
+            <if test="materialRequirements != null  and materialRequirements != ''"> and material_requirements = #{materialRequirements}</if>
+            <if test="materialSafetyNotice != null  and materialSafetyNotice != ''"> and material_safety_notice = #{materialSafetyNotice}</if>
+        </where>
+    </select>
+    
+    <select id="selectWmsMaterialDescByMaterialDescId" parameterType="Long" resultMap="WmsMaterialDescResult">
+        <include refid="selectWmsMaterialDescVo"/>
+        where material_desc_id = #{materialDescId}
+    </select>
+
+    <insert id="insertWmsMaterialDesc" parameterType="WmsMaterialDesc" useGeneratedKeys="true" keyProperty="materialDescId">
+        insert into wms_material_desc
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="materialCode != null">material_code,</if>
+            <if test="materialName != null">material_name,</if>
+            <if test="materialSpec != null">material_spec,</if>
+            <if test="materialModel != null">material_model,</if>
+            <if test="areaCodes != null">area_codes,</if>
+            <if test="materialUnit != null">material_unit,</if>
+            <if test="materialRequirements != null">material_requirements,</if>
+            <if test="materialSafetyNotice != null">material_safety_notice,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="keyPoints != null">key_points,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="materialCode != null">#{materialCode},</if>
+            <if test="materialName != null">#{materialName},</if>
+            <if test="materialSpec != null">#{materialSpec},</if>
+            <if test="materialModel != null">#{materialModel},</if>
+            <if test="areaCodes != null">#{areaCodes},</if>
+            <if test="materialUnit != null">#{materialUnit},</if>
+            <if test="materialRequirements != null">#{materialRequirements},</if>
+            <if test="materialSafetyNotice != null">#{materialSafetyNotice},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="keyPoints != null">#{key_points}</if>
+         </trim>
+    </insert>
+
+    <insert id="insertNewMaterialDesc" parameterType="WmsMaterialIn" useGeneratedKeys="true" keyProperty="materialDescId">
+        insert IGNORE into wms_material_desc
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="wzbm != null">material_code,</if>
+            <if test="wzmc != null">material_name,</if>
+            <if test="pzmc != null">material_spec,</if>
+            <if test="wzlb != null">material_model,</if>
+            <if test="jldw != null">material_unit,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="wzbm != null">#{wzbm},</if>
+            <if test="wzmc != null">#{wzmc},</if>
+            <if test="pzmc != null">#{pzmc},</if>
+            <if test="wzlb != null">#{wzlb},</if>
+            <if test="jldw != null">#{jldw},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateWmsMaterialDesc" parameterType="WmsMaterialDesc">
+        update wms_material_desc
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="materialCode != null">material_code = #{materialCode},</if>
+            <if test="materialName != null">material_name = #{materialName},</if>
+            <if test="materialSpec != null">material_spec = #{materialSpec},</if>
+            <if test="materialModel != null">material_model = #{materialModel},</if>
+            <if test="areaCodes != null">area_codes = #{areaCodes},</if>
+            <if test="materialUnit != null">material_unit = #{materialUnit},</if>
+            <if test="materialRequirements != null">material_requirements = #{materialRequirements},</if>
+            <if test="materialSafetyNotice != null">material_safety_notice = #{materialSafetyNotice},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="keyPoints != null">key_points = #{keyPoints},</if>
+        </trim>
+        where material_desc_id = #{materialDescId}
+    </update>
+
+    <delete id="deleteWmsMaterialDescByMaterialDescId" parameterType="Long">
+        delete from wms_material_desc where material_desc_id = #{materialDescId}
+    </delete>
+
+    <delete id="deleteWmsMaterialDescByMaterialDescIds" parameterType="String">
+        delete from wms_material_desc where material_desc_id in 
+        <foreach item="materialDescId" collection="array" open="(" separator="," close=")">
+            #{materialDescId}
+        </foreach>
+    </delete>
+</mapper>

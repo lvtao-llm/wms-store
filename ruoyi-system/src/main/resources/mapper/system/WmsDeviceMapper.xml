@@ -17,6 +17,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="serialNumber"    column="serial_number"    />
         <result property="tableName"    column="table_name"    />
         <result property="tableId"    column="table_id"    />
+        <result property="data"    column="data"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
@@ -25,23 +26,27 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectWmsDeviceVo">
-        select id, device_type, device_description, longitude, latitude, altitude, device_name, model, specification, serial_number, table_name, table_id, create_by, create_time, update_by, update_time, del_flag from wms_device
+        select id, device_type, device_description, longitude, latitude, altitude, device_name, model, specification, serial_number, table_name, table_id, data, create_by, create_time, update_by, update_time, del_flag from wms_device
     </sql>
 
     <select id="selectWmsDeviceList" parameterType="WmsDevice" resultMap="WmsDeviceResult">
         <include refid="selectWmsDeviceVo"/>
-        <where>  
-            <if test="deviceType != null  and deviceType != ''"> and device_type = #{deviceType}</if>
-            <if test="deviceDescription != null  and deviceDescription != ''"> and device_description = #{deviceDescription}</if>
-            <if test="longitude != null "> and longitude = #{longitude}</if>
-            <if test="latitude != null "> and latitude = #{latitude}</if>
-            <if test="altitude != null "> and altitude = #{altitude}</if>
-            <if test="deviceName != null  and deviceName != ''"> and device_name like concat('%', #{deviceName}, '%')</if>
-            <if test="model != null  and model != ''"> and model = #{model}</if>
-            <if test="specification != null  and specification != ''"> and specification = #{specification}</if>
-            <if test="serialNumber != null  and serialNumber != ''"> and serial_number = #{serialNumber}</if>
-            <if test="tableName != null  and tableName != ''"> and table_name like concat('%', #{tableName}, '%')</if>
-            <if test="tableId != null "> and table_id = #{tableId}</if>
+        <where>
+            <if test="deviceType != null  and deviceType != ''">and device_type = #{deviceType}</if>
+            <if test="deviceDescription != null  and deviceDescription != ''">and device_description =
+                #{deviceDescription}
+            </if>
+            <if test="longitude != null ">and longitude = #{longitude}</if>
+            <if test="latitude != null ">and latitude = #{latitude}</if>
+            <if test="altitude != null ">and altitude = #{altitude}</if>
+            <if test="deviceName != null  and deviceName != ''">and device_name like concat('%', #{deviceName}, '%')
+            </if>
+            <if test="model != null  and model != ''">and model = #{model}</if>
+            <if test="specification != null  and specification != ''">and specification = #{specification}</if>
+            <if test="serialNumber != null  and serialNumber != ''">and serial_number = #{serialNumber}</if>
+            <if test="tableName != null  and tableName != ''">and table_name like concat('%', #{tableName}, '%')</if>
+            <if test="tableId != null ">and table_id = #{tableId}</if>
+            <if test="data != null ">and data = #{data}</if>
         </where>
     </select>
     
@@ -69,6 +74,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateBy != null">update_by,</if>
             <if test="updateTime != null">update_time,</if>
             <if test="delFlag != null">del_flag,</if>
+            <if test="data != null">data,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="deviceType != null">#{deviceType},</if>
@@ -87,6 +93,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateBy != null">#{updateBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
             <if test="delFlag != null">#{delFlag},</if>
+            <if test="data != null">#{data},</if>
          </trim>
     </insert>
 
@@ -109,6 +116,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateBy != null">update_by = #{updateBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
             <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="data != null">data = #{data},</if>
         </trim>
         where id = #{id}
     </update>
