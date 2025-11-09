@@ -197,7 +197,7 @@
         <div class="content">
           <h5>人员类别统计</h5>
           <div class="type-box">
-            <div class="type-item">
+            <!-- <div class="type-item">
               <span class="title">承包商</span>
               <div class="num">
                 {{
@@ -208,9 +208,9 @@
                     : 0
                 }}人
               </div>
-            </div>
+            </div> -->
             <div class="type-item">
-              <span class="title">员工</span>
+              <span class="title">正式员工</span>
               <div class="num">
                 {{
                   this.tableDataTl && this.tableDataTl.personTypeStatistics
@@ -222,7 +222,7 @@
               </div>
             </div>
             <div class="type-item">
-              <span class="title">访客</span>
+              <span class="title">临时作业</span>
               <div class="num">
                 {{
                   this.tableDataTl && this.tableDataTl.personTypeStatistics
@@ -353,7 +353,7 @@
 
         <div class="content">
           <h5>车辆统计</h5>
-          <div class="type-box">
+          <!-- <div class="type-box">
             <div class="type-item">
               <span class="title">内部</span>
               <div class="num">
@@ -378,7 +378,7 @@
                 }}辆
               </div>
             </div>
-          </div>
+          </div> -->
           <div class="table-wrapper">
             <el-table height="100%" :data="tableDataBl.data" class="dark-table">
               <el-table-column
