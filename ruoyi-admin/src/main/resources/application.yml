@@ -155,13 +155,13 @@ lanya:
 wzgs:
   jl:
     sync:
-      enabled: true
+      enabled: false
   db:
     sync:
-      enabled: true
+      enabled: false
   kc:
     sync:
-      enabled: true
+      enabled: false
 wms:
   ws-data:
     person-alarm: 0/5 * * * * ?
