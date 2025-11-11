@@ -34,25 +34,7 @@
 
     <select id="selectViewKcSkList" parameterType="WmsMaterialStock" resultMap="ViewKcSkResult">
         <include refid="selectViewKcSkVo"/>
-        <where>
-            <if test="inventoryId != null and inventoryId != ''"> AND 库存编号 = #{inventoryId}</if>
-            <if test="wzbm != null and wzbm != ''"> AND 物资编码 = #{wzbm}</if>
-            <if test="actualWeight != null"> AND 实存重量 = #{actualWeight}</if>
-            <if test="status != null and status != ''"> AND 状态 = #{status}</if>
-            <if test="remark != null and remark != ''"> AND 备注 = #{remark}</if>
-            <if test="wzmc != null and wzmc != ''"> AND 物资名称 LIKE CONCAT('%', #{wzmc}, '%')</if>
-            <if test="jldw != null and jldw != ''"> AND 计量单位 = #{jldw}</if>
-            <if test="warehouse != null and warehouse != ''"> AND 库房 = #{warehouse}</if>
-            <if test="bookWeight != null"> AND 账存重量 = #{bookWeight}</if>
-            <if test="varietyCode != null and varietyCode != ''"> AND 品种编码 = #{varietyCode}</if>
-            <if test="pzmc != null and pzmc != ''"> AND 品种名称 LIKE CONCAT('%', #{pzmc}, '%')</if>
-            <if test="wzlb != null and wzlb != ''"> AND 物资类别 = #{wzlb}</if>
-            <if test="reservedWeight != null"> AND 预拨重量 = #{reservedWeight}</if>
-            <if test="availableWeight != null"> AND 可拨重量 = #{availableWeight}</if>
-            <if test="squadron != null and squadron != ''"> AND 中队 = #{squadron}</if>
-            <if test="team != null and team != ''"> AND 班组 = #{team}</if>
-            <if test="company != null and company != ''"> AND 所属公司 = #{company}</if>
-        </where>
+        WHERE 物资编码 LIKE 'A%'
     </select>
 
 </mapper>

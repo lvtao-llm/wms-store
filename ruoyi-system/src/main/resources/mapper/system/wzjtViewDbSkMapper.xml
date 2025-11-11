@@ -158,81 +158,8 @@
 
     <select id="selectViewDbSkList" parameterType="WmsMaterialOut" resultMap="ViewDbSkResult">
         <include refid="selectViewDbSkVo"/>
-        <where>
-            <if test="allotDetailId != null and allotDetailId != ''">AND [调拨明细编号] = #{allotDetailId}</if>
-            <if test="storehouseId != null and storehouseId != ''">AND [库房编号] = #{storehouseId}</if>
-            <if test="documentType != null and documentType != ''">AND [单据类型] = #{documentType}</if>
-            <if test="carNumber != null and carNumber != ''">AND [车号] = #{carNumber}</if>
-            <if test="carModel != null and carModel != ''">AND [车型] = #{carModel}</if>
-            <if test="grossWeight != null">AND [毛重] = #{grossWeight}</if>
-            <if test="tareWeight != null">AND [皮重] = #{tareWeight}</if>
-            <if test="netWeight != null">AND [净重] = #{netWeight}</if>
-            <if test="meterId != null and meterId != ''">AND [仪表编号] = #{meterId}</if>
-            <if test="department != null and department != ''">AND [部门] = #{department}</if>
-            <if test="measureImageFile != null and measureImageFile != ''">AND [计量图片文件] = #{measureImageFile}</if>
-            <if test="measureVideoFile != null and measureVideoFile != ''">AND [计量录像文件] = #{measureVideoFile}</if>
-            <if test="guard != null and guard != ''">AND [门卫] = #{guard}</if>
-            <if test="outboundTime != null">AND [出库时间] > #{outboundTime}</if>
-            <if test="measurer != null and measurer != ''">AND [计量员] = #{measurer}</if>
-            <if test="measureTime != null">AND [计量时间] = #{measureTime}</if>
-            <if test="tareImageFile != null and tareImageFile != ''">AND [皮重图片文件] = #{tareImageFile}</if>
-            <if test="tareVideoFile != null and tareVideoFile != ''">AND [皮重录像文件] = #{tareVideoFile}</if>
-            <if test="documentStatus != null and documentStatus != ''">AND [单据状态] = #{documentStatus}</if>
-            <if test="custodian != null and custodian != ''">AND [保管员] = #{custodian}</if>
-            <if test="operateTime != null">AND [操作时间] = #{operateTime}</if>
-            <if test="adjustQuantity != null">AND [调整数量] = #{adjustQuantity}</if>
-            <if test="measureCurvature != null and measureCurvature != ''">AND [计量曲率] = #{measureCurvature}</if>
-            <if test="outboundId != null and outboundId != ''">AND [出库编号] = #{outboundId}</if>
-            <if test="measureType != null and measureType != ''">AND [计量类型] = #{measureType}</if>
-            <if test="pieceCount != null and pieceCount != ''">AND [件数] = #{pieceCount}</if>
-            <if test="originalDocumentId != null and originalDocumentId != ''">AND [原单编号] = #{originalDocumentId}</if>
-            <if test="remark != null and remark != ''">AND [备注] = #{remark}</if>
-            <if test="cardId != null and cardId != ''">AND [卡号] = #{cardId}</if>
-            <if test="allotId != null and allotId != ''">AND [调拨编号] = #{allotId}</if>
-            <if test="allotCode != null and allotCode != ''">AND [调拨编码] = #{allotCode}</if>
-            <if test="allotType != null and allotType != ''">AND [调拨类型] = #{allotType}</if>
-            <if test="customerCode != null and customerCode != ''">AND [客户编码] = #{customerCode}</if>
-            <if test="customerName != null and customerName != ''">AND [客户名称] = #{customerName}</if>
-            <if test="materialGroup != null and materialGroup != ''">AND [物料组] = #{materialGroup}</if>
-            <if test="wzbm != null and wzbm != ''">AND [物资编码] = #{wzbm}</if>
-            <if test="wzmc != null and wzmc != ''">AND [物资名称] = #{wzmc}</if>
-            <if test="jldw != null and jldw != ''">AND [计量单位] = #{jldw}</if>
-            <if test="salesCompany != null and salesCompany != ''">AND [销售公司] = #{salesCompany}</if>
-            <if test="storehouse != null and storehouse != ''">AND [库房] = #{storehouse}</if>
-            <if test="materialYard != null and materialYard != ''">AND [料场] = #{materialYard}</if>
-            <if test="allotQuantity != null">AND [调拨数量] = #{allotQuantity}</if>
-            <if test="actualQuantity != null">AND [实发数量] = #{actualQuantity}</if>
-            <if test="carCount != null">AND [车数] = #{carCount}</if>
-            <if test="plannedPrice != null">AND [计划单价] = #{plannedPrice}</if>
-            <if test="salesPrice != null">AND [销售单价] = #{salesPrice}</if>
-            <if test="taxRate != null">AND [税率] = #{taxRate}</if>
-            <if test="allotOperator != null and allotOperator != ''">AND [调拨员] = #{allotOperator}</if>
-            <if test="allotTime != null">AND [调拨时间] = #{allotTime}</if>
-            <if test="balance != null">AND [余额] = #{balance}</if>
-            <if test="tailMaterial != null">AND [尾料] = #{tailMaterial}</if>
-            <if test="surplusMaterial != null">AND [余料] = #{surplusMaterial}</if>
-            <if test="carCount1 != null">AND [车数1] = #{carCount1}</if>
-            <if test="isMultiCar != null and isMultiCar != ''">AND [是否多车] = #{isMultiCar}</if>
-            <if test="reportRemark != null and reportRemark != ''">AND [报号备注] = #{reportRemark}</if>
-            <if test="firstTareWeight != null">AND [首次皮重] = #{firstTareWeight}</if>
-            <if test="department1 != null and department1 != ''">AND [部门1] = #{department1}</if>
-            <if test="yardCode != null and yardCode != ''">AND [料场编码] = #{yardCode}</if>
-            <if test="reporter != null and reporter != ''">AND [报号人] = #{reporter}</if>
-            <if test="adjustRemark != null and adjustRemark != ''">AND [调整备注] = #{adjustRemark}</if>
-            <if test="storehouseImage != null and storehouseImage != ''">AND [库房图片] = #{storehouseImage}</if>
-            <if test="imagePath != null and imagePath != ''">AND [图片路径] = #{imagePath}</if>
-            <if test="multiAllotDetail != null and multiAllotDetail != ''">AND [多调拨单明细] = #{multiAllotDetail}</if>
-            <if test="netWeight1 != null">AND [净重1] = #{netWeight1}</if>
-            <if test="businessYearMonth != null and businessYearMonth != ''">AND [业务年月] = #{businessYearMonth}</if>
-            <if test="squad != null and squad != ''">AND [中队] = #{squad}</if>
-            <if test="materialGroup1 != null and materialGroup1 != ''">AND [物料组1] = #{materialGroup1}</if>
-            <if test="custodianId != null and custodianId != ''">AND [保管员id] = #{custodianId}</if>
-            <if test="shortCode != null and shortCode != ''">AND [简码] = #{shortCode}</if>
-            <if test="selfMergeCategory != null and selfMergeCategory != ''">AND [自合并分类] = #{selfMergeCategory}</if>
-            <if test="custodianName != null and custodianName != ''">AND [保管员姓名] = #{custodianName}</if>
-            <if test="status != null and status != ''">AND [状态] = #{status}</if>
-
-        </where>
+        WHERE [出库时间] > #{outboundTime}
+        AND [物资编码] LIKE 'A%'
         ORDER BY [出库时间]
         OFFSET 0 ROWS
         FETCH NEXT 100 ROWS ONLY
