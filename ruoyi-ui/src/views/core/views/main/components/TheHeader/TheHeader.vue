@@ -80,7 +80,7 @@ export default {
     bottom: 0;
     font-size: 1rem;
     .font-linear-color {
-      @include vci-font-linear-gradient(to bottom, #fff, (#f5f9fc, #82b0df));
+      // @include vci-font-linear-gradient(to bottom, #fff, (#f5f9fc, #82b0df));
     }
     .year-date {
       font-size: 1rem;

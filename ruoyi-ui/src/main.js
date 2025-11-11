@@ -1,7 +1,10 @@
 import Vue from 'vue'
 
 import Cookies from 'js-cookie'
-import '@vci/style' // vci style
+
+import('@vci/style');
+
+
 import Element from 'element-ui'
 import './assets/styles/element-variables.scss'
 

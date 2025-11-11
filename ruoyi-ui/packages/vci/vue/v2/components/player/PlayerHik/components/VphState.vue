@@ -49,7 +49,7 @@ export default {
   opacity: 0;
   backdrop-filter: blur(0px);
   pointer-events: none;
-  @include vci-font-stroke();
+  // @include vci-font-stroke();
   &.vs-visible {
     opacity: 1;
     backdrop-filter: blur(8px);

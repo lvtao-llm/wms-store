@@ -1,9 +1,6 @@
 <template>
   <div class="VciD3">
-    <div
-      ref="vd"
-      class="vd-view"
-    ></div>
+    <div ref="vd" class="vd-view"></div>
     <slot></slot>
   </div>
 </template>
@@ -18,8 +15,8 @@ export default {
   props: {
     beforeInitQt: {
       type: Function,
-      default: null
-    }
+      default: null,
+    },
   },
   data() {
     return {};
@@ -28,11 +25,14 @@ export default {
     const optionQt = { el: this.$refs.vd };
     this.beforeInitQt && this.beforeInitQt(optionQt);
     this.vd = new QuickThree(optionQt);
-    this.vd.addEventListener(QtEvents.AfterMount, e => this.$emit("ready", e.target));
+    this.vd.addEventListener(QtEvents.AfterMount, (e) =>
+      this.$emit("ready", e.target)
+    );
   },
+
   beforeDestroy() {
     this.vd && this.vd.destroy();
-  }
+  },
 };
 </script>
 
