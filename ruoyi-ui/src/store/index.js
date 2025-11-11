@@ -7,7 +7,6 @@ import tagsView from './modules/tagsView'
 import permission from './modules/permission'
 import settings from './modules/settings'
 import getters from './getters'
-import custom from './modules/custom'
 
 Vue.use(Vuex)
 
@@ -16,7 +15,6 @@ const store = new Vuex.Store({
     app,
     dict,
     user,
-    custom,
     tagsView,
     permission,
     settings
