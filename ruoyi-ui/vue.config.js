@@ -28,7 +28,7 @@ module.exports = {
   assetsDir: 'static',
   // 如果你不需要生产环境的 source map，可以将其设置为 false 以加速生产环境构建。
   productionSourceMap: false,
-  transpileDependencies: ['quill'],
+  transpileDependencies: ['quill', /@vci/, 'pinia'],
   // webpack-dev-server 相关配置
   devServer: {
     host: '0.0.0.0',
@@ -62,8 +62,24 @@ module.exports = {
     name: name,
     resolve: {
       alias: {
-        '@': resolve('src')
-      }
+        '@': resolve('src'),
+        '@vci/quick-three': resolve('packages/quick-three'),
+        '@vci/helper': resolve('packages/helper'),
+        '@vci/vci': resolve('packages/vci'),
+        '@vci/quick-drawer': resolve('packages/quick-drawer'),
+        '@vci/quick-amap': resolve('packages/quick-amap')
+      },
+      // 确保正确处理 ES 模块
+      mainFields: ['browser', 'module', 'main']
+    },
+    module: {
+      rules: [
+        {
+          test: /\.mjs$/,
+          include: /node_modules/,
+          type: 'javascript/auto',
+        },
+      ],
     },
     plugins: [
       // http://doc.ruoyi.vip/ruoyi-vue/other/faq.html#使用gzip解压缩静态文件
@@ -95,6 +111,18 @@ module.exports = {
       .loader('svg-sprite-loader')
       .options({
         symbolId: 'icon-[name]'
+      })
+      .end()
+
+    // 处理 .cur 文件（光标文件）
+    // Vue CLI 4 默认使用 file-loader 处理未知文件类型
+    config.module
+      .rule('cur')
+      .test(/\.cur$/)
+      .use('file-loader')
+      .loader('file-loader')
+      .options({
+        name: 'static/cursor/[name].[hash:8].[ext]'
       })
       .end()
 

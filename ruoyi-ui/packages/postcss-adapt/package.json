@@ -1,0 +1,23 @@
+{
+  "name": "@vci/postcss-adapt",
+  "description": "it`s a plugin of postcss, it can transform that the size of your code like wpx or px or hpx to vw or vh for adapt screen",
+  "version": "0.0.1",
+  "author": "visual-ceiling",
+  "license": "ISC",
+  "keywords": [
+    "vci",
+    "postcss",
+    "postcss-plugin",
+    "adapt",
+    "px",
+    "hpx",
+    "vw",
+    "vh",
+    "transfrom"
+  ],
+  "scripts": {},
+  "main": "index.js",
+  "peerDependencies": {
+    "postcss": "8.4.49"
+  }
+}

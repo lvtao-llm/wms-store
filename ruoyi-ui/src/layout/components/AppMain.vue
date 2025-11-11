@@ -11,37 +11,37 @@
 </template>
 
 <script>
-import copyright from "./Copyright/index"
-import iframeToggle from "./IframeToggle/index"
+import copyright from "./Copyright/index";
+import iframeToggle from "./IframeToggle/index";
 
 export default {
-  name: 'AppMain',
+  name: "AppMain",
   components: { iframeToggle, copyright },
   computed: {
     cachedViews() {
-      return this.$store.state.tagsView.cachedViews
+      return this.$store.state.tagsView.cachedViews;
     },
     key() {
-      return this.$route.path
-    }
+      return this.$route.path;
+    },
   },
   watch: {
     $route() {
-      this.addIframe()
-    }
+      this.addIframe();
+    },
   },
   mounted() {
-    this.addIframe()
+    this.addIframe();
   },
   methods: {
     addIframe() {
-      const { name } = this.$route
+      const { name } = this.$route;
       if (name && this.$route.meta.link) {
-        this.$store.dispatch('tagsView/addIframeView', this.$route)
+        this.$store.dispatch("tagsView/addIframeView", this.$route);
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -51,6 +51,7 @@ export default {
   width: 100%;
   position: relative;
   overflow: hidden;
+  // background-color: #fff;
 }
 
 .fixed-header + .app-main {

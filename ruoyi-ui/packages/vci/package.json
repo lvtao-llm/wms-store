@@ -1,0 +1,16 @@
+{
+  "name": "@vci/vci",
+  "description": "",
+  "version": "2.0.0",
+  "author": "visual-ceiling",
+  "license": "ISC",
+  "keywords": [
+    "vci"
+  ],
+  "scripts": {},
+  "main": "vue/v2/main.js",
+  "peerDependencies": {
+    "@vci/helper": "file:../helper",
+    "@vci/style": "2.1.8"
+  }
+}
