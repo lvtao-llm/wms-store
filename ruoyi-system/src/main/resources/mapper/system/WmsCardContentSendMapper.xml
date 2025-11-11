@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.WmsCardContentSendMapper">
+    
+    <resultMap type="WmsCardContentSend" id="WmsCardContentSendResult">
+        <result property="id"    column="id"    />
+        <result property="cardCode"    column="card_code"    />
+        <result property="content"    column="content"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectWmsCardContentSendVo">
+        select id, card_code, content, create_by, create_time from wms_card_content_send
+    </sql>
+
+    <select id="selectWmsCardContentSendList" parameterType="WmsCardContentSend" resultMap="WmsCardContentSendResult">
+        <include refid="selectWmsCardContentSendVo"/>
+        <where>  
+            <if test="cardCode != null "> and card_code = #{cardCode}</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+        </where>
+    </select>
+    
+    <select id="selectWmsCardContentSendById" parameterType="Long" resultMap="WmsCardContentSendResult">
+        <include refid="selectWmsCardContentSendVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertWmsCardContentSend" parameterType="WmsCardContentSend" useGeneratedKeys="true" keyProperty="id">
+        insert into wms_card_content_send
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="cardCode != null">card_code,</if>
+            <if test="content != null and content != ''">content,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="cardCode != null">#{cardCode},</if>
+            <if test="content != null and content != ''">#{content},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWmsCardContentSend" parameterType="WmsCardContentSend">
+        update wms_card_content_send
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="cardCode != null">card_code = #{cardCode},</if>
+            <if test="content != null and content != ''">content = #{content},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWmsCardContentSendById" parameterType="Long">
+        delete from wms_card_content_send where id = #{id}
+    </delete>
+
+    <delete id="deleteWmsCardContentSendByIds" parameterType="String">
+        delete from wms_card_content_send where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

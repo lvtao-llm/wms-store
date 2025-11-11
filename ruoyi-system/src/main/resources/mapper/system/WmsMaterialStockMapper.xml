@@ -6,17 +6,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     <resultMap type="WmsMaterialStock" id="WmsMaterialStockResult">
         <result property="inventoryId"    column="inventory_id"    />
-        <result property="materialCode"    column="material_code"    />
+        <result property="wzbm"    column="wzbm"    />
         <result property="actualWeight"    column="actual_weight"    />
         <result property="status"    column="status"    />
         <result property="remark"    column="remark"    />
-        <result property="materialName"    column="material_name"    />
-        <result property="unit"    column="unit"    />
+        <result property="wzmc"    column="wzmc"    />
+        <result property="jldw"    column="jldw"    />
         <result property="warehouse"    column="warehouse"    />
         <result property="bookWeight"    column="book_weight"    />
-        <result property="varietyCode"    column="variety_code"    />
-        <result property="varietyName"    column="variety_name"    />
-        <result property="materialCategory"    column="material_category"    />
+        <result property="varietyCode"    column="varietyCode"    />
+        <result property="pzmc"    column="pzmc"    />
+        <result property="wzlb"    column="wzlb"    />
         <result property="reservedWeight"    column="reserved_weight"    />
         <result property="availableWeight"    column="available_weight"    />
         <result property="squadron"    column="squadron"    />
@@ -25,23 +25,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectWmsMaterialStockVo">
-        select inventory_id, material_code, actual_weight, status, remark, material_name, unit, warehouse, book_weight, variety_code, variety_name, material_category, reserved_weight, available_weight, squadron, team, company from wms_material_stock
+        select inventory_id, wzbm, actual_weight, status, remark, wzmc, jldw, warehouse, book_weight, pzmc, variety_name, wzlb, reserved_weight, available_weight, squadron, team, company from wms_material_stock
     </sql>
 
     <select id="selectWmsMaterialStockList" parameterType="WmsMaterialStock" resultMap="WmsMaterialStockResult">
         <include refid="selectWmsMaterialStockVo"/>
-        <where>  
+        <where>
             <if test="inventoryId != null  and inventoryId != ''"> and inventory_id = #{inventoryId}</if>
-            <if test="materialCode != null  and materialCode != ''"> and material_code = #{materialCode}</if>
+            <if test="wzbm != null  and wzbm != ''"> and wzbm = #{wzbm}</if>
             <if test="actualWeight != null "> and actual_weight = #{actualWeight}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
-            <if test="materialName != null  and materialName != ''"> and material_name like concat('%', #{materialName}, '%')</if>
-            <if test="unit != null  and unit != ''"> and unit = #{unit}</if>
+            <if test="wzmc != null  and wzmc != ''"> and wzmc like concat('%', #{wzmc}, '%')</if>
+            <if test="jldw != null  and jldw != ''"> and jldw = #{jldw}</if>
             <if test="warehouse != null  and warehouse != ''"> and warehouse = #{warehouse}</if>
             <if test="bookWeight != null "> and book_weight = #{bookWeight}</if>
             <if test="varietyCode != null  and varietyCode != ''"> and variety_code = #{varietyCode}</if>
-            <if test="varietyName != null  and varietyName != ''"> and variety_name like concat('%', #{varietyName}, '%')</if>
-            <if test="materialCategory != null  and materialCategory != ''"> and material_category = #{materialCategory}</if>
+            <if test="pzmc != null  and pzmc != ''"> and pzmc like concat('%', #{pzmc}, '%')</if>
+            <if test="wzlb != null  and wzlb != ''"> and wzlb = #{wzlb}</if>
             <if test="reservedWeight != null "> and reserved_weight = #{reservedWeight}</if>
             <if test="availableWeight != null "> and available_weight = #{availableWeight}</if>
             <if test="squadron != null  and squadron != ''"> and squadron = #{squadron}</if>
@@ -49,7 +49,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="company != null  and company != ''"> and company = #{company}</if>
         </where>
     </select>
-    
+
     <select id="selectWmsMaterialStockByInventoryId" parameterType="String" resultMap="WmsMaterialStockResult">
         <include refid="selectWmsMaterialStockVo"/>
         where inventory_id = #{inventoryId}
@@ -59,17 +59,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         insert into wms_material_stock
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="inventoryId != null">inventory_id,</if>
-            <if test="materialCode != null">material_code,</if>
+            <if test="wzbm != null">wzbm,</if>
             <if test="actualWeight != null">actual_weight,</if>
             <if test="status != null">status,</if>
             <if test="remark != null">remark,</if>
-            <if test="materialName != null">material_name,</if>
-            <if test="unit != null">unit,</if>
+            <if test="wzmc != null">wzmc,</if>
+            <if test="jldw != null">jldw,</if>
             <if test="warehouse != null">warehouse,</if>
             <if test="bookWeight != null">book_weight,</if>
             <if test="varietyCode != null">variety_code,</if>
-            <if test="varietyName != null">variety_name,</if>
-            <if test="materialCategory != null">material_category,</if>
+            <if test="pzmc != null">pzmc,</if>
+            <if test="wzlb != null">wzlb,</if>
             <if test="reservedWeight != null">reserved_weight,</if>
             <if test="availableWeight != null">available_weight,</if>
             <if test="squadron != null">squadron,</if>
@@ -78,17 +78,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="inventoryId != null">#{inventoryId},</if>
-            <if test="materialCode != null">#{materialCode},</if>
+            <if test="wzbm != null">#{wzbm},</if>
             <if test="actualWeight != null">#{actualWeight},</if>
             <if test="status != null">#{status},</if>
             <if test="remark != null">#{remark},</if>
-            <if test="materialName != null">#{materialName},</if>
-            <if test="unit != null">#{unit},</if>
+            <if test="wzmc != null">#{wzmc},</if>
+            <if test="jldw != null">#{jldw},</if>
             <if test="warehouse != null">#{warehouse},</if>
             <if test="bookWeight != null">#{bookWeight},</if>
             <if test="varietyCode != null">#{varietyCode},</if>
-            <if test="varietyName != null">#{varietyName},</if>
-            <if test="materialCategory != null">#{materialCategory},</if>
+            <if test="pzmc != null">#{pzmc},</if>
+            <if test="wzlb != null">#{wzlb},</if>
             <if test="reservedWeight != null">#{reservedWeight},</if>
             <if test="availableWeight != null">#{availableWeight},</if>
             <if test="squadron != null">#{squadron},</if>
@@ -100,17 +100,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <update id="updateWmsMaterialStock" parameterType="WmsMaterialStock">
         update wms_material_stock
         <trim prefix="SET" suffixOverrides=",">
-            <if test="materialCode != null">material_code = #{materialCode},</if>
+            <if test="wzbm != null">wzbm = #{wzbm},</if>
             <if test="actualWeight != null">actual_weight = #{actualWeight},</if>
             <if test="status != null">status = #{status},</if>
             <if test="remark != null">remark = #{remark},</if>
-            <if test="materialName != null">material_name = #{materialName},</if>
-            <if test="unit != null">unit = #{unit},</if>
+            <if test="wzmc != null">wzmc = #{wzmc},</if>
+            <if test="jldw != null">jldw = #{jldw},</if>
             <if test="warehouse != null">warehouse = #{warehouse},</if>
             <if test="bookWeight != null">book_weight = #{bookWeight},</if>
             <if test="varietyCode != null">variety_code = #{varietyCode},</if>
-            <if test="varietyName != null">variety_name = #{varietyName},</if>
-            <if test="materialCategory != null">material_category = #{materialCategory},</if>
+            <if test="pzmc != null">pzmc = #{pzmc},</if>
+            <if test="wzlb != null">wzlb = #{wzlb},</if>
             <if test="reservedWeight != null">reserved_weight = #{reservedWeight},</if>
             <if test="availableWeight != null">available_weight = #{availableWeight},</if>
             <if test="squadron != null">squadron = #{squadron},</if>

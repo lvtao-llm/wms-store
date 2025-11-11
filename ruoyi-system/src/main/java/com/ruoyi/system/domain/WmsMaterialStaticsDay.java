@@ -6,24 +6,24 @@ import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
- * 物料描述档案对象 wms_material_desc
+ * 物料日统计对象 wms_material_statics_day
  * 
  * @author ruoyi
- * @date 2025-11-07
+ * @date 2025-11-09
  */
-public class WmsMaterialDesc extends BaseEntity
+public class WmsMaterialStaticsDay extends WmsMaterialDesc
 {
     private static final long serialVersionUID = 1L;
 
     /** 主键 */
-    private Long materialDescId;
+    private String day;
 
     /** 物料编码 */
-    @Excel(name = "物资编码")
+    @Excel(name = "物料编码")
     private String wzbm;
 
     /** 物料名称 */
-    @Excel(name = "物资名称")
+    @Excel(name = "物料名称")
     private String wzmc;
 
     /** 规格 */
@@ -42,95 +42,107 @@ public class WmsMaterialDesc extends BaseEntity
     @Excel(name = "计量单位")
     private String jldw;
 
-    /** 存放条件 */
-    @Excel(name = "存放条件")
-    private String materialRequirements;
+    /** 接料 */
+    @Excel(name = "接料")
+    private Double jl;
 
-    /** 安全注意事项 */
-    @Excel(name = "安全注意事项")
-    private String materialSafetyNotice;
+    /** 调拨 */
+    @Excel(name = "调拨")
+    private Double db;
 
-    /** 关键点位 */
-    @Excel(name = "关键点位")
-    private String keyPoints;
+    /** 库存 */
+    @Excel(name = "库存")
+    private Double kc;
 
-    public Long getMaterialDescId() {
-        return materialDescId;
+    public String getDay() {
+        return day;
     }
 
-    public void setMaterialDescId(Long materialDescId) {
-        this.materialDescId = materialDescId;
+    public void setDay(String day) {
+        this.day = day;
     }
 
+    @Override
     public String getWzbm() {
         return wzbm;
     }
 
+    @Override
     public void setWzbm(String wzbm) {
         this.wzbm = wzbm;
     }
 
+    @Override
     public String getWzmc() {
         return wzmc;
     }
 
+    @Override
     public void setWzmc(String wzmc) {
         this.wzmc = wzmc;
     }
 
+    @Override
     public String getPzmc() {
         return pzmc;
     }
 
+    @Override
     public void setPzmc(String pzmc) {
         this.pzmc = pzmc;
     }
 
+    @Override
     public String getWzlb() {
         return wzlb;
     }
 
+    @Override
     public void setWzlb(String wzlb) {
         this.wzlb = wzlb;
     }
 
+    @Override
     public String getAreaCodes() {
         return areaCodes;
     }
 
+    @Override
     public void setAreaCodes(String areaCodes) {
         this.areaCodes = areaCodes;
     }
 
+    @Override
     public String getJldw() {
         return jldw;
     }
 
+    @Override
     public void setJldw(String jldw) {
         this.jldw = jldw;
     }
 
-    public String getMaterialRequirements() {
-        return materialRequirements;
+    public Double getJl() {
+        return jl;
     }
 
-    public void setMaterialRequirements(String materialRequirements) {
-        this.materialRequirements = materialRequirements;
+    public void setJl(Double jl) {
+        this.jl = jl;
     }
 
-    public String getMaterialSafetyNotice() {
-        return materialSafetyNotice;
+    public Double getDb() {
+        return db;
     }
 
-    public void setMaterialSafetyNotice(String materialSafetyNotice) {
-        this.materialSafetyNotice = materialSafetyNotice;
+    public void setDb(Double db) {
+        this.db = db;
     }
 
-    public String getKeyPoints() {
-        return keyPoints;
+    public Double getKc() {
+        return kc;
     }
 
-    public void setKeyPoints(String keyPoints) {
-        this.keyPoints = keyPoints;
+    public void setKc(Double kc) {
+        this.kc = kc;
     }
 }

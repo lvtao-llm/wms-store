@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.WmsMaterialStaticsDayMapper">
+    
+    <resultMap type="WmsMaterialStaticsDay" id="WmsMaterialStaticsDayResult">
+        <result property="day"    column="day"    />
+        <result property="wzbm"    column="wzbm"    />
+        <result property="wzmc"    column="wzmc"    />
+        <result property="pzmc"    column="pzmc"    />
+        <result property="wzlb"    column="wzlb"    />
+        <result property="areaCodes"    column="area_codes"    />
+        <result property="jldw"    column="jldw"    />
+        <result property="jl"    column="jl"    />
+        <result property="db"    column="db"    />
+        <result property="kc"    column="kc"    />
+    </resultMap>
+
+    <sql id="selectWmsMaterialStaticsDayVo">
+        select day, wzbm, wzmc, pzmc, wzlb, area_codes, jldw, jl, db, kc from wms_material_statics_day
+    </sql>
+
+    <select id="selectWmsMaterialStaticsDayList" parameterType="WmsMaterialStaticsDay" resultMap="WmsMaterialStaticsDayResult">
+        <include refid="selectWmsMaterialStaticsDayVo"/>
+        <where>  
+            <if test="wzbm != null  and wzbm != ''"> and wzbm = #{wzbm}</if>
+            <if test="wzmc != null  and wzmc != ''"> and wzmc like concat('%', #{wzmc}, '%')</if>
+            <if test="pzmc != null  and pzmc != ''"> and pzmc = #{pzmc}</if>
+            <if test="wzlb != null  and wzlb != ''"> and wzlb = #{wzlb}</if>
+            <if test="areaCodes != null  and areaCodes != ''"> and area_codes = #{areaCodes}</if>
+            <if test="jldw != null  and jldw != ''"> and jldw = #{jldw}</if>
+            <if test="jl != null "> and jl = #{jl}</if>
+            <if test="db != null "> and db = #{db}</if>
+            <if test="kc != null "> and kc = #{kc}</if>
+        </where>
+    </select>
+    
+    <select id="selectWmsMaterialStaticsDayByDay" parameterType="String" resultMap="WmsMaterialStaticsDayResult">
+        <include refid="selectWmsMaterialStaticsDayVo"/>
+        where day = #{day}
+    </select>
+
+    <insert id="insertWmsMaterialStaticsDay" parameterType="WmsMaterialStaticsDay">
+        insert into wms_material_statics_day
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="day != null">day,</if>
+            <if test="wzbm != null and wzbm != ''">wzbm,</if>
+            <if test="wzmc != null and wzmc != ''">wzmc,</if>
+            <if test="pzmc != null">pzmc,</if>
+            <if test="wzlb != null">wzlb,</if>
+            <if test="areaCodes != null">area_codes,</if>
+            <if test="jldw != null">jldw,</if>
+            <if test="jl != null">jl,</if>
+            <if test="db != null">db,</if>
+            <if test="kc != null">kc,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="day != null">#{day},</if>
+            <if test="wzbm != null and wzbm != ''">#{wzbm},</if>
+            <if test="wzmc != null and wzmc != ''">#{wzmc},</if>
+            <if test="pzmc != null">#{pzmc},</if>
+            <if test="wzlb != null">#{wzlb},</if>
+            <if test="areaCodes != null">#{areaCodes},</if>
+            <if test="jldw != null">#{jldw},</if>
+            <if test="jl != null">#{jl},</if>
+            <if test="db != null">#{db},</if>
+            <if test="kc != null">#{kc},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWmsMaterialStaticsDay" parameterType="WmsMaterialStaticsDay">
+        INSERT INTO wms_material_statics_day
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="day != null">day,</if>
+            <if test="wzbm != null and wzbm != ''">wzbm,</if>
+            <if test="wzmc != null and wzmc != ''">wzmc,</if>
+            <if test="pzmc != null">pzmc,</if>
+            <if test="wzlb != null">wzlb,</if>
+            <if test="areaCodes != null">area_codes,</if>
+            <if test="jldw != null">jldw,</if>
+            <if test="jl != null">jl,</if>
+            <if test="db != null">db,</if>
+            <if test="kc != null">kc,</if>
+        </trim>
+        <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+            <if test="day != null">#{day},</if>
+            <if test="wzbm != null and wzbm != ''">#{wzbm},</if>
+            <if test="wzmc != null and wzmc != ''">#{wzmc},</if>
+            <if test="pzmc != null">#{pzmc},</if>
+            <if test="wzlb != null">#{wzlb},</if>
+            <if test="areaCodes != null">#{areaCodes},</if>
+            <if test="jldw != null">#{jldw},</if>
+            <if test="jl != null">#{jl},</if>
+            <if test="db != null">#{db},</if>
+            <if test="kc != null">#{kc},</if>
+        </trim>
+        ON DUPLICATE KEY UPDATE
+        <trim prefix="" suffixOverrides=",">
+            <if test="wzmc != null and wzmc != ''">wzmc = VALUES(wzmc),</if>
+            <if test="pzmc != null">pzmc = VALUES(pzmc),</if>
+            <if test="wzlb != null">wzlb = VALUES(wzlb),</if>
+            <if test="areaCodes != null">area_codes = VALUES(area_codes),</if>
+            <if test="jldw != null">jldw = VALUES(jldw),</if>
+            <if test="jl != null">jl = VALUES(jl),</if>
+            <if test="db != null">db = VALUES(db),</if>
+            <if test="kc != null">kc = VALUES(kc),</if>
+        </trim>
+    </update>
+
+    <delete id="deleteWmsMaterialStaticsDayByDay" parameterType="String">
+        delete from wms_material_statics_day where day = #{day}
+    </delete>
+
+    <delete id="deleteWmsMaterialStaticsDayByDays" parameterType="String">
+        delete from wms_material_statics_day where day in 
+        <foreach item="day" collection="array" open="(" separator="," close=")">
+            #{day}
+        </foreach>
+    </delete>
+</mapper>

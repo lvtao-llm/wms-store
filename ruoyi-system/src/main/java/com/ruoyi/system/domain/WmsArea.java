@@ -81,19 +81,40 @@ public class WmsArea extends BaseEntity {
     @Excel(name = "启用状态")
     private String enabled;
 
+    /**
+     * geometry
+     */
     @JsonIgnore
     private Geometry geometry;
 
+    /**
+     * 区域图片
+     */
     @Excel(name = "区域图片")
-    private String photos ;
+    private String photos;
 
+    /**
+     * 全景图片
+     */
     @Excel(name = "全景图片")
-    private String photo360 ;
+    private String photo360;
 
     /**
      * 删除标志
      */
     private String delFlag;
+
+    /**
+     * 人数
+     */
+    @JsonIgnore
+    private int personCount = 0;
+
+    /**
+     * 车辆数
+     */
+    @JsonIgnore
+    private int vehicleCount = 0;
 
     public void setAreaId(Long areaId) {
         this.areaId = areaId;
@@ -245,5 +266,21 @@ public class WmsArea extends BaseEntity {
 
     public void setPhoto360(String photo360) {
         this.photo360 = photo360;
+    }
+
+    public int getPersonCount() {
+        return personCount;
+    }
+
+    public void setPersonCount(int personCount) {
+        this.personCount = personCount;
+    }
+
+    public int getVehicleCount() {
+        return vehicleCount;
+    }
+
+    public void setVehicleCount(int vehicleCount) {
+        this.vehicleCount = vehicleCount;
     }
 }

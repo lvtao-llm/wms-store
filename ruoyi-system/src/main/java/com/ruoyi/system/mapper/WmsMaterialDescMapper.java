@@ -60,5 +60,5 @@ public interface WmsMaterialDescMapper
      */
     public int deleteWmsMaterialDescByMaterialDescIds(Long[] materialDescIds);
 
-    int insertNewMaterialDesc(WmsMaterialIn w);
+    int insertNewMaterialDesc(WmsMaterialDesc w);
 }

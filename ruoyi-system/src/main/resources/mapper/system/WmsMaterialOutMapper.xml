@@ -40,9 +40,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="customerCode"    column="customer_code"    />
         <result property="customerName"    column="customer_name"    />
         <result property="materialGroup"    column="material_group"    />
-        <result property="materialCode"    column="material_code"    />
-        <result property="materialName"    column="material_name"    />
-        <result property="measureUnit"    column="measure_unit"    />
+        <result property="wzbm"    column="wzbm"    />
+        <result property="wzmc"    column="wzmc"    />
+        <result property="jldw"    column="jldw"    />
         <result property="salesCompany"    column="sales_company"    />
         <result property="storehouse"    column="storehouse"    />
         <result property="materialYard"    column="material_yard"    />
@@ -80,7 +80,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectWmsMaterialOutVo">
-        select allot_detail_id, storehouse_id, document_type, car_number, car_model, gross_weight, tare_weight, net_weight, meter_id, department, measure_image_file, measure_video_file, guard, outbound_time, measurer, measure_time, tare_image_file, tare_video_file, document_status, custodian, operate_time, adjust_quantity, measure_curvature, outbound_id, measure_type, piece_count, original_document_id, remark, card_id, allot_id, allot_code, allot_type, customer_code, customer_name, material_group, material_code, material_name, measure_unit, sales_company, storehouse, material_yard, allot_quantity, actual_quantity, car_count, planned_price, sales_price, tax_rate, allot_operator, allot_time, balance, tail_material, surplus_material, car_count1, is_multi_car, report_remark, first_tare_weight, department1, yard_code, reporter, adjust_remark, storehouse_image, image_path, multi_allot_detail, net_weight1, business_year_month, squad, material_group1, custodian_id, short_code, self_merge_category, custodian_name, status from wms_material_out
+        select allot_detail_id, storehouse_id, document_type, car_number, car_model, gross_weight, tare_weight, net_weight, meter_id, department, measure_image_file, measure_video_file, guard, outbound_time, measurer, measure_time, tare_image_file, tare_video_file, document_status, custodian, operate_time, adjust_quantity, measure_curvature, outbound_id, measure_type, piece_count, original_document_id, remark, card_id, allot_id, allot_code, allot_type, customer_code, customer_name, material_group, wzbm, wzmc, jldw, sales_company, storehouse, material_yard, allot_quantity, actual_quantity, car_count, planned_price, sales_price, tax_rate, allot_operator, allot_time, balance, tail_material, surplus_material, car_count1, is_multi_car, report_remark, first_tare_weight, department1, yard_code, reporter, adjust_remark, storehouse_image, image_path, multi_allot_detail, net_weight1, business_year_month, squad, material_group1, custodian_id, short_code, self_merge_category, custodian_name, status from wms_material_out
     </sql>
 
     <select id="selectWmsMaterialOutList" parameterType="WmsMaterialOut" resultMap="WmsMaterialOutResult">
@@ -120,9 +120,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="customerCode != null  and customerCode != ''"> and customer_code = #{customerCode}</if>
             <if test="customerName != null  and customerName != ''"> and customer_name like concat('%', #{customerName}, '%')</if>
             <if test="materialGroup != null  and materialGroup != ''"> and material_group = #{materialGroup}</if>
-            <if test="materialCode != null  and materialCode != ''"> and material_code = #{materialCode}</if>
-            <if test="materialName != null  and materialName != ''"> and material_name like concat('%', #{materialName}, '%')</if>
-            <if test="measureUnit != null  and measureUnit != ''"> and measure_unit = #{measureUnit}</if>
+            <if test="wzbm != null  and wzbm != ''"> and wzbm = #{wzbm}</if>
+            <if test="wzmc != null  and wzmc != ''"> and wzmc like concat('%', #{wzmc}, '%')</if>
+            <if test="jldw != null  and jldw != ''"> and jldw = #{jldw}</if>
             <if test="salesCompany != null  and salesCompany != ''"> and sales_company = #{salesCompany}</if>
             <if test="storehouse != null  and storehouse != ''"> and storehouse = #{storehouse}</if>
             <if test="materialYard != null  and materialYard != ''"> and material_yard = #{materialYard}</if>
@@ -203,9 +203,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="customerCode != null">customer_code,</if>
             <if test="customerName != null">customer_name,</if>
             <if test="materialGroup != null">material_group,</if>
-            <if test="materialCode != null">material_code,</if>
-            <if test="materialName != null">material_name,</if>
-            <if test="measureUnit != null">measure_unit,</if>
+            <if test="wzbm != null">wzbm,</if>
+            <if test="wzmc != null">wzmc,</if>
+            <if test="jldw != null">jldw,</if>
             <if test="salesCompany != null">sales_company,</if>
             <if test="storehouse != null">storehouse,</if>
             <if test="materialYard != null">material_yard,</if>
@@ -277,9 +277,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="customerCode != null">#{customerCode},</if>
             <if test="customerName != null">#{customerName},</if>
             <if test="materialGroup != null">#{materialGroup},</if>
-            <if test="materialCode != null">#{materialCode},</if>
-            <if test="materialName != null">#{materialName},</if>
-            <if test="measureUnit != null">#{measureUnit},</if>
+            <if test="wzbm != null">#{wzbm},</if>
+            <if test="wzmc != null">#{wzmc},</if>
+            <if test="jldw != null">#{jldw},</if>
             <if test="salesCompany != null">#{salesCompany},</if>
             <if test="storehouse != null">#{storehouse},</if>
             <if test="materialYard != null">#{materialYard},</if>
@@ -354,9 +354,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="customerCode != null">customer_code = #{customerCode},</if>
             <if test="customerName != null">customer_name = #{customerName},</if>
             <if test="materialGroup != null">material_group = #{materialGroup},</if>
-            <if test="materialCode != null">material_code = #{materialCode},</if>
-            <if test="materialName != null">material_name = #{materialName},</if>
-            <if test="measureUnit != null">measure_unit = #{measureUnit},</if>
+            <if test="wzbm != null">wzbm = #{wzbm},</if>
+            <if test="wzmc != null">wzmc = #{wzmc},</if>
+            <if test="jldw != null">jldw = #{jldw},</if>
             <if test="salesCompany != null">sales_company = #{salesCompany},</if>
             <if test="storehouse != null">storehouse = #{storehouse},</if>
             <if test="materialYard != null">material_yard = #{materialYard},</if>

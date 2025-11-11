@@ -248,7 +248,7 @@ export default {
         cardVersion: null,
         cardFreq: null,
         statusTime: null,
-        cardEnable: null,
+        cardEnable: "Y",
         useStatus: null,
         cardTransfer: null,
         heartTime: null,

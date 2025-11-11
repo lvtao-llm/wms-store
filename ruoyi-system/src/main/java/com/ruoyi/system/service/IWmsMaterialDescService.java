@@ -1,6 +1,8 @@
 package com.ruoyi.system.service;
 
 import java.util.List;
+import java.util.Map;
+
 import com.ruoyi.system.domain.WmsMaterialDesc;
 import com.ruoyi.system.domain.WmsMaterialIn;
 
@@ -60,5 +62,7 @@ public interface IWmsMaterialDescService
      */
     public int deleteWmsMaterialDescByMaterialDescId(Long materialDescId);
 
-    int insertNewMaterialDesc(WmsMaterialIn w);
+    int insertNewMaterialDesc(WmsMaterialDesc w);
+
+    Map<String, WmsMaterialDesc> getMaterialDescMap();
 }

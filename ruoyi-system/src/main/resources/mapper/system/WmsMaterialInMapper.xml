@@ -61,7 +61,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectWmsMaterialInList" parameterType="WmsMaterialIn" resultMap="WmsMaterialInResult">
         <include refid="selectWmsMaterialInVo"/>
-        <where>  
+        <where>
             <if test="jlBh != null  and jlBh != ''"> and jl_bh = #{jlBh}</if>
             <if test="dhBh != null  and dhBh != ''"> and dh_bh = #{dhBh}</if>
             <if test="hpBh != null  and hpBh != ''"> and hp_bh = #{hpBh}</if>

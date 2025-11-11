@@ -3,6 +3,9 @@ package com.ruoyi.system.lanya.data;
 import com.alibaba.fastjson2.JSON;
 import com.ruoyi.system.domain.*;
 import com.ruoyi.system.service.*;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,45 +29,111 @@ import java.util.*;
 public class LanyaDataSync {
     private static final Logger log = LoggerFactory.getLogger(LanyaDataSync.class);
 
+    /**
+     * Lanya定位数据数据服务
+     */
     @Autowired
     private ILanyaPositionHistoryService lanyaPositionHistoryService;
 
+    /**
+     * 系统配置服务
+     */
     @Autowired
     private ISysConfigService configService;
 
+    /**
+     * 报警检测服务
+     */
     @Autowired
     private AlarmDetection alarmDetection;
 
+    /**
+     * 报警日志服务
+     */
     @Autowired
     private IWmsAlarmLogService wmsAlarmLogService;
 
+    /**
+     * Lanya设备卡发送日志服务
+     */
     @Autowired
     private ILanyaDeviceCardSenderLogService lanyaDeviceCardSenderLogService;
 
+    /**
+     * 设备卡工作日志服务
+     */
     @Autowired
     private IWmsDeviceCardWorkLogService wmsDeviceCardWorkLogService;
 
+    /**
+     * 轨迹服务
+     */
     @Autowired
     private IWmsTrajectoryService wmsTrajectoryService;
 
+    /**
+     * 区域服务
+     */
+    @Autowired
+    private IWmsAreaService wmsAreaService;
+
+    /**
+     * 定时同步Lanya定位数据开关
+     */
     @Value("${lanya.position.sync.enabled:false}")
     private boolean enablePosition;
+
+    /**
+     * 定时同步Lanya设备卡发送日志开关
+     */
     @Value("${lanya.position.mock.enabled:false}")
     private boolean enableMock;
+
+    /**
+     * 定时同步Lanya设备卡发放日志开关
+     */
     @Value("${lanya.issuing.sync.enabled:false}")
     private boolean enableIssuing;
 
+    /**
+     * 定时同步Lanya定位数据表名
+     */
     String positionKey = "lanya.position.sync.offset";
+
+    /**
+     * 定时同步Lanya设备卡发放日志表名
+     */
     String cardLogKey = "lanya.card_log.sync.offset";
+
+    /**
+     * 定时同步Lanya定位数据表名配置
+     */
     SysConfig positionConfig = new SysConfig(positionKey);
+
+    /**
+     * 定时同步Lanya设备卡发放日志表名配置
+     */
     SysConfig cardLogConfig = new SysConfig(cardLogKey);
 
+    /**
+     * 工作活动缓存
+     */
     Map<Long, WmsDeviceCardWorkLog> workActivities = new HashMap<>();
+
+    /**
+     * 工作活动缓存，按卡ID缓存
+     */
     Map<Long, WmsDeviceCardWorkLog> workActivitiesByCardId = new HashMap<>();
 
+    /**
+     * 时间格式
+     */
     SimpleDateFormat sdfDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-    SimpleDateFormat sdfTableSuffix = new SimpleDateFormat("yyyyMMdd");
 
+    /**
+     * 时间格式
+     */
+    SimpleDateFormat sdfTableSuffix = new SimpleDateFormat("yyyyMMdd");
 
     // 大庆市萨尔图区中心坐标
     double centerLat = 46.6346017782;  // 纬度
@@ -370,6 +439,7 @@ public class LanyaDataSync {
                     }
                 }
 
+                // 添加轨迹给卡工作日志
                 WmsDeviceCardWorkLog workLog = workActivitiesByCardId.get(position.getCardId());
                 if (workLog != null) {
                     workLog.getTrajectory().add(position);  //经度
@@ -377,6 +447,7 @@ public class LanyaDataSync {
 
                 // 更新本地position_history的offset
                 positionOffset = position.getAcceptTime();
+
                 // 更新sys_config表中最后positon_history同步的offset
                 positionConfig.setConfigValue(sdfDateTime.format(positionOffset));
                 configService.updateConfig(positionConfig);
@@ -386,4 +457,6 @@ public class LanyaDataSync {
             continueGet = !lanyaPositionHistories.isEmpty();
         }
     }
+
+
 }

@@ -6,17 +6,17 @@
 
     <resultMap type="WmsMaterialStock" id="ViewKcSkResult">
         <result property="inventoryId" column="库存编号"/>
-        <result property="materialCode" column="物资编码"/>
+        <result property="wzbm" column="物资编码"/>
         <result property="actualWeight" column="实存重量"/>
         <result property="status" column="状态"/>
         <result property="remark" column="备注"/>
-        <result property="materialName" column="物资名称"/>
-        <result property="unit" column="计量单位"/>
+        <result property="wzmc" column="物资名称"/>
+        <result property="jldw" column="计量单位"/>
         <result property="warehouse" column="库房"/>
         <result property="bookWeight" column="账存重量"/>
         <result property="varietyCode" column="品种编码"/>
-        <result property="varietyName" column="品种名称"/>
-        <result property="materialCategory" column="物资类别"/>
+        <result property="pzmc" column="品种名称"/>
+        <result property="wzlb" column="物资类别"/>
         <result property="reservedWeight" column="预拨重量"/>
         <result property="availableWeight" column="可拨重量"/>
         <result property="squadron" column="中队"/>
@@ -36,17 +36,17 @@
         <include refid="selectViewKcSkVo"/>
         <where>
             <if test="inventoryId != null and inventoryId != ''"> AND 库存编号 = #{inventoryId}</if>
-            <if test="materialCode != null and materialCode != ''"> AND 物资编码 = #{materialCode}</if>
+            <if test="wzbm != null and wzbm != ''"> AND 物资编码 = #{wzbm}</if>
             <if test="actualWeight != null"> AND 实存重量 = #{actualWeight}</if>
             <if test="status != null and status != ''"> AND 状态 = #{status}</if>
             <if test="remark != null and remark != ''"> AND 备注 = #{remark}</if>
-            <if test="materialName != null and materialName != ''"> AND 物资名称 LIKE CONCAT('%', #{materialName}, '%')</if>
-            <if test="unit != null and unit != ''"> AND 计量单位 = #{unit}</if>
+            <if test="wzmc != null and wzmc != ''"> AND 物资名称 LIKE CONCAT('%', #{wzmc}, '%')</if>
+            <if test="jldw != null and jldw != ''"> AND 计量单位 = #{jldw}</if>
             <if test="warehouse != null and warehouse != ''"> AND 库房 = #{warehouse}</if>
             <if test="bookWeight != null"> AND 账存重量 = #{bookWeight}</if>
             <if test="varietyCode != null and varietyCode != ''"> AND 品种编码 = #{varietyCode}</if>
-            <if test="varietyName != null and varietyName != ''"> AND 品种名称 LIKE CONCAT('%', #{varietyName}, '%')</if>
-            <if test="materialCategory != null and materialCategory != ''"> AND 物资类别 = #{materialCategory}</if>
+            <if test="pzmc != null and pzmc != ''"> AND 品种名称 LIKE CONCAT('%', #{pzmc}, '%')</if>
+            <if test="wzlb != null and wzlb != ''"> AND 物资类别 = #{wzlb}</if>
             <if test="reservedWeight != null"> AND 预拨重量 = #{reservedWeight}</if>
             <if test="availableWeight != null"> AND 可拨重量 = #{availableWeight}</if>
             <if test="squadron != null and squadron != ''"> AND 中队 = #{squadron}</if>

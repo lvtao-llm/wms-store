@@ -407,6 +407,12 @@ export const dynamicRoutes = [
         component: () => import('@/views/wms_device_camera/index'),
         name: '摄像头管理',
         meta: {title: '摄像头管理'}
+      },
+      {
+        path: 'send-content',
+        component: () => import('@/views/wms_card_content_send/index'),
+        name: '发送内容给卡播报',
+        meta: {title: '发送内容给卡播报'}
       }
     ]
   },

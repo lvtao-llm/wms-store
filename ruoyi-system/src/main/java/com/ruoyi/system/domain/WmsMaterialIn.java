@@ -14,7 +14,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * @author ruoyi
  * @date 2025-11-08
  */
-public class WmsMaterialIn extends BaseEntity {
+public class WmsMaterialIn extends WmsMaterialDesc {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -315,8 +315,10 @@ public class WmsMaterialIn extends BaseEntity {
     @Excel(name = "现场员姓名")
     private String xcyxm;
 
-    public void setMaterialDescId(Long id) {
+    private Long materialDescId;
 
+    public void setMaterialDescId(Long id) {
+        this.materialDescId = id;
     }
 
     public void setJlBh(String jlBh) {
@@ -755,5 +757,9 @@ public class WmsMaterialIn extends BaseEntity {
                 .append("cksj", getCksj())
                 .append("xcyxm", getXcyxm())
                 .toString();
+    }
+
+    public Long getMaterialDescId() {
+        return materialDescId;
     }
 }

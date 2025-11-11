@@ -72,9 +72,6 @@ public class ThirdPartyAuth {
 
     public Object callThirdParty(String path, HttpMethod method, Map<String, Object> body) throws JsonProcessingException {
         String url = "http://" + baseUrl + path;
-
-        System.out.println(url);
-
         // 4. 发 POST
         Object object = exchange(url, method, entity(body, MediaType.APPLICATION_JSON));
 
@@ -94,11 +91,9 @@ public class ThirdPartyAuth {
 
     public Object callThirdParty(String path, HttpMethod method, HttpEntity<MultiValueMap<String, Object>> entity) throws JsonProcessingException {
         String url = "http://" + baseUrl + path;
-
         HttpHeaders headers = new HttpHeaders();
         headers.putAll(entity.getHeaders());
         headers.set("Authorization", token);
-
         HttpEntity<MultiValueMap<String, Object>> newEntity = new HttpEntity<>(entity.getBody(), headers);
 
         // 4. 发 POST

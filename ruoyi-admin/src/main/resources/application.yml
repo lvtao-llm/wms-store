@@ -151,3 +151,14 @@ lanya:
   issuing:
     sync:
       enabled: false
+
+wzgs:
+  jl:
+    sync:
+      enabled: false
+  db:
+    sync:
+      enabled: false
+  kc:
+    sync:
+      enabled: false

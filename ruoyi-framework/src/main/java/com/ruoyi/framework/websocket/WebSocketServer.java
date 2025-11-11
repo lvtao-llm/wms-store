@@ -1,10 +1,8 @@
 package com.ruoyi.framework.websocket;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -22,10 +20,12 @@ import com.ruoyi.framework.web.domain.server.Sys;
 import com.ruoyi.system.domain.WmsAlarmRule;
 import com.ruoyi.system.domain.WmsArea;
 import com.ruoyi.system.domain.WmsDevice;
+import com.ruoyi.system.domain.WmsMaterialStaticsDay;
 import com.ruoyi.system.lanya.data.LanyaDataSync;
 import com.ruoyi.system.service.IWmsAlarmRuleService;
 import com.ruoyi.system.service.IWmsAreaService;
 import com.ruoyi.system.service.IWmsDeviceService;
+import com.ruoyi.system.service.IWmsMaterialStaticsDayService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,30 +51,69 @@ public class WebSocketServer {
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(WebSocketServer.class);
 
+    /**
+     * 第三方授权
+     */
     @Autowired
     private ThirdPartyAuth thirdPartyAuth;
 
+    /**
+     * 设置目标服务器基础地址
+     */
     @Value("${lanya.base-url:112.98.110.101:8091/gateway-service}")
     private void setBaseUrl(String baseUrl) {
         WebSocketServer.baseUrl = baseUrl;
     }
 
-    // 目标服务器地址
+    /**
+     * 目标服务器基础地址
+     */
     private static String baseUrl;
 
+    /**
+     * 存储浏览器会话队列
+     */
     // 存储客户端会话和对应的目标WebSocket连接
     private static final Map<String, Session> clientSessions = new ConcurrentHashMap<>();
 
-    // Spring WebSocket客户端
+    /**
+     * 目标服务器会话
+     */
     private WebSocketClient webSocketClient;
 
+    /**
+     * 报警规则服务
+     */
     @Autowired
     private IWmsAlarmRuleService wmsAlarmRuleService;
 
+    /**
+     * 设备服务
+     */
     @Autowired
     private static IWmsDeviceService wmsDeviceService;
 
+    /**
+     * 存储消息队列
+     */
     public BlockingQueue<String> messageQueue = new LinkedBlockingQueue<>(10000);
+
+    /**
+     * 物料日统计服务
+     */
+    @Autowired
+    private IWmsMaterialStaticsDayService wmsMaterialStaticsDayService;
+
+    /**
+     * 区域服务
+     */
+    @Autowired
+    private IWmsAreaService wmsAreaService;
+
+    /**
+     * 时间格式 年月日
+     */
+    SimpleDateFormat sdfYearMonDay = new SimpleDateFormat("yyyy-MM-dd");
 
     @PostConstruct
     public void init() {
@@ -314,24 +353,31 @@ public class WebSocketServer {
         messageQueue.add(json);
     }
 
-    @Scheduled(cron = "0/1 * * * * ?")
+    @Scheduled(cron = "0/10 * * * * ?")
     public void mockData1() {
         // 使用异步发送替代阻塞发送
+        WmsMaterialStaticsDay wmsMaterialStaticsDay = new WmsMaterialStaticsDay();
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR, -1);
+        String ymd = sdfYearMonDay.format(calendar.getTime());
+        wmsMaterialStaticsDay.setDay(ymd);
+        List<WmsMaterialStaticsDay> wmsMaterialStaticsDays = wmsMaterialStaticsDayService.selectWmsMaterialStaticsDayList(wmsMaterialStaticsDay);
         JSONObject materialLog = new JSONObject();
         JSONArray materialLogData = new JSONArray();
         materialLog.put("msgType", "materialLog");
         materialLog.put("data", materialLogData);
-        materialLog.put("total", 10);
-        for (int i = 0; i < 10; i++) {
+        materialLog.put("total", wmsMaterialStaticsDays.size());
+        for (int i = 0; i < wmsMaterialStaticsDays.size(); i++) {
+            WmsMaterialStaticsDay d = wmsMaterialStaticsDays.get(i);
             JSONObject materialLogDataItem = new JSONObject();
             materialLogDataItem.put("sort", i);
-            materialLogDataItem.put("materialName", "MATERIAL_" + i);
-            materialLogDataItem.put("materialCode", "MATERIAL_CODE_" + i);
-            materialLogDataItem.put("materialType", "MATERIAL_TYPE_" + i);
-            materialLogDataItem.put("stockIn", i);
-            materialLogDataItem.put("stockOut", 0);
-            materialLogDataItem.put("stock", 100);
-            materialLogDataItem.put("areaName", "钢铁区");
+            materialLogDataItem.put("materialName", d.getWzmc());
+            materialLogDataItem.put("materialCode", d.getWzbm());
+            materialLogDataItem.put("materialType", d.getWzlb());
+            materialLogDataItem.put("stockIn", d.getJl());
+            materialLogDataItem.put("stockOut", d.getDb());
+            materialLogDataItem.put("stock", d.getKc());
+            materialLogDataItem.put("areaName", d.getAreaCodes());
             materialLogData.add(materialLogDataItem);
         }
         messageQueue.add(materialLog.toString());
@@ -339,21 +385,25 @@ public class WebSocketServer {
 
     @Scheduled(cron = "0/1 * * * * ?")
     public void mockData4() {
+        Map<Long, WmsArea> wmsAreas = wmsAreaService.getAreaMap();
         // 使用异步发送替代阻塞发送
         JSONObject areaLog = new JSONObject();
         JSONArray areaLogData = new JSONArray();
         areaLog.put("msgType", "areaLog");
-        areaLog.put("total", 10);
+        areaLog.put("total", wmsAreas.size());
         areaLog.put("data", areaLogData);
-        for (int i = 0; i < 10; i++) {
+        int i = 0;
+        for (Map.Entry<Long, WmsArea> entry : wmsAreas.entrySet()) {
+            WmsArea a = entry.getValue();
             JSONObject areaLogDataItem = new JSONObject();
             areaLogDataItem.put("sort", i);
-            areaLogDataItem.put("areaCode", "area_CODE_" + i);
-            areaLogDataItem.put("areaType", "area_TYPE_" + i);
-            areaLogDataItem.put("personCount", i);
-            areaLogDataItem.put("vehicleCount", 0);
+            areaLogDataItem.put("areaCode", a.getAreaName());
+            areaLogDataItem.put("areaType", a.getAreaType());
+            areaLogDataItem.put("personCount", a.getPersonCount());
+            areaLogDataItem.put("vehicleCount", a.getVehicleCount());
             areaLogDataItem.put("areaName", "钢铁区");
             areaLogData.add(areaLogDataItem);
+            i++;
         }
         messageQueue.add(areaLog.toString());
     }

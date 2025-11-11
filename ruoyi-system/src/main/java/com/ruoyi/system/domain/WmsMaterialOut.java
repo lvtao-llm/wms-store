@@ -13,7 +13,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * @author ruoyi
  * @date 2025-11-08
  */
-public class WmsMaterialOut extends BaseEntity
+public class WmsMaterialOut extends WmsMaterialDesc
 {
     private static final long serialVersionUID = 1L;
 
@@ -158,15 +158,15 @@ public class WmsMaterialOut extends BaseEntity
 
     /** 物资编码 */
     @Excel(name = "物资编码")
-    private String materialCode;
+    private String wzbm;
 
     /** 物资名称 */
     @Excel(name = "物资名称")
-    private String materialName;
+    private String wzmc;
 
     /** 计量单位 */
     @Excel(name = "计量单位")
-    private String measureUnit;
+    private String jldw;
 
     /** 销售公司 */
     @Excel(name = "销售公司")
@@ -305,791 +305,577 @@ public class WmsMaterialOut extends BaseEntity
     @Excel(name = "状态")
     private String status;
 
-    public void setAllotDetailId(String allotDetailId)
-    {
-        this.allotDetailId = allotDetailId;
-    }
-
-    public String getAllotDetailId()
-    {
+    public String getAllotDetailId() {
         return allotDetailId;
     }
 
-    public void setStorehouseId(String storehouseId)
-    {
-        this.storehouseId = storehouseId;
+    public void setAllotDetailId(String allotDetailId) {
+        this.allotDetailId = allotDetailId;
     }
 
-    public String getStorehouseId()
-    {
+    public String getStorehouseId() {
         return storehouseId;
     }
 
-    public void setDocumentType(String documentType)
-    {
-        this.documentType = documentType;
+    public void setStorehouseId(String storehouseId) {
+        this.storehouseId = storehouseId;
     }
 
-    public String getDocumentType()
-    {
+    public String getDocumentType() {
         return documentType;
     }
 
-    public void setCarNumber(String carNumber)
-    {
-        this.carNumber = carNumber;
+    public void setDocumentType(String documentType) {
+        this.documentType = documentType;
     }
 
-    public String getCarNumber()
-    {
+    public String getCarNumber() {
         return carNumber;
     }
 
-    public void setCarModel(String carModel)
-    {
-        this.carModel = carModel;
+    public void setCarNumber(String carNumber) {
+        this.carNumber = carNumber;
     }
 
-    public String getCarModel()
-    {
+    public String getCarModel() {
         return carModel;
     }
 
-    public void setGrossWeight(Double grossWeight)
-    {
-        this.grossWeight = grossWeight;
+    public void setCarModel(String carModel) {
+        this.carModel = carModel;
     }
 
-    public Double getGrossWeight()
-    {
+    public Double getGrossWeight() {
         return grossWeight;
     }
 
-    public void setTareWeight(Double tareWeight)
-    {
-        this.tareWeight = tareWeight;
+    public void setGrossWeight(Double grossWeight) {
+        this.grossWeight = grossWeight;
     }
 
-    public Double getTareWeight()
-    {
+    public Double getTareWeight() {
         return tareWeight;
     }
 
-    public void setNetWeight(Double netWeight)
-    {
-        this.netWeight = netWeight;
+    public void setTareWeight(Double tareWeight) {
+        this.tareWeight = tareWeight;
     }
 
-    public Double getNetWeight()
-    {
+    public Double getNetWeight() {
         return netWeight;
     }
 
-    public void setMeterId(String meterId)
-    {
-        this.meterId = meterId;
+    public void setNetWeight(Double netWeight) {
+        this.netWeight = netWeight;
     }
 
-    public String getMeterId()
-    {
+    public String getMeterId() {
         return meterId;
     }
 
-    public void setDepartment(String department)
-    {
-        this.department = department;
+    public void setMeterId(String meterId) {
+        this.meterId = meterId;
     }
 
-    public String getDepartment()
-    {
+    public String getDepartment() {
         return department;
     }
 
-    public void setMeasureImageFile(String measureImageFile)
-    {
-        this.measureImageFile = measureImageFile;
+    public void setDepartment(String department) {
+        this.department = department;
     }
 
-    public String getMeasureImageFile()
-    {
+    public String getMeasureImageFile() {
         return measureImageFile;
     }
 
-    public void setMeasureVideoFile(String measureVideoFile)
-    {
-        this.measureVideoFile = measureVideoFile;
+    public void setMeasureImageFile(String measureImageFile) {
+        this.measureImageFile = measureImageFile;
     }
 
-    public String getMeasureVideoFile()
-    {
+    public String getMeasureVideoFile() {
         return measureVideoFile;
     }
 
-    public void setGuard(String guard)
-    {
-        this.guard = guard;
+    public void setMeasureVideoFile(String measureVideoFile) {
+        this.measureVideoFile = measureVideoFile;
     }
 
-    public String getGuard()
-    {
+    public String getGuard() {
         return guard;
     }
 
-    public void setOutboundTime(Date outboundTime)
-    {
-        this.outboundTime = outboundTime;
+    public void setGuard(String guard) {
+        this.guard = guard;
     }
 
-    public Date getOutboundTime()
-    {
+    public Date getOutboundTime() {
         return outboundTime;
     }
 
-    public void setMeasurer(String measurer)
-    {
-        this.measurer = measurer;
+    public void setOutboundTime(Date outboundTime) {
+        this.outboundTime = outboundTime;
     }
 
-    public String getMeasurer()
-    {
+    public String getMeasurer() {
         return measurer;
     }
 
-    public void setMeasureTime(Date measureTime)
-    {
-        this.measureTime = measureTime;
+    public void setMeasurer(String measurer) {
+        this.measurer = measurer;
     }
 
-    public Date getMeasureTime()
-    {
+    public Date getMeasureTime() {
         return measureTime;
     }
 
-    public void setTareImageFile(String tareImageFile)
-    {
-        this.tareImageFile = tareImageFile;
+    public void setMeasureTime(Date measureTime) {
+        this.measureTime = measureTime;
     }
 
-    public String getTareImageFile()
-    {
+    public String getTareImageFile() {
         return tareImageFile;
     }
 
-    public void setTareVideoFile(String tareVideoFile)
-    {
-        this.tareVideoFile = tareVideoFile;
+    public void setTareImageFile(String tareImageFile) {
+        this.tareImageFile = tareImageFile;
     }
 
-    public String getTareVideoFile()
-    {
+    public String getTareVideoFile() {
         return tareVideoFile;
     }
 
-    public void setDocumentStatus(String documentStatus)
-    {
-        this.documentStatus = documentStatus;
+    public void setTareVideoFile(String tareVideoFile) {
+        this.tareVideoFile = tareVideoFile;
     }
 
-    public String getDocumentStatus()
-    {
+    public String getDocumentStatus() {
         return documentStatus;
     }
 
-    public void setCustodian(String custodian)
-    {
-        this.custodian = custodian;
+    public void setDocumentStatus(String documentStatus) {
+        this.documentStatus = documentStatus;
     }
 
-    public String getCustodian()
-    {
+    public String getCustodian() {
         return custodian;
     }
 
-    public void setOperateTime(Date operateTime)
-    {
-        this.operateTime = operateTime;
+    public void setCustodian(String custodian) {
+        this.custodian = custodian;
     }
 
-    public Date getOperateTime()
-    {
+    public Date getOperateTime() {
         return operateTime;
     }
 
-    public void setAdjustQuantity(Double adjustQuantity)
-    {
-        this.adjustQuantity = adjustQuantity;
+    public void setOperateTime(Date operateTime) {
+        this.operateTime = operateTime;
     }
 
-    public Double getAdjustQuantity()
-    {
+    public Double getAdjustQuantity() {
         return adjustQuantity;
     }
 
-    public void setMeasureCurvature(String measureCurvature)
-    {
-        this.measureCurvature = measureCurvature;
+    public void setAdjustQuantity(Double adjustQuantity) {
+        this.adjustQuantity = adjustQuantity;
     }
 
-    public String getMeasureCurvature()
-    {
+    public String getMeasureCurvature() {
         return measureCurvature;
     }
 
-    public void setOutboundId(String outboundId)
-    {
-        this.outboundId = outboundId;
+    public void setMeasureCurvature(String measureCurvature) {
+        this.measureCurvature = measureCurvature;
     }
 
-    public String getOutboundId()
-    {
+    public String getOutboundId() {
         return outboundId;
     }
 
-    public void setMeasureType(String measureType)
-    {
-        this.measureType = measureType;
+    public void setOutboundId(String outboundId) {
+        this.outboundId = outboundId;
     }
 
-    public String getMeasureType()
-    {
+    public String getMeasureType() {
         return measureType;
     }
 
-    public void setPieceCount(String pieceCount)
-    {
-        this.pieceCount = pieceCount;
+    public void setMeasureType(String measureType) {
+        this.measureType = measureType;
     }
 
-    public String getPieceCount()
-    {
+    public String getPieceCount() {
         return pieceCount;
     }
 
-    public void setOriginalDocumentId(String originalDocumentId)
-    {
-        this.originalDocumentId = originalDocumentId;
+    public void setPieceCount(String pieceCount) {
+        this.pieceCount = pieceCount;
     }
 
-    public String getOriginalDocumentId()
-    {
+    public String getOriginalDocumentId() {
         return originalDocumentId;
     }
 
-    public void setCardId(String cardId)
-    {
-        this.cardId = cardId;
+    public void setOriginalDocumentId(String originalDocumentId) {
+        this.originalDocumentId = originalDocumentId;
     }
 
-    public String getCardId()
-    {
+    public String getCardId() {
         return cardId;
     }
 
-    public void setAllotId(String allotId)
-    {
-        this.allotId = allotId;
+    public void setCardId(String cardId) {
+        this.cardId = cardId;
     }
 
-    public String getAllotId()
-    {
+    public String getAllotId() {
         return allotId;
     }
 
-    public void setAllotCode(String allotCode)
-    {
-        this.allotCode = allotCode;
+    public void setAllotId(String allotId) {
+        this.allotId = allotId;
     }
 
-    public String getAllotCode()
-    {
+    public String getAllotCode() {
         return allotCode;
     }
 
-    public void setAllotType(String allotType)
-    {
-        this.allotType = allotType;
+    public void setAllotCode(String allotCode) {
+        this.allotCode = allotCode;
     }
 
-    public String getAllotType()
-    {
+    public String getAllotType() {
         return allotType;
     }
 
-    public void setCustomerCode(String customerCode)
-    {
-        this.customerCode = customerCode;
+    public void setAllotType(String allotType) {
+        this.allotType = allotType;
     }
 
-    public String getCustomerCode()
-    {
+    public String getCustomerCode() {
         return customerCode;
     }
 
-    public void setCustomerName(String customerName)
-    {
-        this.customerName = customerName;
+    public void setCustomerCode(String customerCode) {
+        this.customerCode = customerCode;
     }
 
-    public String getCustomerName()
-    {
+    public String getCustomerName() {
         return customerName;
     }
 
-    public void setMaterialGroup(String materialGroup)
-    {
-        this.materialGroup = materialGroup;
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
     }
 
-    public String getMaterialGroup()
-    {
+    public String getMaterialGroup() {
         return materialGroup;
     }
 
-    public void setMaterialCode(String materialCode)
-    {
-        this.materialCode = materialCode;
-    }
-
-    public String getMaterialCode()
-    {
-        return materialCode;
-    }
-
-    public void setMaterialName(String materialName)
-    {
-        this.materialName = materialName;
-    }
-
-    public String getMaterialName()
-    {
-        return materialName;
-    }
-
-    public void setMeasureUnit(String measureUnit)
-    {
-        this.measureUnit = measureUnit;
-    }
-
-    public String getMeasureUnit()
-    {
-        return measureUnit;
-    }
-
-    public void setSalesCompany(String salesCompany)
-    {
-        this.salesCompany = salesCompany;
-    }
-
-    public String getSalesCompany()
-    {
-        return salesCompany;
-    }
-
-    public void setStorehouse(String storehouse)
-    {
-        this.storehouse = storehouse;
-    }
-
-    public String getStorehouse()
-    {
-        return storehouse;
-    }
-
-    public void setMaterialYard(String materialYard)
-    {
-        this.materialYard = materialYard;
-    }
-
-    public String getMaterialYard()
-    {
-        return materialYard;
-    }
-
-    public void setAllotQuantity(Double allotQuantity)
-    {
-        this.allotQuantity = allotQuantity;
-    }
-
-    public Double getAllotQuantity()
-    {
-        return allotQuantity;
-    }
-
-    public void setActualQuantity(Double actualQuantity)
-    {
-        this.actualQuantity = actualQuantity;
-    }
-
-    public Double getActualQuantity()
-    {
-        return actualQuantity;
-    }
-
-    public void setCarCount(Double carCount)
-    {
-        this.carCount = carCount;
-    }
-
-    public Double getCarCount()
-    {
-        return carCount;
-    }
-
-    public void setPlannedPrice(Double plannedPrice)
-    {
-        this.plannedPrice = plannedPrice;
-    }
-
-    public Double getPlannedPrice()
-    {
-        return plannedPrice;
-    }
-
-    public void setSalesPrice(Double salesPrice)
-    {
-        this.salesPrice = salesPrice;
-    }
-
-    public Double getSalesPrice()
-    {
-        return salesPrice;
-    }
-
-    public void setTaxRate(Double taxRate)
-    {
-        this.taxRate = taxRate;
-    }
-
-    public Double getTaxRate()
-    {
-        return taxRate;
-    }
-
-    public void setAllotOperator(String allotOperator)
-    {
-        this.allotOperator = allotOperator;
-    }
-
-    public String getAllotOperator()
-    {
-        return allotOperator;
-    }
-
-    public void setAllotTime(Date allotTime)
-    {
-        this.allotTime = allotTime;
-    }
-
-    public Date getAllotTime()
-    {
-        return allotTime;
-    }
-
-    public void setBalance(Double balance)
-    {
-        this.balance = balance;
-    }
-
-    public Double getBalance()
-    {
-        return balance;
-    }
-
-    public void setTailMaterial(Double tailMaterial)
-    {
-        this.tailMaterial = tailMaterial;
-    }
-
-    public Double getTailMaterial()
-    {
-        return tailMaterial;
-    }
-
-    public void setSurplusMaterial(Double surplusMaterial)
-    {
-        this.surplusMaterial = surplusMaterial;
-    }
-
-    public Double getSurplusMaterial()
-    {
-        return surplusMaterial;
-    }
-
-    public void setCarCount1(Double carCount1)
-    {
-        this.carCount1 = carCount1;
-    }
-
-    public Double getCarCount1()
-    {
-        return carCount1;
-    }
-
-    public void setIsMultiCar(String isMultiCar)
-    {
-        this.isMultiCar = isMultiCar;
-    }
-
-    public String getIsMultiCar()
-    {
-        return isMultiCar;
-    }
-
-    public void setReportRemark(String reportRemark)
-    {
-        this.reportRemark = reportRemark;
-    }
-
-    public String getReportRemark()
-    {
-        return reportRemark;
-    }
-
-    public void setFirstTareWeight(Double firstTareWeight)
-    {
-        this.firstTareWeight = firstTareWeight;
-    }
-
-    public Double getFirstTareWeight()
-    {
-        return firstTareWeight;
-    }
-
-    public void setDepartment1(String department1)
-    {
-        this.department1 = department1;
-    }
-
-    public String getDepartment1()
-    {
-        return department1;
-    }
-
-    public void setYardCode(String yardCode)
-    {
-        this.yardCode = yardCode;
-    }
-
-    public String getYardCode()
-    {
-        return yardCode;
-    }
-
-    public void setReporter(String reporter)
-    {
-        this.reporter = reporter;
-    }
-
-    public String getReporter()
-    {
-        return reporter;
-    }
-
-    public void setAdjustRemark(String adjustRemark)
-    {
-        this.adjustRemark = adjustRemark;
-    }
-
-    public String getAdjustRemark()
-    {
-        return adjustRemark;
-    }
-
-    public void setStorehouseImage(String storehouseImage)
-    {
-        this.storehouseImage = storehouseImage;
-    }
-
-    public String getStorehouseImage()
-    {
-        return storehouseImage;
-    }
-
-    public void setImagePath(String imagePath)
-    {
-        this.imagePath = imagePath;
-    }
-
-    public String getImagePath()
-    {
-        return imagePath;
-    }
-
-    public void setMultiAllotDetail(String multiAllotDetail)
-    {
-        this.multiAllotDetail = multiAllotDetail;
-    }
-
-    public String getMultiAllotDetail()
-    {
-        return multiAllotDetail;
-    }
-
-    public void setNetWeight1(Double netWeight1)
-    {
-        this.netWeight1 = netWeight1;
-    }
-
-    public Double getNetWeight1()
-    {
-        return netWeight1;
-    }
-
-    public void setBusinessYearMonth(String businessYearMonth) 
-    {
-        this.businessYearMonth = businessYearMonth;
-    }
-
-    public String getBusinessYearMonth() 
-    {
-        return businessYearMonth;
-    }
-
-    public void setSquad(String squad) 
-    {
-        this.squad = squad;
-    }
-
-    public String getSquad() 
-    {
-        return squad;
-    }
-
-    public void setMaterialGroup1(String materialGroup1) 
-    {
-        this.materialGroup1 = materialGroup1;
-    }
-
-    public String getMaterialGroup1() 
-    {
-        return materialGroup1;
-    }
-
-    public void setCustodianId(String custodianId) 
-    {
-        this.custodianId = custodianId;
-    }
-
-    public String getCustodianId() 
-    {
-        return custodianId;
-    }
-
-    public void setShortCode(String shortCode) 
-    {
-        this.shortCode = shortCode;
-    }
-
-    public String getShortCode() 
-    {
-        return shortCode;
-    }
-
-    public void setSelfMergeCategory(String selfMergeCategory) 
-    {
-        this.selfMergeCategory = selfMergeCategory;
-    }
-
-    public String getSelfMergeCategory() 
-    {
-        return selfMergeCategory;
-    }
-
-    public void setCustodianName(String custodianName) 
-    {
-        this.custodianName = custodianName;
-    }
-
-    public String getCustodianName() 
-    {
-        return custodianName;
-    }
-
-    public void setStatus(String status) 
-    {
-        this.status = status;
-    }
-
-    public String getStatus() 
-    {
-        return status;
+    public void setMaterialGroup(String materialGroup) {
+        this.materialGroup = materialGroup;
     }
 
     @Override
-    public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("allotDetailId", getAllotDetailId())
-            .append("storehouseId", getStorehouseId())
-            .append("documentType", getDocumentType())
-            .append("carNumber", getCarNumber())
-            .append("carModel", getCarModel())
-            .append("grossWeight", getGrossWeight())
-            .append("tareWeight", getTareWeight())
-            .append("netWeight", getNetWeight())
-            .append("meterId", getMeterId())
-            .append("department", getDepartment())
-            .append("measureImageFile", getMeasureImageFile())
-            .append("measureVideoFile", getMeasureVideoFile())
-            .append("guard", getGuard())
-            .append("outboundTime", getOutboundTime())
-            .append("measurer", getMeasurer())
-            .append("measureTime", getMeasureTime())
-            .append("tareImageFile", getTareImageFile())
-            .append("tareVideoFile", getTareVideoFile())
-            .append("documentStatus", getDocumentStatus())
-            .append("custodian", getCustodian())
-            .append("operateTime", getOperateTime())
-            .append("adjustQuantity", getAdjustQuantity())
-            .append("measureCurvature", getMeasureCurvature())
-            .append("outboundId", getOutboundId())
-            .append("measureType", getMeasureType())
-            .append("pieceCount", getPieceCount())
-            .append("originalDocumentId", getOriginalDocumentId())
-            .append("remark", getRemark())
-            .append("cardId", getCardId())
-            .append("allotId", getAllotId())
-            .append("allotCode", getAllotCode())
-            .append("allotType", getAllotType())
-            .append("customerCode", getCustomerCode())
-            .append("customerName", getCustomerName())
-            .append("materialGroup", getMaterialGroup())
-            .append("materialCode", getMaterialCode())
-            .append("materialName", getMaterialName())
-            .append("measureUnit", getMeasureUnit())
-            .append("salesCompany", getSalesCompany())
-            .append("storehouse", getStorehouse())
-            .append("materialYard", getMaterialYard())
-            .append("allotQuantity", getAllotQuantity())
-            .append("actualQuantity", getActualQuantity())
-            .append("carCount", getCarCount())
-            .append("plannedPrice", getPlannedPrice())
-            .append("salesPrice", getSalesPrice())
-            .append("taxRate", getTaxRate())
-            .append("allotOperator", getAllotOperator())
-            .append("allotTime", getAllotTime())
-            .append("balance", getBalance())
-            .append("tailMaterial", getTailMaterial())
-            .append("surplusMaterial", getSurplusMaterial())
-            .append("carCount1", getCarCount1())
-            .append("isMultiCar", getIsMultiCar())
-            .append("reportRemark", getReportRemark())
-            .append("firstTareWeight", getFirstTareWeight())
-            .append("department1", getDepartment1())
-            .append("yardCode", getYardCode())
-            .append("reporter", getReporter())
-            .append("adjustRemark", getAdjustRemark())
-            .append("storehouseImage", getStorehouseImage())
-            .append("imagePath", getImagePath())
-            .append("multiAllotDetail", getMultiAllotDetail())
-            .append("netWeight1", getNetWeight1())
-            .append("businessYearMonth", getBusinessYearMonth())
-            .append("squad", getSquad())
-            .append("materialGroup1", getMaterialGroup1())
-            .append("custodianId", getCustodianId())
-            .append("shortCode", getShortCode())
-            .append("selfMergeCategory", getSelfMergeCategory())
-            .append("custodianName", getCustodianName())
-            .append("status", getStatus())
-            .toString();
+    public String getWzbm() {
+        return wzbm;
+    }
+
+    @Override
+    public void setWzbm(String wzbm) {
+        this.wzbm = wzbm;
+    }
+
+    @Override
+    public String getWzmc() {
+        return wzmc;
+    }
+
+    @Override
+    public void setWzmc(String wzmc) {
+        this.wzmc = wzmc;
+    }
+
+    @Override
+    public String getJldw() {
+        return jldw;
+    }
+
+    @Override
+    public void setJldw(String jldw) {
+        this.jldw = jldw;
+    }
+
+    public String getSalesCompany() {
+        return salesCompany;
+    }
+
+    public void setSalesCompany(String salesCompany) {
+        this.salesCompany = salesCompany;
+    }
+
+    public String getStorehouse() {
+        return storehouse;
+    }
+
+    public void setStorehouse(String storehouse) {
+        this.storehouse = storehouse;
+    }
+
+    public String getMaterialYard() {
+        return materialYard;
+    }
+
+    public void setMaterialYard(String materialYard) {
+        this.materialYard = materialYard;
+    }
+
+    public Double getAllotQuantity() {
+        return allotQuantity;
+    }
+
+    public void setAllotQuantity(Double allotQuantity) {
+        this.allotQuantity = allotQuantity;
+    }
+
+    public Double getActualQuantity() {
+        return actualQuantity;
+    }
+
+    public void setActualQuantity(Double actualQuantity) {
+        this.actualQuantity = actualQuantity;
+    }
+
+    public Double getCarCount() {
+        return carCount;
+    }
+
+    public void setCarCount(Double carCount) {
+        this.carCount = carCount;
+    }
+
+    public Double getPlannedPrice() {
+        return plannedPrice;
+    }
+
+    public void setPlannedPrice(Double plannedPrice) {
+        this.plannedPrice = plannedPrice;
+    }
+
+    public Double getSalesPrice() {
+        return salesPrice;
+    }
+
+    public void setSalesPrice(Double salesPrice) {
+        this.salesPrice = salesPrice;
+    }
+
+    public Double getTaxRate() {
+        return taxRate;
+    }
+
+    public void setTaxRate(Double taxRate) {
+        this.taxRate = taxRate;
+    }
+
+    public String getAllotOperator() {
+        return allotOperator;
+    }
+
+    public void setAllotOperator(String allotOperator) {
+        this.allotOperator = allotOperator;
+    }
+
+    public Date getAllotTime() {
+        return allotTime;
+    }
+
+    public void setAllotTime(Date allotTime) {
+        this.allotTime = allotTime;
+    }
+
+    public Double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(Double balance) {
+        this.balance = balance;
+    }
+
+    public Double getTailMaterial() {
+        return tailMaterial;
+    }
+
+    public void setTailMaterial(Double tailMaterial) {
+        this.tailMaterial = tailMaterial;
+    }
+
+    public Double getSurplusMaterial() {
+        return surplusMaterial;
+    }
+
+    public void setSurplusMaterial(Double surplusMaterial) {
+        this.surplusMaterial = surplusMaterial;
+    }
+
+    public Double getCarCount1() {
+        return carCount1;
+    }
+
+    public void setCarCount1(Double carCount1) {
+        this.carCount1 = carCount1;
+    }
+
+    public String getIsMultiCar() {
+        return isMultiCar;
+    }
+
+    public void setIsMultiCar(String isMultiCar) {
+        this.isMultiCar = isMultiCar;
+    }
+
+    public String getReportRemark() {
+        return reportRemark;
+    }
+
+    public void setReportRemark(String reportRemark) {
+        this.reportRemark = reportRemark;
+    }
+
+    public Double getFirstTareWeight() {
+        return firstTareWeight;
+    }
+
+    public void setFirstTareWeight(Double firstTareWeight) {
+        this.firstTareWeight = firstTareWeight;
+    }
+
+    public String getDepartment1() {
+        return department1;
+    }
+
+    public void setDepartment1(String department1) {
+        this.department1 = department1;
+    }
+
+    public String getYardCode() {
+        return yardCode;
+    }
+
+    public void setYardCode(String yardCode) {
+        this.yardCode = yardCode;
+    }
+
+    public String getReporter() {
+        return reporter;
+    }
+
+    public void setReporter(String reporter) {
+        this.reporter = reporter;
+    }
+
+    public String getAdjustRemark() {
+        return adjustRemark;
+    }
+
+    public void setAdjustRemark(String adjustRemark) {
+        this.adjustRemark = adjustRemark;
+    }
+
+    public String getStorehouseImage() {
+        return storehouseImage;
+    }
+
+    public void setStorehouseImage(String storehouseImage) {
+        this.storehouseImage = storehouseImage;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    public String getMultiAllotDetail() {
+        return multiAllotDetail;
+    }
+
+    public void setMultiAllotDetail(String multiAllotDetail) {
+        this.multiAllotDetail = multiAllotDetail;
+    }
+
+    public Double getNetWeight1() {
+        return netWeight1;
+    }
+
+    public void setNetWeight1(Double netWeight1) {
+        this.netWeight1 = netWeight1;
+    }
+
+    public String getBusinessYearMonth() {
+        return businessYearMonth;
+    }
+
+    public void setBusinessYearMonth(String businessYearMonth) {
+        this.businessYearMonth = businessYearMonth;
+    }
+
+    public String getSquad() {
+        return squad;
+    }
+
+    public void setSquad(String squad) {
+        this.squad = squad;
+    }
+
+    public String getMaterialGroup1() {
+        return materialGroup1;
+    }
+
+    public void setMaterialGroup1(String materialGroup1) {
+        this.materialGroup1 = materialGroup1;
+    }
+
+    public String getCustodianId() {
+        return custodianId;
+    }
+
+    public void setCustodianId(String custodianId) {
+        this.custodianId = custodianId;
+    }
+
+    public String getShortCode() {
+        return shortCode;
+    }
+
+    public void setShortCode(String shortCode) {
+        this.shortCode = shortCode;
+    }
+
+    public String getSelfMergeCategory() {
+        return selfMergeCategory;
+    }
+
+    public void setSelfMergeCategory(String selfMergeCategory) {
+        this.selfMergeCategory = selfMergeCategory;
+    }
+
+    public String getCustodianName() {
+        return custodianName;
+    }
+
+    public void setCustodianName(String custodianName) {
+        this.custodianName = custodianName;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

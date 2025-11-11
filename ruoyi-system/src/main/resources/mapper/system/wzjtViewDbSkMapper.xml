@@ -40,9 +40,9 @@
         <result property="customerCode" column="客户编码" />
         <result property="customerName" column="客户名称" />
         <result property="materialGroup" column="物料组" />
-        <result property="materialCode" column="物资编码" />
-        <result property="materialName" column="物资名称" />
-        <result property="measureUnit" column="计量单位" />
+        <result property="wzbm" column="物资编码" />
+        <result property="wzmc" column="物资名称" />
+        <result property="jldw" column="计量单位" />
         <result property="salesCompany" column="销售公司" />
         <result property="storehouse" column="库房" />
         <result property="materialYard" column="料场" />
@@ -194,9 +194,9 @@
             <if test="customerCode != null and customerCode != ''">AND [客户编码] = #{customerCode}</if>
             <if test="customerName != null and customerName != ''">AND [客户名称] = #{customerName}</if>
             <if test="materialGroup != null and materialGroup != ''">AND [物料组] = #{materialGroup}</if>
-            <if test="materialCode != null and materialCode != ''">AND [物资编码] = #{materialCode}</if>
-            <if test="materialName != null and materialName != ''">AND [物资名称] = #{materialName}</if>
-            <if test="measureUnit != null and measureUnit != ''">AND [计量单位] = #{measureUnit}</if>
+            <if test="wzbm != null and wzbm != ''">AND [物资编码] = #{wzbm}</if>
+            <if test="wzmc != null and wzmc != ''">AND [物资名称] = #{wzmc}</if>
+            <if test="jldw != null and jldw != ''">AND [计量单位] = #{jldw}</if>
             <if test="salesCompany != null and salesCompany != ''">AND [销售公司] = #{salesCompany}</if>
             <if test="storehouse != null and storehouse != ''">AND [库房] = #{storehouse}</if>
             <if test="materialYard != null and materialYard != ''">AND [料场] = #{materialYard}</if>

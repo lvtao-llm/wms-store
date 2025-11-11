@@ -20,32 +20,61 @@ public class AlarmDetection {
 
     private static final Logger log = LoggerFactory.getLogger(AlarmDetection.class);
 
+    /**
+     * 告警规则服务
+     */
     @Autowired
     private IWmsAlarmRuleService wmsAlarmRuleService;
 
+    /**
+     * 区域服务
+     */
     @Autowired
     private IWmsAreaService wmsAreaService;
 
+    /**
+     * 告警规则与区域映射
+     */
     private final Map<WmsAlarmRule, RuleAreaWrap> rules = new HashMap<>();
+
+    /**
+     * 活跃卡列表
+     */
     private final Map<Long, LiveCard> livePeopleCards = new HashMap<>();
+
+    /**
+     * 活跃车辆列表
+     */
     private final Map<Long, LiveCard> liveVehicleCards = new HashMap<>();
+
+    /**
+     * 创建点对象工厂
+     */
     private final GeometryFactory geometryFactory = new GeometryFactory();
 
-
+    /**
+     * 是否被初始化
+     */
     private boolean isInitialized = false;
 
+    /**
+     * 区域服务
+     */
+    Map<Long, WmsArea> wmsAreas;
 
+    /**
+     * 加载必要的数据
+     */
     @PostConstruct
     public void loadAlarmRules() {
         if (isInitialized) {
             return;
         }
 
-        WmsArea queryArea = new WmsArea();
-        List<WmsArea> wmsAreas = wmsAreaService.selectWmsAreaList(queryArea);
+        wmsAreas = wmsAreaService.getAreaMap();
 
         // 初始化区域Geometry
-        for (WmsArea area : wmsAreas) {
+        for (WmsArea area : wmsAreas.values()) {
             if (area.getAreaPolygon() != null && area.getAreaPolygonDouble().size() > 2) {
                 // 创建JTS多边形
                 Geometry polygon = createPolygonFromArea(area.getAreaPolygonDouble());
@@ -72,7 +101,7 @@ public class AlarmDetection {
             for (String c : targetCodes) {
 
                 // 匹配目标区域的WmsArea对象
-                for (WmsArea area : wmsAreas) {
+                for (WmsArea area : wmsAreas.values()) {
                     if (area.getAreaId() == Integer.parseInt(c) && area.getGeometry() != null) {
                         rules.put(rule, new RuleAreaWrap(area, area.getGeometry()));
                         break;
@@ -105,20 +134,33 @@ public class AlarmDetection {
     }
 
     public List<AlarmResult> detect(LanyaPositionHistory position) {
+        Point point = geometryFactory.createPoint(new Coordinate(position.getLongitude(), position.getLatitude()));
         // 发现的告警规则
         List<AlarmResult> detected = new ArrayList<>();
 
         long cardId = position.getCardId();
         Date time = position.getAcceptTime();
 
-        // 当前卡的geometry对象
-        Point point = geometryFactory.createPoint(new Coordinate(position.getLongitude(), position.getLatitude()));
-
         if (!livePeopleCards.containsKey(cardId)) {
             livePeopleCards.put(cardId, new LiveCard(position));
         }
         LiveCard liveCard = livePeopleCards.get(cardId);
         liveCard.point = point;
+
+        // 当前卡的geometry对象
+
+        for (WmsArea area : wmsAreaService.getAreaMap().values()) {
+            // 判断点是否在多边形内
+            boolean inside = area.getGeometry().contains(point);
+
+            if (inside) {
+                if (liveCard.getArea() != null && liveCard.getArea().getPersonCount() >= 0) {
+                    liveCard.getArea().setPersonCount(liveCard.getArea().getPersonCount() - 1);
+                }
+                liveCard.setArea(area);
+                liveCard.getArea().setPersonCount(liveCard.getArea().getPersonCount() + 1);
+            }
+        }
 
 
         // 遍历所有告警规则
@@ -133,13 +175,15 @@ public class AlarmDetection {
             // 是否发生了报警
             boolean isAlarm = false;
 
+            // 判断点是否在多边形内
+            boolean inside = targetAreaWrap.geometry.contains(point);
+
+            // 计算点到多边形边界的距离(度单位)
+            double dist = point.distance(targetAreaWrap.geometry) * 111320;
+
             // 根据规则类型使用不同的检测方法
             switch (rule.getAlarmRuleType()) {
                 case "进入报警": {
-                    // 判断点是否在多边形内
-                    boolean inside = targetAreaWrap.geometry.contains(point);
-                    // 计算点到多边形边界的距离(度单位)
-                    double dist = point.distance(targetAreaWrap.geometry) * 111320;
                     if (inside && dist < rule.getAlarmRuleDistThreshold()) {
                         if (!targetAreaWrap.enterTime.containsKey(cardId)) {
                             targetAreaWrap.enterTime.put(cardId, time.getTime());
@@ -150,10 +194,6 @@ public class AlarmDetection {
                     break;
                 }
                 case "越界报警": {
-                    // 判断点是否在多边形内
-                    boolean inside = targetAreaWrap.geometry.contains(point);
-                    // 计算点到多边形边界的距离(度单位)
-                    double dist = point.distance(targetAreaWrap.geometry) * 111320;
                     if (inside && dist < rule.getAlarmRuleDistThreshold()) {
                         if (!targetAreaWrap.enterTime.containsKey(cardId)) {
                             targetAreaWrap.enterTime.put(cardId, time.getTime());
@@ -164,10 +204,6 @@ public class AlarmDetection {
                     break;
                 }
                 case "滞留报警": {
-                    // 判断点是否在多边形内
-                    boolean inside = targetAreaWrap.geometry.contains(point);
-                    // 计算点到多边形边界的距离(度单位)
-                    double dist = point.distance(targetAreaWrap.geometry) * 111320;
                     if (inside && dist < rule.getAlarmRuleDistThreshold()) {
                         if (!targetAreaWrap.enterTime.containsKey(cardId)) {
                             targetAreaWrap.enterTime.put(cardId, time.getTime());
@@ -178,13 +214,7 @@ public class AlarmDetection {
                     break;
                 }
                 case "超员报警": {
-                    // 判断点是否在多边形内
-                    boolean inside = targetAreaWrap.geometry.contains(point);
-                    // 计算点到多边形边界的距离(度单位)
-                    double dist = point.distance(targetAreaWrap.geometry) * 111320;
                     if (inside && dist < rule.getAlarmRuleDistThreshold()) {
-
-
                         if (!targetAreaWrap.enterTime.containsKey(cardId)) {
                             targetAreaWrap.enterTime.put(cardId, time.getTime());
                         }
@@ -325,12 +355,20 @@ public class AlarmDetection {
         public Point point;
         public Long cardId;
         public String realName;
+        private WmsArea area;
 
         public LiveCard(LanyaPositionHistory position) {
             this.position = position;
             this.cardId = position.getCardId();
             this.realName = position.getRealName();
         }
-    }
 
+        public WmsArea getArea() {
+            return area;
+        }
+
+        public void setArea(WmsArea area) {
+            this.area = area;
+        }
+    }
 }
