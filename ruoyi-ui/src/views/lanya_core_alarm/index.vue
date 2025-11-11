@@ -1,34 +1,10 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="120px">
-      <el-form-item label="信号接收时间" prop="acceptTime">
-        <el-date-picker clearable
-          v-model="queryParams.acceptTime"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="请选择信号接收时间">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="报警类型名称" prop="alarmTypeName">
-        <el-input
-          v-model="queryParams.alarmTypeName"
-          placeholder="请输入报警类型名称"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
       <el-form-item label="报警名称" prop="alarmName">
         <el-input
           v-model="queryParams.alarmName"
           placeholder="请输入报警名称"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="报警区域ID" prop="areaId">
-        <el-input
-          v-model="queryParams.areaId"
-          placeholder="请输入报警区域ID"
           clearable
           @keyup.enter.native="handleQuery"
         />
@@ -41,82 +17,10 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="围栏id" prop="railId">
-        <el-input
-          v-model="queryParams.railId"
-          placeholder="请输入围栏id"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="围栏名称" prop="railName">
-        <el-input
-          v-model="queryParams.railName"
-          placeholder="请输入围栏名称"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="楼层" prop="layerId">
-        <el-input
-          v-model="queryParams.layerId"
-          placeholder="请输入楼层"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="楼高" prop="layerHeight">
-        <el-input
-          v-model="queryParams.layerHeight"
-          placeholder="请输入楼高"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="围栏高度" prop="railHeight">
-        <el-input
-          v-model="queryParams.railHeight"
-          placeholder="请输入围栏高度"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="经度" prop="longitude">
-        <el-input
-          v-model="queryParams.longitude"
-          placeholder="请输入经度"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="纬度" prop="latitude">
-        <el-input
-          v-model="queryParams.latitude"
-          placeholder="请输入纬度"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="信标id" prop="beaconId">
-        <el-input
-          v-model="queryParams.beaconId"
-          placeholder="请输入信标id"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
       <el-form-item label="定位卡号" prop="cardId">
         <el-input
           v-model="queryParams.cardId"
           placeholder="请输入定位卡号"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="人员id" prop="personId">
-        <el-input
-          v-model="queryParams.personId"
-          placeholder="请输入人员id"
           clearable
           @keyup.enter.native="handleQuery"
         />
@@ -129,142 +33,6 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="工号" prop="jobNumber">
-        <el-input
-          v-model="queryParams.jobNumber"
-          placeholder="请输入工号"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="管理人员姓名" prop="administratorName">
-        <el-input
-          v-model="queryParams.administratorName"
-          placeholder="请输入管理人员姓名"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="管理人员号码" prop="administratorPhone">
-        <el-input
-          v-model="queryParams.administratorPhone"
-          placeholder="请输入管理人员号码"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="部门ID" prop="deptId">
-        <el-input
-          v-model="queryParams.deptId"
-          placeholder="请输入部门ID"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="部门名称" prop="deptName">
-        <el-input
-          v-model="queryParams.deptName"
-          placeholder="请输入部门名称"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="岗位id" prop="postId">
-        <el-input
-          v-model="queryParams.postId"
-          placeholder="请输入岗位id"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="岗位名称" prop="postName">
-        <el-input
-          v-model="queryParams.postName"
-          placeholder="请输入岗位名称"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="所属承包商" prop="contractorId">
-        <el-input
-          v-model="queryParams.contractorId"
-          placeholder="请输入所属承包商"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="承包商名称" prop="contractorName">
-        <el-input
-          v-model="queryParams.contractorName"
-          placeholder="请输入承包商名称"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="处理人" prop="disposeBy">
-        <el-input
-          v-model="queryParams.disposeBy"
-          placeholder="请输入处理人"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="处理时间" prop="disposeTime">
-        <el-date-picker clearable
-          v-model="queryParams.disposeTime"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="请选择处理时间">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="处理反馈" prop="disposeFeedback">
-        <el-input
-          v-model="queryParams.disposeFeedback"
-          placeholder="请输入处理反馈"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="结束时间" prop="endTime">
-        <el-date-picker clearable
-          v-model="queryParams.endTime"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="请选择结束时间">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="报警级别" prop="alarmLevel">
-        <el-input
-          v-model="queryParams.alarmLevel"
-          placeholder="请输入报警级别: 1/2/3级报警"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="最高报警级别" prop="highestAlarmLevel">
-        <el-input
-          v-model="queryParams.highestAlarmLevel"
-          placeholder="请输入最高报警级别"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="所属楼宇id" prop="buildingId">
-        <el-input
-          v-model="queryParams.buildingId"
-          placeholder="请输入所属楼宇id"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="所属楼宇名称" prop="buildingName">
-        <el-input
-          v-model="queryParams.buildingName"
-          placeholder="请输入所属楼宇名称"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -272,38 +40,6 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
-        <el-button
-          type="primary"
-          plain
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-          v-hasPermi="['system:lanya_core_alarm:add']"
-        >新增</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="success"
-          plain
-          icon="el-icon-edit"
-          size="mini"
-          :disabled="single"
-          @click="handleUpdate"
-          v-hasPermi="['system:lanya_core_alarm:edit']"
-        >修改</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="danger"
-          plain
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-          v-hasPermi="['system:lanya_core_alarm:remove']"
-        >删除</el-button>
-      </el-col>
       <el-col :span="1.5">
         <el-button
           type="warning"
@@ -319,42 +55,19 @@
 
     <el-table v-loading="loading" :data="lanya_core_alarmList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="报警id" align="center" prop="alarmId" width="180"/>
       <el-table-column label="信号接收时间" align="center" prop="acceptTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.acceptTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="报警类型" align="center" prop="alarmType" />
-      <el-table-column label="报警类型名称" align="center" prop="alarmTypeName" width="100"/>
       <el-table-column label="报警名称" align="center" prop="alarmName" width="200"/>
       <el-table-column label="报警描述" align="center" prop="alarmDesc" width="300"/>
       <el-table-column label="报警状态" align="center" prop="alarmStatus" />
       <el-table-column label="报警区域名称" align="center" prop="areaName" width="100"/>
-      <el-table-column label="围栏id" align="center" prop="railId" />
-      <el-table-column label="围栏名称" align="center" prop="railName" />
-      <el-table-column label="楼层" align="center" prop="layerId" />
-      <el-table-column label="楼高" align="center" prop="layerHeight" />
-      <el-table-column label="围栏坐标" align="center" prop="railScope" />
-      <el-table-column label="围栏高度" align="center" prop="railHeight" />
-      <el-table-column label="绘制类型" align="center" prop="drawType" />
       <el-table-column label="经度" align="center" prop="longitude" />
       <el-table-column label="纬度" align="center" prop="latitude" />
-      <el-table-column label="信标id" align="center" prop="beaconId" />
       <el-table-column label="定位卡号" align="center" prop="cardId" />
-      <el-table-column label="人员id" align="center" prop="personId" width="180"/>
-      <el-table-column label="人员类型" align="center" prop="personType" />
-      <el-table-column label="员工类型" align="center" prop="staffType" />
       <el-table-column label="报警人" align="center" prop="realName" width="180"/>
-      <el-table-column label="工号" align="center" prop="jobNumber" />
-      <el-table-column label="管理人员姓名" align="center" prop="administratorName" width="100"/>
-      <el-table-column label="管理人员号码" align="center" prop="administratorPhone" width="100"/>
-      <el-table-column label="部门ID" align="center" prop="deptId" />
-      <el-table-column label="部门名称" align="center" prop="deptName" />
-      <el-table-column label="岗位id" align="center" prop="postId" />
-      <el-table-column label="岗位名称" align="center" prop="postName" />
-      <el-table-column label="所属承包商" align="center" prop="contractorId" width="100" />
-      <el-table-column label="承包商名称" align="center" prop="contractorName" width="100" />
       <el-table-column label="处理人" align="center" prop="disposeBy" />
       <el-table-column label="处理时间" align="center" prop="disposeTime" width="180">
         <template slot-scope="scope">
@@ -367,26 +80,9 @@
           <span>{{ parseTime(scope.row.endTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="报警级别" align="center" prop="alarmLevel" />
-      <el-table-column label="最高报警级别" align="center" prop="highestAlarmLevel" />
-      <el-table-column label="所属楼宇id" align="center" prop="buildingId" />
-      <el-table-column label="所属楼宇名称" align="center" prop="buildingName" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="100">
         <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
-            v-hasPermi="['system:lanya_core_alarm:edit']"
-          >修改</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-            v-hasPermi="['system:lanya_core_alarm:remove']"
-          >删除</el-button>
+
         </template>
       </el-table-column>
     </el-table>
@@ -561,7 +257,7 @@ export default {
         pageNum: 1,
         pageSize: 10,
         acceptTime: null,
-        alarmType: null,
+        alarmType: 95,
         alarmTypeName: null,
         alarmName: null,
         alarmDesc: null,

@@ -418,6 +418,12 @@ export const dynamicRoutes = [
         component: () => import('@/views/wms_card_content_send/index'),
         name: '发送内容给卡播报',
         meta: {title: '发送内容给卡播报'}
+      },
+      {
+        path: 'sos-alarm-log',
+        component: () => import('@/views/lanya_core_alarm/index'),
+        name: 'sos报警记录',
+        meta: {title: 'sos报警记录'}
       }
     ]
   },
