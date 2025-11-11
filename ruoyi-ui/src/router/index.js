@@ -251,32 +251,32 @@ export const dynamicRoutes = [
       }
     ]
   },
-  {
-    path: '/alarm',
-    component: Layout,
-    hidden: true,
-    permissions: ['system:role:edit'],
-    children: [
-      {
-        path: 'core',
-        component: () => import('@/views/lanya_core_alarm/index'),
-        name: '核心报警记录',
-        meta: { title: '核心报警记录' }
-      },
-      {
-        path: 'vehicle',
-        component: () => import('@/views/lanya_vehicle_alarm/index'),
-        name: '车辆报警记录',
-        meta: { title: '车辆报警记录' }
-      },
-      {
-        path: 'people',
-        component: () => import('@/views/lanya_core_alarm_people/index'),
-        name: '人员报警记录',
-        meta: { title: '人员报警记录' }
-      }
-    ]
-  },
+  // {
+  //   path: '/alarm',
+  //   component: Layout,
+  //   hidden: true,
+  //   permissions: ['system:role:edit'],
+  //   children: [
+  //     {
+  //       path: 'core',
+  //       component: () => import('@/views/lanya_core_alarm/index'),
+  //       name: '核心报警记录',
+  //       meta: { title: '核心报警记录' }
+  //     },
+  //     {
+  //       path: 'vehicle',
+  //       component: () => import('@/views/lanya_vehicle_alarm/index'),
+  //       name: '车辆报警记录',
+  //       meta: { title: '车辆报警记录' }
+  //     },
+  //     {
+  //       path: 'people',
+  //       component: () => import('@/views/lanya_core_alarm_people/index'),
+  //       name: '人员报警记录',
+  //       meta: { title: '人员报警记录' }
+  //     }
+  //   ]
+  // },
   {
     path: '/card-log',
     component: Layout,
@@ -548,20 +548,20 @@ export const dynamicRoutes = [
       {
         path: 'people',
         component: () => import('@/views/wms_statistics_people/index'),
-        name: '人员统计',
-        meta: { title: '人员统计' }
+        name: '人员统计报表',
+        meta: { title: '人员统计报表' }
       },
       {
         path: 'vehicle',
         component: () => import('@/views/wms_statistics_vehicle/index'),
-        name: '车辆统计',
-        meta: { title: '车辆统计' }
+        name: '车辆统计报表',
+        meta: { title: '车辆统计报表' }
       },
       {
         path: 'vechicle-in-out-record',
         component: () => import('@/views/wms_vehicle_record/index'),
-        name: '车辆进出记录',
-        meta: { title: '车辆进出记录' }
+        name: '车辆进出记录报表',
+        meta: { title: '车辆进出记录报表' }
       }
     ]
   }

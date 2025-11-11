@@ -162,3 +162,9 @@ wzgs:
   kc:
     sync:
       enabled: false
+wms:
+  ws-data:
+    person-alarm: 0/5 * * * * ?
+    vehicle-alarm: 0/5 * * * * ?
+    material-statics: 0/5 * * * * ?
+    area-statics: 0/5 * * * * ?

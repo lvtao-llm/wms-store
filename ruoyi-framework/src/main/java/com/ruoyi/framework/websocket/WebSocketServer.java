@@ -16,12 +16,10 @@ import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.utils.ThirdPartyAuth;
 import com.ruoyi.common.utils.spring.SpringUtils;
-import com.ruoyi.framework.web.domain.server.Sys;
 import com.ruoyi.system.domain.WmsAlarmRule;
 import com.ruoyi.system.domain.WmsArea;
 import com.ruoyi.system.domain.WmsDevice;
 import com.ruoyi.system.domain.WmsMaterialStaticsDay;
-import com.ruoyi.system.lanya.data.LanyaDataSync;
 import com.ruoyi.system.service.IWmsAlarmRuleService;
 import com.ruoyi.system.service.IWmsAreaService;
 import com.ruoyi.system.service.IWmsDeviceService;
@@ -79,7 +77,7 @@ public class WebSocketServer {
     /**
      * 目标服务器会话
      */
-    private WebSocketClient webSocketClient;
+    private WebSocketClient thirdWebSocketClient;
 
     /**
      * 报警规则服务
@@ -115,19 +113,26 @@ public class WebSocketServer {
      */
     SimpleDateFormat sdfYearMonDay = new SimpleDateFormat("yyyy-MM-dd");
 
+    /**
+     * 初始化
+     */
     @PostConstruct
     public void init() {
         try {
+            // 三方接口
             thirdPartyAuth = SpringUtils.getBean(ThirdPartyAuth.class);
-            webSocketClient = SpringUtils.getBean(WebSocketClient.class);
-            String userId = thirdPartyAuth.getUserInfo().get("userId");
-            String id = "XR_" + System.currentTimeMillis() + "_" + userId;
-            // 构建目标WebSocket地址
-            String targetUrl = "ws://" + baseUrl + "/websocket/ws/" + id;
+            // 三方WebSocket客户端
+            thirdWebSocketClient = SpringUtils.getBean(WebSocketClient.class);
+            // 三方用户ID
+            String thirdUserId = thirdPartyAuth.getUserInfo().get("userId");
+            // 三方socket id
+            String thirdId = "XR_" + System.currentTimeMillis() + "_" + thirdUserId;
+            // 三方目标WebSocket地址
+            String thirdTargetUrl = "ws://" + baseUrl + "/websocket/ws/" + thirdId;
+            // 连接三方目标WebSocket
+            thirdWebSocketClient.doHandshake(new ThirdWebSocketHandler(messageQueue), thirdTargetUrl).get();
 
-            // 使用Spring WebSocket客户端连接到目标服务器
-            WebSocketServer.TargetWebSocketHandler targetHandler = new WebSocketServer.TargetWebSocketHandler(messageQueue);
-            webSocketClient.doHandshake(targetHandler, targetUrl).get();
+            // 启动消息处理线程
             startMessageProcessor();
         } catch (Exception e) {
             LOGGER.error("初始化失败", e);
@@ -138,17 +143,18 @@ public class WebSocketServer {
 
     }
 
-    // 添加消息处理方法
+    /**
+     * 启动消息处理线程
+     */
     private void startMessageProcessor() {
+        // 创建一个线程
         Thread messageProcessorThread = new Thread(() -> {
             while (true) {
                 try {
                     // 从队列中取出消息
                     String message = messageQueue.take(); // 阻塞式获取
-                    if (message != null) {
-                        // 发送给所有连接的客户端
-                        broadcastMessage(message);
-                    }
+                    // 发送给所有连接的客户端
+                    broadcastMessage(message);
                 } catch (InterruptedException e) {
                     LOGGER.info("消息处理线程被中断");
                     Thread.currentThread().interrupt();
@@ -163,14 +169,18 @@ public class WebSocketServer {
         messageProcessorThread.start();
     }
 
-    // 广播消息给所有客户端
+    /**
+     * 广播消息给所有客户端
+     *
+     * @param message 消息
+     */
     private void broadcastMessage(String message) {
         for (Session clientSession : clientSessions.values()) {
             if (clientSession.isOpen()) {
                 try {
                     clientSession.getAsyncRemote().sendText(message, result -> {
                         if (!result.isOK()) {
-                            LOGGER.error("异步发送消息失败: {}", result.getException().getMessage());
+                            LOGGER.error("给客户端异步发送消息失败: {}", result.getException().getMessage());
                         }
                     });
                 } catch (Exception e) {
@@ -181,7 +191,7 @@ public class WebSocketServer {
     }
 
     /**
-     * 连接建立成功调用的方法
+     * 客户端连接建立成功调用的方法
      */
     @OnOpen
     public void onOpen(Session session, @PathParam("requestId") String requestId) throws Exception {
@@ -193,30 +203,44 @@ public class WebSocketServer {
                     sess.close();
                 }
             }
+            clientSessions.put(requestId, session);
 
+            // 首次连接时向客户端发送消息
+
+            // 设备服务
             IWmsDeviceService wmsDeviceService = SpringUtils.getBean(IWmsDeviceService.class);
+
+            // 摄像头设备
             WmsDevice wmsDevice = new WmsDevice();
             wmsDevice.setDeviceType("摄像头");
             List<WmsDevice> wmsDevicesCamera = wmsDeviceService.selectWmsDeviceList(wmsDevice);
+
+            // 传感器设备
             wmsDevice.setDeviceType("传感器");
             List<WmsDevice> wmsDevicesSensor = wmsDeviceService.selectWmsDeviceList(wmsDevice);
             wmsDevicesSensor.addAll(wmsDevicesCamera);
+
+            // 向客户端发送的消息体
             Map<String, Object> personAlarm = new HashMap<String, Object>() {
                 {
                     put("msgType", "摄像头与传感器");
                     put("rules", wmsDevicesSensor);
                 }
             };
+
+            // 转JSON字符串
             String json = new JSONObject(personAlarm).toJSONString();
+
+            // 向当前连接发送初始数据
             session.getAsyncRemote().sendText(json);
-            clientSessions.put(requestId, session);
+
         } catch (Exception e) {
             LOGGER.error("连接异常:", e);
         }
     }
 
     /**
-     * 连接关闭时处理
+     * 客户端连接关闭时处理
      */
     @OnClose
     public void onClose(Session session, @PathParam("requestId") String requestId) throws IOException {
@@ -230,7 +254,7 @@ public class WebSocketServer {
     }
 
     /**
-     * 抛出异常时处理
+     * 客户端抛出异常时处理
      */
     @OnError
     public void onError(Session session, @PathParam("requestId") String requestId, Throwable exception) throws Exception {
@@ -244,84 +268,87 @@ public class WebSocketServer {
     }
 
     /**
-     * 服务器接收到客户端消息时调用的方法
+     * 接收到客户端消息时调用的方法
      */
     @OnMessage
     public void onMessage(String message, Session session, @PathParam("requestId") String requestId) {
-        try {
-            // 转发消息到目标服务器
-            System.out.println("接收到[" + session.getId() + "]消息：" + message);
-            try {
-                JSONObject messageObject = JSONObject.parseObject(message);
-                Long timestamp = messageObject.getLong("timestamp");
-                if ("save".equals(messageObject.getString("method"))) {
-
-                    String type = messageObject.getString("type");
-                    switch (type) {
-                        case "摄像头": {
-                            IWmsDeviceService wmsDeviceService = SpringUtils.getBean(IWmsDeviceService.class);
-                            JSONObject jsonDevice = messageObject.getJSONObject("object");
-                            WmsDevice wmsDevice = jsonDevice.toJavaObject(WmsDevice.class);
-                            wmsDevice.setDeviceType("摄像头");
-                            if (wmsDeviceService.insertWmsDevice(wmsDevice) > 0) {
-                                session.getAsyncRemote().sendText("{code:200, msg:'保存成功', timestamp: " + timestamp + "}");
-                            } else {
-                                session.getAsyncRemote().sendText("{code:500, msg:'保存失败', timestamp: " + timestamp + "}");
-                            }
-                            break;
-                        }
-                        case "风险区域": {
-                            IWmsAreaService wmsAreaService = SpringUtils.getBean(IWmsAreaService.class);
-                            JSONObject jsonDevice = messageObject.getJSONObject("object");
-                            WmsArea wmsArea = jsonDevice.toJavaObject(WmsArea.class);
-                            if (wmsAreaService.insertWmsArea(wmsArea) > 0) {
-                                session.getAsyncRemote().sendText("{code:200, msg:'保存成功', timestamp: " + timestamp + "}");
-                            } else {
-                                session.getAsyncRemote().sendText("{code:500, msg:'保存失败', timestamp: " + timestamp + "}");
-                            }
-                            break;
-                        }
-                        case "传感器": {
-                            IWmsDeviceService wmsDeviceService = SpringUtils.getBean(IWmsDeviceService.class);
-                            JSONObject jsonDevice = messageObject.getJSONObject("object");
-                            WmsDevice wmsDevice = jsonDevice.toJavaObject(WmsDevice.class);
-                            wmsDevice.setDeviceType("传感器");
-                            if (wmsDeviceService.insertWmsDevice(wmsDevice) > 0) {
-                                session.getAsyncRemote().sendText("{code:200, msg:'保存成功', timestamp: " + timestamp + "}");
-                            } else {
-                                session.getAsyncRemote().sendText("{code:500, msg:'保存失败', timestamp: " + timestamp + "}");
-                            }
-                        }
-                    }
-                }
-                if ("delete".equals(messageObject.getString("method"))) {
-
-                    String type = messageObject.getString("type");
-                    switch (type) {
-                        case "风险区域": {
-                            IWmsAreaService wmsAreaService = SpringUtils.getBean(IWmsAreaService.class);
-                            JSONObject jsonDevice = messageObject.getJSONObject("object");
-                            WmsArea wmsArea = jsonDevice.toJavaObject(WmsArea.class);
-                            if (wmsAreaService.deleteWmsAreaByAreaId(wmsArea.getAreaId()) > 0) {
-                                session.getAsyncRemote().sendText("{code:200, msg:'保存成功', timestamp: " + timestamp + "}");
-                            } else {
-                                session.getAsyncRemote().sendText("{code:500, msg:'保存失败', timestamp: " + timestamp + "}");
-                            }
-                            break;
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                session.getAsyncRemote().sendText("{code:500, msg:'保存失败', exception:'" + e.getMessage() + "'}");
-                e.printStackTrace();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            // 转发消息到目标服务器
+//            System.out.println("接收到[" + session.getId() + "]消息：" + message);
+//            try {
+//                JSONObject messageObject = JSONObject.parseObject(message);
+//                Long timestamp = messageObject.getLong("timestamp");
+//                if ("save".equals(messageObject.getString("method"))) {
+//
+//                    String type = messageObject.getString("type");
+//                    switch (type) {
+//                        case "摄像头": {
+//                            IWmsDeviceService wmsDeviceService = SpringUtils.getBean(IWmsDeviceService.class);
+//                            JSONObject jsonDevice = messageObject.getJSONObject("object");
+//                            WmsDevice wmsDevice = jsonDevice.toJavaObject(WmsDevice.class);
+//                            wmsDevice.setDeviceType("摄像头");
+//                            if (wmsDeviceService.insertWmsDevice(wmsDevice) > 0) {
+//                                session.getAsyncRemote().sendText("{code:200, msg:'保存成功', timestamp: " + timestamp + "}");
+//                            } else {
+//                                session.getAsyncRemote().sendText("{code:500, msg:'保存失败', timestamp: " + timestamp + "}");
+//                            }
+//                            break;
+//                        }
+//                        case "风险区域": {
+//                            IWmsAreaService wmsAreaService = SpringUtils.getBean(IWmsAreaService.class);
+//                            JSONObject jsonDevice = messageObject.getJSONObject("object");
+//                            WmsArea wmsArea = jsonDevice.toJavaObject(WmsArea.class);
+//                            if (wmsAreaService.insertWmsArea(wmsArea) > 0) {
+//                                session.getAsyncRemote().sendText("{code:200, msg:'保存成功', timestamp: " + timestamp + "}");
+//                            } else {
+//                                session.getAsyncRemote().sendText("{code:500, msg:'保存失败', timestamp: " + timestamp + "}");
+//                            }
+//                            break;
+//                        }
+//                        case "传感器": {
+//                            IWmsDeviceService wmsDeviceService = SpringUtils.getBean(IWmsDeviceService.class);
+//                            JSONObject jsonDevice = messageObject.getJSONObject("object");
+//                            WmsDevice wmsDevice = jsonDevice.toJavaObject(WmsDevice.class);
+//                            wmsDevice.setDeviceType("传感器");
+//                            if (wmsDeviceService.insertWmsDevice(wmsDevice) > 0) {
+//                                session.getAsyncRemote().sendText("{code:200, msg:'保存成功', timestamp: " + timestamp + "}");
+//                            } else {
+//                                session.getAsyncRemote().sendText("{code:500, msg:'保存失败', timestamp: " + timestamp + "}");
+//                            }
+//                        }
+//                    }
+//                }
+//                if ("delete".equals(messageObject.getString("method"))) {
+//
+//                    String type = messageObject.getString("type");
+//                    switch (type) {
+//                        case "风险区域": {
+//                            IWmsAreaService wmsAreaService = SpringUtils.getBean(IWmsAreaService.class);
+//                            JSONObject jsonDevice = messageObject.getJSONObject("object");
+//                            WmsArea wmsArea = jsonDevice.toJavaObject(WmsArea.class);
+//                            if (wmsAreaService.deleteWmsAreaByAreaId(wmsArea.getAreaId()) > 0) {
+//                                session.getAsyncRemote().sendText("{code:200, msg:'保存成功', timestamp: " + timestamp + "}");
+//                            } else {
+//                                session.getAsyncRemote().sendText("{code:500, msg:'保存失败', timestamp: " + timestamp + "}");
+//                            }
+//                            break;
+//                        }
+//                    }
+//                }
+//            } catch (Exception e) {
+//                session.getAsyncRemote().sendText("{code:500, msg:'保存失败', exception:'" + e.getMessage() + "'}");
+//                LOGGER.error("保存失败: " + e.getMessage());
+//            }
+//        } catch (Exception e) {
+//            LOGGER.error("保存失败: " + e.getMessage());
+//        }
     }
 
-    @Scheduled(cron = "0/1 * * * * ?")
-    public void mockData2() {
+    /**
+     * 车辆统计数据
+     */
+    @Scheduled(cron = "${wms.ws-data.vehicle-alarm:0/10 * * * * ?}")
+    public void vehicleAlarmData() {
         Map<String, Object> vehicleAlarm = new HashMap<String, Object>() {
             {
                 put("msgType", "vehicleAlarm");
@@ -336,8 +363,11 @@ public class WebSocketServer {
         messageQueue.add(json);
     }
 
-    @Scheduled(cron = "0/1 * * * * ?")
-    public void mockData3() {
+    /**
+     * 人员报警数据
+     */
+    @Scheduled(cron = "${wms.ws-data.person-alarm:0/10 * * * * ?}")
+    public void personAlarmData() {
         List<WmsAlarmRule> wmsAlarmRules = wmsAlarmRuleService.selectWmsAlarmRuleList(new WmsAlarmRule());
         for (WmsAlarmRule wmsAlarmRule : wmsAlarmRules) {
             wmsAlarmRule.setPercentage(33.1);
@@ -353,8 +383,11 @@ public class WebSocketServer {
         messageQueue.add(json);
     }
 
-    @Scheduled(cron = "0/10 * * * * ?")
-    public void mockData1() {
+    /**
+     * 物料统计数据
+     */
+    @Scheduled(cron = "${wms.ws-data.material-statics:0/10 * * * * ?}")
+    public void materialStaticsData() {
         // 使用异步发送替代阻塞发送
         WmsMaterialStaticsDay wmsMaterialStaticsDay = new WmsMaterialStaticsDay();
         Calendar calendar = Calendar.getInstance();
@@ -383,8 +416,11 @@ public class WebSocketServer {
         messageQueue.add(materialLog.toString());
     }
 
-    @Scheduled(cron = "0/1 * * * * ?")
-    public void mockData4() {
+    /**
+     * 区域统计数据
+     */
+    @Scheduled(cron = "${wms.ws-data.area-statics:0/10 * * * * ?}")
+    public void areaStaticsData() {
         Map<Long, WmsArea> wmsAreas = wmsAreaService.getAreaMap();
         // 使用异步发送替代阻塞发送
         JSONObject areaLog = new JSONObject();
@@ -397,11 +433,11 @@ public class WebSocketServer {
             WmsArea a = entry.getValue();
             JSONObject areaLogDataItem = new JSONObject();
             areaLogDataItem.put("sort", i);
-            areaLogDataItem.put("areaCode", a.getAreaName());
+            areaLogDataItem.put("areaCode", a.getAreaCode());
             areaLogDataItem.put("areaType", a.getAreaType());
             areaLogDataItem.put("personCount", a.getPersonCount());
             areaLogDataItem.put("vehicleCount", a.getVehicleCount());
-            areaLogDataItem.put("areaName", "钢铁区");
+            areaLogDataItem.put("areaName", a.getAreaName());
             areaLogData.add(areaLogDataItem);
             i++;
         }
@@ -409,13 +445,13 @@ public class WebSocketServer {
     }
 
     /**
-     * 目标WebSocket服务器的消息处理器
+     * 三方WebSocket服务器的消息处理器
      */
-    public static class TargetWebSocketHandler extends TextWebSocketHandler {
+    public static class ThirdWebSocketHandler extends TextWebSocketHandler {
 
         private final BlockingQueue<String> messageQueue;
 
-        public TargetWebSocketHandler(BlockingQueue<String> messageQueue) {
+        public ThirdWebSocketHandler(BlockingQueue<String> messageQueue) {
             this.messageQueue = messageQueue;
         }
 
@@ -427,12 +463,29 @@ public class WebSocketServer {
             try {
                 // 检查消息大小
                 if (message.getPayloadLength() > 1024 * 1024) { // 1MB限制
-                    LOGGER.warn("接收到过大的消息，大小: {} 字节", message.getPayloadLength());
+                    LOGGER.warn("接收三方消息过大，大小: {} 字节", message.getPayloadLength());
                     // 可以选择丢弃或分批处理
                 }
-                messageQueue.add(message.getPayload());
+                String payload = message.getPayload();
+                JSONObject jsonObject = JSONObject.parseObject(payload);
+                if (jsonObject.get("msgType").equals("cardSenderView")) {
+                    return;
+                }
+                if (jsonObject.get("msgType").equals("alarmCount")) {
+                    return;
+                }
+                if (jsonObject.get("msgType").equals("vehicleAlarmCount")) {
+                    return;
+                }
+                if (jsonObject.get("msgType").equals("currentVehicleLocation")) {
+                    return;
+                }
+                if (jsonObject.get("msgType").equals("personCount")) {
+                    return;
+                }
+                messageQueue.add(payload);
             } catch (Exception e) {
-                LOGGER.error("处理目标服务器消息异常", e);
+                LOGGER.error("处理三方服务器消息异常", e);
             }
         }
 
@@ -441,7 +494,7 @@ public class WebSocketServer {
          */
         @Override
         public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-            LOGGER.info("与目标服务器连接建立成功");
+            LOGGER.error("与三方目标服务器连接建立成功");
         }
 
         /**
@@ -449,7 +502,7 @@ public class WebSocketServer {
          */
         @Override
         public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-            LOGGER.info("与目标服务器连接关闭,状态: {}", status);
+            LOGGER.error("与三方目标服务器连接关闭,状态: {}", status);
         }
 
         /**
@@ -457,7 +510,7 @@ public class WebSocketServer {
          */
         @Override
         public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
-            LOGGER.error("与目标服务器传输错误:", exception);
+            LOGGER.error("与三方目标服务器传输错误:", exception);
         }
     }
 }
