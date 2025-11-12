@@ -66,4 +66,12 @@ public interface LanyaPositionHistoryMapper {
     List<LanyaPositionHistory> selectLanyaPositionHistoryListStartTimeByCardAndName(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime, @Param("cardId") Long cardId, @Param("realName") String realName);
 
     List<String> showPositionHistoryTableNames();
+
+    int insertLanyaPositionHistoryByTable(@Param("history") LanyaPositionHistory history, @Param("tableName") String tableName);
+
+    int createTable(@Param("tableName") String tableName);
+
+    List<LanyaPositionHistory> selectLanyaPositionHistoryListByTable(@Param("tableName") String tableName, @Param("userId") Long userId, @Param("date") Date date);
+
+    int checkTableExists(@Param("tableName") String tableName);
 }

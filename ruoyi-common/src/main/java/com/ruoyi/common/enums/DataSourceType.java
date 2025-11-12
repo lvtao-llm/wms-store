@@ -1,24 +1,31 @@
 package com.ruoyi.common.enums;
 
+import com.ruoyi.common.annotation.Excel;
+
 /**
  * 数据源
- * 
+ *
  * @author ruoyi
  */
-public enum DataSourceType
-{
+public enum DataSourceType {
     /**
-     * 主库
+     * 主库 monitor_wms库
      */
     MASTER,
 
     /**
-     * 从库
+     * 从库 monitor_lanya库
      */
     SLAVE,
 
     /**
-     * 筒仓库
+     * 物资公司筒仓库
      */
-    STOREHOUSE
+    STOREHOUSE,
+
+    /**
+     * 部署在物资公司的卡机数据库
+     * 当项目部署在公网时使用，用于数据同步
+     */
+    LANYA90;
 }

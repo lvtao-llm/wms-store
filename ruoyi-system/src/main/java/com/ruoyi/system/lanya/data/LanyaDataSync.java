@@ -1,20 +1,20 @@
 package com.ruoyi.system.lanya.data;
 
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ruoyi.system.domain.*;
 import com.ruoyi.system.service.*;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
-import javax.annotation.PostConstruct;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -80,14 +80,14 @@ public class LanyaDataSync {
     /**
      * 定时同步Lanya定位数据开关
      */
-    @Value("${lanya.position.sync.enabled:false}")
-    private boolean enablePosition;
+    @Value("${lanya.position.sync-table.enabled:false}")
+    private boolean enablePositionTableSync;
 
     /**
-     * 定时同步Lanya设备卡发送日志开关
+     * 定时同步Lanya定位数据开关
      */
-    @Value("${lanya.position.mock.enabled:false}")
-    private boolean enableMock;
+    @Value("${lanya.position.sync-api.enabled:false}")
+    private boolean enablePositionApiSync;
 
     /**
      * 定时同步Lanya设备卡发放日志开关
@@ -135,81 +135,11 @@ public class LanyaDataSync {
      */
     SimpleDateFormat sdfTableSuffix = new SimpleDateFormat("yyyyMMdd");
 
-    // 大庆市萨尔图区中心坐标
-    double centerLat = 46.6346017782;  // 纬度
-    double centerLng = 124.8472070448; // 经度
-    // 地球半径(米)
-    double earthRadius = 6371000;
+    public RestTemplate restTemplate = new RestTemplate();
+    private ObjectMapper mapper = new ObjectMapper();
+    HttpHeaders headers = new HttpHeaders();
 
-    // 以中心点为中心，边长2公里的正方形坐标
-    double leftLat = 124.8382070448;
-    double rightLat = 124.8562070448;
-    double topLng = 46.6436017782;
-    double bottomLng = 46.6256017782;
-
-    /**
-     * 创建LanyaPositionHistory数据模拟器
-     */
-    public void generateMockPositionHistoryData() {
-        if (!enableMock) {
-            return;
-        }
-
-        Random random = new Random();
-        Date now = new Date();
-
-        Long[] cardIds = new Long[]{4791L, 77561L, 81126L, 111L, 222L, 333L};
-        String[] persons = new String[]{"单北斗81126", "吕涛11", "啊啊啊", "不不不", "新卡2", "于1111"};
-        Long[] personIds = new Long[]{1925015210049478657L, 1972900380282490881L, 1977660310642294785L, 1978327655543013378L, 1924763411983966210L, 1924719928770424834L};
-        int personIndex = random.nextInt(persons.length);
-        Long cardId = cardIds[personIndex];
-        String person = persons[personIndex];
-        Long personId = personIds[personIndex];
-
-
-        LanyaPositionHistory position = new LanyaPositionHistory();
-
-        // 基本信息
-        position.setAcceptTime(now); // 24小时内随机时间
-        position.setCardId(cardId);
-        position.setCardType("card"); // 0或1
-        position.setBeaconId(-1L);
-
-        // 位置信息 (大庆市萨尔图区半径2公里内坐标)
-        // 生成半径内的随机坐标点
-        double radiusInMeters = 2000; // 2公里
-        double distance = Math.sqrt(random.nextDouble()) * radiusInMeters;
-        double angle = random.nextDouble() * 2 * Math.PI;
-
-        // 计算新坐标点
-        double deltaLat = distance * Math.cos(angle) / earthRadius;
-        double deltaLng = distance * Math.sin(angle) / (earthRadius * Math.cos(Math.toRadians(centerLat)));
-
-        double newLat = centerLat + Math.toDegrees(deltaLat);
-        double newLng = centerLng + Math.toDegrees(deltaLng);
-
-        BigDecimal latBigDecimal = new BigDecimal(newLat).setScale(10, RoundingMode.HALF_UP);
-        BigDecimal lngBigDecimal = new BigDecimal(newLng).setScale(10, RoundingMode.HALF_UP);
-
-        position.setLatitude(latBigDecimal.doubleValue());
-        position.setLongitude(lngBigDecimal.doubleValue());
-        position.setDistance(1.0); // 0-100米距离
-        position.setLayerId("全图");
-        position.setLayerHeight(0); // 0-10米高度
-
-        // 人员信息
-        position.setPersonId(personId);
-        position.setPersonType("staff"); // 0-2
-        position.setRealName(person);
-
-        // 其他信息
-        position.setCreateTime(now);
-
-        lanyaPositionHistoryService.insertLanyaPositionHistory(position);
-    }
-
-
-    @PostConstruct
+    //    @PostConstruct
     public void init() throws Exception {
         if (!alarmDetection.isInitialized()) {
             alarmDetection.loadAlarmRules();
@@ -375,7 +305,7 @@ public class LanyaDataSync {
     }
 
     public void PositionSync(String tableName) throws ParseException {
-        if (!enablePosition) {
+        if (!enablePositionTableSync) {
             return;
         }
         if (!alarmDetection.isInitialized()) {
@@ -393,6 +323,10 @@ public class LanyaDataSync {
 
             // 获取count条position_history数据
             int count = 100;
+            if (!lanyaPositionHistoryService.showPositionHistoryTableNames().contains(tableName)) {
+                continueGet = false;
+                break;
+            }
             List<LanyaPositionHistory> lanyaPositionHistories = lanyaPositionHistoryService.selectLanyaPositionHistoryListStartTime(positionOffset, count, tableName);
 
             // 循环处理数据
@@ -458,5 +392,22 @@ public class LanyaDataSync {
         }
     }
 
+    public void PositionSync1() throws ParseException, JsonProcessingException {
+        if (!enablePositionApiSync) {
+            return;
+        }
+        if (!alarmDetection.isInitialized()) {
+            alarmDetection.loadAlarmRules();
+        }
 
+        ResponseEntity<String> resp = restTemplate.getForEntity("http://localhost:10030/system/lanya_position_history/new", String.class);
+        JSONObject object = this.mapper.readValue(resp.getBody(), JSONObject.class);
+        for (int i = 0; i < object.getJSONArray("rows").size(); i++) {
+            JSONObject row = object.getJSONArray("rows").getJSONObject(i);
+            LanyaPositionHistory position = row.toJavaObject(LanyaPositionHistory.class);
+            String tableName = "position_history_" + sdfTableSuffix.format(position.getAcceptTime());
+            lanyaPositionHistoryService.createTable(tableName);
+            lanyaPositionHistoryService.insertLanyaPositionHistory(position, tableName);
+        }
+    }
 }

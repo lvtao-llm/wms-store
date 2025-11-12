@@ -1,6 +1,7 @@
 package com.ruoyi.system.domain;
 
 import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -230,14 +231,14 @@ public class WmsArea extends BaseEntity {
     public List<double[]> getAreaPolygonDouble() {
         List<double[]> list = new ArrayList<>();
         if (areaPolygon != null) {
-            JSONArray array = JSONArray.parseArray(areaPolygon);
-            if (array.size() > 0 && array.getJSONObject(0).containsKey("points")) {
-                JSONArray points = array.getJSONObject(0).getJSONArray("points");
+            JSONObject array = JSONObject.parse(areaPolygon);
+            if (array.containsKey("path")) {
+                JSONArray points = array.getJSONArray("path");
                 for (int i = 0; i < points.size(); i++) {
-                    if (!points.getJSONObject(i).containsKey("lng") || !points.getJSONObject(i).containsKey("lat")) {
+                    if (!points.getJSONObject(i).containsKey("longitudel") || !points.getJSONObject(i).containsKey("latitudel")) {
                         return new ArrayList<>();
                     }
-                    list.add(new double[]{points.getJSONObject(i).getDouble("lng"), points.getJSONObject(i).getDouble("lat")});
+                    list.add(new double[]{points.getJSONObject(i).getDouble("longitudel"), points.getJSONObject(i).getDouble("latitudel")});
                 }
             }
         }

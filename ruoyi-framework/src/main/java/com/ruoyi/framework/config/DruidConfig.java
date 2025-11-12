@@ -55,6 +55,14 @@ public class DruidConfig {
         return druidProperties.dataSource(dataSource);
     }
 
+    @Bean
+    @ConfigurationProperties("spring.datasource.druid.lanya90")
+    @ConditionalOnProperty(prefix = "spring.datasource.druid.lanya90", name = "enabled", havingValue = "true")
+    public DataSource lanya90DataSource(DruidProperties druidProperties) {
+        DruidDataSource dataSource = DruidDataSourceBuilder.create().build();
+        return druidProperties.dataSource(dataSource);
+    }
+
     @Bean(name = "dynamicDataSource")
     @Primary
     public DynamicDataSource dataSource(DataSource masterDataSource) {
@@ -62,6 +70,7 @@ public class DruidConfig {
         targetDataSources.put(DataSourceType.MASTER.name(), masterDataSource);
         setDataSource(targetDataSources, DataSourceType.SLAVE.name(), "slaveDataSource");
         setDataSource(targetDataSources, DataSourceType.STOREHOUSE.name(), "storehouseDataSource");
+        setDataSource(targetDataSources, DataSourceType.LANYA90.name(), "lanya90DataSource");
         return new DynamicDataSource(masterDataSource, targetDataSources);
     }
 

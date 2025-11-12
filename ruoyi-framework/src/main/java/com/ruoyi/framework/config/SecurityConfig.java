@@ -108,18 +108,22 @@ public class SecurityConfig {
                 .authorizeHttpRequests((requests) -> {
                     permitAllUrl.getUrls().forEach(url -> requests.antMatchers(url).permitAll());
                     // 对于登录login 注册register 验证码captchaImage 允许匿名访问
-                    requests.antMatchers("/login",
+                    requests.antMatchers(
+                                    "/login",
                                     "/login-no-code",
                                     "/register",
+                                    "/captchaImage",
                                     "/system/lanya-transfer/files/image",
                                     "/system/lanya-transfer/files/upload",
-                                    "/captchaImage",
+                                    "/system/lanya-transfer/position/historyPosition/findPersonHistoryList",
                                     "/system/core/main/screen/data",
                                     "/system/lanya-transfer/ws/**",
                                     "/system/trajectory/**",
                                     "/system/area/**",
                                     "/system/wms_device/**",
-                                    "/api/camera/**").permitAll()
+                                    "/api/camera/**",
+                                    "/system/lanya_position_history/new"
+                            ).permitAll()
                             // 静态资源，可匿名访问
                             .antMatchers(HttpMethod.GET, "/", "/*.html", "/**/*.html", "/**/*.css", "/**/*.js", "/profile/**").permitAll()
                             .antMatchers("/swagger-ui.html", "/swagger-resources/**", "/webjars/**", "/*/api-docs", "/druid/**").permitAll()

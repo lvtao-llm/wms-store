@@ -14,13 +14,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="jldw"    column="jldw"    />
         <result property="materialRequirements"    column="material_requirements"    />
         <result property="materialSafetyNotice"    column="material_safety_notice"    />
+        <result property="materialDescId"    column="material_desc_id"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
         <result property="keyPoints"    column="key_points"    />
     </resultMap>
 
     <sql id="selectWmsMaterialDescVo">
-        select material_desc_id, wzbm, wzmc, pzmc, wzlb, area_codes, jldw, material_requirements, material_safety_notice, create_by, create_time from wms_material_desc
+        select material_desc_id, wzbm, wzmc, pzmc, wzlb, area_codes, jldw, material_requirements, material_safety_notice, create_by, create_time, key_points from wms_material_desc
     </sql>
 
     <select id="selectWmsMaterialDescList" parameterType="WmsMaterialDesc" resultMap="WmsMaterialDescResult">

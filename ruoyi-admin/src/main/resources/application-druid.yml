@@ -16,6 +16,13 @@ spring:
                 url: jdbc:mysql://112.98.110.101:3308/monitor_lanya?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
                 username: root
                 password: Monitor@20240101
+            # 从库数据源
+            lanya90:
+                # 从数据源开关/默认关闭
+                enabled: true
+                url: jdbc:mysql://112.98.110.101:3308/monitor_lanya?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+                username: root
+                password: Monitor@20240101
             # 库存数据库
             storehouse:
                 # 从数据源开关/默认关闭

@@ -1,10 +1,18 @@
 package com.ruoyi.system.controller;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.common.annotation.DataSource;
 import com.ruoyi.common.enums.DataSourceType;
+import com.ruoyi.system.domain.SysConfig;
+import com.ruoyi.system.service.ISysConfigService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,25 +34,41 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 历史轨迹Controller
- * 
+ *
  * @author ruoyi
  * @date 2025-10-10
  */
 @RestController
 @RequestMapping("/system/lanya_position_history")
-@DataSource(DataSourceType.SLAVE)
-public class LanyaPositionHistoryController extends BaseController
-{
+public class LanyaPositionHistoryController extends BaseController {
+    /**
+     * 历史轨迹服务
+     */
     @Autowired
     private ILanyaPositionHistoryService lanyaPositionHistoryService;
+
+    /**
+     * 系统配置服务
+     */
+    @Autowired
+    private ISysConfigService configService;
+
+    /**
+     * 时间格式
+     */
+    SimpleDateFormat sdfDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+
+    /**
+     * 时间格式
+     */
+    SimpleDateFormat sdfYMD = new SimpleDateFormat("yyyyMMdd");
 
     /**
      * 查询历史轨迹列表
      */
     @PreAuthorize("@ss.hasPermi('system:lanya_position_history:list')")
     @GetMapping("/list")
-    public TableDataInfo list(LanyaPositionHistory lanyaPositionHistory)
-    {
+    public TableDataInfo list(LanyaPositionHistory lanyaPositionHistory) {
         startPage();
         List<LanyaPositionHistory> list = lanyaPositionHistoryService.selectLanyaPositionHistoryList(lanyaPositionHistory);
         return getDataTable(list);
@@ -56,8 +80,7 @@ public class LanyaPositionHistoryController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:lanya_position_history:export')")
     @Log(title = "历史轨迹", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, LanyaPositionHistory lanyaPositionHistory)
-    {
+    public void export(HttpServletResponse response, LanyaPositionHistory lanyaPositionHistory) {
         List<LanyaPositionHistory> list = lanyaPositionHistoryService.selectLanyaPositionHistoryList(lanyaPositionHistory);
         ExcelUtil<LanyaPositionHistory> util = new ExcelUtil<LanyaPositionHistory>(LanyaPositionHistory.class);
         util.exportExcel(response, list, "历史轨迹数据");
@@ -68,8 +91,7 @@ public class LanyaPositionHistoryController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('system:lanya_position_history:query')")
     @GetMapping(value = "/{id}")
-    public AjaxResult getInfo(@PathVariable("id") Long id)
-    {
+    public AjaxResult getInfo(@PathVariable("id") Long id) {
         return success(lanyaPositionHistoryService.selectLanyaPositionHistoryById(id));
     }
 
@@ -79,8 +101,7 @@ public class LanyaPositionHistoryController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:lanya_position_history:add')")
     @Log(title = "历史轨迹", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody LanyaPositionHistory lanyaPositionHistory)
-    {
+    public AjaxResult add(@RequestBody LanyaPositionHistory lanyaPositionHistory) {
         return toAjax(lanyaPositionHistoryService.insertLanyaPositionHistory(lanyaPositionHistory));
     }
 
@@ -90,8 +111,7 @@ public class LanyaPositionHistoryController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:lanya_position_history:edit')")
     @Log(title = "历史轨迹", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody LanyaPositionHistory lanyaPositionHistory)
-    {
+    public AjaxResult edit(@RequestBody LanyaPositionHistory lanyaPositionHistory) {
         return toAjax(lanyaPositionHistoryService.updateLanyaPositionHistory(lanyaPositionHistory));
     }
 
@@ -100,9 +120,54 @@ public class LanyaPositionHistoryController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('system:lanya_position_history:remove')")
     @Log(title = "历史轨迹", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
-    public AjaxResult remove(@PathVariable Long[] ids)
-    {
+    @DeleteMapping("/{ids}")
+    public AjaxResult remove(@PathVariable Long[] ids) {
         return toAjax(lanyaPositionHistoryService.deleteLanyaPositionHistoryByIds(ids));
+    }
+
+    @GetMapping("/new")
+    public TableDataInfo newData() throws ParseException {
+        SysConfig sysConfig = null;
+        List<SysConfig> sysConfigs = configService.selectConfigList(new SysConfig());
+        for (SysConfig c : sysConfigs) {
+            if (c.getConfigKey().equals("lanya.position.last.offset")) {
+                sysConfig = c;
+            }
+        }
+
+        Date offset = sdfDateTime.parse(sysConfig.getConfigValue());
+
+        // 表名
+        String tableName = "position_history_" + sdfYMD.format(offset);
+        // 最后同步的position_history表的时间
+        List<LanyaPositionHistory> list = lanyaPositionHistoryService.selectLanyaPositionHistoryListStartTime(offset, 100, tableName);
+
+        if (list.isEmpty()) {
+            // 将 Date 转换为 LocalDateTime
+            LocalDateTime offsetDateTime = offset.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+            LocalDateTime currentDateTime = LocalDateTime.now();
+
+            // 计算两个日期之间的天数差
+            long daysBetween = ChronoUnit.DAYS.between(offsetDateTime, currentDateTime);
+
+            if (daysBetween >= 1) {
+                for (int i = 0; i < daysBetween; i++) {
+                    offsetDateTime = offsetDateTime.plusDays(1).truncatedTo(ChronoUnit.DAYS);
+                    tableName = "position_history_" + sdfYMD.format(Date.from(offsetDateTime.atZone(ZoneId.systemDefault()).toInstant()));
+                    int exists = lanyaPositionHistoryService.checkTableExists(tableName);
+                    if (exists == 1) {
+                        list = lanyaPositionHistoryService.selectLanyaPositionHistoryListStartTime(Date.from(offsetDateTime.atZone(ZoneId.systemDefault()).toInstant()), 1000, tableName);
+                    }
+
+                }
+            }
+        }
+
+        if (!list.isEmpty()) {
+            sysConfig.setConfigValue(sdfDateTime.format(list.get(list.size() - 1).getAcceptTime()));
+            configService.updateConfig(sysConfig);
+        }
+
+        return getDataTable(list);
     }
 }
