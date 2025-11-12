@@ -118,7 +118,8 @@ public class SecurityConfig {
                                     "/system/lanya-transfer/ws/**",
                                     "/system/trajectory/**",
                                     "/system/area/**",
-                                    "/system/wms_device/**").permitAll()
+                                    "/system/wms_device/**",
+                                    "/api/camera/**").permitAll()
                             // 静态资源，可匿名访问
                             .antMatchers(HttpMethod.GET, "/", "/*.html", "/**/*.html", "/**/*.css", "/**/*.js", "/profile/**").permitAll()
                             .antMatchers("/swagger-ui.html", "/swagger-resources/**", "/webjars/**", "/*/api-docs", "/druid/**").permitAll()

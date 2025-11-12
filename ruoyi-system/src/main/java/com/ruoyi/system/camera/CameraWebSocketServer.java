@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
  * @since 2025/11/11
  */
 @Component
-@ServerEndpoint("/api/camera/ws/{cameraId}")
+@ServerEndpoint("/api/camera/ws/{cameraId}/{channel}")
 public class CameraWebSocketServer {
 
     private static CameraStreamService cameraStreamService;
@@ -34,9 +34,9 @@ public class CameraWebSocketServer {
     private static final Map<String, Session> sessions = new ConcurrentHashMap<>();
 
     @OnOpen
-    public void onOpen(Session session, @PathParam("cameraId") String cameraId) {
+    public void onOpen(Session session, @PathParam("cameraId") String cameraId, @PathParam("channel") String channel) {
         sessions.put(cameraId, session);
-        startStreaming(cameraId);
+        startStreaming(cameraId, channel);
     }
 
     @OnClose
@@ -44,13 +44,13 @@ public class CameraWebSocketServer {
         sessions.remove(cameraId);
     }
 
-    private void startStreaming(String cameraId) {
+    private void startStreaming(String cameraId, String channel) {
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         executor.scheduleAtFixedRate(() -> {
             try {
                 Session session = sessions.get(cameraId);
                 if (session != null && session.isOpen()) {
-                    byte[] frame = cameraStreamService.getCameraFrame(cameraId);
+                    byte[] frame = cameraStreamService.getCameraFrame(cameraId, channel);
                     if (frame != null) {
                         session.getBasicRemote().sendBinary(ByteBuffer.wrap(frame));
                     }

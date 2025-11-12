@@ -65,6 +65,14 @@ public class WmsDevice extends BaseEntity
     @Excel(name = "数据")
     private String data;
 
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
+    }
+
     /** 删除标志（0代表存在 1代表删除） */
     private String delFlag;
 

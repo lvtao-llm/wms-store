@@ -537,6 +537,12 @@ export const dynamicRoutes = [
         component: () => import('@/views/wms_vehicle_record/index'),
         name: '车辆进出记录',
         meta: { title: '车辆进出记录' }
+      },
+      {
+        path: 'vehicle-regconize-log',
+        component: () => import('@/views/wms_device_camera_log/index'),
+        name: '车辆识别记录',
+        meta: { title: '车辆识别记录' }
       }
     ]
   },

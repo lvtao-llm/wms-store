@@ -1,8 +1,12 @@
 package com.ruoyi.system.camera;
 
+import com.alibaba.fastjson2.JSONObject;
+import com.ruoyi.system.domain.WmsDevice;
+import com.ruoyi.system.service.IWmsDeviceService;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.Java2DFrameConverter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
@@ -12,6 +16,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+
 /**
  * @author 吕涛
  * @version 1.0
@@ -20,30 +25,22 @@ import java.util.concurrent.ScheduledExecutorService;
 @Service
 public class CameraStreamService {
 
-    private final Map<String, FFmpegFrameGrabber> activeStreams = new ConcurrentHashMap<>();
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(5);
 
-    /**
-     * 启动摄像头流转换为 HTTP 流
-     */
-    public String startCameraStream(String cameraId, CameraInfo cameraInfo) {
-        String rtspUrl = String.format("rtsp://%s:%s@%s:%s/Streaming/Channels/%s",
-                cameraInfo.getUsername(),
-                cameraInfo.getPassword(),
-                cameraInfo.getIp(),
-                cameraInfo.getPort(),
-                cameraInfo.getChannel());
-
-        // HTTP 流地址
-        String httpStreamUrl = "/api/camera/stream/" + cameraId;
-        return httpStreamUrl;
-    }
+    public final Map<String, FFmpegFrameGrabber> activeStreams1 = new ConcurrentHashMap<>();
+    public final Map<String, FFmpegFrameGrabber> activeStreams2 = new ConcurrentHashMap<>();
 
     /**
      * 获取摄像头帧数据
      */
-    public byte[] getCameraFrame(String cameraId) throws Exception {
-        FFmpegFrameGrabber grabber = activeStreams.get(cameraId);
+    public byte[] getCameraFrame(String cameraInfo, String channel) throws Exception {
+
+        FFmpegFrameGrabber grabber = null;
+        if (channel.equals("1")) {
+            grabber = activeStreams1.get(cameraInfo);
+        }
+        if (channel.equals("2")) {
+            grabber = activeStreams2.get(cameraInfo);
+        }
         if (grabber == null) {
             throw new RuntimeException("摄像头流未启动");
         }

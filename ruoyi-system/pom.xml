@@ -42,15 +42,24 @@
 
         <dependency>
             <groupId>org.bytedeco</groupId>
-            <artifactId>javacv</artifactId>
-            <version>1.5.7</version>
+            <artifactId>javacv-platform</artifactId>
+            <version>1.5.12</version>
         </dependency>
 
+        <!-- Additional dependencies required to use CUDA and cuDNN -->
         <dependency>
             <groupId>org.bytedeco</groupId>
-            <artifactId>ffmpeg-platform</artifactId>
+            <artifactId>opencv-platform-gpu</artifactId>
+            <version>4.11.0-1.5.12</version>
+        </dependency>
+
+        <!-- Optional GPL builds with (almost) everything enabled -->
+        <dependency>
+            <groupId>org.bytedeco</groupId>
+            <artifactId>ffmpeg-platform-gpl</artifactId>
             <version>7.1.1-1.5.12</version>
         </dependency>
+
 
     </dependencies>
 
