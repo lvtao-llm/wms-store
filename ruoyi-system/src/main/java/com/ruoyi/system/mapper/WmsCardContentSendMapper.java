@@ -58,4 +58,6 @@ public interface WmsCardContentSendMapper
      * @return 结果
      */
     public int deleteWmsCardContentSendByIds(Long[] ids);
+
+    List<WmsCardContentSend> selectWmsCardContentNew();
 }

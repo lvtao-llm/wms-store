@@ -68,6 +68,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         limit #{count}
     </select>
 
+    <select id="selectLanyaPositionHistoryListByTableTimeRange" resultMap="LanyaPositionHistoryResult">
+        select id, accept_time, card_id, card_type, beacon_id, longitude, latitude, distance, layer_id, layer_height, create_time, person_id, person_type, staff_type, real_name, dept_id, post_id, contractor_id, altitude, rtk_position_mode
+        from ${tableName}
+        where accept_time >= #{begin} and accept_time <![CDATA[ <= ]]> #{end} and person_id = #{personId}
+    </select>
+
     <select id="selectLanyaPositionHistoryListStartTimeByCardAndName" resultMap="LanyaPositionHistoryResult">
         <include refid="selectLanyaPositionHistoryVo"/>
         where accept_time >= #{beginTime} and card_id = #{cardId} and real_name = #{realName}

@@ -1,4 +1,4 @@
-package com.ruoyi.system.wzjt.data;
+package com.ruoyi.system.wzgs.sync;
 
 import com.ruoyi.system.domain.*;
 import com.ruoyi.system.mapper.WzjtViewDbSkMapper;
@@ -21,7 +21,7 @@ import java.util.*;
  * @since 2025/11/8
  */
 @Service
-public class DataSync {
+public class StoreDataSync {
 
     /**
      * 物资公司调拨数据同步
@@ -185,10 +185,7 @@ public class DataSync {
                 // 插入到大仓物资日统计
                 WmsMaterialStaticsDay wmsMaterialStaticsDay = new WmsMaterialStaticsDay();
                 wmsMaterialStaticsDay.setDay(sdfYearMonDay.format(w.getJlsjT()));
-                wmsMaterialStaticsDay.setWzbm(w.getWzbm());
                 wmsMaterialStaticsDay.setWzmc(w.getWzmc());
-                wmsMaterialStaticsDay.setWzlb(w.getWzlb());
-                wmsMaterialStaticsDay.setJldw(w.getJldw());
                 wmsMaterialStaticsDay.setJl(w.getDhsl());
                 wmsMaterialStaticsDay.setAreaCodes(getAreaName(w));
                 wmsMaterialStaticsDayService.updateWmsMaterialStaticsDay(wmsMaterialStaticsDay);
@@ -236,9 +233,7 @@ public class DataSync {
                 // 插入到大仓物资日统计
                 WmsMaterialStaticsDay wmsMaterialStaticsDay = new WmsMaterialStaticsDay();
                 wmsMaterialStaticsDay.setDay(sdfYearMonDay.format(w.getOutboundTime()));
-                wmsMaterialStaticsDay.setWzbm(w.getWzbm());
                 wmsMaterialStaticsDay.setWzmc(w.getWzmc());
-                wmsMaterialStaticsDay.setJldw(w.getJldw());
                 wmsMaterialStaticsDay.setDb(w.getAllotQuantity());
                 wmsMaterialStaticsDay.setAreaCodes(getAreaName(w));
                 wmsMaterialStaticsDayService.updateWmsMaterialStaticsDay(wmsMaterialStaticsDay);
@@ -274,9 +269,7 @@ public class DataSync {
             // 插入到大仓物资日统计
             WmsMaterialStaticsDay wmsMaterialStaticsDay = new WmsMaterialStaticsDay();
             wmsMaterialStaticsDay.setDay(sdfYearMonDay.format(new Date()));
-            wmsMaterialStaticsDay.setWzbm(w.getWzbm());
             wmsMaterialStaticsDay.setWzmc(w.getWzmc());
-            wmsMaterialStaticsDay.setJldw(w.getJldw());
             wmsMaterialStaticsDay.setKc(w.getActualWeight());
             wmsMaterialStaticsDay.setAreaCodes(getAreaName(w));
             wmsMaterialStaticsDayService.updateWmsMaterialStaticsDay(wmsMaterialStaticsDay);

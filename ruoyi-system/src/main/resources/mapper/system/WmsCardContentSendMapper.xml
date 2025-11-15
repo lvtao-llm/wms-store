@@ -1,29 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.system.mapper.WmsCardContentSendMapper">
-    
+
     <resultMap type="WmsCardContentSend" id="WmsCardContentSendResult">
-        <result property="id"    column="id"    />
-        <result property="cardCode"    column="card_code"    />
-        <result property="content"    column="content"    />
-        <result property="createBy"    column="create_by"    />
-        <result property="createTime"    column="create_time"    />
+        <result property="id" column="id"/>
+        <result property="cardCode" column="card_code"/>
+        <result property="content" column="content"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
     </resultMap>
 
     <sql id="selectWmsCardContentSendVo">
-        select id, card_code, content, create_by, create_time from wms_card_content_send
+        select id, card_code, content, create_by, create_time
+        from wms_card_content_send
     </sql>
 
     <select id="selectWmsCardContentSendList" parameterType="WmsCardContentSend" resultMap="WmsCardContentSendResult">
         <include refid="selectWmsCardContentSendVo"/>
-        <where>  
-            <if test="cardCode != null "> and card_code = #{cardCode}</if>
-            <if test="content != null  and content != ''"> and content = #{content}</if>
+        <where>
+            <if test="cardCode != null ">and card_code = #{cardCode}</if>
+            <if test="content != null  and content != ''">and content = #{content}</if>
         </where>
     </select>
-    
+
     <select id="selectWmsCardContentSendById" parameterType="Long" resultMap="WmsCardContentSendResult">
         <include refid="selectWmsCardContentSendVo"/>
         where id = #{id}
@@ -36,13 +37,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="content != null and content != ''">content,</if>
             <if test="createBy != null">create_by,</if>
             <if test="createTime != null">create_time,</if>
-         </trim>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="cardCode != null">#{cardCode},</if>
             <if test="content != null and content != ''">#{content},</if>
             <if test="createBy != null">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
-         </trim>
+        </trim>
     </insert>
 
     <update id="updateWmsCardContentSend" parameterType="WmsCardContentSend">
@@ -57,13 +58,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
     <delete id="deleteWmsCardContentSendById" parameterType="Long">
-        delete from wms_card_content_send where id = #{id}
+        delete
+        from wms_card_content_send
+        where id = #{id}
     </delete>
 
     <delete id="deleteWmsCardContentSendByIds" parameterType="String">
-        delete from wms_card_content_send where id in 
+        delete from wms_card_content_send where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
     </delete>
+
+    <select id="selectWmsCardContentNew" resultMap="WmsCardContentSendResult">
+        select id, card_code, content, create_by, create_time
+        from wms_card_content_send
+        where go_public is null
+    </select>
 </mapper>

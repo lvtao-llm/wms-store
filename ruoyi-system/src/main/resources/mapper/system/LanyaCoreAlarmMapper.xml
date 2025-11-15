@@ -107,6 +107,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where alarm_id = #{alarmId}
     </select>
 
+    <select id="selectLanyaCoreAlarmGtTime" parameterType="Date" resultMap="LanyaCoreAlarmResult">
+        <include refid="selectLanyaCoreAlarmVo"/>
+        where accept_time > #{date}
+    </select>
+
     <insert id="insertLanyaCoreAlarm" parameterType="LanyaCoreAlarm" useGeneratedKeys="true" keyProperty="alarmId">
         insert into core_alarm
         <trim prefix="(" suffix=")" suffixOverrides=",">

@@ -1,5 +1,6 @@
 package com.ruoyi.system.service.impl;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -135,6 +136,11 @@ public class LanyaPositionHistoryServiceImpl implements ILanyaPositionHistorySer
     @Override
     public int checkTableExists(String tableName) {
         return lanyaPositionHistoryMapper.checkTableExists(tableName);
+    }
+
+    @Override
+    public List<LanyaPositionHistory> selectLanyaPositionHistoryListByTableTimeRange(Date begin, Date end, Long personId, String tableName) {
+        return lanyaPositionHistoryMapper.selectLanyaPositionHistoryListByTableTimeRange(begin, end, personId, tableName);
     }
 
     /**

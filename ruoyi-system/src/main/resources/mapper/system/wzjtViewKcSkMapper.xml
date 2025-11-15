@@ -34,7 +34,7 @@
 
     <select id="selectViewKcSkList" parameterType="WmsMaterialStock" resultMap="ViewKcSkResult">
         <include refid="selectViewKcSkVo"/>
-        WHERE 物资编码 LIKE 'A%'
+        WHERE 账存重量 > 0
     </select>
 
 </mapper>

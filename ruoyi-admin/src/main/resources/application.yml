@@ -98,7 +98,7 @@ token:
   # 令牌密钥
   secret: abcdefghijklmnopqrstuvwxyz
   # 令牌有效期（默认30分钟）
-  expireTime: 30
+  expireTime: 1440
 
 # MyBatis配置
 mybatis:
@@ -155,14 +155,17 @@ lanya:
 
   position: # position_history 表数据同步
     sync-table: # 同步 lanya position_history 表数据并执行报警规则检测
-      enabled: true # 物资公司90部署打开
+      enabled: false # 物资公司90部署打开
+      past-table: # 是否在启动时同步过往的表
+        enabled: false
     sync-api: # 同步 101 机器的position_history 表数据到物资公司90数据库
-      enabled: true # 物资公司跳板部署打开
+      enabled: false # 物资公司跳板部署打开
+      api-url: http://112.98.110.101:10030/system/lanya_position_history/new
     mock: # 模拟数据
       enabled: true # 模拟数据时打开
   issuing: # device_card_sender_log 表数据同步
     sync: # 同步 lanya device_card_sender_log 表数据到 wms 数据库
-      enabled: false # 物资公司90部署打开
+      enabled: true # 物资公司90部署打开
 
 wzgs:
 

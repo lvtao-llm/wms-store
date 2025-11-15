@@ -94,7 +94,10 @@ public class LanyaPositionHistoryController extends BaseController {
     public AjaxResult getInfo(@PathVariable("id") Long id) {
         return success(lanyaPositionHistoryService.selectLanyaPositionHistoryById(id));
     }
-
+    /**
+     * admin
+     * Ll112233
+     */
     /**
      * 新增历史轨迹
      */

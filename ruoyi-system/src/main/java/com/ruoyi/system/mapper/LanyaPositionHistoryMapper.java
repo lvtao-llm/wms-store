@@ -74,4 +74,6 @@ public interface LanyaPositionHistoryMapper {
     List<LanyaPositionHistory> selectLanyaPositionHistoryListByTable(@Param("tableName") String tableName, @Param("userId") Long userId, @Param("date") Date date);
 
     int checkTableExists(@Param("tableName") String tableName);
+
+    List<LanyaPositionHistory> selectLanyaPositionHistoryListByTableTimeRange(@Param("begin") Date begin, @Param("end") Date end, @Param("personId") Long personId, @Param("tableName") String tableName);
 }

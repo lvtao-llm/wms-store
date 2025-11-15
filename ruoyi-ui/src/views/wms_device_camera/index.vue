@@ -216,7 +216,7 @@
     </el-dialog>
 
     <!-- 摄像头画面 -->
-    <camera-view ref="cameraView"></camera-view>
+    <camera-view ref="cameraView" :name="dialogName"></camera-view>
 
     <maps @editPoints="savePoints" ref="maps"></maps>
   </div>
@@ -292,7 +292,8 @@ export default {
         username2: null,
         password2: null,
         channel2: null
-      }
+      },
+      dialogName:''
     };
   },
   created() {
@@ -462,6 +463,7 @@ export default {
     // 添加查看摄像头画面的方法
     viewCameraStream(row, index) {
       // 打开摄像头画面弹窗
+      this.dialogName = row.deviceName
       this.$refs.cameraView.openCamera(row, JSON.parse(row.data));
     },
   },

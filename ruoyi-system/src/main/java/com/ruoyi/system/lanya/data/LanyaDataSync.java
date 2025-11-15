@@ -2,19 +2,29 @@ package com.ruoyi.system.lanya.data;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ruoyi.system.domain.*;
 import com.ruoyi.system.service.*;
+import com.ruoyi.system.utils.HttpUtil;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.PostConstruct;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -72,12 +82,6 @@ public class LanyaDataSync {
     private IWmsTrajectoryService wmsTrajectoryService;
 
     /**
-     * 区域服务
-     */
-    @Autowired
-    private IWmsAreaService wmsAreaService;
-
-    /**
      * 定时同步Lanya定位数据开关
      */
     @Value("${lanya.position.sync-table.enabled:false}")
@@ -86,14 +90,16 @@ public class LanyaDataSync {
     /**
      * 定时同步Lanya定位数据开关
      */
-    @Value("${lanya.position.sync-api.enabled:false}")
-    private boolean enablePositionApiSync;
+    @Value("${lanya.position.sync-table.past-table.enabled:false}")
+    private boolean enablePositionTableSyncPast;
+
 
     /**
      * 定时同步Lanya设备卡发放日志开关
      */
     @Value("${lanya.issuing.sync.enabled:false}")
     private boolean enableIssuing;
+
 
     /**
      * 定时同步Lanya定位数据表名
@@ -135,15 +141,19 @@ public class LanyaDataSync {
      */
     SimpleDateFormat sdfTableSuffix = new SimpleDateFormat("yyyyMMdd");
 
-    public RestTemplate restTemplate = new RestTemplate();
-    private ObjectMapper mapper = new ObjectMapper();
-    HttpHeaders headers = new HttpHeaders();
 
-    //    @PostConstruct
+    /**
+     * HTTP客户端
+     */
+    @Autowired
+    private HttpUtil httpUtil;
+
+    @PostConstruct
     public void init() throws Exception {
         if (!alarmDetection.isInitialized()) {
             alarmDetection.loadAlarmRules();
         }
+
         List<SysConfig> sysConfigs = configService.selectConfigList(new SysConfig());
         for (SysConfig sysConfig : sysConfigs) {
             if (sysConfig.getConfigKey().equals(positionKey)) {
@@ -156,6 +166,10 @@ public class LanyaDataSync {
 
         // 初始化未同步的layan device_sender_card_log表数据到wms_device_card_work_log表
         CardLogSync();
+
+        if (!enablePositionTableSyncPast) {
+            return;
+        }
 
         // 初始化未同步的layan position_history表数据到wms_alarm_log表
         // 历史position_history 按日期分表的表名
@@ -191,7 +205,11 @@ public class LanyaDataSync {
             for (LanyaDeviceCardSenderLog lanyaDeviceCardSenderLog : lanyaDeviceCardSenderLogs) {
 
                 // 发卡
-                if (lanyaDeviceCardSenderLog.getCardSenderType() == 1) {
+                if (lanyaDeviceCardSenderLog.getCardSenderType() == 1 &&
+                        lanyaDeviceCardSenderLog.getCardId() != null &&
+                        lanyaDeviceCardSenderLog.getRealName() != null &&
+                        "成功".equals(lanyaDeviceCardSenderLog.getResult())) {
+
                     // 发卡记录
                     WmsDeviceCardWorkLog wordLog = new WmsDeviceCardWorkLog();
                     wordLog.setCardId(lanyaDeviceCardSenderLog.getCardId());
@@ -227,6 +245,7 @@ public class LanyaDataSync {
                     WmsDeviceCardWorkLog query = new WmsDeviceCardWorkLog();
                     query.setCardId(lanyaDeviceCardSenderLog.getCardId());
                     query.setRealName(lanyaDeviceCardSenderLog.getRealName());
+
                     List<WmsDeviceCardWorkLog> wmsDeviceCardWorkLogs = wmsDeviceCardWorkLogService.selectWmsDeviceCardWorkLogListEnd(query);
                     if (wmsDeviceCardWorkLogs.isEmpty()) {
                         log.error("--------------------------------------------------------------\r\nERROR:没有找到对应的发卡记录>\r\n{}\r\n--------------------------------------------------------------", query);
@@ -257,15 +276,26 @@ public class LanyaDataSync {
                             wmsTrajectory.setTrajectoryType("人员");
                             wmsTrajectory.setFuzzy(workLog.getRealName() + "-" + workLog.getSenderCommandTime() + "-内部员工");
 
-                            // 轨迹点
+                            Calendar calendar = Calendar.getInstance();
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+                            Date begin = workLog.getSenderCommandTime();
+                            Date end = workLog.getReturnCommandTime();
+                            Long personId = workLog.getPersonId();
+                            calendar.setTime(begin);
+
                             List<Map<String, Object>> trajectoryPoints = new ArrayList<>();
-                            List<LanyaPositionHistory> trajectory = workActivitiesByCardId.get(workLog.getCardId()).getTrajectory();
-                            for (int i = 0; i < trajectory.size(); i += 2) {
-                                if (i + 1 < trajectory.size()) {
-                                    Map<String, Object> point = getStringObjectMap(trajectory, i);
-                                    trajectoryPoints.add(point);
+                            while (!calendar.getTime().after(end)) {
+                                String tableName = "position_history_" + sdf.format(calendar.getTime());
+                                if (lanyaPositionHistoryService.checkTableExists(tableName) > 0) {
+                                    List<LanyaPositionHistory> trs = lanyaPositionHistoryService.selectLanyaPositionHistoryListByTableTimeRange(begin, end, personId, tableName);
+                                    int step = trs.size() / 3000;
+                                    for (int i = 0; i < trs.size(); i += step) {
+                                        trajectoryPoints.add(getStringObjectMap(trs, i));
+                                    }
                                 }
+                                calendar.add(Calendar.DAY_OF_MONTH, 1);
                             }
+
                             wmsTrajectory.setTrajectoryPoints(JSON.toJSONString(trajectoryPoints));
 
                             // 保存轨迹
@@ -389,25 +419,6 @@ public class LanyaDataSync {
 
             // 检查是否继续获取数据
             continueGet = !lanyaPositionHistories.isEmpty();
-        }
-    }
-
-    public void PositionSync1() throws ParseException, JsonProcessingException {
-        if (!enablePositionApiSync) {
-            return;
-        }
-        if (!alarmDetection.isInitialized()) {
-            alarmDetection.loadAlarmRules();
-        }
-
-        ResponseEntity<String> resp = restTemplate.getForEntity("http://localhost:10030/system/lanya_position_history/new", String.class);
-        JSONObject object = this.mapper.readValue(resp.getBody(), JSONObject.class);
-        for (int i = 0; i < object.getJSONArray("rows").size(); i++) {
-            JSONObject row = object.getJSONArray("rows").getJSONObject(i);
-            LanyaPositionHistory position = row.toJavaObject(LanyaPositionHistory.class);
-            String tableName = "position_history_" + sdfTableSuffix.format(position.getAcceptTime());
-            lanyaPositionHistoryService.createTable(tableName);
-            lanyaPositionHistoryService.insertLanyaPositionHistory(position, tableName);
         }
     }
 }

@@ -19,7 +19,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class RuoYiApplication {
 
     public static void main(String[] args) {
-        // System.setProperty("spring.devtools.restart.enabled", "false");
+        System.setProperty("spring.devtools.restart.enabled", "false");
         SpringApplication.run(RuoYiApplication.class, args);
         System.out.println("(♥◠‿◠)ﾉﾞ  生产作业智能管控系统启动成功   ლ(´ڡ`ლ)ﾞ  \n" +
                 " .-------.       ____     __        \n" +

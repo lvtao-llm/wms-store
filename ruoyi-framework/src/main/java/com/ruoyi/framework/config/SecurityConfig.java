@@ -122,7 +122,9 @@ public class SecurityConfig {
                                     "/system/area/**",
                                     "/system/wms_device/**",
                                     "/api/camera/**",
-                                    "/system/lanya_position_history/new"
+                                    "/system/lanya_position_history/new",
+                                    "system/lanya-transfer/position/historyPosition/findPersonHistoryList",
+                                    "/system/wms_inspection_rule/**"
                             ).permitAll()
                             // 静态资源，可匿名访问
                             .antMatchers(HttpMethod.GET, "/", "/*.html", "/**/*.html", "/**/*.css", "/**/*.js", "/profile/**").permitAll()

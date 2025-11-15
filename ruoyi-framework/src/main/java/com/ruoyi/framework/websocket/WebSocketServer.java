@@ -136,9 +136,8 @@ public class WebSocketServer {
     @Autowired
     private ILanyaPositionHistoryService lanyaPositionHistoryService;
 
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-    private Date date = null;
+    private Date mockPersonDate = null;
+    private Date mockVehiclDate = null;
 
     /**
      * 初始化
@@ -209,11 +208,7 @@ public class WebSocketServer {
             if (clientSession.isOpen()) {
                 try {
                     synchronized (clientSession) {
-                        clientSession.getAsyncRemote().sendText(message, result -> {
-                            if (!result.isOK()) {
-                                LOGGER.error("给客户端异步发送消息失败: {}", result.getException().getMessage());
-                            }
-                        });
+                        clientSession.getBasicRemote().sendText(message);
                     }
                 } catch (Exception e) {
                     LOGGER.error("发送消息给客户端时发生异常", e);
@@ -410,7 +405,67 @@ public class WebSocketServer {
      * 创建LanyaPositionHistory数据模拟器
      */
     @Scheduled(cron = "0/10 * * * * ?")
-    public void generateMockPositionHistoryData() throws ParseException {
+    public void generateMockVehiclePositionHistoryData() throws ParseException {
+        if (!enableMock) {
+            return;
+        }
+
+        // 创建所需的JSONObject
+        JSONObject locationData = new JSONObject();
+        locationData.put("msgType", "currentVehicleLocation");
+        locationData.put("total", 1);
+
+
+        // 创建personTypeStatistics数组
+        JSONArray personTypeStats = new JSONArray();
+
+        // 添加contractor类型统计
+        JSONObject contractorStat = new JSONObject();
+        contractorStat.put("count", 0);
+        contractorStat.put("personType", "contractor");
+        contractorStat.put("personTypeName", "承包商");
+        contractorStat.put("ratio", 0);
+        personTypeStats.add(contractorStat);
+
+        // 添加staff类型统计
+        JSONObject staffStat = new JSONObject();
+        staffStat.put("count", 0);
+        staffStat.put("personType", "staff");
+        staffStat.put("personTypeName", "员工");
+        staffStat.put("ratio", 0);
+        personTypeStats.add(staffStat);
+
+        // 添加visitor类型统计
+        JSONObject visitorStat = new JSONObject();
+        visitorStat.put("count", 0);
+        visitorStat.put("personType", "visitor");
+        visitorStat.put("personTypeName", "访客");
+        visitorStat.put("ratio", 0);
+        personTypeStats.add(visitorStat);
+
+        locationData.put("personTypeStatistics", personTypeStats);
+
+        if (mockVehiclDate == null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            mockVehiclDate = sdf.parse("2025-11-11 10:00:00");
+        }
+
+        List<LanyaPositionHistory> trajectory = lanyaPositionHistoryService.selectLanyaPositionHistoryListByTable("position_history_20251111", 1988037106810236930L, mockPersonDate);
+        for (LanyaPositionHistory history : trajectory) {
+            // 创建空的data数组
+            mockVehiclDate = history.getCreateTime();
+            JSONArray dataArray = new JSONArray();
+            dataArray.add(history);
+            locationData.put("data", dataArray);
+            messageQueue.add(locationData.toString());
+        }
+    }
+
+    /**
+     * 创建LanyaPositionHistory数据模拟器
+     */
+    @Scheduled(cron = "0/10 * * * * ?")
+    public void generateMockPersonPositionHistoryData() throws ParseException {
         if (!enableMock) {
             return;
         }
@@ -450,14 +505,15 @@ public class WebSocketServer {
 
         locationData.put("personTypeStatistics", personTypeStats);
 
-        if (date == null) {
-            date = sdf.parse("2025-11-11 00:00:00");
+        if (mockPersonDate == null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            mockPersonDate = sdf.parse("2025-11-11 09:30:00");
         }
 
-        List<LanyaPositionHistory> trajectory = lanyaPositionHistoryService.selectLanyaPositionHistoryListByTable("position_history_20251111", 1988037106810236930L, date);
+        List<LanyaPositionHistory> trajectory = lanyaPositionHistoryService.selectLanyaPositionHistoryListByTable("position_history_20251111", 1988037106810236930L, mockPersonDate);
         for (LanyaPositionHistory history : trajectory) {
             // 创建空的data数组
-            date = history.getCreateTime();
+            mockPersonDate = history.getCreateTime();
             JSONArray dataArray = new JSONArray();
             dataArray.add(history);
             locationData.put("data", dataArray);
@@ -520,6 +576,9 @@ public class WebSocketServer {
                     return;
                 }
                 if (jsonObject.get("msgType").equals("personCount")) {
+                    return;
+                }
+                if (jsonObject.get("msgType").equals("currentPersonLocation")) {
                     return;
                 }
                 messageQueue.add(payload);
