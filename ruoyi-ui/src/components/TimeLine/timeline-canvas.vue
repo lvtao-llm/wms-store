@@ -8,7 +8,8 @@
       isMobile ? 'default' : 'pointer'
     }`"
     :height="height"
-    ref="canvas"></canvas>
+    ref="canvas"
+  ></canvas>
 </template>
 
 <script>
@@ -675,6 +676,7 @@ export default {
     //   }
     // },
   },
+  created() {},
   computed: {
     // canvas最左边的时间的时间戳（滑动计算时间）
     firstTime() {

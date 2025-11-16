@@ -119,37 +119,34 @@ export default {
     openDia(row, type = "add") {
       this.show = true;
       this.pageType = type;
-      getArea(row.areaId).then((response) => {
-        this.form = response.data;
-        if (this.form.areaPolygon) {
-          try {
-            this.savedPointGroups = [JSON.parse(this.form.areaPolygon)];
-            console.log(this.savedPointGroups, 111);
-            // this.choosePoints = JSON.parse(this.form.areaPolygon);
-            this.points = this.savedPointGroups[0].path;
-            // 等待对话框和地图完全初始化后再显示标记点
-            this.$nextTick(() => {
-              setTimeout(() => {
-                if (this.map) {
-                  this.showAllSavedGroups();
-                } else {
-                  // 如果地图还没初始化，等待地图初始化完成
-                  const checkMap = setInterval(() => {
-                    if (this.map) {
-                      clearInterval(checkMap);
-                      this.showAllSavedGroups();
-                    }
-                  }, 100);
-                }
-              }, 200);
-            });
-          } catch (error) {
-            this.$modal.msgError("区域数据格式错误");
-          }
-        } else {
-          this.map.clearOverlays();
+      this.form = row;
+      if (this.form.keyPoints) {
+        try {
+          this.savedPointGroups = JSON.parse(this.form.keyPoints);
+          // this.choosePoints = JSON.parse(this.form.keyPoints);
+          this.points = this.savedPointGroups[0].points;
+          // 等待对话框和地图完全初始化后再显示标记点
+          this.$nextTick(() => {
+            setTimeout(() => {
+              if (this.map) {
+                this.showAllSavedGroups();
+              } else {
+                // 如果地图还没初始化，等待地图初始化完成
+                const checkMap = setInterval(() => {
+                  if (this.map) {
+                    clearInterval(checkMap);
+                    this.showAllSavedGroups();
+                  }
+                }, 100);
+              }
+            }, 200);
+          });
+        } catch (error) {
+          this.$modal.msgError("区域数据格式错误");
         }
-      });
+      } else {
+        this.map.clearOverlays();
+      }
     },
     openDiaAll(data, type = "view") {
       this.show = true;
@@ -224,7 +221,7 @@ export default {
         // 右键添加标记
         this.map.addEventListener("rightclick", (e) => {
           this.addNewMarker(e.point);
-          this.updatePolyline();
+          // this.updatePolyline();
         });
 
         console.log("地图控件添加完成");
@@ -248,51 +245,21 @@ export default {
       //   areaName: this.form.areaName,
       //   points: [...this.points],
       // });
-      // const arr = [
-      //   {
-      //     lng: "125.04099684230000",
-      //     lat: "46.58407145940000",
-      //   },
-      //   {
-      //     lng: "125.03855433740000",
-      //     lat: "46.58450905930000",
-      //   },
-      //   {
-      //     lng: "125.03809684570000",
-      //     lat: "46.58458892930000",
-      //   },
-      //   {
-      //     lng: "125.04090304230000",
-      //     lat: "46.58469891770000",
-      //   },
-      // ];
       this.savedPointGroups = [
         {
           id: groupId,
           timestamp: timestamp,
           areaName: this.form.areaName,
-          path: [...this.points],
+          points: [...this.points],
         },
       ];
-      const obj = {
-        id: groupId,
-        timestamp: timestamp,
-        areaName: this.form.areaName,
-        path: [...this.points],
-      };
+
       const params = {
         ...this.form,
-        areaPolygon: JSON.stringify(obj),
+        keyPoints: JSON.stringify(this.savedPointGroups),
       };
-      console.log(params, 111);
-
-      updateArea(params).then((res) => {
-        this.$modal.msgSuccess("保存成功");
-        // 清空当前标记点，准备绘制下一个区域
-        // this.clearCurrentPoints();
-
-        this.showAllSavedGroups();
-      });
+      this.close();
+      this.$emit("save", params);
     },
 
     // 清空当前标记（不删除保存的组）
@@ -321,12 +288,13 @@ export default {
       }
 
       this.map.clearOverlays();
+      console.log(this.savedPointGroups);
 
       this.savedPointGroups.forEach((group, groupIndex) => {
         console.log(`处理第 ${groupIndex + 1} 个标记组:`, group);
 
         // 检查数据结构
-        if (!group.path || !Array.isArray(group.path)) {
+        if (!group.points || !Array.isArray(group.points)) {
           console.warn(`标记组 ${groupIndex + 1} 的 points 数据无效:`, group);
           return;
         }
@@ -334,7 +302,7 @@ export default {
         const color = this.getColorByIndex(groupIndex);
         console.log(`使用颜色: ${color}`);
 
-        group.path.forEach((point, pointIndex) => {
+        group.points.forEach((point, pointIndex) => {
           console.log(`添加标记点 ${pointIndex + 1}:`, point);
 
           // 验证坐标数据
@@ -348,45 +316,45 @@ export default {
         });
 
         // 绘制多边形（包括填充和边框）
-        if (group.path.length >= 3) {
-          console.log(
-            `为标记组 ${groupIndex + 1} 绘制多边形，共 ${
-              group.path.length
-            } 个点`
-          );
-          const pathPoints = group.path.map(
-            (p) => new window.BMap.Point(p.lng, p.lat)
-          );
+        // if (group.points.length >= 3) {
+        //   console.log(
+        //     `为标记组 ${groupIndex + 1} 绘制多边形，共 ${
+        //       group.points.length
+        //     } 个点`
+        //   );
+        //   const pathPoints = group.points.map(
+        //     (p) => new window.BMap.Point(p.lng, p.lat)
+        //   );
 
-          // 创建多边形填充
-          const polygon = new window.BMap.Polygon(pathPoints, {
-            strokeColor: color,
-            strokeWeight: 3,
-            strokeOpacity: 0.8,
-            strokeStyle: "solid",
-            fillColor: color,
-            fillOpacity: 0.3, // 半透明填充
-          });
-          this.map.addOverlay(polygon);
+        //   // 创建多边形填充
+        //   const polygon = new window.BMap.Polygon(pathPoints, {
+        //     strokeColor: color,
+        //     strokeWeight: 3,
+        //     strokeOpacity: 0.8,
+        //     strokeStyle: "solid",
+        //     fillColor: color,
+        //     fillOpacity: 0.3, // 半透明填充
+        //   });
+        //   this.map.addOverlay(polygon);
 
-          // 添加区域文字标签
-          const areaName = group.areaName || `区域${groupIndex + 1}`;
-          this.addAreaLabel(pathPoints, areaName, color);
-          console.log("多边形绘制完成");
-        } else if (group.points.length >= 2) {
-          // 如果只有2个点，绘制线条
-          const pathPoints = group.points.map(
-            (p) => new window.BMap.Point(p.lng, p.lat)
-          );
-          const groupPolyline = new window.BMap.Polyline(pathPoints, {
-            strokeColor: color,
-            strokeWeight: 3,
-            strokeOpacity: 0.8,
-            strokeStyle: "solid",
-          });
-          this.map.addOverlay(groupPolyline);
-          console.log("线条绘制完成");
-        }
+        //   // 添加区域文字标签
+        //   const areaName = group.areaName || `区域${groupIndex + 1}`;
+        //   this.addAreaLabel(pathPoints, areaName, color);
+        //   console.log("多边形绘制完成");
+        // } else if (group.points.length >= 2) {
+        //   // 如果只有2个点，绘制线条
+        //   const pathPoints = group.points.map(
+        //     (p) => new window.BMap.Point(p.lng, p.lat)
+        //   );
+        //   const groupPolyline = new window.BMap.Polyline(pathPoints, {
+        //     strokeColor: color,
+        //     strokeWeight: 3,
+        //     strokeOpacity: 0.8,
+        //     strokeStyle: "solid",
+        //   });
+        //   this.map.addOverlay(groupPolyline);
+        //   console.log("线条绘制完成");
+        // }
       });
 
       console.log("所有标记组显示完成");
@@ -522,7 +490,7 @@ export default {
         if (index !== -1) {
           this.points[index] = { lat: e.point.lat, lng: e.point.lng };
         }
-        this.updatePolyline();
+        // this.updatePolyline();
       });
     },
     // 清理动画
@@ -600,7 +568,8 @@ export default {
 
     close() {
       this.show = false;
-      this.clearAll();
+      this.savedPointGroups = [];
+      this.points = [];
     },
     // 清除所有标记
     clearAll() {
