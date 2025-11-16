@@ -77,9 +77,8 @@
             b.到站, b.业务年月, b.状态, b.卸车编号, b.品种编码, b.物资名称, b.计量单位,
             b.物资类别, b.验收人编码, b.接料人编码, b.品种名称, b.业务分公司, b.装卸队名称,
             b.卸车方式, b.卸车作业起始时间, b.卸车作业截止时间, b.出库时间, b.现场员姓名
-        FROM VIEW_KC_SK a
-        LEFT JOIN VIEW_JL_SK b on b.物资名称 = a.物资名称
-        WHERE b.接料时间 > #{jlsjT} AND a.账存重量 > 0
+        FROM VIEW_JL_SK b
+        WHERE b.接料时间 > #{jlsjT}
         ORDER BY [接料时间]
         OFFSET 0 ROWS
         FETCH NEXT 100 ROWS ONLY

@@ -1,4 +1,4 @@
-# 数据源配置
+﻿# 数据源配置
 spring:
     datasource:
         type: com.alibaba.druid.pool.DruidDataSource
@@ -6,20 +6,20 @@ spring:
         druid:
             # 主库数据源
             master:
-                url: jdbc:mysql://112.98.110.101:3308/monitor_wms?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+                url: jdbc:mysql://10.63.228.90:3306/monitor_wms?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
                 username: root
-                password: Monitor@20240101
+                password: 1qazXSW@
             # 从库数据源
             slave:
                 # 从数据源开关/默认关闭
                 enabled: true
-                url: jdbc:mysql://112.98.110.101:3308/monitor_lanya?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+                url: jdbc:mysql://10.63.228.90:3306/monitor_lanya?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
                 username: root
-                password: Monitor@20240101
+                password: 1qazXSW@
             # 从库数据源
             lanya90:
                 # 从数据源开关/默认关闭
-                enabled: true
+                enabled: false
                 url: jdbc:mysql://112.98.110.101:3308/monitor_lanya?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
                 username: root
                 password: Monitor@20240101
@@ -28,7 +28,7 @@ spring:
                 # 从数据源开关/默认关闭
                 enabled: true
                 driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
-                url: jdbc:sqlserver://112.98.110.101:1433;DatabaseName=erp_storehouse
+                url: jdbc:sqlserver://10.63.228.69:1433;DatabaseName=erp_storehouse
                 username: sckq
                 password: WUZIwuzi123*
                 validationQuery: SELECT 1

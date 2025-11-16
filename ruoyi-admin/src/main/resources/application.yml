@@ -171,15 +171,15 @@ wzgs:
 
   jl: # 接料数据表同步
     sync:
-      enabled: false # 物资公司90部署打开
+      enabled: true # 物资公司90部署打开
 
   db: # 调拨数据表同步
     sync:
-      enabled: false # 物资公司90部署打开
+      enabled: true # 物资公司90部署打开
 
   kc: # 库存数据表同步
     sync:
-      enabled: false # 物资公司90部署打开
+      enabled: true # 物资公司90部署打开
 wms:
   ws-data:
     # 人员报警 websocket 定时任务

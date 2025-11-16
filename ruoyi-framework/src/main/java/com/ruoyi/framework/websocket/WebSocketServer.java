@@ -125,6 +125,15 @@ public class WebSocketServer {
     @Autowired
     private IWmsAreaService wmsAreaService;
 
+    @Autowired
+    private IWmsMaterialInService wmsMaterialInService;
+
+    @Autowired
+    private IWmsMaterialOutService wmsMaterialOutService;
+
+    @Autowired
+    private IWmsMaterialStockService wmsMaterialStockService;
+
     /**
      * 时间格式 年月日
      */
@@ -144,6 +153,9 @@ public class WebSocketServer {
      */
     @PostConstruct
     public void init() {
+        // 启动消息处理线程
+        startMessageProcessor();
+
         if (!enabledWs) {
             LOGGER.info("WebSocketServer 未启用");
         }
@@ -163,8 +175,6 @@ public class WebSocketServer {
 
             thirdWebSocketClient.doHandshake(new ThirdWebSocketHandler(messageQueue, forwardEnable, forwardUrl, savePersonLocation, lanyaPositionHistoryService), thirdTargetUrl).get();
 
-            // 启动消息处理线程
-            startMessageProcessor();
         } catch (Exception e) {
             LOGGER.error("初始化失败", e);
         }
@@ -367,6 +377,99 @@ public class WebSocketServer {
             materialLogDataItem.put("stockIn", d.getJl());
             materialLogDataItem.put("stockOut", d.getDb());
             materialLogDataItem.put("stock", d.getKc());
+            materialLogDataItem.put("areaName", d.getAreaCodes());
+            materialLogData.add(materialLogDataItem);
+        }
+        messageQueue.add(materialLog.toString());
+    }
+
+    /**
+     * 物料统计数据
+     */
+    @Scheduled(cron = "${wms.ws-data.material-jl:0/10 * * * * ?}")
+    public void materialJlData() {
+        // 使用异步发送替代阻塞发送
+        WmsMaterialIn wmsMaterialIn = new WmsMaterialIn();
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR, -1);
+        String ymd = sdfYearMonDay.format(calendar.getTime());
+        wmsMaterialIn.setJlsj(calendar.getTime());
+        List<WmsMaterialIn> wmsMaterialIns = wmsMaterialInService.selectWmsMaterialInList(new WmsMaterialIn());
+        JSONObject materialLog = new JSONObject();
+        JSONArray materialLogData = new JSONArray();
+        materialLog.put("msgType", "materialJlLog");
+        materialLog.put("data", materialLogData);
+        materialLog.put("total", wmsMaterialIns.size());
+        for (int i = 0; i < wmsMaterialIns.size(); i++) {
+            WmsMaterialIn d = wmsMaterialIns.get(i);
+            JSONObject materialLogDataItem = new JSONObject();
+            materialLogDataItem.put("sort", i);
+            materialLogDataItem.put("materialName", d.getWzmc());
+            materialLogDataItem.put("materialCode", d.getWzbm());
+            materialLogDataItem.put("materialType", d.getWzlb());
+            materialLogDataItem.put("stockIn", d.getDhsl());
+            materialLogDataItem.put("areaName", d.getAreaCodes());
+            materialLogData.add(materialLogDataItem);
+        }
+        messageQueue.add(materialLog.toString());
+    }
+
+    /**
+     * 物料统计数据
+     */
+    @Scheduled(cron = "${wms.ws-data.material-db:0/10 * * * * ?}")
+    public void materialDbData() {
+        // 使用异步发送替代阻塞发送
+        WmsMaterialOut wmsMaterialOut = new WmsMaterialOut();
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR, -1);
+        String ymd = sdfYearMonDay.format(calendar.getTime());
+        wmsMaterialOut.setOutboundTime(calendar.getTime());
+        List<WmsMaterialOut> wmsMaterialOuts = wmsMaterialOutService.selectWmsMaterialOutList(wmsMaterialOut);
+        JSONObject materialLog = new JSONObject();
+        JSONArray materialLogData = new JSONArray();
+        materialLog.put("msgType", "materialDbLog");
+        materialLog.put("data", materialLogData);
+        materialLog.put("total", wmsMaterialOuts.size());
+        for (int i = 0; i < wmsMaterialOuts.size(); i++) {
+            WmsMaterialOut d = wmsMaterialOuts.get(i);
+            JSONObject materialLogDataItem = new JSONObject();
+            materialLogDataItem.put("sort", i);
+            materialLogDataItem.put("materialName", d.getWzmc());
+            materialLogDataItem.put("materialCode", d.getWzbm());
+            materialLogDataItem.put("materialType", d.getWzlb());
+            materialLogDataItem.put("stockOut", d.getActualQuantity());
+            materialLogDataItem.put("areaName", d.getAreaCodes());
+            materialLogData.add(materialLogDataItem);
+        }
+        messageQueue.add(materialLog.toString());
+    }
+
+    /**
+     * 物料统计数据
+     */
+    @Scheduled(cron = "${wms.ws-data.material-kc:0/10 * * * * ?}")
+    public void materialKcData() {
+        // 使用异步发送替代阻塞发送
+        WmsMaterialStock wmsMaterialStock = new WmsMaterialStock();
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR, -1);
+        String ymd = sdfYearMonDay.format(calendar.getTime());
+        wmsMaterialStock.setCreateTime(calendar.getTime());
+        List<WmsMaterialStock> wmsMaterialStocks = wmsMaterialStockService.selectWmsMaterialStockList(wmsMaterialStock);
+        JSONObject materialLog = new JSONObject();
+        JSONArray materialLogData = new JSONArray();
+        materialLog.put("msgType", "materialKcLog");
+        materialLog.put("data", materialLogData);
+        materialLog.put("total", wmsMaterialStocks.size());
+        for (int i = 0; i < wmsMaterialStocks.size(); i++) {
+            WmsMaterialStock d = wmsMaterialStocks.get(i);
+            JSONObject materialLogDataItem = new JSONObject();
+            materialLogDataItem.put("sort", i);
+            materialLogDataItem.put("materialName", d.getWzmc());
+            materialLogDataItem.put("materialCode", d.getWzbm());
+            materialLogDataItem.put("materialType", d.getWzlb());
+            materialLogDataItem.put("stock", d.getBookWeight());
             materialLogDataItem.put("areaName", d.getAreaCodes());
             materialLogData.add(materialLogDataItem);
         }

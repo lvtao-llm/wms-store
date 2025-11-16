@@ -72,7 +72,6 @@ public class WmsDeviceCameraLogController extends BaseController
     /**
      * 新增摄像头识别日志
      */
-    @PreAuthorize("@ss.hasPermi('system:wms_device_camera_log:add')")
     @Log(title = "摄像头识别日志", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody WmsDeviceCameraLog wmsDeviceCameraLog)

@@ -230,10 +230,9 @@
             b.自合并分类,
             b.保管员姓名,
             b.状态
-        FROM VIEW_KC_SK a
-        LEFT JOIN VIEW_DB_SK b ON a.物资名称 = b.物资名称
-        WHERE a.出库时间 > #{outboundTime} AND a.账存重量 > 0
-        ORDER BY 出库时间
+        FROM VIEW_DB_SK b
+        WHERE b.出库时间 > #{outboundTime}
+        ORDER BY b.出库时间
         OFFSET 0 ROWS
         FETCH NEXT 100 ROWS ONLY
     </select>
