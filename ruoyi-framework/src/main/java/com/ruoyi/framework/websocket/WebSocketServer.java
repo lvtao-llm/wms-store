@@ -245,6 +245,36 @@ public class WebSocketServer {
                 }
             }
             clientSessions.put(requestId, session);
+
+
+            // 首次连接时向客户端发送消息
+
+            // 设备服务
+            IWmsDeviceService wmsDeviceService = SpringUtils.getBean(IWmsDeviceService.class);
+
+            // 摄像头设备
+            WmsDevice wmsDevice = new WmsDevice();
+            wmsDevice.setDeviceType("摄像头");
+            List<WmsDevice> wmsDevicesCamera = wmsDeviceService.selectWmsDeviceList(wmsDevice);
+
+            // 传感器设备
+            wmsDevice.setDeviceType("传感器");
+            List<WmsDevice> wmsDevicesSensor = wmsDeviceService.selectWmsDeviceList(wmsDevice);
+            wmsDevicesSensor.addAll(wmsDevicesCamera);
+
+            // 向客户端发送的消息体
+            Map<String, Object> personAlarm = new HashMap<String, Object>() {
+                {
+                    put("msgType", "摄像头与传感器");
+                    put("rules", wmsDevicesSensor);
+                }
+            };
+
+            // 转JSON字符串
+            String json = new JSONObject(personAlarm).toJSONString();
+
+            // 向当前连接发送初始数据
+            session.getAsyncRemote().sendText(json);
         } catch (Exception e) {
             LOGGER.error("连接异常:", e);
         }
