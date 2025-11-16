@@ -31,7 +31,7 @@ public class WmsMaterialDescServiceImpl implements IWmsMaterialDescService {
     public void init() {
         List<WmsMaterialDesc> wmsMaterialDescs = wmsMaterialDescMapper.selectWmsMaterialDescList(new WmsMaterialDesc());
         for (WmsMaterialDesc wmsMaterialDesc : wmsMaterialDescs) {
-            materialDescMap.put(wmsMaterialDesc.getWzbm(), wmsMaterialDesc);
+            materialDescMap.put(wmsMaterialDesc.getWzmc(), wmsMaterialDesc);
         }
     }
 
@@ -73,7 +73,7 @@ public class WmsMaterialDescServiceImpl implements IWmsMaterialDescService {
         wmsMaterialDesc.setCreateTime(DateUtils.getNowDate());
         int i = wmsMaterialDescMapper.insertWmsMaterialDesc(wmsMaterialDesc);
         if (i > 0) {
-            materialDescMap.put(wmsMaterialDesc.getWzbm(), wmsMaterialDesc);
+            materialDescMap.put(wmsMaterialDesc.getWzmc(), wmsMaterialDesc);
         }
         return i;
     }
@@ -88,7 +88,7 @@ public class WmsMaterialDescServiceImpl implements IWmsMaterialDescService {
     public int updateWmsMaterialDesc(WmsMaterialDesc wmsMaterialDesc) {
         int i = wmsMaterialDescMapper.updateWmsMaterialDesc(wmsMaterialDesc);
         if (i > 0) {
-            materialDescMap.put(wmsMaterialDesc.getWzbm(), wmsMaterialDesc);
+            materialDescMap.put(wmsMaterialDesc.getWzmc(), wmsMaterialDesc);
         }
         return i;
     }
@@ -112,7 +112,7 @@ public class WmsMaterialDescServiceImpl implements IWmsMaterialDescService {
                 }
             }
             for (WmsMaterialDesc wmsMaterialDesc : wmsMaterialDescs) {
-                materialDescMap.remove(wmsMaterialDesc.getWzbm());
+                materialDescMap.remove(wmsMaterialDesc.getWzmc());
             }
         }
         return i;
@@ -143,7 +143,7 @@ public class WmsMaterialDescServiceImpl implements IWmsMaterialDescService {
         int i = wmsMaterialDescMapper.insertNewMaterialDesc(w);
         if (i > 0) {
             WmsMaterialDesc wmsMaterialDesc = wmsMaterialDescMapper.selectWmsMaterialDescByMaterialDescId(w.getMaterialDescId());
-            materialDescMap.put(wmsMaterialDesc.getWzbm(), wmsMaterialDesc);
+            materialDescMap.put(wmsMaterialDesc.getWzmc(), wmsMaterialDesc);
         }
         return i;
     }

@@ -54,8 +54,7 @@ public class ThirdPartyAuth {
         HttpEntity<String> entity = new HttpEntity<>(sendBody, headers);
 
         // 4. 发 POST
-        ResponseEntity<String> resp = restTemplate.exchange(
-                url, HttpMethod.POST, entity, String.class);
+        ResponseEntity<String> resp = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
 
         String respBody = resp.getBody();
         Map respMap = mapper.readValue(respBody, HashMap.class);

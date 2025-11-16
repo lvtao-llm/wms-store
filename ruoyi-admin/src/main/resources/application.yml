@@ -98,7 +98,7 @@ token:
   # 令牌密钥
   secret: abcdefghijklmnopqrstuvwxyz
   # 令牌有效期（默认30分钟）
-  expireTime: 30
+  expireTime: 1440
 
 # MyBatis配置
 mybatis:
@@ -139,32 +139,57 @@ xss:
   urlPatterns: /system/*,/monitor/*,/tool/*
 
 lanya:
-  base-url: 112.98.110.101:8091/gateway-service
-  username: admin
-  password: xrkc168168
+  base-url: 112.98.110.101:8091/gateway-service # 指向 lanya 服务的地址
+  username: admin # lanya 服务用户名
+  password: xrkc168168 # lanya 服务密码
+  enabled-ws: true # 是否接收 lanya websocket 消息
 
-  position:
-    sync:
-      enabled: false
-    mock:
-      enabled: false
-  issuing:
-    sync:
-      enabled: false
+  # 将 lanya 服务的消息转发给 forward-url 指向的地址
+  forward-url: http://localhost:10030/system/lanya-transfer/message-endpoint
+
+  # 是否将 lanya 服务的消息转发给 forward-url 指向的地址
+  forward-enable: false
+
+  # 是否将 lanya 服务的消息保存到 druid.lanya90 配置的数据库
+  save-person-location: true
+
+  position: # position_history 表数据同步
+    sync-table: # 同步 lanya position_history 表数据并执行报警规则检测
+      enabled: false # 物资公司90部署打开
+      past-table: # 是否在启动时同步过往的表
+        enabled: false
+    sync-api: # 同步 101 机器的position_history 表数据到物资公司90数据库
+      enabled: false # 物资公司跳板部署打开
+      api-url: http://112.98.110.101:10030/system/lanya_position_history/new
+    mock: # 模拟数据
+      enabled: true # 模拟数据时打开
+  issuing: # device_card_sender_log 表数据同步
+    sync: # 同步 lanya device_card_sender_log 表数据到 wms 数据库
+      enabled: true # 物资公司90部署打开
 
 wzgs:
-  jl:
+
+  jl: # 接料数据表同步
     sync:
-      enabled: false
-  db:
+      enabled: true # 物资公司90部署打开
+
+  db: # 调拨数据表同步
     sync:
-      enabled: false
-  kc:
+      enabled: true # 物资公司90部署打开
+
+  kc: # 库存数据表同步
     sync:
-      enabled: false
+      enabled: true # 物资公司90部署打开
 wms:
   ws-data:
+    # 人员报警 websocket 定时任务
     person-alarm: 0/5 * * * * ?
+
+    # 车辆报警 websocket 定时任务
     vehicle-alarm: 0/5 * * * * ?
+
+    # 物资统计 websocket 定时任务
     material-statics: 0/5 * * * * ?
+
+    # 区域统计 websocket 定时任务
     area-statics: 0/5 * * * * ?

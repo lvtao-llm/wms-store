@@ -1,6 +1,7 @@
 package com.ruoyi.system.controller;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson2.JSONArray;
@@ -89,7 +90,14 @@ public class WmsCardContentSendController extends BaseController {
         jsonArray.add(wmsCardContentSend.getCardCode());
         jsonObject.put("cardIds", jsonArray);
         jsonObject.put("content", wmsCardContentSend.getContent());
-        Object o = lanyaTransferController.cardSendContent(jsonObject);
+        CompletableFuture.runAsync(() -> {
+            try {
+                lanyaTransferController.cardSendContent(jsonObject);
+            } catch (Exception e) {
+                // 记录异常日志
+                logger.error("异步发送卡片内容失败", e);
+            }
+        });
         return toAjax(wmsCardContentSendService.insertWmsCardContentSend(wmsCardContentSend));
     }
 

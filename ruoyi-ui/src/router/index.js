@@ -466,12 +466,12 @@ export const dynamicRoutes = [
         name: '物料区域管理',
         meta: { title: '物料区域管理' }
       },
-      {
-        path: 'person-in-out-record',
-        component: () => import('@/views/lanya_person_in_out_record/index'),
-        name: '人员进出记录',
-        meta: { title: '人员进出记录' }
-      },
+      // {
+      //   path: 'person-in-out-record',
+      //   component: () => import('@/views/lanya_person_in_out_record/index'),
+      //   name: '人员进出记录',
+      //   meta: { title: '人员进出记录' }
+      // },
     ]
   },
   {
@@ -543,6 +543,12 @@ export const dynamicRoutes = [
         component: () => import('@/views/wms_vehicle_record/index'),
         name: '车辆进出记录',
         meta: { title: '车辆进出记录' }
+      },
+      {
+        path: 'vehicle-regconize-log',
+        component: () => import('@/views/wms_device_camera_log/index'),
+        name: '车辆识别记录',
+        meta: { title: '车辆识别记录' }
       }
     ]
   },

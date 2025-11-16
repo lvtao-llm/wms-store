@@ -37,7 +37,7 @@ public class WmsInspectionRuleController extends BaseController
     /**
      * 查询巡检规则列表
      */
-    @PreAuthorize("@ss.hasPermi('system:wms_inspection_rule:list')")
+//    @PreAuthorize("@ss.hasPermi('system:wms_inspection_rule:list')")
     @GetMapping("/list")
     public TableDataInfo list(WmsInspectionRule wmsInspectionRule)
     {
@@ -49,7 +49,7 @@ public class WmsInspectionRuleController extends BaseController
     /**
      * 导出巡检规则列表
      */
-    @PreAuthorize("@ss.hasPermi('system:wms_inspection_rule:export')")
+//    @PreAuthorize("@ss.hasPermi('system:wms_inspection_rule:export')")
     @Log(title = "巡检规则", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, WmsInspectionRule wmsInspectionRule)
@@ -62,7 +62,7 @@ public class WmsInspectionRuleController extends BaseController
     /**
      * 获取巡检规则详细信息
      */
-    @PreAuthorize("@ss.hasPermi('system:wms_inspection_rule:query')")
+//    @PreAuthorize("@ss.hasPermi('system:wms_inspection_rule:query')")
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id)
     {
@@ -72,7 +72,7 @@ public class WmsInspectionRuleController extends BaseController
     /**
      * 新增巡检规则
      */
-    @PreAuthorize("@ss.hasPermi('system:wms_inspection_rule:add')")
+//    @PreAuthorize("@ss.hasPermi('system:wms_inspection_rule:add')")
     @Log(title = "巡检规则", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody WmsInspectionRule wmsInspectionRule)
@@ -83,7 +83,7 @@ public class WmsInspectionRuleController extends BaseController
     /**
      * 修改巡检规则
      */
-    @PreAuthorize("@ss.hasPermi('system:wms_inspection_rule:edit')")
+//    @PreAuthorize("@ss.hasPermi('system:wms_inspection_rule:edit')")
     @Log(title = "巡检规则", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody WmsInspectionRule wmsInspectionRule)
@@ -94,7 +94,7 @@ public class WmsInspectionRuleController extends BaseController
     /**
      * 删除巡检规则
      */
-    @PreAuthorize("@ss.hasPermi('system:wms_inspection_rule:remove')")
+//    @PreAuthorize("@ss.hasPermi('system:wms_inspection_rule:remove')")
     @Log(title = "巡检规则", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable Long[] ids)

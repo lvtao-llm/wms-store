@@ -1,5 +1,6 @@
 package com.ruoyi.system.service;
 
+import java.util.Date;
 import java.util.List;
 import com.ruoyi.system.domain.LanyaCoreAlarm;
 
@@ -58,4 +59,6 @@ public interface ILanyaCoreAlarmService
      * @return 结果
      */
     public int deleteLanyaCoreAlarmByAlarmId(Long alarmId);
+
+    List<LanyaCoreAlarm> selectLanyaCoreAlarmGtTime(Date date);
 }

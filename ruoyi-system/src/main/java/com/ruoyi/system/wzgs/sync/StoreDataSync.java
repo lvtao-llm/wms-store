@@ -1,9 +1,10 @@
-package com.ruoyi.system.wzjt.data;
+package com.ruoyi.system.wzgs.sync;
 
 import com.ruoyi.system.domain.*;
 import com.ruoyi.system.mapper.WzjtViewDbSkMapper;
 import com.ruoyi.system.mapper.WzjtViewJlSkMapper;
 import com.ruoyi.system.mapper.WzjtViewKcSkMapper;
+import com.ruoyi.system.mapper.WzjtViewYySkMapper;
 import com.ruoyi.system.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,7 +22,7 @@ import java.util.*;
  * @since 2025/11/8
  */
 @Service
-public class DataSync {
+public class StoreDataSync {
 
     /**
      * 物资公司调拨数据同步
@@ -70,6 +71,17 @@ public class DataSync {
      */
     @Autowired
     private IWmsMaterialStaticsDayService wmsMaterialStaticsDayService;
+
+    /**
+     * 物资公司车辆预约mapper
+     */
+    private WzjtViewYySkMapper wzjtViewYySkMapper;
+
+    /**
+     * 车辆预约服务
+     */
+    @Autowired
+    private IWmsVehicleGatepassService wmsVehicleGatepassService;
 
     /**
      * 大仓区域服务
@@ -122,6 +134,12 @@ public class DataSync {
     private boolean kcSyncEnable;
 
     /**
+     * 车辆预约同步是否启用
+     */
+    @Value("${wzgs.yy.sync.enabled:false}")
+    private boolean yySyncEnable;
+
+    /**
      * 初始化
      */
     @PostConstruct
@@ -152,7 +170,8 @@ public class DataSync {
         }
 
         // 接料时间偏移量
-        Date jlOffsetDate = sdfDateTime.parse(jlConfig.getConfigValue());
+        String jlOffset = jlConfig.getConfigValue();
+        Date jlOffsetDate = sdfDateTime.parse(jlOffset);
 
         // 是否继续同步
         boolean continueGet = true;
@@ -185,10 +204,7 @@ public class DataSync {
                 // 插入到大仓物资日统计
                 WmsMaterialStaticsDay wmsMaterialStaticsDay = new WmsMaterialStaticsDay();
                 wmsMaterialStaticsDay.setDay(sdfYearMonDay.format(w.getJlsjT()));
-                wmsMaterialStaticsDay.setWzbm(w.getWzbm());
                 wmsMaterialStaticsDay.setWzmc(w.getWzmc());
-                wmsMaterialStaticsDay.setWzlb(w.getWzlb());
-                wmsMaterialStaticsDay.setJldw(w.getJldw());
                 wmsMaterialStaticsDay.setJl(w.getDhsl());
                 wmsMaterialStaticsDay.setAreaCodes(getAreaName(w));
                 wmsMaterialStaticsDayService.updateWmsMaterialStaticsDay(wmsMaterialStaticsDay);
@@ -207,7 +223,8 @@ public class DataSync {
         }
 
         // 调拨时间偏移量
-        Date dbOffsetDate = sdfDateTime.parse(dbConfig.getConfigValue());
+        String dbOffset = dbConfig.getConfigValue();
+        Date dbOffsetDate = sdfDateTime.parse(dbOffset);
 
         // 是否继续同步
         boolean continueGet = true;
@@ -236,9 +253,7 @@ public class DataSync {
                 // 插入到大仓物资日统计
                 WmsMaterialStaticsDay wmsMaterialStaticsDay = new WmsMaterialStaticsDay();
                 wmsMaterialStaticsDay.setDay(sdfYearMonDay.format(w.getOutboundTime()));
-                wmsMaterialStaticsDay.setWzbm(w.getWzbm());
                 wmsMaterialStaticsDay.setWzmc(w.getWzmc());
-                wmsMaterialStaticsDay.setJldw(w.getJldw());
                 wmsMaterialStaticsDay.setDb(w.getAllotQuantity());
                 wmsMaterialStaticsDay.setAreaCodes(getAreaName(w));
                 wmsMaterialStaticsDayService.updateWmsMaterialStaticsDay(wmsMaterialStaticsDay);
@@ -274,12 +289,66 @@ public class DataSync {
             // 插入到大仓物资日统计
             WmsMaterialStaticsDay wmsMaterialStaticsDay = new WmsMaterialStaticsDay();
             wmsMaterialStaticsDay.setDay(sdfYearMonDay.format(new Date()));
-            wmsMaterialStaticsDay.setWzbm(w.getWzbm());
             wmsMaterialStaticsDay.setWzmc(w.getWzmc());
-            wmsMaterialStaticsDay.setJldw(w.getJldw());
             wmsMaterialStaticsDay.setKc(w.getActualWeight());
             wmsMaterialStaticsDay.setAreaCodes(getAreaName(w));
             wmsMaterialStaticsDayService.updateWmsMaterialStaticsDay(wmsMaterialStaticsDay);
+        }
+    }
+
+    /**
+     * 同步车辆预约数据
+     */
+    public void syncYYData() {
+        if (!yySyncEnable) {
+            return;
+        }
+
+        SimpleDateFormat sdfTableSuffix = new SimpleDateFormat("yyyyMMdd");
+        String ymd = sdfTableSuffix.format(new Date());
+
+        // 查询参数
+        WmsMaterialStock wzjtViewDbSk = new WmsMaterialStock();
+
+        // 获取新的库存数据
+        List<WmsVehicleGatepass> appointments = wzjtViewYySkMapper.selectViewYySkList();
+
+        // 删除大仓库存数据
+        WmsVehicleGatepass query = new WmsVehicleGatepass();
+        query.setGatepassAppointmentTime(ymd);
+        List<WmsVehicleGatepass> wmsVehicleGatepasses = wmsVehicleGatepassService.selectWmsVehicleGatepassList(query);
+        for (WmsVehicleGatepass w : wmsVehicleGatepasses) {
+            wmsVehicleGatepassService.deleteWmsVehicleGatepassByGatepassId(w.getGatepassId());
+        }
+
+        // 遍历库存数据
+        for (WmsVehicleGatepass w : appointments) {
+            // 插入到大仓库存数据表
+            w.setGatepassAppointmentTime(ymd);
+
+            // 查询物资描述
+            WmsMaterialDesc wmsMaterialDesc = wmsMaterialDescService.getMaterialDescMap().get(w.getMaterial());
+            // 获取大仓区域IDs
+            // 大仓区域名称列表
+            List<String> areaCodes = new ArrayList<>();
+            if (wmsMaterialDesc.getAreaCodes() != null && !wmsMaterialDesc.getAreaCodes().isEmpty()) {
+
+                // 拆分IDs到Array
+                String[] codes = wmsMaterialDesc.getAreaCodes().split(",");
+
+                // 遍历IDs
+                for (String code : codes) {
+
+                    // 获取大仓区域
+                    WmsArea wmsArea = wmsAreaService.getAreaMap().get(Long.parseLong(code));
+                    if (wmsArea != null) {
+                        // 添加大仓区域名称
+                        areaCodes.add(wmsArea.getAreaName());
+                    }
+                }
+            }
+            w.setAreaCodes(String.join(",", areaCodes));
+            wmsVehicleGatepassService.insertWmsVehicleGatepass(w);
         }
     }
 
@@ -292,7 +361,7 @@ public class DataSync {
     private String getAreaName(WmsMaterialDesc wz) {
 
         // 查询物资描述
-        WmsMaterialDesc wmsMaterialDesc = wmsMaterialDescService.getMaterialDescMap().get(wz.getWzbm());
+        WmsMaterialDesc wmsMaterialDesc = wmsMaterialDescService.getMaterialDescMap().get(wz.getWzmc());
 
         // 如果找不到，则新建物资描述
         if (wmsMaterialDesc == null) {
@@ -307,7 +376,7 @@ public class DataSync {
             wmsMaterialDescService.insertNewMaterialDesc(wmsMaterialDesc);
 
             // 重新获取大仓物资描述
-            wmsMaterialDesc = wmsMaterialDescService.getMaterialDescMap().get(wz.getWzbm());
+            wmsMaterialDesc = wmsMaterialDescService.getMaterialDescMap().get(wz.getWzmc());
         }
 
         // 大仓区域名称列表

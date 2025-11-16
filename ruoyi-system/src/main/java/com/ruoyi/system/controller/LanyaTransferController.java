@@ -310,7 +310,6 @@ public class LanyaTransferController extends BaseController {
     }
 
 
-    @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
     @PostMapping("/position/historyPosition/findPersonHistoryList")
     public Object positionHistoryPositionFindPersonHistoryList(@RequestBody JSONObject body) throws JsonProcessingException {
         return thirdPartyAuth.callThirdParty("/position/historyPosition/findPersonHistoryList", HttpMethod.POST, body);

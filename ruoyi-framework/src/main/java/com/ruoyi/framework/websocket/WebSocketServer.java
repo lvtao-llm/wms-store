@@ -1,6 +1,7 @@
 package com.ruoyi.framework.websocket;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
@@ -14,22 +15,19 @@ import javax.websocket.server.ServerEndpointConfig;
 
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ruoyi.common.utils.ThirdPartyAuth;
 import com.ruoyi.common.utils.spring.SpringUtils;
-import com.ruoyi.system.domain.WmsAlarmRule;
-import com.ruoyi.system.domain.WmsArea;
-import com.ruoyi.system.domain.WmsDevice;
-import com.ruoyi.system.domain.WmsMaterialStaticsDay;
-import com.ruoyi.system.service.IWmsAlarmRuleService;
-import com.ruoyi.system.service.IWmsAreaService;
-import com.ruoyi.system.service.IWmsDeviceService;
-import com.ruoyi.system.service.IWmsMaterialStaticsDayService;
+import com.ruoyi.system.domain.*;
+import com.ruoyi.system.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -54,6 +52,7 @@ public class WebSocketServer {
      */
     @Autowired
     private ThirdPartyAuth thirdPartyAuth;
+    private static boolean serverAlreadyStarted = false;
 
     /**
      * 设置目标服务器基础地址
@@ -62,6 +61,24 @@ public class WebSocketServer {
     private void setBaseUrl(String baseUrl) {
         WebSocketServer.baseUrl = baseUrl;
     }
+
+    @Value("${lanya.enabled-ws:false}")
+    private boolean enabledWs;
+
+    @Value("${lanya.forward-url}")
+    private String forwardUrl;
+
+    @Value("${lanya.forward-enable:false}")
+    private boolean forwardEnable;
+
+    /**
+     * 定时同步Lanya设备卡发送日志开关
+     */
+    @Value("${lanya.position.mock.enabled:false}")
+    private boolean enableMock;
+
+    @Value("${lanya.save-person-location:false}")
+    private boolean savePersonLocation;
 
     /**
      * 目标服务器基础地址
@@ -108,16 +125,40 @@ public class WebSocketServer {
     @Autowired
     private IWmsAreaService wmsAreaService;
 
+    @Autowired
+    private IWmsMaterialInService wmsMaterialInService;
+
+    @Autowired
+    private IWmsMaterialOutService wmsMaterialOutService;
+
+    @Autowired
+    private IWmsMaterialStockService wmsMaterialStockService;
+
     /**
      * 时间格式 年月日
      */
     SimpleDateFormat sdfYearMonDay = new SimpleDateFormat("yyyy-MM-dd");
 
     /**
+     * Lanya定位数据数据服务
+     */
+    @Autowired
+    private ILanyaPositionHistoryService lanyaPositionHistoryService;
+
+    private Date mockPersonDate = null;
+    private Date mockVehiclDate = null;
+
+    /**
      * 初始化
      */
     @PostConstruct
     public void init() {
+        // 启动消息处理线程
+        startMessageProcessor();
+
+        if (!enabledWs) {
+            LOGGER.info("WebSocketServer 未启用");
+        }
         try {
             // 三方接口
             thirdPartyAuth = SpringUtils.getBean(ThirdPartyAuth.class);
@@ -130,17 +171,15 @@ public class WebSocketServer {
             // 三方目标WebSocket地址
             String thirdTargetUrl = "ws://" + baseUrl + "/websocket/ws/" + thirdId;
             // 连接三方目标WebSocket
-            thirdWebSocketClient.doHandshake(new ThirdWebSocketHandler(messageQueue), thirdTargetUrl).get();
 
-            // 启动消息处理线程
-            startMessageProcessor();
+
+            thirdWebSocketClient.doHandshake(new ThirdWebSocketHandler(messageQueue, forwardEnable, forwardUrl, savePersonLocation, lanyaPositionHistoryService), thirdTargetUrl).get();
+
         } catch (Exception e) {
             LOGGER.error("初始化失败", e);
         }
 
         LOGGER.info("\n WebSocketServer 初始化成功");
-
-
     }
 
     /**
@@ -178,11 +217,9 @@ public class WebSocketServer {
         for (Session clientSession : clientSessions.values()) {
             if (clientSession.isOpen()) {
                 try {
-                    clientSession.getAsyncRemote().sendText(message, result -> {
-                        if (!result.isOK()) {
-                            LOGGER.error("给客户端异步发送消息失败: {}", result.getException().getMessage());
-                        }
-                    });
+                    synchronized (clientSession) {
+                        clientSession.getBasicRemote().sendText(message);
+                    }
                 } catch (Exception e) {
                     LOGGER.error("发送消息给客户端时发生异常", e);
                 }
@@ -272,76 +309,6 @@ public class WebSocketServer {
      */
     @OnMessage
     public void onMessage(String message, Session session, @PathParam("requestId") String requestId) {
-//        try {
-//            // 转发消息到目标服务器
-//            System.out.println("接收到[" + session.getId() + "]消息：" + message);
-//            try {
-//                JSONObject messageObject = JSONObject.parseObject(message);
-//                Long timestamp = messageObject.getLong("timestamp");
-//                if ("save".equals(messageObject.getString("method"))) {
-//
-//                    String type = messageObject.getString("type");
-//                    switch (type) {
-//                        case "摄像头": {
-//                            IWmsDeviceService wmsDeviceService = SpringUtils.getBean(IWmsDeviceService.class);
-//                            JSONObject jsonDevice = messageObject.getJSONObject("object");
-//                            WmsDevice wmsDevice = jsonDevice.toJavaObject(WmsDevice.class);
-//                            wmsDevice.setDeviceType("摄像头");
-//                            if (wmsDeviceService.insertWmsDevice(wmsDevice) > 0) {
-//                                session.getAsyncRemote().sendText("{code:200, msg:'保存成功', timestamp: " + timestamp + "}");
-//                            } else {
-//                                session.getAsyncRemote().sendText("{code:500, msg:'保存失败', timestamp: " + timestamp + "}");
-//                            }
-//                            break;
-//                        }
-//                        case "风险区域": {
-//                            IWmsAreaService wmsAreaService = SpringUtils.getBean(IWmsAreaService.class);
-//                            JSONObject jsonDevice = messageObject.getJSONObject("object");
-//                            WmsArea wmsArea = jsonDevice.toJavaObject(WmsArea.class);
-//                            if (wmsAreaService.insertWmsArea(wmsArea) > 0) {
-//                                session.getAsyncRemote().sendText("{code:200, msg:'保存成功', timestamp: " + timestamp + "}");
-//                            } else {
-//                                session.getAsyncRemote().sendText("{code:500, msg:'保存失败', timestamp: " + timestamp + "}");
-//                            }
-//                            break;
-//                        }
-//                        case "传感器": {
-//                            IWmsDeviceService wmsDeviceService = SpringUtils.getBean(IWmsDeviceService.class);
-//                            JSONObject jsonDevice = messageObject.getJSONObject("object");
-//                            WmsDevice wmsDevice = jsonDevice.toJavaObject(WmsDevice.class);
-//                            wmsDevice.setDeviceType("传感器");
-//                            if (wmsDeviceService.insertWmsDevice(wmsDevice) > 0) {
-//                                session.getAsyncRemote().sendText("{code:200, msg:'保存成功', timestamp: " + timestamp + "}");
-//                            } else {
-//                                session.getAsyncRemote().sendText("{code:500, msg:'保存失败', timestamp: " + timestamp + "}");
-//                            }
-//                        }
-//                    }
-//                }
-//                if ("delete".equals(messageObject.getString("method"))) {
-//
-//                    String type = messageObject.getString("type");
-//                    switch (type) {
-//                        case "风险区域": {
-//                            IWmsAreaService wmsAreaService = SpringUtils.getBean(IWmsAreaService.class);
-//                            JSONObject jsonDevice = messageObject.getJSONObject("object");
-//                            WmsArea wmsArea = jsonDevice.toJavaObject(WmsArea.class);
-//                            if (wmsAreaService.deleteWmsAreaByAreaId(wmsArea.getAreaId()) > 0) {
-//                                session.getAsyncRemote().sendText("{code:200, msg:'保存成功', timestamp: " + timestamp + "}");
-//                            } else {
-//                                session.getAsyncRemote().sendText("{code:500, msg:'保存失败', timestamp: " + timestamp + "}");
-//                            }
-//                            break;
-//                        }
-//                    }
-//                }
-//            } catch (Exception e) {
-//                session.getAsyncRemote().sendText("{code:500, msg:'保存失败', exception:'" + e.getMessage() + "'}");
-//                LOGGER.error("保存失败: " + e.getMessage());
-//            }
-//        } catch (Exception e) {
-//            LOGGER.error("保存失败: " + e.getMessage());
-//        }
     }
 
     /**
@@ -417,6 +384,99 @@ public class WebSocketServer {
     }
 
     /**
+     * 物料统计数据
+     */
+    @Scheduled(cron = "${wms.ws-data.material-jl:0/10 * * * * ?}")
+    public void materialJlData() {
+        // 使用异步发送替代阻塞发送
+        WmsMaterialIn wmsMaterialIn = new WmsMaterialIn();
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR, -1);
+        String ymd = sdfYearMonDay.format(calendar.getTime());
+        wmsMaterialIn.setJlsj(calendar.getTime());
+        List<WmsMaterialIn> wmsMaterialIns = wmsMaterialInService.selectWmsMaterialInList(new WmsMaterialIn());
+        JSONObject materialLog = new JSONObject();
+        JSONArray materialLogData = new JSONArray();
+        materialLog.put("msgType", "materialJlLog");
+        materialLog.put("data", materialLogData);
+        materialLog.put("total", wmsMaterialIns.size());
+        for (int i = 0; i < wmsMaterialIns.size(); i++) {
+            WmsMaterialIn d = wmsMaterialIns.get(i);
+            JSONObject materialLogDataItem = new JSONObject();
+            materialLogDataItem.put("sort", i);
+            materialLogDataItem.put("materialName", d.getWzmc());
+            materialLogDataItem.put("materialCode", d.getWzbm());
+            materialLogDataItem.put("materialType", d.getWzlb());
+            materialLogDataItem.put("stockIn", d.getDhsl());
+            materialLogDataItem.put("areaName", d.getAreaCodes());
+            materialLogData.add(materialLogDataItem);
+        }
+        messageQueue.add(materialLog.toString());
+    }
+
+    /**
+     * 物料统计数据
+     */
+    @Scheduled(cron = "${wms.ws-data.material-db:0/10 * * * * ?}")
+    public void materialDbData() {
+        // 使用异步发送替代阻塞发送
+        WmsMaterialOut wmsMaterialOut = new WmsMaterialOut();
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR, -1);
+        String ymd = sdfYearMonDay.format(calendar.getTime());
+        wmsMaterialOut.setOutboundTime(calendar.getTime());
+        List<WmsMaterialOut> wmsMaterialOuts = wmsMaterialOutService.selectWmsMaterialOutList(wmsMaterialOut);
+        JSONObject materialLog = new JSONObject();
+        JSONArray materialLogData = new JSONArray();
+        materialLog.put("msgType", "materialDbLog");
+        materialLog.put("data", materialLogData);
+        materialLog.put("total", wmsMaterialOuts.size());
+        for (int i = 0; i < wmsMaterialOuts.size(); i++) {
+            WmsMaterialOut d = wmsMaterialOuts.get(i);
+            JSONObject materialLogDataItem = new JSONObject();
+            materialLogDataItem.put("sort", i);
+            materialLogDataItem.put("materialName", d.getWzmc());
+            materialLogDataItem.put("materialCode", d.getWzbm());
+            materialLogDataItem.put("materialType", d.getWzlb());
+            materialLogDataItem.put("stockOut", d.getActualQuantity());
+            materialLogDataItem.put("areaName", d.getAreaCodes());
+            materialLogData.add(materialLogDataItem);
+        }
+        messageQueue.add(materialLog.toString());
+    }
+
+    /**
+     * 物料统计数据
+     */
+    @Scheduled(cron = "${wms.ws-data.material-kc:0/10 * * * * ?}")
+    public void materialKcData() {
+        // 使用异步发送替代阻塞发送
+        WmsMaterialStock wmsMaterialStock = new WmsMaterialStock();
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR, -1);
+        String ymd = sdfYearMonDay.format(calendar.getTime());
+        wmsMaterialStock.setCreateTime(calendar.getTime());
+        List<WmsMaterialStock> wmsMaterialStocks = wmsMaterialStockService.selectWmsMaterialStockList(wmsMaterialStock);
+        JSONObject materialLog = new JSONObject();
+        JSONArray materialLogData = new JSONArray();
+        materialLog.put("msgType", "materialKcLog");
+        materialLog.put("data", materialLogData);
+        materialLog.put("total", wmsMaterialStocks.size());
+        for (int i = 0; i < wmsMaterialStocks.size(); i++) {
+            WmsMaterialStock d = wmsMaterialStocks.get(i);
+            JSONObject materialLogDataItem = new JSONObject();
+            materialLogDataItem.put("sort", i);
+            materialLogDataItem.put("materialName", d.getWzmc());
+            materialLogDataItem.put("materialCode", d.getWzbm());
+            materialLogDataItem.put("materialType", d.getWzlb());
+            materialLogDataItem.put("stock", d.getBookWeight());
+            materialLogDataItem.put("areaName", d.getAreaCodes());
+            materialLogData.add(materialLogDataItem);
+        }
+        messageQueue.add(materialLog.toString());
+    }
+
+    /**
      * 区域统计数据
      */
     @Scheduled(cron = "${wms.ws-data.area-statics:0/10 * * * * ?}")
@@ -445,14 +505,152 @@ public class WebSocketServer {
     }
 
     /**
+     * 创建LanyaPositionHistory数据模拟器
+     */
+    @Scheduled(cron = "0/10 * * * * ?")
+    public void generateMockVehiclePositionHistoryData() throws ParseException {
+        if (!enableMock) {
+            return;
+        }
+
+        // 创建所需的JSONObject
+        JSONObject locationData = new JSONObject();
+        locationData.put("msgType", "currentVehicleLocation");
+        locationData.put("total", 1);
+
+
+        // 创建personTypeStatistics数组
+        JSONArray personTypeStats = new JSONArray();
+
+        // 添加contractor类型统计
+        JSONObject contractorStat = new JSONObject();
+        contractorStat.put("count", 0);
+        contractorStat.put("personType", "contractor");
+        contractorStat.put("personTypeName", "承包商");
+        contractorStat.put("ratio", 0);
+        personTypeStats.add(contractorStat);
+
+        // 添加staff类型统计
+        JSONObject staffStat = new JSONObject();
+        staffStat.put("count", 0);
+        staffStat.put("personType", "staff");
+        staffStat.put("personTypeName", "员工");
+        staffStat.put("ratio", 0);
+        personTypeStats.add(staffStat);
+
+        // 添加visitor类型统计
+        JSONObject visitorStat = new JSONObject();
+        visitorStat.put("count", 0);
+        visitorStat.put("personType", "visitor");
+        visitorStat.put("personTypeName", "访客");
+        visitorStat.put("ratio", 0);
+        personTypeStats.add(visitorStat);
+
+        locationData.put("personTypeStatistics", personTypeStats);
+
+        if (mockVehiclDate == null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            mockVehiclDate = sdf.parse("2025-11-11 10:00:00");
+        }
+
+        List<LanyaPositionHistory> trajectory = lanyaPositionHistoryService.selectLanyaPositionHistoryListByTable("position_history_20251111", 1988037106810236930L, mockPersonDate);
+        for (LanyaPositionHistory history : trajectory) {
+            // 创建空的data数组
+            mockVehiclDate = history.getCreateTime();
+            JSONArray dataArray = new JSONArray();
+            dataArray.add(history);
+            locationData.put("data", dataArray);
+            messageQueue.add(locationData.toString());
+        }
+    }
+
+    /**
+     * 创建LanyaPositionHistory数据模拟器
+     */
+    @Scheduled(cron = "0/10 * * * * ?")
+    public void generateMockPersonPositionHistoryData() throws ParseException {
+        if (!enableMock) {
+            return;
+        }
+
+        // 创建所需的JSONObject
+        JSONObject locationData = new JSONObject();
+        locationData.put("msgType", "currentPersonLocation");
+        locationData.put("total", 1);
+
+
+        // 创建personTypeStatistics数组
+        JSONArray personTypeStats = new JSONArray();
+
+        // 添加contractor类型统计
+        JSONObject contractorStat = new JSONObject();
+        contractorStat.put("count", 0);
+        contractorStat.put("personType", "contractor");
+        contractorStat.put("personTypeName", "承包商");
+        contractorStat.put("ratio", 0);
+        personTypeStats.add(contractorStat);
+
+        // 添加staff类型统计
+        JSONObject staffStat = new JSONObject();
+        staffStat.put("count", 0);
+        staffStat.put("personType", "staff");
+        staffStat.put("personTypeName", "员工");
+        staffStat.put("ratio", 0);
+        personTypeStats.add(staffStat);
+
+        // 添加visitor类型统计
+        JSONObject visitorStat = new JSONObject();
+        visitorStat.put("count", 0);
+        visitorStat.put("personType", "visitor");
+        visitorStat.put("personTypeName", "访客");
+        visitorStat.put("ratio", 0);
+        personTypeStats.add(visitorStat);
+
+        locationData.put("personTypeStatistics", personTypeStats);
+
+        if (mockPersonDate == null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            mockPersonDate = sdf.parse("2025-11-11 09:30:00");
+        }
+
+        List<LanyaPositionHistory> trajectory = lanyaPositionHistoryService.selectLanyaPositionHistoryListByTable("position_history_20251111", 1988037106810236930L, mockPersonDate);
+        for (LanyaPositionHistory history : trajectory) {
+            // 创建空的data数组
+            mockPersonDate = history.getCreateTime();
+            JSONArray dataArray = new JSONArray();
+            dataArray.add(history);
+            locationData.put("data", dataArray);
+            messageQueue.add(locationData.toString());
+        }
+    }
+
+    public void setServerAlreadyStarted() {
+        serverAlreadyStarted = false;
+    }
+
+    /**
      * 三方WebSocket服务器的消息处理器
      */
     public static class ThirdWebSocketHandler extends TextWebSocketHandler {
 
         private final BlockingQueue<String> messageQueue;
+        private final boolean forwardEnable;
+        private final String forwardUrl;
+        private final boolean savePersonLocation;
+        private final ILanyaPositionHistoryService lanyaPositionHistoryService;
+        public RestTemplate restTemplate = new RestTemplate();
+        private ObjectMapper mapper = new ObjectMapper();
+        HttpHeaders headers = new HttpHeaders();
 
-        public ThirdWebSocketHandler(BlockingQueue<String> messageQueue) {
+
+        public ThirdWebSocketHandler(BlockingQueue<String> messageQueue, boolean forwardEnable, String forwardUrl, boolean savePersonLocation, ILanyaPositionHistoryService lanyaPositionHistoryService) {
             this.messageQueue = messageQueue;
+            this.forwardEnable = forwardEnable;
+            this.forwardUrl = forwardUrl;
+            this.savePersonLocation = savePersonLocation;
+            this.lanyaPositionHistoryService = lanyaPositionHistoryService;
+            this.headers.setContentType(MediaType.APPLICATION_JSON);
+            this.headers.set("Authorization", "fei@#%joie@#&*joijo1234%^567AABB");
         }
 
         /**
@@ -483,7 +681,25 @@ public class WebSocketServer {
                 if (jsonObject.get("msgType").equals("personCount")) {
                     return;
                 }
+                if (jsonObject.get("msgType").equals("currentPersonLocation")) {
+                    return;
+                }
                 messageQueue.add(payload);
+
+                if (forwardEnable && serverAlreadyStarted) {
+                    String sendBody = mapper.writeValueAsString(new HashMap<String, String>() {{
+                        put("message", payload);
+                    }});
+                    HttpEntity<String> entity = new HttpEntity<>(sendBody, this.headers);
+                    ResponseEntity<String> resp = restTemplate.exchange(this.forwardUrl, HttpMethod.POST, entity, String.class);
+                    HashMap respMap = this.mapper.readValue(resp.getBody(), HashMap.class);
+                }
+
+                if (savePersonLocation && serverAlreadyStarted) {
+                    LanyaPositionHistory history = new LanyaPositionHistory();
+
+                    lanyaPositionHistoryService.insertLanyaPositionHistory(history);
+                }
             } catch (Exception e) {
                 LOGGER.error("处理三方服务器消息异常", e);
             }

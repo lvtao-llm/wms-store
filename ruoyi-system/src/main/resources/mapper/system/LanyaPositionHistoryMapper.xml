@@ -68,6 +68,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         limit #{count}
     </select>
 
+    <select id="selectLanyaPositionHistoryListByTableTimeRange" resultMap="LanyaPositionHistoryResult">
+        select id, accept_time, card_id, card_type, beacon_id, longitude, latitude, distance, layer_id, layer_height, create_time, person_id, person_type, staff_type, real_name, dept_id, post_id, contractor_id, altitude, rtk_position_mode
+        from ${tableName}
+        where accept_time >= #{begin} and accept_time <![CDATA[ <= ]]> #{end} and person_id = #{personId}
+    </select>
+
     <select id="selectLanyaPositionHistoryListStartTimeByCardAndName" resultMap="LanyaPositionHistoryResult">
         <include refid="selectLanyaPositionHistoryVo"/>
         where accept_time >= #{beginTime} and card_id = #{cardId} and real_name = #{realName}
@@ -77,6 +83,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="showPositionHistoryTableNames" resultType="string">
         SHOW TABLES LIKE 'position_history_%'
+    </select>
+
+    <select id="selectLanyaPositionHistoryListByTable" parameterType="LanyaPositionHistory" resultMap="LanyaPositionHistoryResult">
+        select id, accept_time, card_id, card_type, beacon_id, longitude, latitude, distance, layer_id, layer_height, create_time, person_id, person_type, staff_type, real_name, dept_id, post_id, contractor_id, altitude, rtk_position_mode
+        from ${tableName}
+        where person_id = #{userId} and create_time > #{date}
+        limit 1
     </select>
 
     <insert id="insertLanyaPositionHistory" parameterType="LanyaPositionHistory" useGeneratedKeys="true" keyProperty="id">
@@ -124,6 +137,54 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="rtkPositionMode != null">#{rtkPositionMode},</if>
          </trim>
     </insert>
+    <update id="createTable" parameterType="string">
+        CREATE TABLE IF NOT EXISTS ${tableName} LIKE position_history
+    </update>
+    <insert id="insertLanyaPositionHistoryByTable" parameterType="LanyaPositionHistory">
+        insert into ${tableName}
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="history.acceptTime != null">accept_time,</if>
+            <if test="history.cardId != null">card_id,</if>
+            <if test="history.cardType != null">card_type,</if>
+            <if test="history.beaconId != null">beacon_id,</if>
+            <if test="history.longitude != null">longitude,</if>
+            <if test="history.latitude != null">latitude,</if>
+            <if test="history.distance != null">distance,</if>
+            <if test="history.layerId != null">layer_id,</if>
+            <if test="history.layerHeight != null">layer_height,</if>
+            <if test="history.createTime != null">create_time,</if>
+            <if test="history.personId != null">person_id,</if>
+            <if test="history.personType != null">person_type,</if>
+            <if test="history.staffType != null">staff_type,</if>
+            <if test="history.realName != null">real_name,</if>
+            <if test="history.deptId != null">dept_id,</if>
+            <if test="history.postId != null">post_id,</if>
+            <if test="history.contractorId != null">contractor_id,</if>
+            <if test="history.altitude != null">altitude,</if>
+            <if test="history.rtkPositionMode != null">rtk_position_mode,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="history.acceptTime != null">#{history.acceptTime},</if>
+            <if test="history.cardId != null">#{history.cardId},</if>
+            <if test="history.cardType != null">#{history.cardType},</if>
+            <if test="history.beaconId != null">#{history.beaconId},</if>
+            <if test="history.longitude != null">#{history.longitude},</if>
+            <if test="history.latitude != null">#{history.latitude},</if>
+            <if test="history.distance != null">#{history.distance},</if>
+            <if test="history.layerId != null">#{history.layerId},</if>
+            <if test="history.layerHeight != null">#{history.layerHeight},</if>
+            <if test="history.createTime != null">#{history.createTime},</if>
+            <if test="history.personId != null">#{history.personId},</if>
+            <if test="history.personType != null">#{history.personType},</if>
+            <if test="history.staffType != null">#{history.staffType},</if>
+            <if test="history.realName != null">#{history.realName},</if>
+            <if test="history.deptId != null">#{history.deptId},</if>
+            <if test="history.postId != null">#{history.postId},</if>
+            <if test="history.contractorId != null">#{history.contractorId},</if>
+            <if test="history.altitude != null">#{history.altitude},</if>
+            <if test="history.rtkPositionMode != null">#{history.rtkPositionMode},</if>
+        </trim>
+    </insert>
 
     <update id="updateLanyaPositionHistory" parameterType="LanyaPositionHistory">
         update position_history
@@ -161,4 +222,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
+
+    <select id="checkTableExists" parameterType="String">
+        SELECT COUNT(*)
+        FROM INFORMATION_SCHEMA.TABLES
+        WHERE TABLE_SCHEMA = DATABASE()
+          AND TABLE_NAME = #{tableName}
+    </select>
 </mapper>

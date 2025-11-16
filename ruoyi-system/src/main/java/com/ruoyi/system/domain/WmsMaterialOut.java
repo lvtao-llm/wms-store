@@ -70,8 +70,9 @@ public class WmsMaterialOut extends WmsMaterialDesc
     private String guard;
 
     /** 出库时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "出库时间", width = 30, dateFormat = "yyyy-MM-dd")
+//    @JsonFormat(pattern = "yyyy-MM-dd")
+//    @Excel(name = "出库时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @Excel(name = "出库时间")
     private Date outboundTime;
 
     /** 计量员 */
@@ -209,8 +210,7 @@ public class WmsMaterialOut extends WmsMaterialDesc
     private String allotOperator;
 
     /** 调拨时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "调拨时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @Excel(name = "调拨时间", width = 30)
     private Date allotTime;
 
     /** 余额 */

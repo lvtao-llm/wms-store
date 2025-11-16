@@ -100,11 +100,15 @@
       <el-table-column label="纬度" align="center" prop="latitude" />
       <el-table-column label="高度" align="center" prop="altitude" />
       <el-table-column label="型号" align="center" prop="model" />
+      <el-table-column label="摄像头1 ip" align="center" prop="ip1" />
+      <el-table-column label="摄像头2 ip" align="center" prop="ip2" />
       <el-table-column
         label="操作"
         align="center"
         class-name="small-padding fixed-width"
+        width="380"
       >
+        >
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -152,7 +156,7 @@
 
     <!-- 添加或修改设备对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+      <el-form ref="form" :model="form" :rules="rules" label-width="180px">
         <el-form-item label="设备名称" prop="deviceName">
           <el-input v-model="form.deviceName" placeholder="请输入设备名称" />
         </el-form-item>
@@ -162,17 +166,41 @@
             placeholder="请输入设备描述"
           />
         </el-form-item>
-        <el-form-item label="经度" prop="longitude">
-          <el-input v-model="form.longitude" placeholder="请输入经度" />
-        </el-form-item>
-        <el-form-item label="纬度" prop="latitude">
-          <el-input v-model="form.latitude" placeholder="请输入纬度" />
-        </el-form-item>
         <el-form-item label="型号" prop="model">
           <el-input v-model="form.model" placeholder="请输入型号" />
         </el-form-item>
         <el-form-item label="序号SN" prop="serialNumber">
           <el-input v-model="form.serialNumber" placeholder="请输入序号SN" />
+        </el-form-item>
+        <el-form-item label="摄像头1 IP地址" prop="serialNumber">
+          <el-input v-model="info.ip1" placeholder="请输入序号SN" />
+        </el-form-item>
+        <el-form-item label="摄像头1 端口" prop="serialNumber">
+          <el-input v-model="info.port1" placeholder="请输入序号SN" />
+        </el-form-item>
+        <el-form-item label="摄像头1 用户名" prop="serialNumber">
+          <el-input v-model="info.username1" placeholder="请输入序号SN" />
+        </el-form-item>
+        <el-form-item label="摄像头1 密码" prop="serialNumber">
+          <el-input v-model="info.password1" placeholder="请输入序号SN" />
+        </el-form-item>
+        <el-form-item label="摄像头1 通道" prop="serialNumber">
+          <el-input v-model="info.channel1" placeholder="请输入序号SN" />
+        </el-form-item>
+        <el-form-item label="摄像头2 IP地址" prop="serialNumber">
+          <el-input v-model="info.ip2" placeholder="请输入序号SN" />
+        </el-form-item>
+        <el-form-item label="摄像头2 端口" prop="serialNumber">
+          <el-input v-model="info.port2" placeholder="请输入序号SN" />
+        </el-form-item>
+        <el-form-item label="摄像头2 用户名" prop="serialNumber">
+          <el-input v-model="info.username2" placeholder="请输入序号SN" />
+        </el-form-item>
+        <el-form-item label="摄像头2 密码" prop="serialNumber">
+          <el-input v-model="info.password2" placeholder="请输入序号SN" />
+        </el-form-item>
+        <el-form-item label="摄像头2 通道" prop="serialNumber">
+          <el-input v-model="info.channel2" placeholder="请输入序号SN" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -182,7 +210,7 @@
     </el-dialog>
 
     <!-- 摄像头画面 -->
-    <camera-view ref="cameraView" :device-id="currentDeviceId"></camera-view>
+    <camera-view ref="cameraView" :name="dialogName"></camera-view>
 
     <maps @editPoints="savePoints" ref="maps"></maps>
   </div>
@@ -196,7 +224,7 @@ import {
   addWms_device,
   updateWms_device,
 } from "@/api/system/wms_device";
-import maps from "../wms_area/childView/detail3d";
+import maps from "./childView/map.vue";
 import CameraView from "./cameraView.vue";
 
 export default {
@@ -246,7 +274,20 @@ export default {
       form: {},
       // 表单校验
       rules: {},
-      currentDeviceId: "",
+      // 摄像头信息
+      info: {
+        ip1: null,
+        port1: null,
+        username1: null,
+        password1: null,
+        channel1: null,
+        ip2: null,
+        port2: null,
+        username2: null,
+        password2: null,
+        channel2: null,
+      },
+      dialogName: "",
     };
   },
   created() {
@@ -257,7 +298,22 @@ export default {
     getList() {
       this.loading = true;
       listWms_device(this.queryParams).then((response) => {
-        this.wms_deviceList = response.rows;
+        this.wms_deviceList = response.rows.map((item) => {
+          let info = item.data ? JSON.parse(item.data) : {};
+          return {
+            ...item,
+            ip1: info.ip1,
+            port1: info.port1,
+            username1: info.username1,
+            password1: info.password1,
+            channel1: info.channel1,
+            ip2: info.ip2,
+            port2: info.port2,
+            username2: info.username2,
+            password2: info.password2,
+            channel2: info.channel2,
+          };
+        });
         this.total = response.total;
         this.loading = false;
       });
@@ -287,6 +343,18 @@ export default {
         updateBy: null,
         updateTime: null,
         delFlag: null,
+      };
+      this.info = {
+        ip1: null,
+        port1: null,
+        username1: null,
+        password1: null,
+        channel1: null,
+        ip2: null,
+        port2: null,
+        username2: null,
+        password2: null,
+        channel2: null,
       };
       this.resetForm("form");
     },
@@ -318,6 +386,7 @@ export default {
       const id = row.id || this.ids;
       getWms_device(id).then((response) => {
         this.form = response.data;
+        this.info = response.data.data ? JSON.parse(response.data.data) : {};
         this.open = true;
         this.title = "修改设备";
       });
@@ -326,6 +395,7 @@ export default {
     submitForm() {
       this.$refs["form"].validate((valid) => {
         if (valid) {
+          this.form.data = JSON.stringify(this.info);
           if (this.form.id != null) {
             updateWms_device(this.form).then((response) => {
               this.$modal.msgSuccess("修改成功");
@@ -367,13 +437,12 @@ export default {
       );
     },
     handlePosition(row) {
-      this.$refs.maps.openDia(row, "摄像头", row.id);
-      // this.reset();
-      // const id = row.id || this.ids;
-      // getWms_device(id).then((response) => {
-      //   this.form = response.data;
-
-      // });
+      this.reset();
+      const id = row.id || this.ids;
+      getWms_device(id).then((response) => {
+        this.form = response.data;
+        this.$refs.maps.openDia(row);
+      });
     },
     savePoints(row) {
       this.form.altitude = row.altitude;
@@ -385,20 +454,10 @@ export default {
       });
     },
     // 添加查看摄像头画面的方法
-    viewCameraStream(row) {
-      this.currentDeviceId = row.id;
-
-      // 构造摄像头连接参数（实际应从数据库或API获取）
-      const cameraInfo = {
-        ip: "192.168.1.64", // 摄像头IP地址
-        port: "554", // RTSP端口
-        username: "admin", // 用户名
-        password: "12345", // 密码
-        channel: "101", // 通道号
-      };
-
+    viewCameraStream(row, index) {
       // 打开摄像头画面弹窗
-      this.$refs.cameraView.openCamera(cameraInfo);
+      this.dialogName = row.deviceName;
+      this.$refs.cameraView.openCamera(row, JSON.parse(row.data));
     },
   },
 };

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.WmsDeviceCameraLogMapper">
+    
+    <resultMap type="WmsDeviceCameraLog" id="WmsDeviceCameraLogResult">
+        <result property="id"    column="id"    />
+        <result property="type"    column="type"    />
+        <result property="dwmc"    column="dwmc"    />
+        <result property="sj"    column="sj"    />
+        <result property="yc"    column="yc"    />
+        <result property="yr"    column="yr"    />
+        <result property="cph"    column="cph"    />
+        <result property="cz"    column="cz"    />
+        <result property="cx"    column="cx"    />
+        <result property="ys"    column="ys"    />
+        <result property="sfcdgf"    column="sfcdgf"    />
+        <result property="base64"    column="base64"    />
+    </resultMap>
+
+    <sql id="selectWmsDeviceCameraLogVo">
+        select id, type, dwmc, sj, yc, yr, cph, cz, cx, ys, sfcdgf, base64 from wms_device_camera_log
+    </sql>
+
+    <select id="selectWmsDeviceCameraLogList" parameterType="WmsDeviceCameraLog" resultMap="WmsDeviceCameraLogResult">
+        <include refid="selectWmsDeviceCameraLogVo"/>
+        <where>  
+            <if test="type != null  and type != ''"> and type = #{type}</if>
+            <if test="dwmc != null  and dwmc != ''"> and dwmc = #{dwmc}</if>
+            <if test="sj != null "> and sj = #{sj}</if>
+            <if test="yc != null  and yc != ''"> and yc = #{yc}</if>
+            <if test="yr != null  and yr != ''"> and yr = #{yr}</if>
+            <if test="cph != null  and cph != ''"> and cph = #{cph}</if>
+            <if test="cz != null  and cz != ''"> and cz = #{cz}</if>
+            <if test="cx != null  and cx != ''"> and cx = #{cx}</if>
+            <if test="ys != null  and ys != ''"> and ys = #{ys}</if>
+            <if test="sfcdgf != null  and sfcdgf != ''"> and sfcdgf = #{sfcdgf}</if>
+            <if test="base64 != null  and base64 != ''"> and base64 = #{base64}</if>
+        </where>
+    </select>
+    
+    <select id="selectWmsDeviceCameraLogById" parameterType="Long" resultMap="WmsDeviceCameraLogResult">
+        <include refid="selectWmsDeviceCameraLogVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertWmsDeviceCameraLog" parameterType="WmsDeviceCameraLog" useGeneratedKeys="true" keyProperty="id">
+        insert into wms_device_camera_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="type != null">type,</if>
+            <if test="dwmc != null and dwmc != ''">dwmc,</if>
+            <if test="sj != null">sj,</if>
+            <if test="yc != null">yc,</if>
+            <if test="yr != null">yr,</if>
+            <if test="cph != null">cph,</if>
+            <if test="cz != null">cz,</if>
+            <if test="cx != null">cx,</if>
+            <if test="ys != null">ys,</if>
+            <if test="sfcdgf != null">sfcdgf,</if>
+            <if test="base64 != null">base64,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="type != null">#{type},</if>
+            <if test="dwmc != null and dwmc != ''">#{dwmc},</if>
+            <if test="sj != null">#{sj},</if>
+            <if test="yc != null">#{yc},</if>
+            <if test="yr != null">#{yr},</if>
+            <if test="cph != null">#{cph},</if>
+            <if test="cz != null">#{cz},</if>
+            <if test="cx != null">#{cx},</if>
+            <if test="ys != null">#{ys},</if>
+            <if test="sfcdgf != null">#{sfcdgf},</if>
+            <if test="base64 != null">#{base64},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWmsDeviceCameraLog" parameterType="WmsDeviceCameraLog">
+        update wms_device_camera_log
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="type != null">type = #{type},</if>
+            <if test="dwmc != null and dwmc != ''">dwmc = #{dwmc},</if>
+            <if test="sj != null">sj = #{sj},</if>
+            <if test="yc != null">yc = #{yc},</if>
+            <if test="yr != null">yr = #{yr},</if>
+            <if test="cph != null">cph = #{cph},</if>
+            <if test="cz != null">cz = #{cz},</if>
+            <if test="cx != null">cx = #{cx},</if>
+            <if test="ys != null">ys = #{ys},</if>
+            <if test="sfcdgf != null">sfcdgf = #{sfcdgf},</if>
+            <if test="base64 != null">base64 = #{base64},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWmsDeviceCameraLogById" parameterType="Long">
+        delete from wms_device_camera_log where id = #{id}
+    </delete>
+
+    <delete id="deleteWmsDeviceCameraLogByIds" parameterType="String">
+        delete from wms_device_camera_log where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -150,6 +150,9 @@ public class AlarmDetection {
         // 当前卡的geometry对象
 
         for (WmsArea area : wmsAreaService.getAreaMap().values()) {
+            if (area.getGeometry() == null) {
+                continue;
+            }
             // 判断点是否在多边形内
             boolean inside = area.getGeometry().contains(point);
 

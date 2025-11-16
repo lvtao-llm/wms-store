@@ -1,19 +1,21 @@
 package com.ruoyi.system.mapper;
 
+import java.util.Date;
 import java.util.List;
+
 import com.ruoyi.system.domain.LanyaCoreAlarm;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 报警记录Mapper接口
- * 
+ *
  * @author ruoyi
  * @date 2025-10-10
  */
-public interface LanyaCoreAlarmMapper 
-{
+public interface LanyaCoreAlarmMapper {
     /**
      * 查询报警记录
-     * 
+     *
      * @param alarmId 报警记录主键
      * @return 报警记录
      */
@@ -21,7 +23,7 @@ public interface LanyaCoreAlarmMapper
 
     /**
      * 查询报警记录列表
-     * 
+     *
      * @param lanyaCoreAlarm 报警记录
      * @return 报警记录集合
      */
@@ -29,7 +31,7 @@ public interface LanyaCoreAlarmMapper
 
     /**
      * 新增报警记录
-     * 
+     *
      * @param lanyaCoreAlarm 报警记录
      * @return 结果
      */
@@ -37,7 +39,7 @@ public interface LanyaCoreAlarmMapper
 
     /**
      * 修改报警记录
-     * 
+     *
      * @param lanyaCoreAlarm 报警记录
      * @return 结果
      */
@@ -45,7 +47,7 @@ public interface LanyaCoreAlarmMapper
 
     /**
      * 删除报警记录
-     * 
+     *
      * @param alarmId 报警记录主键
      * @return 结果
      */
@@ -53,9 +55,11 @@ public interface LanyaCoreAlarmMapper
 
     /**
      * 批量删除报警记录
-     * 
+     *
      * @param alarmIds 需要删除的数据主键集合
      * @return 结果
      */
     public int deleteLanyaCoreAlarmByAlarmIds(Long[] alarmIds);
+
+    List<LanyaCoreAlarm> selectLanyaCoreAlarmGtTime(@Param("date") Date date);
 }

@@ -1,11 +1,21 @@
 package com.ruoyi.system.lanya.data;
 
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ruoyi.system.domain.*;
 import com.ruoyi.system.service.*;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.Point;
+import com.ruoyi.system.utils.HttpUtil;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +23,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -72,28 +82,24 @@ public class LanyaDataSync {
     private IWmsTrajectoryService wmsTrajectoryService;
 
     /**
-     * 区域服务
+     * 定时同步Lanya定位数据开关
      */
-    @Autowired
-    private IWmsAreaService wmsAreaService;
+    @Value("${lanya.position.sync-table.enabled:false}")
+    private boolean enablePositionTableSync;
 
     /**
      * 定时同步Lanya定位数据开关
      */
-    @Value("${lanya.position.sync.enabled:false}")
-    private boolean enablePosition;
+    @Value("${lanya.position.sync-table.past-table.enabled:false}")
+    private boolean enablePositionTableSyncPast;
 
-    /**
-     * 定时同步Lanya设备卡发送日志开关
-     */
-    @Value("${lanya.position.mock.enabled:false}")
-    private boolean enableMock;
 
     /**
      * 定时同步Lanya设备卡发放日志开关
      */
     @Value("${lanya.issuing.sync.enabled:false}")
     private boolean enableIssuing;
+
 
     /**
      * 定时同步Lanya定位数据表名
@@ -135,85 +141,19 @@ public class LanyaDataSync {
      */
     SimpleDateFormat sdfTableSuffix = new SimpleDateFormat("yyyyMMdd");
 
-    // 大庆市萨尔图区中心坐标
-    double centerLat = 46.6346017782;  // 纬度
-    double centerLng = 124.8472070448; // 经度
-    // 地球半径(米)
-    double earthRadius = 6371000;
-
-    // 以中心点为中心，边长2公里的正方形坐标
-    double leftLat = 124.8382070448;
-    double rightLat = 124.8562070448;
-    double topLng = 46.6436017782;
-    double bottomLng = 46.6256017782;
 
     /**
-     * 创建LanyaPositionHistory数据模拟器
+     * HTTP客户端
      */
-    public void generateMockPositionHistoryData() {
-        if (!enableMock) {
-            return;
-        }
-
-        Random random = new Random();
-        Date now = new Date();
-
-        Long[] cardIds = new Long[]{4791L, 77561L, 81126L, 111L, 222L, 333L};
-        String[] persons = new String[]{"单北斗81126", "吕涛11", "啊啊啊", "不不不", "新卡2", "于1111"};
-        Long[] personIds = new Long[]{1925015210049478657L, 1972900380282490881L, 1977660310642294785L, 1978327655543013378L, 1924763411983966210L, 1924719928770424834L};
-        int personIndex = random.nextInt(persons.length);
-        Long cardId = cardIds[personIndex];
-        String person = persons[personIndex];
-        Long personId = personIds[personIndex];
-
-
-        LanyaPositionHistory position = new LanyaPositionHistory();
-
-        // 基本信息
-        position.setAcceptTime(now); // 24小时内随机时间
-        position.setCardId(cardId);
-        position.setCardType("card"); // 0或1
-        position.setBeaconId(-1L);
-
-        // 位置信息 (大庆市萨尔图区半径2公里内坐标)
-        // 生成半径内的随机坐标点
-        double radiusInMeters = 2000; // 2公里
-        double distance = Math.sqrt(random.nextDouble()) * radiusInMeters;
-        double angle = random.nextDouble() * 2 * Math.PI;
-
-        // 计算新坐标点
-        double deltaLat = distance * Math.cos(angle) / earthRadius;
-        double deltaLng = distance * Math.sin(angle) / (earthRadius * Math.cos(Math.toRadians(centerLat)));
-
-        double newLat = centerLat + Math.toDegrees(deltaLat);
-        double newLng = centerLng + Math.toDegrees(deltaLng);
-
-        BigDecimal latBigDecimal = new BigDecimal(newLat).setScale(10, RoundingMode.HALF_UP);
-        BigDecimal lngBigDecimal = new BigDecimal(newLng).setScale(10, RoundingMode.HALF_UP);
-
-        position.setLatitude(latBigDecimal.doubleValue());
-        position.setLongitude(lngBigDecimal.doubleValue());
-        position.setDistance(1.0); // 0-100米距离
-        position.setLayerId("全图");
-        position.setLayerHeight(0); // 0-10米高度
-
-        // 人员信息
-        position.setPersonId(personId);
-        position.setPersonType("staff"); // 0-2
-        position.setRealName(person);
-
-        // 其他信息
-        position.setCreateTime(now);
-
-        lanyaPositionHistoryService.insertLanyaPositionHistory(position);
-    }
-
+    @Autowired
+    private HttpUtil httpUtil;
 
     @PostConstruct
     public void init() throws Exception {
         if (!alarmDetection.isInitialized()) {
             alarmDetection.loadAlarmRules();
         }
+
         List<SysConfig> sysConfigs = configService.selectConfigList(new SysConfig());
         for (SysConfig sysConfig : sysConfigs) {
             if (sysConfig.getConfigKey().equals(positionKey)) {
@@ -226,6 +166,10 @@ public class LanyaDataSync {
 
         // 初始化未同步的layan device_sender_card_log表数据到wms_device_card_work_log表
         CardLogSync();
+
+        if (!enablePositionTableSyncPast) {
+            return;
+        }
 
         // 初始化未同步的layan position_history表数据到wms_alarm_log表
         // 历史position_history 按日期分表的表名
@@ -261,7 +205,11 @@ public class LanyaDataSync {
             for (LanyaDeviceCardSenderLog lanyaDeviceCardSenderLog : lanyaDeviceCardSenderLogs) {
 
                 // 发卡
-                if (lanyaDeviceCardSenderLog.getCardSenderType() == 1) {
+                if (lanyaDeviceCardSenderLog.getCardSenderType() == 1 &&
+                        lanyaDeviceCardSenderLog.getCardId() != null &&
+                        lanyaDeviceCardSenderLog.getRealName() != null &&
+                        "成功".equals(lanyaDeviceCardSenderLog.getResult())) {
+
                     // 发卡记录
                     WmsDeviceCardWorkLog wordLog = new WmsDeviceCardWorkLog();
                     wordLog.setCardId(lanyaDeviceCardSenderLog.getCardId());
@@ -297,6 +245,7 @@ public class LanyaDataSync {
                     WmsDeviceCardWorkLog query = new WmsDeviceCardWorkLog();
                     query.setCardId(lanyaDeviceCardSenderLog.getCardId());
                     query.setRealName(lanyaDeviceCardSenderLog.getRealName());
+
                     List<WmsDeviceCardWorkLog> wmsDeviceCardWorkLogs = wmsDeviceCardWorkLogService.selectWmsDeviceCardWorkLogListEnd(query);
                     if (wmsDeviceCardWorkLogs.isEmpty()) {
                         log.error("--------------------------------------------------------------\r\nERROR:没有找到对应的发卡记录>\r\n{}\r\n--------------------------------------------------------------", query);
@@ -327,15 +276,26 @@ public class LanyaDataSync {
                             wmsTrajectory.setTrajectoryType("人员");
                             wmsTrajectory.setFuzzy(workLog.getRealName() + "-" + workLog.getSenderCommandTime() + "-内部员工");
 
-                            // 轨迹点
+                            Calendar calendar = Calendar.getInstance();
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+                            Date begin = workLog.getSenderCommandTime();
+                            Date end = workLog.getReturnCommandTime();
+                            Long personId = workLog.getPersonId();
+                            calendar.setTime(begin);
+
                             List<Map<String, Object>> trajectoryPoints = new ArrayList<>();
-                            List<LanyaPositionHistory> trajectory = workActivitiesByCardId.get(workLog.getCardId()).getTrajectory();
-                            for (int i = 0; i < trajectory.size(); i += 2) {
-                                if (i + 1 < trajectory.size()) {
-                                    Map<String, Object> point = getStringObjectMap(trajectory, i);
-                                    trajectoryPoints.add(point);
+                            while (!calendar.getTime().after(end)) {
+                                String tableName = "position_history_" + sdf.format(calendar.getTime());
+                                if (lanyaPositionHistoryService.checkTableExists(tableName) > 0) {
+                                    List<LanyaPositionHistory> trs = lanyaPositionHistoryService.selectLanyaPositionHistoryListByTableTimeRange(begin, end, personId, tableName);
+                                    int step = trs.size() / 3000;
+                                    for (int i = 0; i < trs.size(); i += step) {
+                                        trajectoryPoints.add(getStringObjectMap(trs, i));
+                                    }
                                 }
+                                calendar.add(Calendar.DAY_OF_MONTH, 1);
                             }
+
                             wmsTrajectory.setTrajectoryPoints(JSON.toJSONString(trajectoryPoints));
 
                             // 保存轨迹
@@ -375,7 +335,7 @@ public class LanyaDataSync {
     }
 
     public void PositionSync(String tableName) throws ParseException {
-        if (!enablePosition) {
+        if (!enablePositionTableSync) {
             return;
         }
         if (!alarmDetection.isInitialized()) {
@@ -393,6 +353,10 @@ public class LanyaDataSync {
 
             // 获取count条position_history数据
             int count = 100;
+            if (!lanyaPositionHistoryService.showPositionHistoryTableNames().contains(tableName)) {
+                continueGet = false;
+                break;
+            }
             List<LanyaPositionHistory> lanyaPositionHistories = lanyaPositionHistoryService.selectLanyaPositionHistoryListStartTime(positionOffset, count, tableName);
 
             // 循环处理数据
@@ -457,6 +421,4 @@ public class LanyaDataSync {
             continueGet = !lanyaPositionHistories.isEmpty();
         }
     }
-
-
 }
