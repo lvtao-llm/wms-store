@@ -1,33 +1,33 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="物料编码" prop="materialCode">
+      <el-form-item label="物料编码" prop="wzbm">
         <el-input
-          v-model="queryParams.materialCode"
+          v-model="queryParams.wzbm"
           placeholder="请输入物料编码"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="物料名称" prop="materialName">
+      <el-form-item label="物料名称" prop="wzmc">
         <el-input
-          v-model="queryParams.materialName"
+          v-model="queryParams.wzmc"
           placeholder="请输入物料名称"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="规格" prop="materialSpec">
+      <el-form-item label="品种名称" prop="pzmc">
         <el-input
-          v-model="queryParams.materialSpec"
+          v-model="queryParams.pzmc"
           placeholder="请输入规格"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="型号" prop="materialModel">
+      <el-form-item label="物资类别" prop="wzlb">
         <el-input
-          v-model="queryParams.materialModel"
+          v-model="queryParams.wzlb"
           placeholder="请输入型号"
           clearable
           @keyup.enter.native="handleQuery"
@@ -91,10 +91,10 @@
 
     <el-table v-loading="loading" :data="wms_material_descList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center"/>
-      <el-table-column label="物料编码" align="center" prop="materialCode"/>
-      <el-table-column label="物料名称" align="center" prop="materialName"/>
-      <el-table-column label="规格" align="center" prop="materialSpec"/>
-      <el-table-column label="型号" align="center" prop="materialModel"/>
+      <el-table-column label="物料编码" align="center" prop="wzbm"/>
+      <el-table-column label="物料名称" align="center" prop="wzmc"/>
+      <el-table-column label="规格" align="center" prop="pzmc"/>
+      <el-table-column label="型号" align="center" prop="wzlb"/>
       <el-table-column label="存放区域" align="center" prop="areaCodes">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.wms_area_name" :value="scope.row.areaCodes"/>
@@ -142,17 +142,17 @@
     <!-- 添加或修改物料描述档案对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="120px">
-        <el-form-item label="物料编码" prop="materialCode">
-          <el-input v-model="form.materialCode" placeholder="请输入物料编码"/>
+        <el-form-item label="物料编码" prop="wzbm">
+          <el-input v-model="form.wzbm" placeholder="请输入物料编码"/>
         </el-form-item>
-        <el-form-item label="物料名称" prop="materialName">
-          <el-input v-model="form.materialName" placeholder="请输入物料名称"/>
+        <el-form-item label="物料名称" prop="wzmc">
+          <el-input v-model="form.wzmc" placeholder="请输入物料名称"/>
         </el-form-item>
-        <el-form-item label="规格" prop="materialSpec">
-          <el-input v-model="form.materialSpec" placeholder="请输入规格"/>
+        <el-form-item label="规格" prop="pzmc">
+          <el-input v-model="form.pzmc" placeholder="请输入规格"/>
         </el-form-item>
-        <el-form-item label="型号" prop="materialModel">
-          <el-input v-model="form.materialModel" placeholder="请输入型号"/>
+        <el-form-item label="型号" prop="wzlb">
+          <el-input v-model="form.wzlb" placeholder="请输入型号"/>
         </el-form-item>
         <el-form-item label="存放区域" prop="areaCodes">
           <el-select v-model="form.areaCodes" multiple placeholder="请选择存放区域">
@@ -225,10 +225,10 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        materialCode: null,
-        materialName: null,
-        materialSpec: null,
-        materialModel: null,
+        wzbm: null,
+        wzmc: null,
+        pzmc: null,
+        wzlb: null,
         areaCodes: null,
         materialUnit: null,
         materialRequirements: null,
@@ -276,10 +276,10 @@ export default {
     reset() {
       this.form = {
         materialDescId: null,
-        materialCode: null,
-        materialName: null,
-        materialSpec: null,
-        materialModel: null,
+        wzbm: null,
+        wzmc: null,
+        pzmc: null,
+        wzlb: null,
         areaCodes: null,
         materialUnit: null,
         materialRequirements: null,

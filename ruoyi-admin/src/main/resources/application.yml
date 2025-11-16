@@ -165,19 +165,23 @@ lanya:
       enabled: true # 模拟数据时打开
   issuing: # device_card_sender_log 表数据同步
     sync: # 同步 lanya device_card_sender_log 表数据到 wms 数据库
-      enabled: true # 物资公司90部署打开
+      enabled: false # 物资公司90部署打开
 
 wzgs:
 
   jl: # 接料数据表同步
     sync:
-      enabled: true # 物资公司90部署打开
+      enabled: false # 物资公司90部署打开
 
   db: # 调拨数据表同步
     sync:
-      enabled: true # 物资公司90部署打开
+      enabled: false # 物资公司90部署打开
 
   kc: # 库存数据表同步
+    sync:
+      enabled: true # 物资公司90部署打开
+
+  yy: # 预约数据表同步
     sync:
       enabled: true # 物资公司90部署打开
 wms:

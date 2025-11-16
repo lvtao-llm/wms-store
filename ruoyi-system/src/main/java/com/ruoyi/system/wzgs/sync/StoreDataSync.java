@@ -75,6 +75,7 @@ public class StoreDataSync {
     /**
      * 物资公司车辆预约mapper
      */
+    @Autowired
     private WzjtViewYySkMapper wzjtViewYySkMapper;
 
     /**

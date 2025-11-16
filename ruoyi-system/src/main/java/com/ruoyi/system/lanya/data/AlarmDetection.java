@@ -157,11 +157,11 @@ public class AlarmDetection {
             boolean inside = area.getGeometry().contains(point);
 
             if (inside) {
-                if (liveCard.getArea() != null && liveCard.getArea().getPersonCount() >= 0) {
-                    liveCard.getArea().setPersonCount(liveCard.getArea().getPersonCount() - 1);
+                if (liveCard.getArea() != null && liveCard.getArea().getStuffCount() >= 0) {
+                    liveCard.getArea().setStuffCount(liveCard.getArea().getStuffCount() - 1);
                 }
                 liveCard.setArea(area);
-                liveCard.getArea().setPersonCount(liveCard.getArea().getPersonCount() + 1);
+                liveCard.getArea().setStuffCount(liveCard.getArea().getStuffCount() + 1);
             }
         }
 

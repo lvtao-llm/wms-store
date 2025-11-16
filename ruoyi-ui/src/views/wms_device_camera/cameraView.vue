@@ -37,11 +37,6 @@ export default {
         channel: 1,
         tag: 'video_left',
         player: null,
-      },
-      {
-        channel: 2,
-        tag: 'video_right',
-        player: null,
       }
     ]
   },

@@ -3,14 +3,12 @@ package com.ruoyi.system.domain;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
 import org.locationtech.jts.geom.Geometry;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -109,7 +107,10 @@ public class WmsArea extends BaseEntity {
      * 人数
      */
     @JsonIgnore
-    private int personCount = 0;
+    private int stuffCount = 0;
+
+    @JsonIgnore
+    private int visitorCount = 0;
 
     /**
      * 车辆数
@@ -269,12 +270,12 @@ public class WmsArea extends BaseEntity {
         this.photo360 = photo360;
     }
 
-    public int getPersonCount() {
-        return personCount;
+    public int getStuffCount() {
+        return stuffCount;
     }
 
-    public void setPersonCount(int personCount) {
-        this.personCount = personCount;
+    public void setStuffCount(int stuffCount) {
+        this.stuffCount = stuffCount;
     }
 
     public int getVehicleCount() {
@@ -283,5 +284,13 @@ public class WmsArea extends BaseEntity {
 
     public void setVehicleCount(int vehicleCount) {
         this.vehicleCount = vehicleCount;
+    }
+
+    public int getVisitorCount() {
+        return visitorCount;
+    }
+
+    public void setVisitorCount(int visitorCount) {
+        this.visitorCount = visitorCount;
     }
 }

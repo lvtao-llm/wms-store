@@ -39,6 +39,7 @@ public class CameraController {
             JSONObject data = getCameraInfo(cameraId);
             String id = UUID.randomUUID().toString().replace("-", "");
             String rtspUrl = null;
+            String mpegCommand = null;
             if (!cameraServeice.activeStreams1.containsKey(cameraId + "-" + channel)) {
                 if ("1".equals(channel)) {
                     rtspUrl = String.format("rtsp://%s:%s@%s:%s/h264/%s/sub/av_stream",
@@ -58,25 +59,34 @@ public class CameraController {
                             data.getString("channel2")
                     );
                 }
-
+                String localSocketAddr = "tcp://127.0.0.1:9999"; // 可根据需要调整端口号
+                rtspUrl = "rtsp://0.0.0.0:8554/live.sdp";
+                mpegCommand = String.format("ffmpeg -rtsp_transport tcp -max_delay 500000 -use_wallclock_as_timestamps 1 -i " + rtspUrl + " -vf fps=2 -c:v libx264 -f flv ");
+//                mpegCommand = String.format("ffmpeg -rtsp_transport tcp -i %s -c:v copy -an -f flv ", rtspUrl);
                 if (rtspUrl == null) {
                     Map<String, Object> res = new HashMap<>();
                     res.put("success", false);
                     res.put("message", "channel只能是1或2");
+                    res.put("rtspUrl", rtspUrl);
+                    res.put("mpeg-command", mpegCommand);
                     log.info("启动流失败: {}", res);
                     return ResponseEntity.status(500).body(res);
                 }
-                FFmpegFrameGrabberWrap fFmpegFrameGrabberWrap = new FFmpegFrameGrabberWrap(id, rtspUrl);
-                fFmpegFrameGrabberWrap.startIfNotRunning();
+                FFmpegFrameGrabberWrap fFmpegFrameGrabberWrap = new FFmpegFrameGrabberWrap(id, rtspUrl, mpegCommand);
+
                 cameraServeice.activeStreams1.put(cameraId + "-" + channel, fFmpegFrameGrabberWrap);
             } else {
                 id = cameraServeice.activeStreams1.get(cameraId + "-" + channel).getId();
+                rtspUrl = cameraServeice.activeStreams1.get(cameraId + "-" + channel).getRtspUrl();
+                mpegCommand = cameraServeice.activeStreams1.get(cameraId + "-" + channel).getMpegCommand();
             }
 
             Map<String, Object> res = new HashMap<>();
             res.put("success", true);
             res.put("id", id);
             res.put("message", "流启动成功");
+            res.put("rtspUrl", rtspUrl);
+            res.put("mpeg-command", mpegCommand);
             log.info("启动流成功: {}", res);
             return ResponseEntity.ok(res);
         } catch (Exception e) {
