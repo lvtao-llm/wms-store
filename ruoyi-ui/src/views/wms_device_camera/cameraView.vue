@@ -1,15 +1,27 @@
 <template>
   <div>
     <el-dialog
-      :title="name+'摄像头实时画面'"
+      :title="name + '摄像头实时画面'"
       :visible.sync="dialogVisible"
       width="1200px"
       :before-close="handleClose"
       append-to-body
     >
-      <div style="display: flex; gap: 20px;">
-        <video ref="video_left" autoplay controls muted style="width: 50%; height: 400px;"></video>
-        <video ref="video_right" autoplay controls muted style="width: 50%; height: 400px;"></video>
+      <div style="display: flex; gap: 20px">
+        <video
+          ref="video_left"
+          autoplay
+          controls
+          muted
+          style="width: 50%; height: 400px"
+        ></video>
+        <video
+          ref="video_right"
+          autoplay
+          controls
+          muted
+          style="width: 50%; height: 400px"
+        ></video>
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="closeDialog">关闭</el-button>
@@ -19,8 +31,8 @@
 </template>
 
 <script>
-import flvjs from 'flv.js';
-import {streamStart} from "@/api/system/wms_camera";
+import flvjs from "flv.js";
+import { streamStart } from "@/api/system/wms_camera";
 
 export default {
   props: ["name"],
@@ -28,22 +40,22 @@ export default {
     return {
       dialogVisible: false,
       deviceId: null,
-      players: []
+      players: [],
     };
   },
   mounted() {
     this.players = [
       {
         channel: 1,
-        tag: 'video_left',
+        tag: "video_left",
         player: null,
       },
       {
         channel: 2,
-        tag: 'video_right',
+        tag: "video_right",
         player: null,
-      }
-    ]
+      },
+    ];
   },
   methods: {
     openCamera(device) {
@@ -51,7 +63,7 @@ export default {
       this.dialogVisible = true;
       this.$nextTick(() => {
         if (flvjs.isSupported()) {
-          this.players.forEach(p => {
+          this.players.forEach((p) => {
             // 先销毁旧播放器
             if (p.player) {
               try {
@@ -59,34 +71,37 @@ export default {
                 p.player.detachMediaElement();
                 p.player.destroy();
               } catch (e) {
-                console.warn('销毁旧播放器出错:', e);
+                console.warn("销毁旧播放器出错:", e);
               }
               p.player = null;
             }
 
             // 启动摄像头流
             streamStart(this.deviceId, p.channel)
-              .then(response => {
+              .then((response) => {
                 if (!response.success) {
                   console.error("启动摄像头流失败:", response.message);
                   return;
                 }
 
-                const flv = flvjs.createPlayer({
-                  type: 'flv',
-                  isLive: true,
-                  url: `ws://${window.location.host}${process.env.VUE_APP_BASE_API}/api/camera/ws/${response.id}`
-                }, {
-                  enableWorker: false,
-                  enableStashBuffer: false,
-                  stashInitialSize: 128,
-                  connectionTimeout: 1000000,
-                  keepAliveTimeout: 3000000
-                });
+                const flv = flvjs.createPlayer(
+                  {
+                    type: "flv",
+                    isLive: true,
+                    url: `ws://10.63.228.90:10030/api/camera/ws/${response.id}`,
+                  },
+                  {
+                    enableWorker: false,
+                    enableStashBuffer: false,
+                    stashInitialSize: 128,
+                    connectionTimeout: 1000000,
+                    keepAliveTimeout: 3000000,
+                  }
+                );
 
                 flv.attachMediaElement(this.$refs[p.tag]);
                 flv.load();
-                flv.play().catch(e => console.warn("play error", e));
+                flv.play().catch((e) => console.warn("play error", e));
 
                 flv.on(flvjs.Events.ERROR, (err) => {
                   console.error("FLV播放器错误", err);
@@ -94,19 +109,19 @@ export default {
 
                 p.player = flv;
               })
-              .catch(err => {
+              .catch((err) => {
                 console.error("启动摄像头流异常:", err);
               });
-          })
+          });
         }
-      })
+      });
     },
     closeDialog() {
       this.dialogVisible = false;
-      this.closePlayers()
+      this.closePlayers();
     },
     closePlayers() {
-      this.players.forEach(p => {
+      this.players.forEach((p) => {
         if (p.player) {
           try {
             p.player.unload();
@@ -117,15 +132,15 @@ export default {
           }
           p.player = null;
         }
-      })
+      });
     },
     handleClose(done) {
       this.closeDialog();
       done();
-    }
+    },
   },
   beforeDestroy() {
-    this.closePlayers()
-  }
-}
+    this.closePlayers();
+  },
+};
 </script>

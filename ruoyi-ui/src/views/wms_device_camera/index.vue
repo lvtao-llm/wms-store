@@ -172,6 +172,12 @@
         <el-form-item label="序号SN" prop="serialNumber">
           <el-input v-model="form.serialNumber" placeholder="请输入序号SN" />
         </el-form-item>
+        <el-form-item label="经度" prop="longitude">
+          <el-input v-model="form.longitude" placeholder="请输入摄像头经度" />
+        </el-form-item>
+        <el-form-item label="纬度" prop="latitude">
+          <el-input v-model="form.latitude" placeholder="请输入摄像头纬度" />
+        </el-form-item>
         <el-form-item label="摄像头1 IP地址" prop="serialNumber">
           <el-input v-model="info.ip1" placeholder="请输入序号SN" />
         </el-form-item>
@@ -224,7 +230,7 @@ import {
   addWms_device,
   updateWms_device,
 } from "@/api/system/wms_device";
-import maps from "./childView/map.vue";
+import maps from "../wms_area/childView/detail3d";
 import CameraView from "./cameraView.vue";
 
 export default {
@@ -437,12 +443,13 @@ export default {
       );
     },
     handlePosition(row) {
-      this.reset();
-      const id = row.id || this.ids;
-      getWms_device(id).then((response) => {
-        this.form = response.data;
-        this.$refs.maps.openDia(row);
-      });
+      // this.reset();
+      // const id = row.id || this.ids;
+      // getWms_device(id).then((response) => {
+      //   this.form = response.data;
+      //   this.$refs.maps.openDia(row);
+      // });
+      this.$refs.maps.openDia(row, "摄像头", row.id);
     },
     savePoints(row) {
       this.form.altitude = row.altitude;

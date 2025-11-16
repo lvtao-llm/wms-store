@@ -96,8 +96,8 @@ export default {
       title: process.env.VUE_APP_TITLE,
       codeUrl: "",
       loginForm: {
-        username: "admin",
-        password: "admin123",
+        username: "",
+        password: "",
         rememberMe: false,
         code: "",
         uuid: "",
@@ -173,8 +173,8 @@ export default {
           this.$store
             .dispatch("Login", this.loginForm)
             .then(() => {
-              // window.open("http://10.63.228.90:10032", "_self");
-              this.$router.push({ path: this.redirect || "/" }).catch(() => {});
+              window.open("http://10.63.228.90:10032", "_self");
+              // this.$router.push({ path: this.redirect || "/" }).catch(() => {});
             })
             .catch(() => {
               this.loading = false;
