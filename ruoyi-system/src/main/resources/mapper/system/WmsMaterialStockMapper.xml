@@ -22,31 +22,32 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="squadron"    column="squadron"    />
         <result property="team"    column="team"    />
         <result property="company"    column="company"    />
+        <result property="areaCodes"    column="area_codes"    />
     </resultMap>
 
     <sql id="selectWmsMaterialStockVo">
-        select inventory_id, wzbm, actual_weight, status, remark, wzmc, jldw, warehouse, book_weight, pzmc, variety_name, wzlb, reserved_weight, available_weight, squadron, team, company from wms_material_stock
+        select inventory_id, wzbm, actual_weight, status, remark, wzmc, jldw, warehouse, book_weight, pzmc, wzlb, reserved_weight, available_weight, squadron, team, company from wms_material_stock
     </sql>
 
     <select id="selectWmsMaterialStockList" parameterType="WmsMaterialStock" resultMap="WmsMaterialStockResult">
-        <include refid="selectWmsMaterialStockVo"/>
+        select a.inventory_id, a.wzbm, a.actual_weight, a.status, a.remark, a.wzmc, a.jldw, a.warehouse, a.book_weight, a.pzmc, a.wzlb, a.reserved_weight, a.available_weight, a.squadron, a.team, a.company, b.area_codes from wms_material_stock a left join wms_material_desc b on a.wzmc = b.wzmc
         <where>
-            <if test="inventoryId != null  and inventoryId != ''"> and inventory_id = #{inventoryId}</if>
-            <if test="wzbm != null  and wzbm != ''"> and wzbm = #{wzbm}</if>
-            <if test="actualWeight != null "> and actual_weight = #{actualWeight}</if>
-            <if test="status != null  and status != ''"> and status = #{status}</if>
-            <if test="wzmc != null  and wzmc != ''"> and wzmc like concat('%', #{wzmc}, '%')</if>
-            <if test="jldw != null  and jldw != ''"> and jldw = #{jldw}</if>
-            <if test="warehouse != null  and warehouse != ''"> and warehouse = #{warehouse}</if>
-            <if test="bookWeight != null "> and book_weight = #{bookWeight}</if>
-            <if test="varietyCode != null  and varietyCode != ''"> and variety_code = #{varietyCode}</if>
-            <if test="pzmc != null  and pzmc != ''"> and pzmc like concat('%', #{pzmc}, '%')</if>
-            <if test="wzlb != null  and wzlb != ''"> and wzlb = #{wzlb}</if>
-            <if test="reservedWeight != null "> and reserved_weight = #{reservedWeight}</if>
-            <if test="availableWeight != null "> and available_weight = #{availableWeight}</if>
-            <if test="squadron != null  and squadron != ''"> and squadron = #{squadron}</if>
-            <if test="team != null  and team != ''"> and team = #{team}</if>
-            <if test="company != null  and company != ''"> and company = #{company}</if>
+            <if test="inventoryId != null  and inventoryId != ''"> and a.inventory_id = #{inventoryId}</if>
+            <if test="wzbm != null  and wzbm != ''"> and a.wzbm = #{wzbm}</if>
+            <if test="actualWeight != null "> and a.actual_weight = #{actualWeight}</if>
+            <if test="status != null  and status != ''"> and a.status = #{status}</if>
+            <if test="wzmc != null  and wzmc != ''"> and a.wzmc like concat('%', #{wzmc}, '%')</if>
+            <if test="jldw != null  and jldw != ''"> and a.jldw = #{jldw}</if>
+            <if test="warehouse != null  and warehouse != ''"> and a.warehouse = #{warehouse}</if>
+            <if test="bookWeight != null "> and a.book_weight = #{bookWeight}</if>
+            <if test="varietyCode != null  and varietyCode != ''"> and a.variety_code = #{varietyCode}</if>
+            <if test="pzmc != null  and pzmc != ''"> and a.pzmc like concat('%', #{pzmc}, '%')</if>
+            <if test="wzlb != null  and wzlb != ''"> and a.wzlb = #{wzlb}</if>
+            <if test="reservedWeight != null "> and a.reserved_weight = #{reservedWeight}</if>
+            <if test="availableWeight != null "> and a.available_weight = #{availableWeight}</if>
+            <if test="squadron != null  and squadron != ''"> and a.squadron = #{squadron}</if>
+            <if test="team != null  and team != ''"> and a.team = #{team}</if>
+            <if test="company != null  and company != ''"> and a.company = #{company}</if>
         </where>
     </select>
 

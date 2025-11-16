@@ -22,10 +22,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="gatepassDwellTime"    column="gatepass_dwell_time"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
+        <result property="material"    column="material"    />
     </resultMap>
 
     <sql id="selectWmsVehicleGatepassVo">
-        select gatepass_id, vehicle_id, gatepass_appointment_time, area_codes, card_record_id, card_id, vehicle_driver_name, vehicle_driver_phone, actuals, plans, gatepass_gate_in_time, gatepass_gate_in_photo, gatepass_gate_out_time, gatepass_gate_out_photo, gatepass_dwell_time, create_by, create_time from wms_vehicle_gatepass
+        select gatepass_id, vehicle_id, gatepass_appointment_time, area_codes, card_record_id, card_id, vehicle_driver_name, vehicle_driver_phone, actuals, plans, gatepass_gate_in_time, gatepass_gate_in_photo, gatepass_gate_out_time, gatepass_gate_out_photo, gatepass_dwell_time, create_by, create_time, material from wms_vehicle_gatepass
     </sql>
 
     <select id="selectWmsVehicleGatepassList" parameterType="WmsVehicleGatepass" resultMap="WmsVehicleGatepassResult">
@@ -72,6 +73,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="gatepassDwellTime != null">gatepass_dwell_time,</if>
             <if test="createBy != null">create_by,</if>
             <if test="createTime != null">create_time,</if>
+            <if test="material != null">material</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="vehicleId != null">#{vehicleId},</if>
@@ -90,6 +92,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="gatepassDwellTime != null">#{gatepassDwellTime},</if>
             <if test="createBy != null">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
+            <if test="material != null">#{material},</if>
          </trim>
     </insert>
 
@@ -112,6 +115,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="gatepassDwellTime != null">gatepass_dwell_time = #{gatepassDwellTime},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="material != null">material = #{material},</if>
         </trim>
         where gatepass_id = #{gatepassId}
     </update>

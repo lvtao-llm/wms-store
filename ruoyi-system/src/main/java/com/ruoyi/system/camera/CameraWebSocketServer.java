@@ -47,7 +47,7 @@ public class CameraWebSocketServer {
                         List<String> key = new ArrayList<>();
                         for (Map.Entry<String, FFmpegFrameGrabberWrap> entry : entries) {
                             long duration = Duration.between(time, entry.getValue().getTime()).abs().getSeconds();
-                            if (duration > 1000) {
+                            if (duration > 100) {
                                 log.info("关闭不活跃的连接:{}({})", entry.getKey(), entry.getValue().getId());
                                 entry.getValue().stop();
                                 key.add(entry.getKey());
@@ -77,12 +77,15 @@ public class CameraWebSocketServer {
     }
 
     @OnOpen
-    public void onOpen(Session session, @PathParam("id") String id) {
+    public void onOpen(Session session, @PathParam("id") String id) throws IOException {
         log.info("打开连接:{}", id);
         Set<Map.Entry<String, FFmpegFrameGrabberWrap>> entries = cameraServeice.activeStreams1.entrySet();
         for (Map.Entry<String, FFmpegFrameGrabberWrap> entry : entries) {
             if (entry.getValue().getId().equals(id)) {
                 entry.getValue().getSessions().add(session);
+                if(entry.getValue().getSessions().size()==1){
+                    entry.getValue().startIfNotRunning();
+                }
             }
         }
     }

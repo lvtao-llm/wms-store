@@ -1,7 +1,13 @@
 package com.ruoyi.system.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.system.domain.WmsArea;
+import com.ruoyi.system.domain.WmsMaterialDesc;
+import com.ruoyi.system.service.IWmsAreaService;
+import com.ruoyi.system.service.IWmsMaterialDescService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,24 +29,25 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 库存视图Controller
- * 
+ *
  * @author ruoyi
  * @date 2025-11-08
  */
 @RestController
 @RequestMapping("/system/wms_material_stock")
-public class WmsMaterialStockController extends BaseController
-{
+public class WmsMaterialStockController extends BaseController {
     @Autowired
     private IWmsMaterialStockService wmsMaterialStockService;
+
+
 
     /**
      * 查询库存视图列表
      */
     @PreAuthorize("@ss.hasPermi('system:wms_material_stock:list')")
     @GetMapping("/list")
-    public TableDataInfo list(WmsMaterialStock wmsMaterialStock)
-    {
+    public TableDataInfo list(WmsMaterialStock wmsMaterialStock) {
+
         startPage();
         List<WmsMaterialStock> list = wmsMaterialStockService.selectWmsMaterialStockList(wmsMaterialStock);
         return getDataTable(list);
@@ -52,8 +59,7 @@ public class WmsMaterialStockController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_material_stock:export')")
     @Log(title = "库存视图", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, WmsMaterialStock wmsMaterialStock)
-    {
+    public void export(HttpServletResponse response, WmsMaterialStock wmsMaterialStock) {
         List<WmsMaterialStock> list = wmsMaterialStockService.selectWmsMaterialStockList(wmsMaterialStock);
         ExcelUtil<WmsMaterialStock> util = new ExcelUtil<WmsMaterialStock>(WmsMaterialStock.class);
         util.exportExcel(response, list, "库存视图数据");
@@ -64,8 +70,7 @@ public class WmsMaterialStockController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('system:wms_material_stock:query')")
     @GetMapping(value = "/{inventoryId}")
-    public AjaxResult getInfo(@PathVariable("inventoryId") String inventoryId)
-    {
+    public AjaxResult getInfo(@PathVariable("inventoryId") String inventoryId) {
         return success(wmsMaterialStockService.selectWmsMaterialStockByInventoryId(inventoryId));
     }
 
@@ -75,8 +80,7 @@ public class WmsMaterialStockController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_material_stock:add')")
     @Log(title = "库存视图", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody WmsMaterialStock wmsMaterialStock)
-    {
+    public AjaxResult add(@RequestBody WmsMaterialStock wmsMaterialStock) {
         return toAjax(wmsMaterialStockService.insertWmsMaterialStock(wmsMaterialStock));
     }
 
@@ -86,8 +90,7 @@ public class WmsMaterialStockController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_material_stock:edit')")
     @Log(title = "库存视图", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody WmsMaterialStock wmsMaterialStock)
-    {
+    public AjaxResult edit(@RequestBody WmsMaterialStock wmsMaterialStock) {
         return toAjax(wmsMaterialStockService.updateWmsMaterialStock(wmsMaterialStock));
     }
 
@@ -96,9 +99,8 @@ public class WmsMaterialStockController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('system:wms_material_stock:remove')")
     @Log(title = "库存视图", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{inventoryIds}")
-    public AjaxResult remove(@PathVariable String[] inventoryIds)
-    {
+    @DeleteMapping("/{inventoryIds}")
+    public AjaxResult remove(@PathVariable String[] inventoryIds) {
         return toAjax(wmsMaterialStockService.deleteWmsMaterialStockByInventoryIds(inventoryIds));
     }
 }

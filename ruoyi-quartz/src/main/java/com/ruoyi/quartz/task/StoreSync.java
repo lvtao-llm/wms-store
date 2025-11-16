@@ -40,4 +40,14 @@ public class StoreSync {
             throw new RuntimeException(e);
         }
     }
+
+    public void YyData(){
+        StoreDataSync bean = SpringUtils.getBean(StoreDataSync.class);
+        try {
+            bean.syncYYData();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
 }

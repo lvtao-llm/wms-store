@@ -1,6 +1,7 @@
 package com.ruoyi.framework.websocket;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -134,6 +135,9 @@ public class WebSocketServer {
     @Autowired
     private IWmsMaterialStockService wmsMaterialStockService;
 
+    @Autowired
+    private ILanyaCorePersonService lanyaCorePersonService;
+
     /**
      * 时间格式 年月日
      */
@@ -242,6 +246,7 @@ public class WebSocketServer {
             }
             clientSessions.put(requestId, session);
 
+
             // 首次连接时向客户端发送消息
 
             // 设备服务
@@ -270,7 +275,6 @@ public class WebSocketServer {
 
             // 向当前连接发送初始数据
             session.getAsyncRemote().sendText(json);
-
         } catch (Exception e) {
             LOGGER.error("连接异常:", e);
         }
@@ -320,9 +324,9 @@ public class WebSocketServer {
             {
                 put("msgType", "vehicleAlarm");
                 put("rules", new ArrayList<WmsVehicleAlarmRule>() {{
-                    add(new WmsVehicleAlarmRule("未授权进入", 22.6, 10));
-                    add(new WmsVehicleAlarmRule("未预约进入", 22.6, 10));
-                    add(new WmsVehicleAlarmRule("轨迹异常", 22.6, 10));
+                    add(new WmsVehicleAlarmRule("未授权进入", 0, 1));
+                    add(new WmsVehicleAlarmRule("未预约进入", 0, 1));
+                    add(new WmsVehicleAlarmRule("轨迹异常", 0, 1));
                 }});
             }
         };
@@ -355,6 +359,7 @@ public class WebSocketServer {
      */
     @Scheduled(cron = "${wms.ws-data.material-statics:0/10 * * * * ?}")
     public void materialStaticsData() {
+
         // 使用异步发送替代阻塞发送
         WmsMaterialStaticsDay wmsMaterialStaticsDay = new WmsMaterialStaticsDay();
         Calendar calendar = Calendar.getInstance();
@@ -380,7 +385,7 @@ public class WebSocketServer {
             materialLogDataItem.put("areaName", d.getAreaCodes());
             materialLogData.add(materialLogDataItem);
         }
-        messageQueue.add(materialLog.toString());
+//        messageQueue.add(materialLog.toString());
     }
 
     /**
@@ -470,7 +475,8 @@ public class WebSocketServer {
             materialLogDataItem.put("materialCode", d.getWzbm());
             materialLogDataItem.put("materialType", d.getWzlb());
             materialLogDataItem.put("stock", d.getBookWeight());
-            materialLogDataItem.put("areaName", d.getAreaCodes());
+            materialLogDataItem.put("areaNames", d.getAreaNames());
+            materialLogDataItem.put("areaCodes", d.getAreaCodes());
             materialLogData.add(materialLogDataItem);
         }
         messageQueue.add(materialLog.toString());
@@ -495,7 +501,7 @@ public class WebSocketServer {
             areaLogDataItem.put("sort", i);
             areaLogDataItem.put("areaCode", a.getAreaCode());
             areaLogDataItem.put("areaType", a.getAreaType());
-            areaLogDataItem.put("personCount", a.getPersonCount());
+            areaLogDataItem.put("personCount", a.getStuffCount());
             areaLogDataItem.put("vehicleCount", a.getVehicleCount());
             areaLogDataItem.put("areaName", a.getAreaName());
             areaLogData.add(areaLogDataItem);
@@ -573,6 +579,17 @@ public class WebSocketServer {
             return;
         }
 
+        DecimalFormat df = new DecimalFormat("#.##");
+        List<LanyaCorePerson> lanyaCorePeople = lanyaCorePersonService.selectLanyaCorePersonList(new LanyaCorePerson());
+        Map<Long, WmsArea> wmsAreas = wmsAreaService.getAreaMap();
+        int staffCount = 0;
+        int visitorCount = 0;
+        for (Map.Entry<Long, WmsArea> entry : wmsAreas.entrySet()) {
+            WmsArea a = entry.getValue();
+            staffCount += a.getStuffCount();
+            visitorCount += a.getVisitorCount();
+        }
+
         // 创建所需的JSONObject
         JSONObject locationData = new JSONObject();
         locationData.put("msgType", "currentPersonLocation");
@@ -582,27 +599,19 @@ public class WebSocketServer {
         // 创建personTypeStatistics数组
         JSONArray personTypeStats = new JSONArray();
 
-        // 添加contractor类型统计
-        JSONObject contractorStat = new JSONObject();
-        contractorStat.put("count", 0);
-        contractorStat.put("personType", "contractor");
-        contractorStat.put("personTypeName", "承包商");
-        contractorStat.put("ratio", 0);
-        personTypeStats.add(contractorStat);
-
         // 添加staff类型统计
         JSONObject staffStat = new JSONObject();
-        staffStat.put("count", 0);
+        staffStat.put("count", staffCount);
         staffStat.put("personType", "staff");
-        staffStat.put("personTypeName", "员工");
-        staffStat.put("ratio", 0);
+        staffStat.put("personTypeName", "内部员工");
+        staffStat.put("ratio", df.format(staffCount / lanyaCorePeople.size()));
         personTypeStats.add(staffStat);
 
         // 添加visitor类型统计
         JSONObject visitorStat = new JSONObject();
-        visitorStat.put("count", 0);
+        visitorStat.put("count", visitorCount);
         visitorStat.put("personType", "visitor");
-        visitorStat.put("personTypeName", "访客");
+        visitorStat.put("personTypeName", "临时访客");
         visitorStat.put("ratio", 0);
         personTypeStats.add(visitorStat);
 
