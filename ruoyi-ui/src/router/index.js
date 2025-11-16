@@ -361,8 +361,14 @@ export const dynamicRoutes = [
       {
         path: 'activity-manage',
         component: () => import('@/views/activity_tracking/index'),
-        name: '行动轨迹查询',
-        meta: { title: '行动轨迹查询' }
+        name: '行动轨迹(模型)',
+        meta: { title: '行动轨迹(模型)' }
+      },
+      {
+        path: 'activity-manage1',
+        component: () => import('@/views/activity_tracking/index1'),
+        name: '行动轨迹(地图)',
+        meta: { title: '行动轨迹(地图)' }
       },
     ]
   },

@@ -137,9 +137,12 @@
       </el-table-column>
       <el-table-column label="全景" align="center" prop="photo360">
         <template slot-scope="scope">
-          <div v-if="scope.row.photo360">
-            <image-preview
-              :src="scope.row.photo360"
+          <div
+            @click="handlePanorama(scope.row.photo360)"
+            v-if="scope.row.photo360"
+          >
+            <img
+              :src="baseUrl + scope.row.photo360"
               :width="50"
               :height="50"
               style="margin-right: 5px; margin-bottom: 5px"
@@ -228,7 +231,7 @@
           <image-upload v-model="form.photos" />
         </el-form-item>
         <el-form-item label="全景照片" prop="photo360">
-          <image-upload v-model="form.photo360" :limit="1" />
+          <image-upload :fileSize="30" v-model="form.photo360" :limit="1" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -238,11 +241,13 @@
     </el-dialog>
 
     <mapDetail ref="maps"></mapDetail>
+    <panorama ref="panorama"></panorama>
   </div>
 </template>
 
 <script>
-import mapDetail from "./childView/map.vue";
+import panorama from "@/components/Panorama/index";
+import mapDetail from "./childView/detail3d.vue";
 import {
   listArea,
   getArea,
@@ -255,6 +260,7 @@ export default {
   name: "Area",
   components: {
     mapDetail,
+    panorama,
   },
   data() {
     return {
@@ -302,6 +308,7 @@ export default {
           { required: true, message: "区域类型不能为空", trigger: "blur" },
         ],
       },
+      baseUrl: process.env.VUE_APP_BASE_API,
     };
   },
   created() {
@@ -347,6 +354,9 @@ export default {
         photo360: null,
       };
       this.resetForm("form");
+    },
+    handlePanorama(src) {
+      this.$refs.panorama.openDia(src);
     },
     /** 搜索按钮操作 */
     handleQuery() {
@@ -402,7 +412,7 @@ export default {
     },
     handleAreaPolygon(row) {
       //TODO 弹出层中绘制多边形及颜色
-      this.$refs.maps.openDia(row);
+      this.$refs.maps.openDia(row, "风险区域", row.areaId);
     },
     handleAreaPolygonAll(row) {
       //TODO 弹出层中绘制多边形及颜色

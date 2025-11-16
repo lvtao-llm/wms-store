@@ -126,7 +126,7 @@
 
 <script>
 import { personInOutRecordPage } from "@/api/lanya_transfer";
-import mapDetail from "./childView/map.vue";
+import mapDetail from "../wms_area/childView/detail3d";
 export default {
   name: "Lanya_device_card_sender_log",
   components: {
@@ -210,8 +210,13 @@ export default {
     },
 
     handleUpdate(row) {
-      console.log(this.$refs.maps, 123);
-      this.$refs.maps.handleSelectChange(row);
+      this.$refs.maps.openDia(
+        row,
+        "人员",
+        row.personId,
+        row.sendCardTime,
+        row.returnCardTime
+      );
     },
     // 取消按钮
     cancel() {

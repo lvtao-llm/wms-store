@@ -274,7 +274,7 @@ import {
   addWms_inspection_rule,
   updateWms_inspection_rule,
 } from "@/api/system/wms_inspection_rule";
-import maps from "./childView/map.vue";
+import maps from "../wms_area/childView/detail3d";
 import {
   listRole,
   getRole,
@@ -483,14 +483,15 @@ export default {
     },
     /** 修改巡检点 */
     handleUpdateInspection(row) {
-      this.reset();
-      const id = row.id || this.ids;
-      getWms_inspection_rule(id).then((response) => {
-        this.form = response.data;
-        //TODO 打开巡检点的地图标注窗体标注巡检点
-        //巡检点数据格式:{"巡检顺序的序号":{经纬度坐标， 巡检点半径}}
-        this.$refs.maps.openDia(this.form);
-      });
+      // this.reset();
+      // const id = row.id || this.ids;
+      // getWms_inspection_rule(id).then((response) => {
+      //   this.form = response.data;
+      //   //TODO 打开巡检点的地图标注窗体标注巡检点
+      //   //巡检点数据格式:{"巡检顺序的序号":{经纬度坐标， 巡检点半径}}
+
+      // });
+      this.$refs.maps.openDia(row, "巡检点", row.id);
     },
     savePoints(data) {
       // 更新巡检点 -----------------------------

@@ -151,7 +151,8 @@ export default {
       this.$nextTick(() => {
         setTimeout(() => {
           if (this.map) {
-            if (row.longitude && row.latitude && row.altitude) {
+            console.log(row);
+            if (row.longitude && row.latitude) {
               this.savedPointGroups = [
                 {
                   points: [{ lat: row.latitude, lng: row.longitude }],
@@ -443,6 +444,7 @@ export default {
 
     close() {
       this.show = false;
+      this.clearAll();
     },
     // 清除所有标记
     clearAll() {

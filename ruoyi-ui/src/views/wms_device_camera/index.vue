@@ -22,13 +22,11 @@
           icon="el-icon-search"
           size="mini"
           @click="handleQuery"
-        >搜索
-        </el-button
-        >
+          >搜索
+        </el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
-        >重置
-        </el-button
-        >
+          >重置
+        </el-button>
       </el-form-item>
     </el-form>
 
@@ -41,9 +39,8 @@
           size="mini"
           @click="handleAdd"
           v-hasPermi="['system:wms_device:add']"
-        >新增
-        </el-button
-        >
+          >新增
+        </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -54,9 +51,8 @@
           :disabled="single"
           @click="handleUpdate"
           v-hasPermi="['system:wms_device:edit']"
-        >修改
-        </el-button
-        >
+          >修改
+        </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -67,9 +63,8 @@
           :disabled="multiple"
           @click="handleDelete"
           v-hasPermi="['system:wms_device:remove']"
-        >删除
-        </el-button
-        >
+          >删除
+        </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -79,9 +74,8 @@
           size="mini"
           @click="handleExport"
           v-hasPermi="['system:wms_device:export']"
-        >导出
-        </el-button
-        >
+          >导出
+        </el-button>
       </el-col>
       <right-toolbar
         :showSearch.sync="showSearch"
@@ -94,18 +88,18 @@
       :data="wms_deviceList"
       @selection-change="handleSelectionChange"
     >
-      <el-table-column type="selection" width="55" align="center"/>
-      <el-table-column label="设备名称" align="center" prop="deviceName"/>
-      <el-table-column label="序号SN" align="center" prop="serialNumber"/>
+      <el-table-column type="selection" width="55" align="center" />
+      <el-table-column label="设备名称" align="center" prop="deviceName" />
+      <el-table-column label="序号SN" align="center" prop="serialNumber" />
       <el-table-column
         label="设备描述"
         align="center"
         prop="deviceDescription"
       />
-      <el-table-column label="经度" align="center" prop="longitude"/>
-      <el-table-column label="纬度" align="center" prop="latitude"/>
-      <el-table-column label="高度" align="center" prop="altitude"/>
-      <el-table-column label="型号" align="center" prop="model"/>
+      <el-table-column label="经度" align="center" prop="longitude" />
+      <el-table-column label="纬度" align="center" prop="latitude" />
+      <el-table-column label="高度" align="center" prop="altitude" />
+      <el-table-column label="型号" align="center" prop="model" />
       <el-table-column
         label="操作"
         align="center"
@@ -118,7 +112,7 @@
             icon="el-icon-view"
             @click="viewCameraStream(scope.row)"
             v-hasPermi="['system:wms_device:view']"
-          >查看画面
+            >查看画面
           </el-button>
           <el-button
             size="mini"
@@ -126,16 +120,15 @@
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['system:wms_device:edit']"
-          >修改
-          </el-button
-          >
+            >修改
+          </el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-edit"
             @click="handlePosition(scope.row)"
             v-hasPermi="['system:wms_device:edit']"
-          >位置
+            >位置
           </el-button>
           <el-button
             size="mini"
@@ -143,9 +136,8 @@
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['system:wms_device:remove']"
-          >删除
-          </el-button
-          >
+            >删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -162,7 +154,7 @@
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="设备名称" prop="deviceName">
-          <el-input v-model="form.deviceName" placeholder="请输入设备名称"/>
+          <el-input v-model="form.deviceName" placeholder="请输入设备名称" />
         </el-form-item>
         <el-form-item label="设备描述" prop="deviceDescription">
           <el-input
@@ -170,11 +162,17 @@
             placeholder="请输入设备描述"
           />
         </el-form-item>
+        <el-form-item label="经度" prop="longitude">
+          <el-input v-model="form.longitude" placeholder="请输入经度" />
+        </el-form-item>
+        <el-form-item label="纬度" prop="latitude">
+          <el-input v-model="form.latitude" placeholder="请输入纬度" />
+        </el-form-item>
         <el-form-item label="型号" prop="model">
-          <el-input v-model="form.model" placeholder="请输入型号"/>
+          <el-input v-model="form.model" placeholder="请输入型号" />
         </el-form-item>
         <el-form-item label="序号SN" prop="serialNumber">
-          <el-input v-model="form.serialNumber" placeholder="请输入序号SN"/>
+          <el-input v-model="form.serialNumber" placeholder="请输入序号SN" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -198,15 +196,15 @@ import {
   addWms_device,
   updateWms_device,
 } from "@/api/system/wms_device";
-import maps from "./childView/map.vue";
-import CameraView from './cameraView.vue';
+import maps from "../wms_area/childView/detail3d";
+import CameraView from "./cameraView.vue";
 
 export default {
   name: "Wms_device",
   dicts: ["wms_device_type", "wms_deleted"],
   components: {
     maps,
-    CameraView
+    CameraView,
   },
   data() {
     return {
@@ -248,6 +246,7 @@ export default {
       form: {},
       // 表单校验
       rules: {},
+      currentDeviceId: "",
     };
   },
   created() {
@@ -355,8 +354,7 @@ export default {
           this.getList();
           this.$modal.msgSuccess("删除成功");
         })
-        .catch(() => {
-        });
+        .catch(() => {});
     },
     /** 导出按钮操作 */
     handleExport() {
@@ -369,12 +367,13 @@ export default {
       );
     },
     handlePosition(row) {
-      this.reset();
-      const id = row.id || this.ids;
-      getWms_device(id).then((response) => {
-        this.form = response.data;
-        this.$refs.maps.openDia(row);
-      });
+      this.$refs.maps.openDia(row, "摄像头", row.id);
+      // this.reset();
+      // const id = row.id || this.ids;
+      // getWms_device(id).then((response) => {
+      //   this.form = response.data;
+
+      // });
     },
     savePoints(row) {
       this.form.altitude = row.altitude;
@@ -391,11 +390,11 @@ export default {
 
       // 构造摄像头连接参数（实际应从数据库或API获取）
       const cameraInfo = {
-        ip: '192.168.1.64', // 摄像头IP地址
-        port: '554',        // RTSP端口
-        username: 'admin',  // 用户名
-        password: '12345',  // 密码
-        channel: '101'      // 通道号
+        ip: "192.168.1.64", // 摄像头IP地址
+        port: "554", // RTSP端口
+        username: "admin", // 用户名
+        password: "12345", // 密码
+        channel: "101", // 通道号
       };
 
       // 打开摄像头画面弹窗
