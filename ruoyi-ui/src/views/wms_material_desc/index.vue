@@ -1,7 +1,5 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="物料编码" prop="wzbm">
     <el-form
       :model="queryParams"
       ref="queryForm"
@@ -65,7 +63,7 @@
           size="mini"
           @click="handleAdd"
           v-hasPermi="['system:wms_material_desc:add']"
-        >新增
+          >新增
         </el-button>
       </el-col>
       <el-col :span="1.5">
@@ -77,7 +75,7 @@
           :disabled="single"
           @click="handleUpdate"
           v-hasPermi="['system:wms_material_desc:edit']"
-        >修改
+          >修改
         </el-button>
       </el-col>
       <el-col :span="1.5">
@@ -89,7 +87,7 @@
           :disabled="multiple"
           @click="handleDelete"
           v-hasPermi="['system:wms_material_desc:remove']"
-        >删除
+          >删除
         </el-button>
       </el-col>
       <el-col :span="1.5">
@@ -100,7 +98,7 @@
           size="mini"
           @click="handleExport"
           v-hasPermi="['system:wms_material_desc:export']"
-        >导出
+          >导出
         </el-button>
       </el-col>
       <right-toolbar
@@ -109,12 +107,16 @@
       ></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="wms_material_descList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center"/>
-      <el-table-column label="物料编码" align="center" prop="wzbm"/>
-      <el-table-column label="物料名称" align="center" prop="wzmc"/>
-      <el-table-column label="规格" align="center" prop="pzmc"/>
-      <el-table-column label="型号" align="center" prop="wzlb"/>
+    <el-table
+      v-loading="loading"
+      :data="wms_material_descList"
+      @selection-change="handleSelectionChange"
+    >
+      <el-table-column type="selection" width="55" align="center" />
+      <el-table-column label="物料编码" align="center" prop="wzbm" />
+      <el-table-column label="物料名称" align="center" prop="wzmc" />
+      <el-table-column label="规格" align="center" prop="pzmc" />
+      <el-table-column label="型号" align="center" prop="wzlb" />
       <el-table-column label="存放区域" align="center" prop="areaCodes">
         <template slot-scope="scope">
           <dict-tag
@@ -136,7 +138,7 @@
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['system:wms_material_desc:edit']"
-          >修改
+            >修改
           </el-button>
           <el-button
             size="mini"
@@ -144,7 +146,7 @@
             icon="el-icon-edit"
             @click="handleKeyPoints(scope.row)"
             v-hasPermi="['system:wms_material_desc:edit']"
-          >关键点位
+            >关键点位
           </el-button>
           <el-button
             size="mini"
@@ -152,14 +154,14 @@
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['system:wms_material_desc:remove']"
-          >删除
+            >删除
           </el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <pagination
-      v-show="total>0"
+      v-show="total > 0"
       :total="total"
       :page.sync="queryParams.pageNum"
       :limit.sync="queryParams.pageSize"
@@ -170,16 +172,16 @@
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="120px">
         <el-form-item label="物料编码" prop="wzbm">
-          <el-input v-model="form.wzbm" placeholder="请输入物料编码"/>
+          <el-input v-model="form.wzbm" placeholder="请输入物料编码" />
         </el-form-item>
         <el-form-item label="物料名称" prop="wzmc">
-          <el-input v-model="form.wzmc" placeholder="请输入物料名称"/>
+          <el-input v-model="form.wzmc" placeholder="请输入物料名称" />
         </el-form-item>
         <el-form-item label="规格" prop="pzmc">
-          <el-input v-model="form.pzmc" placeholder="请输入规格"/>
+          <el-input v-model="form.pzmc" placeholder="请输入规格" />
         </el-form-item>
         <el-form-item label="型号" prop="wzlb">
-          <el-input v-model="form.wzlb" placeholder="请输入型号"/>
+          <el-input v-model="form.wzlb" placeholder="请输入型号" />
         </el-form-item>
         <el-form-item label="存放区域" prop="areaCodes">
           <el-select
