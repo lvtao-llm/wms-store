@@ -12,5 +12,5 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Service
 public class CameraServeice {
-    public final Map<String, FFmpegFrameGrabberWrap> activeStreams1 = new ConcurrentHashMap<>();
+    public final Map<String, FFmpegWrap> activeWrap = new ConcurrentHashMap<>();
 }

@@ -37,6 +37,11 @@ export default {
         channel: 1,
         tag: 'video_left',
         player: null,
+      },
+      {
+        channel: 2,
+        tag: 'video_right',
+        player: null,
       }
     ]
   },
@@ -61,16 +66,16 @@ export default {
 
             // 启动摄像头流
             streamStart(this.deviceId, p.channel)
-              .then(response => {
-                if (!response.success) {
-                  console.error("启动摄像头流失败:", response.message);
+              .then(res => {
+                if (!res.success) {
+                  console.error("启动摄像头流失败:", res.msg);
                   return;
                 }
 
                 const flv = flvjs.createPlayer({
                   type: 'flv',
                   isLive: true,
-                  url: `ws://${window.location.host}${process.env.VUE_APP_BASE_API}/api/camera/ws/${response.id}`
+                  url: `ws://localhost:${res.port}/live/${res.id}`
                 }, {
                   enableWorker: false,
                   enableStashBuffer: false,
