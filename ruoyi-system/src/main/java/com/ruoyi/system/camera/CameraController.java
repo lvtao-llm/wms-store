@@ -3,25 +3,8 @@ package com.ruoyi.system.camera;
 import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.system.domain.WmsDevice;
 import com.ruoyi.system.service.IWmsDeviceService;
-import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.channel.unix.PreferredDirectByteBufAllocator;
-import io.netty.handler.codec.http.HttpObjectAggregator;
-import io.netty.handler.codec.http.HttpRequestDecoder;
-import io.netty.handler.codec.http.HttpResponseEncoder;
-import io.netty.handler.codec.http.cors.CorsConfig;
-import io.netty.handler.codec.http.cors.CorsConfigBuilder;
-import io.netty.handler.codec.http.cors.CorsHandler;
-import io.netty.handler.logging.LogLevel;
-import io.netty.handler.logging.LoggingHandler;
-import io.netty.handler.stream.ChunkedWriteHandler;
-import lombok.extern.slf4j.Slf4j;
-import org.bytedeco.javacpp.Loader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -32,37 +15,47 @@ import javax.annotation.PostConstruct;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import java.net.InetSocketAddress;
-import java.nio.ByteBuffer;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author 吕涛
  * @version 1.0
  * @since 2025/11/11
  */
-@Slf4j
 @RestController
 @RequestMapping("/api/camera")
-public class CameraController implements CommandLineRunner {
+public class CameraController {
 
-//    private static final Logger log = LoggerFactory.getLogger(CameraController.class);
+    private static final Logger log = LoggerFactory.getLogger("camera-stream");
 
     @Autowired
     private IWmsDeviceService wmsDeviceService;
 
     @Autowired
-    private CameraServeice cameraServeice;
+    private CameraService cameraServeice;
 
     @Autowired
     MediaServer mediaServer;
 
-    @Value("${flv.port:10041}")
+    @Value("${media-server.port:10041}")
     private Integer port;
+
+    @Value("${media-server.ffmpeg-command:ffmpeg -rtsp_transport tcp -stimeout 5000000 -max_delay 500000 -use_wallclock_as_timestamps 1 -i \"%s\" -c:v copy -an -f flv}")
+    private String ffmpegCommand;
+
 
     @Value("${server.port:10030}")
     private Integer serverPort;
+
+    private ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
     /**
      * 启动摄像头流
@@ -99,12 +92,12 @@ public class CameraController implements CommandLineRunner {
                         data.getString("channel2")
                 );
             }
-            String[] f = new String[]{"D:\\吕胤希\\wx_camera_1731195787660.mp4", "D:\\吕胤希\\WeChat_20240819093216.mp4"};
-            rtspUrl = f[(int) (Math.random() * 2)];
-
+//            String[] f = new String[]{"D:\\吕胤希\\wx_camera_1731195787660.mp4", "D:\\吕胤希\\WeChat_20240819093216.mp4"};
+//            rtspUrl = f[(int) (Math.random() * 2)];
+//            rtspUrl = "rtsp://admin:Ll112233@192.168.1.64:554/Streaming/Channels/101";
 //                mpegCommand = String.format("ffmpeg -rtsp_transport tcp -max_delay 500000 -use_wallclock_as_timestamps 1 -i " + rtspUrl + " -vf fps=2 -c:v libx264 -f flv ");
 //                mpegCommand = String.format("ffmpeg -rtsp_transport tcp -i %s -c:v copy -an -f flv ", rtspUrl);
-            String mpegCommand = String.format("ffmpeg -stream_loop -1 -re -i %s -c:v libx264 -preset ultrafast -tune zerolatency -g 25 -c:a aac -f flv http://localhost:%s/api/camera/stream/receive/%s", rtspUrl, serverPort, id);
+            String mpegCommand = String.format(ffmpegCommand + " http://localhost:%s/api/camera/stream/receive/%s", rtspUrl, serverPort, id);
 
             FFmpegWrap fFmpegWrap = new FFmpegWrap(id, cameraId + "-" + channel, rtspUrl, mpegCommand);
             cameraServeice.activeWrap.put(id, fFmpegWrap);
@@ -156,44 +149,46 @@ public class CameraController implements CommandLineRunner {
     }
 
 
-    @Override
-    public void run(String... args) throws Exception {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    try {
-                        LocalDateTime time = LocalDateTime.now();
-                        Set<Map.Entry<String, FFmpegWrap>> entries = cameraServeice.activeWrap.entrySet();
-                        List<String> key = new ArrayList<>();
-                        for (Map.Entry<String, FFmpegWrap> entry : entries) {
-                            long duration = Duration.between(time, entry.getValue().getTime()).abs().getSeconds();
-                            if (duration > 100) {
-                                log.info("关闭不活跃的FFmpegWrap:{}({})", entry.getKey(), entry.getValue().getId());
-                                entry.getValue().stop();
-                                key.add(entry.getKey());
-                            }
-                        }
-                        for (String k : key) {
-                            FFmpegWrap remove = cameraServeice.activeWrap.remove(k);
-                            if (remove != null) {
-                                for (Channel s : remove.getSessions()) {
-                                    s.close();
-                                    remove.getSessions().remove(s);
-                                }
-                                remove.stop();
-                            }
-                        }
-                        Thread.sleep(1000); // 使
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+    @PostConstruct
+    public void run() {
+        scheduler.scheduleAtFixedRate(this::checkInactiveWraps, 0, 1, TimeUnit.SECONDS);
+        // 改为使用scheduler执行一次
+        scheduler.schedule(() -> {
+            try {
+                InetSocketAddress socketAddress = new InetSocketAddress(port);
+                mediaServer.start(socketAddress);
+            } catch (Exception e) {
+                log.error("媒体服务器启动失败: {}", e.getMessage());
+            }
+        }, 0, TimeUnit.SECONDS);
+    }
+
+    private void checkInactiveWraps() {
+        try {
+            LocalDateTime time = LocalDateTime.now();
+            Set<Map.Entry<String, FFmpegWrap>> entries = cameraServeice.activeWrap.entrySet();
+            List<String> key = new ArrayList<>();
+            for (Map.Entry<String, FFmpegWrap> entry : entries) {
+                long duration = Duration.between(time, entry.getValue().getTime()).abs().getSeconds();
+                if (duration > 100) {
+                    log.info("关闭不活跃的ffmpegWrap:{}({})", entry.getKey(), entry.getValue().getId());
+                    entry.getValue().stop();
+                    key.add(entry.getKey());
                 }
             }
-        }).start();
-
-        InetSocketAddress socketAddress = new InetSocketAddress(port);
-        mediaServer.start(socketAddress);
+            for (String k : key) {
+                FFmpegWrap remove = cameraServeice.activeWrap.remove(k);
+                if (remove != null) {
+                    for (Channel s : remove.getSessions()) {
+                        s.close();
+                        remove.getSessions().remove(s);
+                    }
+                    remove.stop();
+                }
+            }
+        } catch (Exception e) {
+            log.error("关闭不活跃的ffmpegWrap失败: {}", e.getMessage());
+        }
     }
 
 

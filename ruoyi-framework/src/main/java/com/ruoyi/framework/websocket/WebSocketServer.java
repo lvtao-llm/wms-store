@@ -46,7 +46,7 @@ public class WebSocketServer {
     /**
      * WebSocketServer 日志控制器
      */
-    private static final Logger LOGGER = LoggerFactory.getLogger(WebSocketServer.class);
+    private static final Logger log = LoggerFactory.getLogger("realtime-data-podcast");
 
     /**
      * 第三方授权
@@ -63,8 +63,8 @@ public class WebSocketServer {
         WebSocketServer.baseUrl = baseUrl;
     }
 
-    @Value("${lanya.enabled-ws:false}")
-    private boolean enabledWs;
+    @Value("${lanya.enabled-lanya-websocket-subscribe:false}")
+    private boolean enabledLanyaWebsocketSubscribe;
 
     @Value("${lanya.forward-url}")
     private String forwardUrl;
@@ -160,9 +160,11 @@ public class WebSocketServer {
         // 启动消息处理线程
         startMessageProcessor();
 
-        if (!enabledWs) {
-            LOGGER.info("WebSocketServer 未启用");
+        if (!enabledLanyaWebsocketSubscribe) {
+            log.info("Lanya WebSocket 订阅未启用");
+            return;
         }
+
         try {
             // 三方接口
             thirdPartyAuth = SpringUtils.getBean(ThirdPartyAuth.class);
@@ -180,10 +182,9 @@ public class WebSocketServer {
             thirdWebSocketClient.doHandshake(new ThirdWebSocketHandler(messageQueue, forwardEnable, forwardUrl, savePersonLocation, lanyaPositionHistoryService), thirdTargetUrl).get();
 
         } catch (Exception e) {
-            LOGGER.error("初始化失败", e);
+            log.error("Lanya WebSocket 订阅失败", e);
         }
-
-        LOGGER.info("\n WebSocketServer 初始化成功");
+        log.info("Lanya WebSocket 订阅成功");
     }
 
     /**
@@ -199,11 +200,11 @@ public class WebSocketServer {
                     // 发送给所有连接的客户端
                     broadcastMessage(message);
                 } catch (InterruptedException e) {
-                    LOGGER.info("消息处理线程被中断");
+                    log.info("消息处理线程被中断");
                     Thread.currentThread().interrupt();
                     break;
                 } catch (Exception e) {
-                    LOGGER.error("处理消息时发生异常", e);
+                    log.error("处理消息时发生异常", e);
                 }
             }
         });
@@ -225,7 +226,7 @@ public class WebSocketServer {
                         clientSession.getBasicRemote().sendText(message);
                     }
                 } catch (Exception e) {
-                    LOGGER.error("发送消息给客户端时发生异常", e);
+                    log.error("发送消息给客户端时发生异常", e);
                 }
             }
         }
@@ -276,7 +277,7 @@ public class WebSocketServer {
             // 向当前连接发送初始数据
             session.getAsyncRemote().sendText(json);
         } catch (Exception e) {
-            LOGGER.error("连接异常:", e);
+            log.error("连接异常:", e);
         }
     }
 
@@ -670,7 +671,7 @@ public class WebSocketServer {
             try {
                 // 检查消息大小
                 if (message.getPayloadLength() > 1024 * 1024) { // 1MB限制
-                    LOGGER.warn("接收三方消息过大，大小: {} 字节", message.getPayloadLength());
+                    log.warn("接收 Lanya WebSocket 消息过大，大小: {} 字节", message.getPayloadLength());
                     // 可以选择丢弃或分批处理
                 }
                 String payload = message.getPayload();
@@ -710,7 +711,7 @@ public class WebSocketServer {
                     lanyaPositionHistoryService.insertLanyaPositionHistory(history);
                 }
             } catch (Exception e) {
-                LOGGER.error("处理三方服务器消息异常", e);
+                log.error("处理 Lanya WebSocket 消息异常", e);
             }
         }
 
@@ -719,7 +720,7 @@ public class WebSocketServer {
          */
         @Override
         public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-            LOGGER.error("与三方目标服务器连接建立成功");
+            log.info("与 Lanya WebSocket 连接建立成功");
         }
 
         /**
@@ -727,7 +728,7 @@ public class WebSocketServer {
          */
         @Override
         public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-            LOGGER.error("与三方目标服务器连接关闭,状态: {}", status);
+            log.info("与 Lanya WebSocket 连接关闭,状态: {}", status);
         }
 
         /**
@@ -735,7 +736,7 @@ public class WebSocketServer {
          */
         @Override
         public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
-            LOGGER.error("与三方目标服务器传输错误:", exception);
+            log.error("与 Lanya WebSocket 传输错误:", exception);
         }
     }
 }

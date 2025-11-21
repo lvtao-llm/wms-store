@@ -54,32 +54,14 @@
         <result property="xcyxm" column="现场员姓名"/>
     </resultMap>
 
-    <!-- 查询语句 -->
-    <sql id="selectViewJlSkVo">
-        SELECT
-            接料编号, 到货编号, 货票编号, 到货类型, 库房, 单据类型, 车号, 车数,
-            AS运单号, 发运数量, 到货数量, 计量员, 计量时间, 厂商名称, 物资编码,
-            计量类型, 交料人, 交料时间, 保管员, 中队, 料组, 接料时间, 验收人,
-            验收时间, 稽核人, 稽核时间, 到库时间, 发运时间, 发运方式, 发站,
-            到站, 业务年月, 状态, 卸车编号, 品种编码, 物资名称, 计量单位,
-            物资类别, 验收人编码, 接料人编码, 品种名称, 业务分公司, 装卸队名称,
-            卸车方式, 卸车作业起始时间, 卸车作业截止时间, 出库时间, 现场员姓名
-        FROM VIEW_JL_SK
-    </sql>
-
     <!-- 动态查询列表 -->
     <select id="selectViewJlSkList" parameterType="WmsMaterialIn" resultMap="ViewJlSkResult">
-        SELECT
-            b.接料编号, b.到货编号, b.货票编号, b.到货类型, b.库房, b.单据类型, b.车号, b.车数,
-            b.AS运单号, b.发运数量, b.到货数量, b.计量员, b.计量时间, b.厂商名称, b.物资编码,
-            b.计量类型, b.交料人, b.交料时间, b.保管员, b.中队, b.料组, b.接料时间, b.验收人,
-            b.验收时间, b.稽核人, b.稽核时间, b.到库时间, b.发运时间, b.发运方式, b.发站,
-            b.到站, b.业务年月, b.状态, b.卸车编号, b.品种编码, b.物资名称, b.计量单位,
-            b.物资类别, b.验收人编码, b.接料人编码, b.品种名称, b.业务分公司, b.装卸队名称,
-            b.卸车方式, b.卸车作业起始时间, b.卸车作业截止时间, b.出库时间, b.现场员姓名
-        FROM VIEW_JL_SK b
-        WHERE b.接料时间 > #{jlsjT}
-        ORDER BY [接料时间]
+        SELECT B.*
+        FROM [dbo].[VIEW_KC_SK] A
+          LEFT JOIN [dbo].[VIEW_JL_SK] B ON B.[物资名称] = A.[物资名称]
+        WHERE B.[物资编码] LIKE 'A%'
+          AND B.[接料时间] > #{jlsjT}
+        ORDER BY B.[接料时间]
         OFFSET 0 ROWS
         FETCH NEXT 100 ROWS ONLY
     </select>

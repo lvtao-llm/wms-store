@@ -1,19 +1,42 @@
 package com.ruoyi.system.wzgs.sync;
 
+import com.alibaba.fastjson2.JSONObject;
+import com.ruoyi.common.config.RuoYiConfig;
+import com.ruoyi.common.utils.PageUtils;
 import com.ruoyi.system.domain.*;
 import com.ruoyi.system.mapper.WzjtViewDbSkMapper;
 import com.ruoyi.system.mapper.WzjtViewJlSkMapper;
 import com.ruoyi.system.mapper.WzjtViewKcSkMapper;
 import com.ruoyi.system.mapper.WzjtViewYySkMapper;
 import com.ruoyi.system.service.*;
+import com.ruoyi.system.utils.HttpUtil;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author 吕涛
@@ -23,6 +46,8 @@ import java.util.*;
  */
 @Service
 public class StoreDataSync {
+
+    private static final Logger log = LoggerFactory.getLogger("camera-stream");
 
     /**
      * 物资公司调拨数据同步
@@ -90,6 +115,11 @@ public class StoreDataSync {
     @Autowired
     private IWmsAreaService wmsAreaService;
 
+    @Autowired
+    private IWmsMaterialOutFileSyncQueueService wmsMaterialOutFileSyncQueueService;
+
+    private ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+
     /**
      * 不同偏移量默认值
      */
@@ -141,6 +171,16 @@ public class StoreDataSync {
     private boolean yySyncEnable;
 
     /**
+     * httpUtil
+     */
+    @Autowired
+    HttpUtil httpUtil;
+
+    @Value("${wzgs.db.sync.file-api-url:http://localhost:10050/download/resource?resource=}")
+    private String fileApiUrl;
+    private CloseableHttpClient httpClient;
+
+    /**
      * 初始化
      */
     @PostConstruct
@@ -160,6 +200,22 @@ public class StoreDataSync {
                 kcConfig = sysConfig;
             }
         }
+
+        // 创建连接池管理器
+        PoolingHttpClientConnectionManager connManager = new PoolingHttpClientConnectionManager();
+        connManager.setMaxTotal(100);
+        connManager.setDefaultMaxPerRoute(20);
+
+        // 创建请求配置
+        RequestConfig requestConfig = RequestConfig.custom()
+                .setConnectTimeout(30000)
+                .setSocketTimeout(30000)
+                .build();
+
+        // 创建HTTP客户端
+        this.httpClient = HttpClients.custom().setConnectionManager(connManager).setDefaultRequestConfig(requestConfig).build();
+
+        scheduler.scheduleAtFixedRate(this::syncDbFile, 0, 1, TimeUnit.SECONDS);
     }
 
     /**
@@ -258,6 +314,34 @@ public class StoreDataSync {
                 wmsMaterialStaticsDay.setDb(w.getAllotQuantity());
                 wmsMaterialStaticsDay.setAreaCodes(getAreaName(w));
                 wmsMaterialStaticsDayService.updateWmsMaterialStaticsDay(wmsMaterialStaticsDay);
+
+                if (!StringUtils.isEmpty(w.getWzbm())) {
+                    WmsMaterialOutFileSyncQueue wmsMaterialOutFileSyncQueue = new WmsMaterialOutFileSyncQueue();
+                    wmsMaterialOutFileSyncQueue.set调拨明细编号(w.getAllotId());
+                    if (w.getMeasureImageFile() != null) {
+                        wmsMaterialOutFileSyncQueue.set字段名称("计量图片文件");
+                        wmsMaterialOutFileSyncQueue.set文件路径(w.getMeasureImageFile());
+                        wmsMaterialOutFileSyncQueueService.insertWmsMaterialOutFileSyncQueue(wmsMaterialOutFileSyncQueue);
+                    }
+
+                    if (w.getMeasureVideoFile() != null) {
+                        wmsMaterialOutFileSyncQueue.set字段名称("计量录像文件");
+                        wmsMaterialOutFileSyncQueue.set文件路径(w.getMeasureVideoFile());
+                        wmsMaterialOutFileSyncQueueService.insertWmsMaterialOutFileSyncQueue(wmsMaterialOutFileSyncQueue);
+                    }
+
+                    if (w.getTareImageFile() != null) {
+                        wmsMaterialOutFileSyncQueue.set字段名称("皮重图片文件");
+                        wmsMaterialOutFileSyncQueue.set文件路径(w.getTareImageFile());
+                        wmsMaterialOutFileSyncQueueService.insertWmsMaterialOutFileSyncQueue(wmsMaterialOutFileSyncQueue);
+                    }
+
+                    if (w.getTareVideoFile() != null) {
+                        wmsMaterialOutFileSyncQueue.set字段名称("皮重录像文件");
+                        wmsMaterialOutFileSyncQueue.set文件路径(w.getTareVideoFile());
+                        wmsMaterialOutFileSyncQueueService.insertWmsMaterialOutFileSyncQueue(wmsMaterialOutFileSyncQueue);
+                    }
+                }
             }
             // 检查是否继续获取数据
             continueGet = !wzjtViewDbSks.isEmpty();
@@ -350,6 +434,30 @@ public class StoreDataSync {
             }
             w.setAreaCodes(String.join(",", areaCodes));
             wmsVehicleGatepassService.insertWmsVehicleGatepass(w);
+        }
+    }
+
+    private void syncDbFile() {
+        PageUtils.startPage();
+        WmsMaterialOutFileSyncQueue wmsMaterialOutFileSyncQueue = new WmsMaterialOutFileSyncQueue();
+        List<WmsMaterialOutFileSyncQueue> wmsMaterialOutFileSyncQueues = wmsMaterialOutFileSyncQueueService.selectWmsMaterialOutFileSyncQueueList(wmsMaterialOutFileSyncQueue);
+        for (WmsMaterialOutFileSyncQueue w : wmsMaterialOutFileSyncQueues) {
+            String url = this.fileApiUrl + w.get文件路径();
+            try (CloseableHttpResponse response = httpClient.execute(new HttpGet(url))) {
+                int statusCode = response.getStatusLine().getStatusCode();
+                if (statusCode == HttpStatus.SC_OK) {
+                    String filePath = RuoYiConfig.getUploadPath();
+                    File saveDir = new File(filePath);
+                    try (FileOutputStream fos = new FileOutputStream(saveDir)) {
+                        response.getEntity().writeTo(fos);
+                        wmsMaterialOutFileSyncQueueService.deleteWmsMaterialOutFileSyncQueueBy调拨明细编号(w.get调拨明细编号());
+                    }
+                } else {
+                    throw new RuntimeException("HTTP Get 下载调拨相关文件失败: " + statusCode + "[ " + url + " ]");
+                }
+            } catch (IOException e) {
+                log.error(e.getMessage(), e);
+            }
         }
     }
 

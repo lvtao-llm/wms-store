@@ -1,14 +1,13 @@
 package com.ruoyi.system.camera;
 
 import io.netty.util.AttributeKey;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 
-import cn.hutool.core.convert.Convert;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.crypto.digest.MD5;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler.Sharable;
@@ -23,7 +22,6 @@ import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
-import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.PingWebSocketFrame;
@@ -33,15 +31,13 @@ import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;
 import io.netty.util.CharsetUtil;
-import lombok.extern.slf4j.Slf4j;
 
 // http://localhost:8866/live?url=rtsp://admin:VZCDOY@192.168.2.84:554/Streaming/Channels/102
 // ws://localhost:8866/live?url=rtsp://admin:VZCDOY@192.168.2.84:554/Streaming/Channels/102
-@Slf4j
 @Service
 @Sharable //不new，采用共享handler
 public class FlvHandler extends SimpleChannelInboundHandler<Object> {
-
+    private static final Logger log = LoggerFactory.getLogger("camera-stream");
 
     private WebSocketServerHandshaker handshaker;
 
@@ -69,14 +65,14 @@ public class FlvHandler extends SimpleChannelInboundHandler<Object> {
     private long noClientsDuration;
 
     @Autowired
-    private CameraServeice cameraServeice;
+    private CameraService cameraServeice;
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
 
         if (msg instanceof FullHttpRequest) {
             FullHttpRequest req = (FullHttpRequest) msg;
-            String uri = req.uri();  // 比如 /live/123
+            String uri = req.uri();
             if (uri.startsWith("/live/")) {
                 String id = uri.substring("/live/".length());
                 System.out.println("客户端连接 ID = " + id);
@@ -109,7 +105,7 @@ public class FlvHandler extends SimpleChannelInboundHandler<Object> {
                     }
                 }
             } else {
-                log.info("请求错误");
+                log.info("请求错误:{}", uri);
             }
         } else if (msg instanceof WebSocketFrame) {
             handleWebSocketRequest(ctx, (WebSocketFrame) msg);
@@ -145,7 +141,7 @@ public class FlvHandler extends SimpleChannelInboundHandler<Object> {
     /**
      * 发送req header，告知浏览器是flv格式
      *
-     * @param ctx
+     * @param ctx 上下文
      */
     private void sendFlvReqHeader(ChannelHandlerContext ctx) {
         HttpResponse rsp = new DefaultHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
@@ -161,8 +157,8 @@ public class FlvHandler extends SimpleChannelInboundHandler<Object> {
     /**
      * 错误请求响应
      *
-     * @param ctx
-     * @param status
+     * @param ctx    上下文
+     * @param status 错误码
      */
     private void sendError(ChannelHandlerContext ctx, HttpResponseStatus status) {
         FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, status, Unpooled.copiedBuffer("请求地址有误: " + status + "\r\n", CharsetUtil.UTF_8));
@@ -181,8 +177,8 @@ public class FlvHandler extends SimpleChannelInboundHandler<Object> {
     /**
      * websocket处理
      *
-     * @param ctx
-     * @param frame
+     * @param ctx   上下文
+     * @param frame 请求
      */
     private void handleWebSocketRequest(ChannelHandlerContext ctx, WebSocketFrame frame) {
         // 关闭
