@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.WmsArea360Mapper">
+    
+    <resultMap type="WmsArea360" id="WmsArea360Result">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="longitude"    column="longitude"    />
+        <result property="latitude"    column="latitude"    />
+        <result property="image"    column="image"    />
+    </resultMap>
+
+    <sql id="selectWmsArea360Vo">
+        select id, name, longitude, latitude, image from wms_area_360
+    </sql>
+
+    <select id="selectWmsArea360List" parameterType="WmsArea360" resultMap="WmsArea360Result">
+        <include refid="selectWmsArea360Vo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="longitude != null  and longitude != ''"> and longitude = #{longitude}</if>
+            <if test="latitude != null  and latitude != ''"> and latitude = #{latitude}</if>
+            <if test="image != null  and image != ''"> and image = #{image}</if>
+        </where>
+    </select>
+    
+    <select id="selectWmsArea360ById" parameterType="Long" resultMap="WmsArea360Result">
+        <include refid="selectWmsArea360Vo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertWmsArea360" parameterType="WmsArea360">
+        insert into wms_area_360
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="name != null">name,</if>
+            <if test="longitude != null">longitude,</if>
+            <if test="latitude != null">latitude,</if>
+            <if test="image != null">image,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="name != null">#{name},</if>
+            <if test="longitude != null">#{longitude},</if>
+            <if test="latitude != null">#{latitude},</if>
+            <if test="image != null">#{image},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWmsArea360" parameterType="WmsArea360">
+        update wms_area_360
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="longitude != null">longitude = #{longitude},</if>
+            <if test="latitude != null">latitude = #{latitude},</if>
+            <if test="image != null">image = #{image},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWmsArea360ById" parameterType="Long">
+        delete from wms_area_360 where id = #{id}
+    </delete>
+
+    <delete id="deleteWmsArea360ByIds" parameterType="String">
+        delete from wms_area_360 where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

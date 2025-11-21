@@ -6,32 +6,39 @@ spring:
         druid:
             # 主库数据源
             master:
-                url: jdbc:mysql://localhost:3308/monitor_wms?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+                url: jdbc:mysql://112.98.110.101:3308/monitor_wms?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
                 username: root
-                password: Sup3r@Secret
+                password: Monitor@20240101
             # 从库数据源
             slave:
                 # 从数据源开关/默认关闭
                 enabled: true
-                url: jdbc:mysql://localhost:3308/monitor_lanya?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+                url: jdbc:mysql://112.98.110.101:3308/monitor_lanya?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
                 username: root
-                password: Sup3r@Secret
+                password: Monitor@20240101
             # 从库数据源
             lanya90:
                 # 从数据源开关/默认关闭
-                enabled: false
+                enabled: true
                 url: jdbc:mysql://112.98.110.101:3308/monitor_lanya?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
                 username: root
                 password: Monitor@20240101
             # 库存数据库
             storehouse:
                 # 从数据源开关/默认关闭
-                enabled: false
+                enabled: true
                 driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
                 url: jdbc:sqlserver://112.98.110.101:1433;DatabaseName=erp_storehouse
                 username: sckq
                 password: WUZIwuzi123*
                 validationQuery: SELECT 1
+            # 短信猫数据库
+            smscat:
+                # 从数据源开关/默认关闭
+                enabled: true
+                url: jdbc:mysql://10.63.228.90:3306/project_e_sports_test?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+                username: root
+                password: 1qazXSW@
             # 初始连接数
             initialSize: 5
             # 最小连接池数量
