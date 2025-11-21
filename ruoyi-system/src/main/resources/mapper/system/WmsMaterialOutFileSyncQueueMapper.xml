@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.WmsMaterialOutFileSyncQueueMapper">
+    
+    <resultMap type="WmsMaterialOutFileSyncQueue" id="WmsMaterialOutFileSyncQueueResult">
+        <result property="调拨明细编号"    column="调拨明细编号"    />
+        <result property="字段名称"    column="字段名称"    />
+        <result property="文件路径"    column="文件路径"    />
+    </resultMap>
+
+    <sql id="selectWmsMaterialOutFileSyncQueueVo">
+        select 调拨明细编号, 字段名称, 文件路径 from wms_material_out_file_sync_queue
+    </sql>
+
+    <select id="selectWmsMaterialOutFileSyncQueueList" parameterType="WmsMaterialOutFileSyncQueue" resultMap="WmsMaterialOutFileSyncQueueResult">
+        <include refid="selectWmsMaterialOutFileSyncQueueVo"/>
+        <where>  
+            <if test="调拨明细编号 != null  and 调拨明细编号 != ''"> and 调拨明细编号 = #{调拨明细编号}</if>
+            <if test="字段名称 != null  and 字段名称 != ''"> and 字段名称 = #{字段名称}</if>
+            <if test="文件路径 != null  and 文件路径 != ''"> and 文件路径 = #{文件路径}</if>
+        </where>
+    </select>
+    
+    <select id="selectWmsMaterialOutFileSyncQueueBy调拨明细编号" parameterType="String" resultMap="WmsMaterialOutFileSyncQueueResult">
+        <include refid="selectWmsMaterialOutFileSyncQueueVo"/>
+        where 调拨明细编号 = #{调拨明细编号}
+    </select>
+
+    <insert id="insertWmsMaterialOutFileSyncQueue" parameterType="WmsMaterialOutFileSyncQueue">
+        insert into wms_material_out_file_sync_queue
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="调拨明细编号 != null">调拨明细编号,</if>
+            <if test="字段名称 != null">字段名称,</if>
+            <if test="文件路径 != null">文件路径,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="调拨明细编号 != null">#{调拨明细编号},</if>
+            <if test="字段名称 != null">#{字段名称},</if>
+            <if test="文件路径 != null">#{文件路径},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWmsMaterialOutFileSyncQueue" parameterType="WmsMaterialOutFileSyncQueue">
+        update wms_material_out_file_sync_queue
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="字段名称 != null">字段名称 = #{字段名称},</if>
+            <if test="文件路径 != null">文件路径 = #{文件路径},</if>
+        </trim>
+        where 调拨明细编号 = #{调拨明细编号}
+    </update>
+
+    <delete id="deleteWmsMaterialOutFileSyncQueueBy调拨明细编号" parameterType="String">
+        delete from wms_material_out_file_sync_queue where 调拨明细编号 = #{调拨明细编号}
+    </delete>
+
+    <delete id="deleteWmsMaterialOutFileSyncQueueBy调拨明细编号s" parameterType="String">
+        delete from wms_material_out_file_sync_queue where 调拨明细编号 in 
+        <foreach item="调拨明细编号" collection="array" open="(" separator="," close=")">
+            #{调拨明细编号}
+        </foreach>
+    </delete>
+</mapper>

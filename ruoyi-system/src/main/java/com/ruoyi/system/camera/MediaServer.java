@@ -2,6 +2,8 @@ package com.ruoyi.system.camera;
 
 import java.net.InetSocketAddress;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,17 +24,15 @@ import io.netty.handler.codec.http.cors.CorsConfig;
 import io.netty.handler.codec.http.cors.CorsConfigBuilder;
 import io.netty.handler.codec.http.cors.CorsHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
-import lombok.extern.slf4j.Slf4j;
 
 /**
- * flv流媒体服务
+ * flv摄像头服务
  *
  * @author ZJ
- *
  */
-@Slf4j
 @Component
 public class MediaServer {
+    private static final Logger log = LoggerFactory.getLogger("camera-stream");
 
     @Autowired
     private FlvHandler flvHandler;
@@ -74,10 +74,10 @@ public class MediaServer {
         //绑定端口,开始接收进来的连接
         try {
             ChannelFuture future = bootstrap.bind(socketAddress).sync();
-            log.info("流媒体服务启动开始监听端口: {}", socketAddress.getPort());
+            log.info("摄像头服务启动开始监听端口: {}", socketAddress.getPort());
             future.channel().closeFuture().sync();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            log.error("摄像头服务启动失败: {}", e.getMessage());
         } finally {
             //关闭主线程组
             bossGroup.shutdownGracefully();

@@ -35,7 +35,6 @@ server:
 # 日志配置
 logging:
   level:
-    com.ruoyi: debug
     org.springframework: warn
     org.springframework.web.socket: debug
     javax.websocket: debug
@@ -142,7 +141,7 @@ lanya:
   base-url: 112.98.110.101:8091/gateway-service # 指向 lanya 服务的地址
   username: admin # lanya 服务用户名
   password: xrkc168168 # lanya 服务密码
-  enabled-ws: false # 是否接收 lanya websocket 消息
+  enabled-lanya-websocket-subscribe: false # 是否接收 lanya websocket 消息
 
   # 将 lanya 服务的消息转发给 forward-url 指向的地址
   forward-url: http://localhost:10030/system/lanya-transfer/message-endpoint
@@ -155,7 +154,7 @@ lanya:
 
   position: # position_history 表数据同步
     sync-table: # 同步 lanya position_history 表数据并执行报警规则检测
-      enabled: false # 物资公司90部署打开
+      enabled: true # 物资公司90部署打开
       past-table: # 是否在启动时同步过往的表
         enabled: false
     sync-api: # 同步 101 机器的position_history 表数据到物资公司90数据库
@@ -165,17 +164,18 @@ lanya:
       enabled: false # 模拟数据时打开
   issuing: # device_card_sender_log 表数据同步
     sync: # 同步 lanya device_card_sender_log 表数据到 wms 数据库
-      enabled: false # 物资公司90部署打开
+      enabled: true # 物资公司90部署打开
 
 wzgs:
 
   jl: # 接料数据表同步
     sync:
-      enabled: false # 物资公司90部署打开
+      enabled: true # 物资公司90部署打开
 
   db: # 调拨数据表同步
     sync:
       enabled: false # 物资公司90部署打开
+      file-api-url: http://112.98.110.101:10050/download/resource?resource=
 
   kc: # 库存数据表同步
     sync:

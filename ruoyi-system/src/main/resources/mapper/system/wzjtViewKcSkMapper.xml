@@ -24,17 +24,10 @@
         <result property="company" column="所属公司"/>
     </resultMap>
 
-    <sql id="selectViewKcSkVo">
-        SELECT
-            库存编号, 物资编码, 实存重量, 状态, 备注, 物资名称, 计量单位,
-            库房, 账存重量, 品种编码, 品种名称, 物资类别, 预拨重量, 可拨重量,
-            中队, 班组, 所属公司
-        FROM VIEW_KC_SK
-    </sql>
-
     <select id="selectViewKcSkList" parameterType="WmsMaterialStock" resultMap="ViewKcSkResult">
-        <include refid="selectViewKcSkVo"/>
-        WHERE 实存重量 > 0
+        SELECT *
+        FROM VIEW_KC_SK
+        WHERE [实存重量] > 0
     </select>
 
 </mapper>

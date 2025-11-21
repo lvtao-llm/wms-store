@@ -8,12 +8,9 @@ import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.websocket.Session;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Set;
 import java.util.concurrent.*;
 
@@ -24,7 +21,7 @@ import java.util.concurrent.*;
  */
 public class FFmpegWrap {
 
-    private static final Logger log = LoggerFactory.getLogger(FFmpegWrap.class);
+    private static final Logger log = LoggerFactory.getLogger("camera-stream");
 
     @Getter
     private final String id;
@@ -44,7 +41,8 @@ public class FFmpegWrap {
     private LocalDateTime time = LocalDateTime.now();
     private volatile ByteBuf flvHeader;       // FLV header + Metadata
     private volatile ByteBuf lastKeyframe;    // 最新关键帧
-    private ByteBuf tempCache = Unpooled.buffer(1024 * 1024);
+    private final ByteBuf tempCache = Unpooled.buffer(1024 * 1024);
+
     public FFmpegWrap(String id, String tag, String rtspUrl, String mpegCommand) {
         this.id = id;
         this.tag = tag;
@@ -64,29 +62,26 @@ public class FFmpegWrap {
                 int errRead;
                 while (true) {
                     try {
+                        if (process == null) {
+                            log.info("ffmpeg进程已关闭");
+                            break;
+                        }
                         errRead = stderr.read(errBuf);
                         if (errRead == -1) {
                             continue;
                         }
-                        log.error("FFMpeg进程信息:{}", new String(errBuf, 0, errRead));
+                        log.error("ffmpeg进程信息:{}", new String(errBuf, 0, errRead));
                     } catch (IOException e) {
-                        log.error("FFMpeg进程读取错误信息错误:{}", e.getMessage());
+                        log.error("ffmpeg进程读取错误信息错误:{}", e.getMessage());
                     }
                 }
             });
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("ffmpeg进程启动错误:{}", e.getMessage());
         }
     }
 
     public void broadcast(ByteBuf buf) {
-        // 解析 FLV tag 类型，如果是 Header 或 Metadata
-//        if (isFlvHeader(buf)) {
-//            flvHeader = copyBuf(buf);
-//        } else if (isVideoKeyframe(buf)) {
-//            lastKeyframe = copyBuf(buf);
-//        }
-
         for (Channel ch : sessions) {
             ch.writeAndFlush(new BinaryWebSocketFrame(buf.retainedDuplicate()));
             this.time = LocalDateTime.now();

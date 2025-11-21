@@ -26,7 +26,7 @@ public class HttpUtil {
     /**
      * HTTP客户端
      */
-    private CloseableHttpClient httpClient;
+    public CloseableHttpClient httpClient;
 
     @PostConstruct
     public void init() {
