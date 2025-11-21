@@ -246,7 +246,7 @@ export function convertTrajectoryPointsWithBMap(trajectoryPoints, callback) {
 // 转换轨迹点数组的坐标系（WGS84转BD09）- 同步版本（使用本地算法）
 // offsetLon: 经度偏移修正（度），offsetLat: 纬度偏移修正（度）
 // 如果转换后往右上偏移，可以尝试设置负的偏移值
-export function convertTrajectoryPoints(trajectoryPoints, offsetLon = -0.0065, offsetLat = -0.004) {
+export function convertTrajectoryPoints(trajectoryPoints, offsetLon = -0.00655, offsetLat = -0.0042) {
   if (!trajectoryPoints || !Array.isArray(trajectoryPoints)) {
     return trajectoryPoints;
   }
