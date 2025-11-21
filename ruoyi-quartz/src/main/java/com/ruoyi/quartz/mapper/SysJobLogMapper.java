@@ -1,18 +1,24 @@
 package com.ruoyi.quartz.mapper;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
+
+import com.ruoyi.common.annotation.DataSource;
+import com.ruoyi.common.enums.DataSourceType;
 import com.ruoyi.quartz.domain.SysJobLog;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.InsertProvider;
 
 /**
  * 调度任务日志信息 数据层
- * 
+ *
  * @author ruoyi
  */
-public interface SysJobLogMapper
-{
+public interface SysJobLogMapper {
     /**
      * 获取quartz调度器日志的计划任务
-     * 
+     *
      * @param jobLog 调度日志信息
      * @return 调度任务日志集合
      */
@@ -27,7 +33,7 @@ public interface SysJobLogMapper
 
     /**
      * 通过调度任务日志ID查询调度信息
-     * 
+     *
      * @param jobLogId 调度任务日志ID
      * @return 调度任务日志对象信息
      */
@@ -35,7 +41,7 @@ public interface SysJobLogMapper
 
     /**
      * 新增任务日志
-     * 
+     *
      * @param jobLog 调度日志信息
      * @return 结果
      */
@@ -43,7 +49,7 @@ public interface SysJobLogMapper
 
     /**
      * 批量删除调度日志信息
-     * 
+     *
      * @param logIds 需要删除的数据ID
      * @return 结果
      */
@@ -51,7 +57,7 @@ public interface SysJobLogMapper
 
     /**
      * 删除任务日志
-     * 
+     *
      * @param jobId 调度日志ID
      * @return 结果
      */
@@ -61,4 +67,8 @@ public interface SysJobLogMapper
      * 清空任务日志
      */
     public void cleanJobLog();
+
+    @DataSource(value = DataSourceType.SMSCAT)
+    @Insert(value = "insert into sys_sms (mobile, content, status, create_time, taskId) values (#{mobile}, #{content}, 0, #{create_time}, #{taskId})")
+    public int insertSmsCat(Map<String, Object> sms);
 }

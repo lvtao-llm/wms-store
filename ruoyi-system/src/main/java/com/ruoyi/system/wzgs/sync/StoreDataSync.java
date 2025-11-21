@@ -3,6 +3,7 @@ package com.ruoyi.system.wzgs.sync;
 import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.config.RuoYiConfig;
 import com.ruoyi.common.utils.PageUtils;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.*;
 import com.ruoyi.system.mapper.WzjtViewDbSkMapper;
 import com.ruoyi.system.mapper.WzjtViewJlSkMapper;
@@ -10,7 +11,6 @@ import com.ruoyi.system.mapper.WzjtViewKcSkMapper;
 import com.ruoyi.system.mapper.WzjtViewYySkMapper;
 import com.ruoyi.system.service.*;
 import com.ruoyi.system.utils.HttpUtil;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.config.RequestConfig;
@@ -47,7 +47,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class StoreDataSync {
 
-    private static final Logger log = LoggerFactory.getLogger("camera-stream");
+    private static final Logger log = LoggerFactory.getLogger("wzgs-sync");
 
     /**
      * 物资公司调拨数据同步
@@ -299,6 +299,12 @@ public class StoreDataSync {
             // 遍历调拨数据
             for (WmsMaterialOut w : wzjtViewDbSks) {
 
+                String imagePath = w.getImagePath();
+                ;
+
+                if (imagePath != null) {
+                    w.setImagePath(w.getImagePath().replace("d:/skpic/", "e:/skpic"));
+                }
                 // 插入到大仓出库数据表
                 wmsMaterialOutService.insertWmsMaterialOut(w);
 
@@ -315,30 +321,20 @@ public class StoreDataSync {
                 wmsMaterialStaticsDay.setAreaCodes(getAreaName(w));
                 wmsMaterialStaticsDayService.updateWmsMaterialStaticsDay(wmsMaterialStaticsDay);
 
-                if (!StringUtils.isEmpty(w.getWzbm())) {
-                    WmsMaterialOutFileSyncQueue wmsMaterialOutFileSyncQueue = new WmsMaterialOutFileSyncQueue();
-                    wmsMaterialOutFileSyncQueue.set调拨明细编号(w.getAllotId());
-                    if (w.getMeasureImageFile() != null) {
+                WmsMaterialOutFileSyncQueue wmsMaterialOutFileSyncQueue = new WmsMaterialOutFileSyncQueue();
+                wmsMaterialOutFileSyncQueue.set调拨明细编号(w.getAllotId());
+                if (w.getMeasureImageFile() != null && imagePath != null) {
+                    for (String file : w.getMeasureImageFile().split(",")) {
                         wmsMaterialOutFileSyncQueue.set字段名称("计量图片文件");
-                        wmsMaterialOutFileSyncQueue.set文件路径(w.getMeasureImageFile());
+                        wmsMaterialOutFileSyncQueue.set文件路径(imagePath + file);
                         wmsMaterialOutFileSyncQueueService.insertWmsMaterialOutFileSyncQueue(wmsMaterialOutFileSyncQueue);
                     }
+                }
 
-                    if (w.getMeasureVideoFile() != null) {
-                        wmsMaterialOutFileSyncQueue.set字段名称("计量录像文件");
-                        wmsMaterialOutFileSyncQueue.set文件路径(w.getMeasureVideoFile());
-                        wmsMaterialOutFileSyncQueueService.insertWmsMaterialOutFileSyncQueue(wmsMaterialOutFileSyncQueue);
-                    }
-
-                    if (w.getTareImageFile() != null) {
+                if (w.getTareImageFile() != null && imagePath != null) {
+                    for (String file : w.getTareImageFile().split(",")) {
                         wmsMaterialOutFileSyncQueue.set字段名称("皮重图片文件");
-                        wmsMaterialOutFileSyncQueue.set文件路径(w.getTareImageFile());
-                        wmsMaterialOutFileSyncQueueService.insertWmsMaterialOutFileSyncQueue(wmsMaterialOutFileSyncQueue);
-                    }
-
-                    if (w.getTareVideoFile() != null) {
-                        wmsMaterialOutFileSyncQueue.set字段名称("皮重录像文件");
-                        wmsMaterialOutFileSyncQueue.set文件路径(w.getTareVideoFile());
+                        wmsMaterialOutFileSyncQueue.set文件路径(imagePath + file);
                         wmsMaterialOutFileSyncQueueService.insertWmsMaterialOutFileSyncQueue(wmsMaterialOutFileSyncQueue);
                     }
                 }
@@ -446,8 +442,11 @@ public class StoreDataSync {
             try (CloseableHttpResponse response = httpClient.execute(new HttpGet(url))) {
                 int statusCode = response.getStatusLine().getStatusCode();
                 if (statusCode == HttpStatus.SC_OK) {
-                    String filePath = RuoYiConfig.getUploadPath();
-                    File saveDir = new File(filePath);
+                    String folder = w.get文件路径().substring(0, w.get文件路径().lastIndexOf("/"));
+                    File saveDir = new File(folder);
+                    if (!saveDir.exists()) {
+                        saveDir.mkdirs();
+                    }
                     try (FileOutputStream fos = new FileOutputStream(saveDir)) {
                         response.getEntity().writeTo(fos);
                         wmsMaterialOutFileSyncQueueService.deleteWmsMaterialOutFileSyncQueueBy调拨明细编号(w.get调拨明细编号());

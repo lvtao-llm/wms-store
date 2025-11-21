@@ -63,6 +63,14 @@ public class DruidConfig {
         return druidProperties.dataSource(dataSource);
     }
 
+    @Bean
+    @ConfigurationProperties("spring.datasource.druid.smscat")
+    @ConditionalOnProperty(prefix = "spring.datasource.druid.smscat", name = "enabled", havingValue = "true")
+    public DataSource smscatDataSource(DruidProperties druidProperties) {
+        DruidDataSource dataSource = DruidDataSourceBuilder.create().build();
+        return druidProperties.dataSource(dataSource);
+    }
+
     @Bean(name = "dynamicDataSource")
     @Primary
     public DynamicDataSource dataSource(DataSource masterDataSource) {
@@ -71,6 +79,7 @@ public class DruidConfig {
         setDataSource(targetDataSources, DataSourceType.SLAVE.name(), "slaveDataSource");
         setDataSource(targetDataSources, DataSourceType.STOREHOUSE.name(), "storehouseDataSource");
         setDataSource(targetDataSources, DataSourceType.LANYA90.name(), "lanya90DataSource");
+        setDataSource(targetDataSources, DataSourceType.SMSCAT.name(), "smscatDataSource");
         return new DynamicDataSource(masterDataSource, targetDataSources);
     }
 

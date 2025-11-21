@@ -71,7 +71,7 @@ public class CameraController {
             }
 
             JSONObject data = getCameraInfo(cameraId);
-            String id = UUID.randomUUID().toString().replace("-", "");
+            String id = (new Date()).getTime() + "";
             String rtspUrl = null;
 
             if ("1".equals(channel)) {
@@ -97,7 +97,7 @@ public class CameraController {
 //            rtspUrl = "rtsp://admin:Ll112233@192.168.1.64:554/Streaming/Channels/101";
 //                mpegCommand = String.format("ffmpeg -rtsp_transport tcp -max_delay 500000 -use_wallclock_as_timestamps 1 -i " + rtspUrl + " -vf fps=2 -c:v libx264 -f flv ");
 //                mpegCommand = String.format("ffmpeg -rtsp_transport tcp -i %s -c:v copy -an -f flv ", rtspUrl);
-            String mpegCommand = String.format(ffmpegCommand + " http://localhost:%s/api/camera/stream/receive/%s", rtspUrl, serverPort, id);
+            String mpegCommand = String.format(ffmpegCommand + " http://localhost:%s/api/camera/stream/receive/%s", rtspUrl, serverPort, id).replace("  ", " ");
 
             FFmpegWrap fFmpegWrap = new FFmpegWrap(id, cameraId + "-" + channel, rtspUrl, mpegCommand);
             cameraServeice.activeWrap.put(id, fFmpegWrap);

@@ -63,14 +63,14 @@ public class FFmpegWrap {
                 while (true) {
                     try {
                         if (process == null) {
-                            log.info("ffmpeg进程已关闭");
+                            log.warn("ffmpeg进程已关闭");
                             break;
                         }
                         errRead = stderr.read(errBuf);
                         if (errRead == -1) {
                             continue;
                         }
-                        log.error("ffmpeg进程信息:{}", new String(errBuf, 0, errRead));
+                        log.info("ffmpeg进程信息:{}", new String(errBuf, 0, errRead));
                     } catch (IOException e) {
                         log.error("ffmpeg进程读取错误信息错误:{}", e.getMessage());
                     }

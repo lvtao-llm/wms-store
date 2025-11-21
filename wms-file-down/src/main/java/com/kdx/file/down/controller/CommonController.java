@@ -69,15 +69,11 @@ public class CommonController
             {
                 throw new Exception(StringUtils.format("资源文件({})非法，不允许下载。 ", resource));
             }
-            // 本地资源路径
-            String localPath = profile;
-            // 数据库资源地址
-            String downloadPath = localPath + FileUtils.stripPrefix(resource);
             // 下载名称
-            String downloadName = StringUtils.substringAfterLast(downloadPath, "/");
+            String downloadName = StringUtils.substringAfterLast(resource, "/");
             response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
             FileUtils.setAttachmentResponseHeader(response, downloadName);
-            FileUtils.writeBytes(downloadPath, response.getOutputStream());
+            FileUtils.writeBytes(resource, response.getOutputStream());
         }
         catch (Exception e)
         {

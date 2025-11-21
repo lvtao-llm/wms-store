@@ -5,6 +5,8 @@ import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.system.domain.WmsCardContentSend;
 import com.ruoyi.system.mapper.WmsCardContentSendMapper;
 import com.ruoyi.system.utils.HttpUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -19,7 +21,7 @@ import java.util.List;
  */
 @Component
 public class GoPublicSync {
-
+    private static final Logger log = LoggerFactory.getLogger("wzgs-sync");
     /**
      * httpUtil
      */

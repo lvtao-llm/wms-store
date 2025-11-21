@@ -29,7 +29,7 @@ import java.text.SimpleDateFormat;
 @Component
 public class GoPrivateSync {
 
-    private static final Logger log = LoggerFactory.getLogger(GoPrivateSync.class);
+    private static final Logger log = LoggerFactory.getLogger("wzgs-sync");
 
     /**
      * httpUtil

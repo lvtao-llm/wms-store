@@ -27,5 +27,10 @@ public enum DataSourceType {
      * 部署在物资公司的卡机数据库
      * 当项目部署在公网时使用，用于数据同步
      */
-    LANYA90;
+    LANYA90,
+
+    /**
+     * 短信猫数据库
+     */
+    SMSCAT;
 }
