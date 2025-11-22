@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
+import lombok.Data;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.concurrent.*;
 
@@ -19,6 +21,7 @@ import java.util.concurrent.*;
  * @version 1.0
  * @since 2025/11/13
  */
+@Data
 public class FFmpegWrap {
 
     private static final Logger log = LoggerFactory.getLogger("camera-stream");
@@ -32,16 +35,17 @@ public class FFmpegWrap {
     @Getter
     private final String mpegCommand;
     @Getter
-    private final Set<Channel> sessions = ConcurrentHashMap.newKeySet();
+    private final Set<Channel> channels = ConcurrentHashMap.newKeySet();
     @Getter
     private Process process;
     @Getter
     private ExecutorService executor = Executors.newSingleThreadExecutor();
     @Getter
     private LocalDateTime time = LocalDateTime.now();
-    private volatile ByteBuf flvHeader;       // FLV header + Metadata
-    private volatile ByteBuf lastKeyframe;    // 最新关键帧
-    private final ByteBuf tempCache = Unpooled.buffer(1024 * 1024);
+
+    private boolean running = true;
+
+    private volatile byte[] flvHeader; // 缓存 FLV Header
 
     public FFmpegWrap(String id, String tag, String rtspUrl, String mpegCommand) {
         this.id = id;
@@ -56,46 +60,68 @@ public class FFmpegWrap {
         try {
             ProcessBuilder pb = new ProcessBuilder(commandArray);
             process = pb.start();
+
             InputStream stderr = process.getErrorStream();
             executor.submit(() -> {
                 byte[] errBuf = new byte[4096];
                 int errRead;
-                while (true) {
+                while (!Thread.currentThread().isInterrupted() && running) {
                     try {
                         if (process == null) {
-                            log.warn("ffmpeg进程已关闭");
+                            log.warn("{}-ffmpeg进程已关闭", this.id);
                             break;
                         }
+                        if (!process.isAlive()) {
+                            log.warn("{}-ffmpeg进程已关闭", this.id);
+                            break;
+                        }
+                        // 在这里能拿到Thread.currentThread().interrupt()的事件吗
                         errRead = stderr.read(errBuf);
                         if (errRead == -1) {
                             continue;
                         }
-                        log.info("ffmpeg进程信息:{}", new String(errBuf, 0, errRead));
+                        String msg = new String(errBuf, 0, errRead);
+                        log.info("{}-ffmpeg进程信息:{}", this.id, msg);
                     } catch (IOException e) {
-                        log.error("ffmpeg进程读取错误信息错误:{}", e.getMessage());
+                        log.error("{}-ffmpeg进程读取错误信息错误:{}", this.id, e.getMessage());
                     }
                 }
             });
         } catch (IOException e) {
-            log.error("ffmpeg进程启动错误:{}", e.getMessage());
+            log.error("{}-ffmpeg进程启动错误:{}", this.id, e.getMessage());
         }
     }
 
     public void broadcast(ByteBuf buf) {
-        for (Channel ch : sessions) {
-            ch.writeAndFlush(new BinaryWebSocketFrame(buf.retainedDuplicate()));
-            this.time = LocalDateTime.now();
+        byte[] data = new byte[buf.readableBytes()];
+        buf.getBytes(0, data); // 取出完整字节，不破坏原 buf
+
+        // 记录 FLV Header（只记录一次）
+        if (flvHeader == null && data.length >= 13 && data[0] == 'F' && data[1] == 'L' && data[2] == 'V') {
+            flvHeader = Arrays.copyOf(data, 13);
+        }
+
+        // 给所有客户端发送
+        for (Channel ch : channels) {
+            if (ch.isActive()) {
+                ch.writeAndFlush(new BinaryWebSocketFrame(Unpooled.wrappedBuffer(data))); // 保持原样二进制
+            } else {
+                ch.close();
+                channels.remove(ch);
+            }
         }
     }
 
     public void stop() {
+        this.running = false;
+
         // 先清理所有会话
-        for (Channel session : sessions) {
+        for (Channel session : channels) {
             if (session.isOpen()) {
                 session.close();
             }
         }
-        sessions.clear();
+        channels.clear();
 
         // 再停止FFmpeg进程
         if (process != null) {
@@ -103,6 +129,9 @@ public class FFmpegWrap {
                 process.destroy();
                 if (!process.waitFor(5, TimeUnit.SECONDS)) {
                     process.destroyForcibly();
+                    if (!process.waitFor(5, TimeUnit.SECONDS)) {
+                        throw new RuntimeException("进程未能及时终止");
+                    }
                 }
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
@@ -125,72 +154,7 @@ public class FFmpegWrap {
         }
     }
 
-    /**
-     * 判断是否是完整 FLV Header + Metadata
-     *
-     * @param buf 接收到的 FLV 数据
-     * @return true 如果是 Header + Metadata
-     */
-    public static boolean isFlvHeader(ByteBuf buf) {
-        if (buf.readableBytes() < 13) { // Header最少9B + 第一个PreviousTagSize(4B)
-            return false;
-        }
-
-        // 前3字节必须是 'F','L','V'
-        if (buf.getByte(0) != 'F' || buf.getByte(1) != 'L' || buf.getByte(2) != 'V') {
-            return false;
-        }
-
-        // DataOffset = Header长度，通常是9
-        int dataOffset = buf.getInt(5); // buf[5-8]是DataOffset
-        return dataOffset == 9;
-    }
-
-    /**
-     * 判断是否是视频关键帧（H.264 IDR）
-     *
-     * @param buf 完整的 FLV tag
-     * @return true 如果是视频关键帧
-     */
-    public static boolean isVideoKeyframe(ByteBuf buf) {
-        if (buf.readableBytes() < 11) return false; // 不够最小 FLV tag
-
-        int tagType = buf.getByte(0) & 0xFF;
-        if (tagType != 9) return false; // 9 = 视频 Tag
-
-        // FLV tag header长度 = 11B, Tag Data 从 offset 11 开始
-        int dataOffset = 11;
-        if (buf.readableBytes() <= dataOffset) return false;
-
-        int firstByte = buf.getByte(dataOffset) & 0xFF;
-        int frameType = (firstByte & 0xF0) >> 4;
-        int codecId = firstByte & 0x0F;
-
-        // H.264关键帧：frameType=1 (keyframe), codecId=7 (AVC/H.264)
-        return frameType == 1 && codecId == 7;
-    }
-
-    /**
-     * 缓存 Header 或关键帧
-     */
-    public static ByteBuf copyBuf(ByteBuf buf) {
-        return Unpooled.copiedBuffer(buf);
-    }
-
     public void addClient(Channel channel) {
-        sessions.add(channel);
-//        // 先发送 Header + Metadata
-//        if (flvHeader != null) {
-//            channel.writeAndFlush(flvHeader.retainedDuplicate());
-//        }
-//
-//        // 再发送最新关键帧
-//        if (lastKeyframe != null) {
-//            channel.writeAndFlush(lastKeyframe.retainedDuplicate());
-//        }
-    }
-
-    public ByteBuf getTempCache() {
-        return tempCache;
+        channels.add(channel);
     }
 }

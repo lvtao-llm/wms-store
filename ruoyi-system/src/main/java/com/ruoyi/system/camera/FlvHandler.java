@@ -32,8 +32,6 @@ import io.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;
 import io.netty.util.CharsetUtil;
 
-// http://localhost:8866/live?url=rtsp://admin:VZCDOY@192.168.2.84:554/Streaming/Channels/102
-// ws://localhost:8866/live?url=rtsp://admin:VZCDOY@192.168.2.84:554/Streaming/Channels/102
 @Service
 @Sharable //不new，采用共享handler
 public class FlvHandler extends SimpleChannelInboundHandler<Object> {
@@ -75,7 +73,7 @@ public class FlvHandler extends SimpleChannelInboundHandler<Object> {
             String uri = req.uri();
             if (uri.startsWith("/live/")) {
                 String id = uri.substring("/live/".length());
-                System.out.println("客户端连接 ID = " + id);
+                log.info("{}-客户端连接 ID = {}", id, id);
 
 
                 if (!req.decoderResult().isSuccess() || (!"websocket".equals(req.headers().get("Upgrade")))) {
@@ -122,8 +120,8 @@ public class FlvHandler extends SimpleChannelInboundHandler<Object> {
         // 断开连接
         String id = (String) ctx.channel().attr(AttributeKey.valueOf("streamId")).get();
         if (cameraServeice.activeWrap.containsKey(id)) {
-            cameraServeice.activeWrap.get(id).getSessions().remove(ctx.channel());
-            if (cameraServeice.activeWrap.get(id).getSessions().isEmpty()) {
+            cameraServeice.activeWrap.get(id).getChannels().remove(ctx.channel());
+            if (cameraServeice.activeWrap.get(id).getChannels().isEmpty()) {
                 cameraServeice.activeWrap.get(id).stop();
                 cameraServeice.activeWrap.remove(id);
             }
@@ -166,8 +164,8 @@ public class FlvHandler extends SimpleChannelInboundHandler<Object> {
         ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
         String id = (String) ctx.channel().attr(AttributeKey.valueOf("streamId")).get();
         if (cameraServeice.activeWrap.containsKey(id)) {
-            cameraServeice.activeWrap.get(id).getSessions().remove(ctx.channel());
-            if (cameraServeice.activeWrap.get(id).getSessions().isEmpty()) {
+            cameraServeice.activeWrap.get(id).getChannels().remove(ctx.channel());
+            if (cameraServeice.activeWrap.get(id).getChannels().isEmpty()) {
                 cameraServeice.activeWrap.get(id).stop();
                 cameraServeice.activeWrap.remove(id);
             }
@@ -186,8 +184,8 @@ public class FlvHandler extends SimpleChannelInboundHandler<Object> {
             handshaker.close(ctx.channel(), (CloseWebSocketFrame) frame.retain());
             String id = (String) ctx.channel().attr(AttributeKey.valueOf("streamId")).get();
             if (cameraServeice.activeWrap.containsKey(id)) {
-                cameraServeice.activeWrap.get(id).getSessions().remove(ctx.channel());
-                if (cameraServeice.activeWrap.get(id).getSessions().isEmpty()) {
+                cameraServeice.activeWrap.get(id).getChannels().remove(ctx.channel());
+                if (cameraServeice.activeWrap.get(id).getChannels().isEmpty()) {
                     cameraServeice.activeWrap.get(id).stop();
                     cameraServeice.activeWrap.remove(id);
                 }

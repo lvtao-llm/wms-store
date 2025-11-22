@@ -1,19 +1,20 @@
 package com.ruoyi.system.mapper;
 
 import java.util.List;
+
 import com.ruoyi.system.domain.WmsMaterialOutFileSyncQueue;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 物料出入库相关文件同步队列Mapper接口
- * 
+ *
  * @author ruoyi
  * @date 2025-11-20
  */
-public interface WmsMaterialOutFileSyncQueueMapper 
-{
+public interface WmsMaterialOutFileSyncQueueMapper {
     /**
      * 查询物料出入库相关文件同步队列
-     * 
+     *
      * @param 调拨明细编号 物料出入库相关文件同步队列主键
      * @return 物料出入库相关文件同步队列
      */
@@ -21,7 +22,7 @@ public interface WmsMaterialOutFileSyncQueueMapper
 
     /**
      * 查询物料出入库相关文件同步队列列表
-     * 
+     *
      * @param wmsMaterialOutFileSyncQueue 物料出入库相关文件同步队列
      * @return 物料出入库相关文件同步队列集合
      */
@@ -29,7 +30,7 @@ public interface WmsMaterialOutFileSyncQueueMapper
 
     /**
      * 新增物料出入库相关文件同步队列
-     * 
+     *
      * @param wmsMaterialOutFileSyncQueue 物料出入库相关文件同步队列
      * @return 结果
      */
@@ -37,7 +38,7 @@ public interface WmsMaterialOutFileSyncQueueMapper
 
     /**
      * 修改物料出入库相关文件同步队列
-     * 
+     *
      * @param wmsMaterialOutFileSyncQueue 物料出入库相关文件同步队列
      * @return 结果
      */
@@ -45,7 +46,7 @@ public interface WmsMaterialOutFileSyncQueueMapper
 
     /**
      * 删除物料出入库相关文件同步队列
-     * 
+     *
      * @param 调拨明细编号 物料出入库相关文件同步队列主键
      * @return 结果
      */
@@ -53,9 +54,11 @@ public interface WmsMaterialOutFileSyncQueueMapper
 
     /**
      * 批量删除物料出入库相关文件同步队列
-     * 
+     *
      * @param 调拨明细编号s 需要删除的数据主键集合
      * @return 结果
      */
     public int deleteWmsMaterialOutFileSyncQueueBy调拨明细编号s(String[] 调拨明细编号s);
+
+    List<WmsMaterialOutFileSyncQueue> selectWmsMaterialOutFileSyncQueueListByCount(@Param("count") int count);
 }

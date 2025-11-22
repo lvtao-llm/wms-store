@@ -5,31 +5,30 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="com.ruoyi.system.mapper.WmsMaterialIdentifyRecordMapper">
     
     <resultMap type="WmsMaterialIdentifyRecord" id="WmsMaterialIdentifyRecordResult">
-        <result property="ymd"    column="ymd"    />
-        <result property="hms"    column="hms"    />
+        <result property="ymd"    column="outbound_time"    />
+        <result property="hms"    column="measure_time"    />
         <result property="wzbm"    column="wzbm"    />
-        <result property="wlsbjg"    column="wlsbjg"    />
-        <result property="cph"    column="cph"    />
-        <result property="czs"    column="czs"    />
-        <result property="img1"    column="img1"    />
-        <result property="mg2"    column="mg2"    />
+        <result property="wlsbjg"    column="wzmc"    />
+        <result property="cph"    column="car_number"    />
+        <result property="czs"    column="car_model"    />
+        <result property="img1"    column="tare_image_file"    />
+        <result property="mg2"    column="measure_image_file"    />
+        <result property="imagePath" column="image_path"/>
     </resultMap>
 
     <sql id="selectWmsMaterialIdentifyRecordVo">
-        select ymd, hms, wzbm, wlsbjg, cph, czs, img1, mg2 from wms_material_identify_record
+        select allot_detail_id, storehouse_id, document_type, car_number, car_model, gross_weight, tare_weight, net_weight, meter_id, department, measure_image_file, measure_video_file, guard, outbound_time, measurer, measure_time, tare_image_file, tare_video_file, document_status, custodian, operate_time, adjust_quantity, measure_curvature, outbound_id, measure_type, piece_count, original_document_id, remark, card_id, allot_id, allot_code, allot_type, customer_code, customer_name, material_group, wzbm, wzmc, jldw, sales_company, storehouse, material_yard, allot_quantity, actual_quantity, car_count, planned_price, sales_price, tax_rate, allot_operator, allot_time, balance, tail_material, surplus_material, car_count1, is_multi_car, report_remark, first_tare_weight, department1, yard_code, reporter, adjust_remark, storehouse_image, image_path, multi_allot_detail, net_weight1, business_year_month, squad, material_group1, custodian_id, short_code, self_merge_category, custodian_name, status from wms_material_out
     </sql>
 
     <select id="selectWmsMaterialIdentifyRecordList" parameterType="WmsMaterialIdentifyRecord" resultMap="WmsMaterialIdentifyRecordResult">
         <include refid="selectWmsMaterialIdentifyRecordVo"/>
         <where>  
-            <if test="ymd != null  and ymd != ''"> and ymd = #{ymd}</if>
-            <if test="hms != null  and hms != ''"> and hms = #{hms}</if>
+            <if test="ymd != null  and ymd != ''"> and outbound_time = #{ymd}</if>
+            <if test="hms != null  and hms != ''"> and measure_time = #{hms}</if>
             <if test="wzbm != null  and wzbm != ''"> and wzbm = #{wzbm}</if>
-            <if test="wlsbjg != null  and wlsbjg != ''"> and wlsbjg = #{wlsbjg}</if>
-            <if test="cph != null  and cph != ''"> and cph = #{cph}</if>
-            <if test="czs != null  and czs != ''"> and czs = #{czs}</if>
-            <if test="img1 != null  and img1 != ''"> and img1 = #{img1}</if>
-            <if test="mg2 != null  and mg2 != ''"> and mg2 = #{mg2}</if>
+            <if test="wlsbjg != null  and wlsbjg != ''"> and wzmc = #{wlsbjg}</if>
+            <if test="cph != null  and cph != ''"> and car_number = #{cph}</if>
+            <if test="czs != null  and czs != ''"> and car_model = #{czs}</if>
         </where>
     </select>
     

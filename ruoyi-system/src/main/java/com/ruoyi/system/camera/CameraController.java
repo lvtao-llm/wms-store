@@ -4,10 +4,10 @@ import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.system.domain.WmsDevice;
 import com.ruoyi.system.service.IWmsDeviceService;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,14 +48,14 @@ public class CameraController {
     @Value("${media-server.port:10041}")
     private Integer port;
 
-    @Value("${media-server.ffmpeg-command:ffmpeg -rtsp_transport tcp -stimeout 5000000 -max_delay 500000 -use_wallclock_as_timestamps 1 -i \"%s\" -c:v copy -an -f flv}")
+    @Value("${media-server.ffmpeg-command:ffmpeg -rtsp_transport udp -i %s -c:v copy -an -fflags +genpts -use_wallclock_as_timestamps 1 -flags +global_header -flush_packets 1 -f flv}")
     private String ffmpegCommand;
 
 
     @Value("${server.port:10030}")
     private Integer serverPort;
 
-    private ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
     /**
      * 启动摄像头流
@@ -71,7 +71,7 @@ public class CameraController {
             }
 
             JSONObject data = getCameraInfo(cameraId);
-            String id = (new Date()).getTime() + "";
+            String id = UUID.randomUUID().toString().replace("-", "");
             String rtspUrl = null;
 
             if ("1".equals(channel)) {
@@ -92,16 +92,9 @@ public class CameraController {
                         data.getString("channel2")
                 );
             }
-//            String[] f = new String[]{"D:\\吕胤希\\wx_camera_1731195787660.mp4", "D:\\吕胤希\\WeChat_20240819093216.mp4"};
-//            rtspUrl = f[(int) (Math.random() * 2)];
-//            rtspUrl = "rtsp://admin:Ll112233@192.168.1.64:554/Streaming/Channels/101";
-//                mpegCommand = String.format("ffmpeg -rtsp_transport tcp -max_delay 500000 -use_wallclock_as_timestamps 1 -i " + rtspUrl + " -vf fps=2 -c:v libx264 -f flv ");
-//                mpegCommand = String.format("ffmpeg -rtsp_transport tcp -i %s -c:v copy -an -f flv ", rtspUrl);
             String mpegCommand = String.format(ffmpegCommand + " http://localhost:%s/api/camera/stream/receive/%s", rtspUrl, serverPort, id).replace("  ", " ");
-
             FFmpegWrap fFmpegWrap = new FFmpegWrap(id, cameraId + "-" + channel, rtspUrl, mpegCommand);
             cameraServeice.activeWrap.put(id, fFmpegWrap);
-
 
             Map<String, Object> res = new HashMap<>();
             res.put("success", true);
@@ -123,31 +116,20 @@ public class CameraController {
     }
 
     @RequestMapping("/stream/receive/{id}")
-    @ResponseBody
-    public String receive(@PathVariable("id") String id, HttpServletRequest request) {
+    public void receive(@PathVariable("id") String id, HttpServletRequest request) {
         try {
-            ByteBuf tempCache = cameraServeice.activeWrap.get(id).getTempCache();
             ServletInputStream inputStream = request.getInputStream();
             byte[] buffer = new byte[4096];
             int len;
             while ((len = inputStream.read(buffer)) != -1) {
-                tempCache.writeBytes(buffer, 0, len);
-                while (tempCache.readableBytes() >= 15) {
-                    int dataSize = ((tempCache.getByte(1) & 0xFF) << 16)
-                            | ((tempCache.getByte(2) & 0xFF) << 8)
-                            | (tempCache.getByte(3) & 0xFF);
-                    int fullTagSize = 11 + dataSize + 4;
-                    if (tempCache.readableBytes() < fullTagSize) break;
-                    ByteBuf tagBuf = tempCache.readBytes(fullTagSize);
-                    cameraServeice.activeWrap.get(id).broadcast(tagBuf);
-                }
+                ByteBuf tempBuf = Unpooled.copiedBuffer(buffer, 0, len);
+                cameraServeice.activeWrap.get(id).broadcast(tempBuf);
+                tempBuf.release();
             }
         } catch (Exception e) {
-            log.error("接收数据失败: {}", e.getMessage());
+            log.error("{}-接收数据失败: {}", id, e.getMessage());
         }
-        return "1";
     }
-
 
     @PostConstruct
     public void run() {
@@ -171,7 +153,7 @@ public class CameraController {
             for (Map.Entry<String, FFmpegWrap> entry : entries) {
                 long duration = Duration.between(time, entry.getValue().getTime()).abs().getSeconds();
                 if (duration > 100) {
-                    log.info("关闭不活跃的ffmpegWrap:{}({})", entry.getKey(), entry.getValue().getId());
+                    log.info("{}-关闭不活跃的ffmpegWrap:{}", entry.getKey(), entry.getValue().getId());
                     entry.getValue().stop();
                     key.add(entry.getKey());
                 }
@@ -179,9 +161,9 @@ public class CameraController {
             for (String k : key) {
                 FFmpegWrap remove = cameraServeice.activeWrap.remove(k);
                 if (remove != null) {
-                    for (Channel s : remove.getSessions()) {
+                    for (Channel s : remove.getChannels()) {
                         s.close();
-                        remove.getSessions().remove(s);
+                        remove.getChannels().remove(s);
                     }
                     remove.stop();
                 }

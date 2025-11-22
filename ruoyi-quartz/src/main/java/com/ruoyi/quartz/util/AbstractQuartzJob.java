@@ -30,7 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author ruoyi
  */
 public abstract class AbstractQuartzJob implements Job {
-    private static final Logger log = LoggerFactory.getLogger("job");
+    private static final Logger log = LoggerFactory.getLogger("sys-job");
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     /**
      * 线程本地变量

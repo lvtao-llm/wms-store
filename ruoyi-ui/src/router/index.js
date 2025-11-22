@@ -321,6 +321,12 @@ export const dynamicRoutes = [
         component: () => import('@/views/wms_material_desc/index'),
         name: '物料档案',
         meta: { title: '物料档案' }
+      },
+      {
+        path: 'material-identify-record',
+        component: () => import('@/views/wms_material_identify_record/index'),
+        name: '物料识别记录',
+        meta: { title: '物料识别记录' }
       }
     ]
   },
@@ -465,6 +471,12 @@ export const dynamicRoutes = [
         component: () => import('@/views/wms_area_material_manage/index'),
         name: '物料区域管理',
         meta: { title: '物料区域管理' }
+      },
+      {
+        path: 'area-360',
+        component: () => import('@/views/wms_area_360/index'),
+        name: '360全景',
+        meta: { title: '360全景' }
       },
       // {
       //   path: 'person-in-out-record',

@@ -25,7 +25,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="物料识别结果" prop="wlsbjg">
+      <el-form-item label="识别结果" prop="wlsbjg">
         <el-input
           v-model="queryParams.wlsbjg"
           placeholder="请输入物料识别结果"
@@ -49,22 +49,6 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="图片1" prop="img1">
-        <el-input
-          v-model="queryParams.img1"
-          placeholder="请输入图片1"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="图片2" prop="mg2">
-        <el-input
-          v-model="queryParams.mg2"
-          placeholder="请输入图片2"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -80,7 +64,8 @@
           size="mini"
           @click="handleAdd"
           v-hasPermi="['system:wms_material_identify_record:add']"
-        >新增</el-button>
+        >新增
+        </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -91,7 +76,8 @@
           :disabled="single"
           @click="handleUpdate"
           v-hasPermi="['system:wms_material_identify_record:edit']"
-        >修改</el-button>
+        >修改
+        </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -102,7 +88,8 @@
           :disabled="multiple"
           @click="handleDelete"
           v-hasPermi="['system:wms_material_identify_record:remove']"
-        >删除</el-button>
+        >删除
+        </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -112,21 +99,41 @@
           size="mini"
           @click="handleExport"
           v-hasPermi="['system:wms_material_identify_record:export']"
-        >导出</el-button>
+        >导出
+        </el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <el-table v-loading="loading" :data="wms_material_identify_recordList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="年月日" align="center" prop="ymd" />
-      <el-table-column label="时分秒" align="center" prop="hms" />
-      <el-table-column label="物资编码" align="center" prop="wzbm" />
-      <el-table-column label="物料识别结果" align="center" prop="wlsbjg" />
-      <el-table-column label="车牌号" align="center" prop="cph" />
-      <el-table-column label="车轴数" align="center" prop="czs" />
-      <el-table-column label="图片1" align="center" prop="img1" />
-      <el-table-column label="图片2" align="center" prop="mg2" />
+      <el-table-column type="selection" width="55" align="center"/>
+      <el-table-column label="年月日" align="center" prop="ymd"/>
+      <el-table-column label="物资编码" align="center" prop="wzbm"/>
+      <el-table-column label="物料识别结果" align="center" prop="wlsbjg"/>
+      <el-table-column label="车牌号" align="center" prop="cph"/>
+      <el-table-column label="车轴数" align="center" prop="czs"/>
+      <el-table-column label="图片1" align="center" prop="img1">
+        <template slot-scope="scope">
+          <div v-for="(img, index) in scope.row.img1" :key="index">
+            <image-preview
+              :src="img"
+              :width="50"
+              :height="50"
+            />
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column label="图片2" align="center" prop="img2">
+        <template slot-scope="scope">
+          <div v-for="(img, index) in scope.row.img2" :key="index">
+            <image-preview
+              :src="img"
+              :width="50"
+              :height="50"
+            />
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -135,18 +142,20 @@
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['system:wms_material_identify_record:edit']"
-          >修改</el-button>
+          >修改
+          </el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['system:wms_material_identify_record:remove']"
-          >删除</el-button>
+          >删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -159,28 +168,28 @@
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="年月日" prop="ymd">
-          <el-input v-model="form.ymd" placeholder="请输入年月日" />
+          <el-input v-model="form.ymd" placeholder="请输入年月日"/>
         </el-form-item>
         <el-form-item label="时分秒" prop="hms">
-          <el-input v-model="form.hms" placeholder="请输入时分秒" />
+          <el-input v-model="form.hms" placeholder="请输入时分秒"/>
         </el-form-item>
         <el-form-item label="物资编码" prop="wzbm">
-          <el-input v-model="form.wzbm" placeholder="请输入物资编码" />
+          <el-input v-model="form.wzbm" placeholder="请输入物资编码"/>
         </el-form-item>
         <el-form-item label="物料识别结果" prop="wlsbjg">
-          <el-input v-model="form.wlsbjg" placeholder="请输入物料识别结果" />
+          <el-input v-model="form.wlsbjg" placeholder="请输入物料识别结果"/>
         </el-form-item>
         <el-form-item label="车牌号" prop="cph">
-          <el-input v-model="form.cph" placeholder="请输入车牌号" />
+          <el-input v-model="form.cph" placeholder="请输入车牌号"/>
         </el-form-item>
         <el-form-item label="车轴数" prop="czs">
-          <el-input v-model="form.czs" placeholder="请输入车轴数" />
+          <el-input v-model="form.czs" placeholder="请输入车轴数"/>
         </el-form-item>
         <el-form-item label="图片1" prop="img1">
-          <el-input v-model="form.img1" placeholder="请输入图片1" />
+          <el-input v-model="form.img1" placeholder="请输入图片1"/>
         </el-form-item>
         <el-form-item label="图片2" prop="mg2">
-          <el-input v-model="form.mg2" placeholder="请输入图片2" />
+          <el-input v-model="form.mg2" placeholder="请输入图片2"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -192,7 +201,14 @@
 </template>
 
 <script>
-import { listWms_material_identify_record, getWms_material_identify_record, delWms_material_identify_record, addWms_material_identify_record, updateWms_material_identify_record } from "@/api/system/wms_material_identify_record"
+import {
+  listWms_material_identify_record,
+  getWms_material_identify_record,
+  delWms_material_identify_record,
+  addWms_material_identify_record,
+  updateWms_material_identify_record
+} from "@/api/system/wms_material_identify_record"
+import path from 'path-browserify'
 
 export default {
   name: "Wms_material_identify_record",
@@ -232,8 +248,7 @@ export default {
       // 表单参数
       form: {},
       // 表单校验
-      rules: {
-      }
+      rules: {}
     }
   },
   created() {
@@ -244,7 +259,14 @@ export default {
     getList() {
       this.loading = true
       listWms_material_identify_record(this.queryParams).then(response => {
-        this.wms_material_identify_recordList = response.rows
+        this.wms_material_identify_recordList = response.rows.map(item => {
+          return {
+            ...item,
+            wlsbjg: item.wlsbjg ? item.wlsbjg.split(' ').slice(0, 2).join(' ') : item.wlsbjg,
+            img1: item.img1 ? item.img1.split(",").map(img => path.join("/profile/", item.imagePath, img)) : [],
+            img2: item.mg2 ? item.mg2.split(",").map(img => path.join("/profile/", item.imagePath, img)) : []
+          }
+        })
         this.total = response.total
         this.loading = false
       })
@@ -281,7 +303,7 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.ymd)
-      this.single = selection.length!==1
+      this.single = selection.length !== 1
       this.multiple = !selection.length
     },
     /** 新增按钮操作 */
@@ -323,12 +345,13 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const ymds = row.ymd || this.ids
-      this.$modal.confirm('是否确认删除物料识别记录编号为"' + ymds + '"的数据项？').then(function() {
+      this.$modal.confirm('是否确认删除物料识别记录编号为"' + ymds + '"的数据项？').then(function () {
         return delWms_material_identify_record(ymds)
       }).then(() => {
         this.getList()
         this.$modal.msgSuccess("删除成功")
-      }).catch(() => {})
+      }).catch(() => {
+      })
     },
     /** 导出按钮操作 */
     handleExport() {

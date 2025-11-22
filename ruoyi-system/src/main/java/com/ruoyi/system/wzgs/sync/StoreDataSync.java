@@ -20,6 +20,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.util.EntityUtils;
+import org.apache.logging.log4j.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -171,6 +174,12 @@ public class StoreDataSync {
     private boolean yySyncEnable;
 
     /**
+     * 调拨照片同步是否启用
+     */
+    @Value("${wzgs.db.sync.enabled-file:false}")
+    private boolean fileSyncEnable;
+
+    /**
      * httpUtil
      */
     @Autowired
@@ -180,11 +189,16 @@ public class StoreDataSync {
     private String fileApiUrl;
     private CloseableHttpClient httpClient;
 
+    private String dbFilePath;
+
     /**
      * 初始化
      */
     @PostConstruct
     public void init() throws Exception {
+        dbFilePath = Paths.get(RuoYiConfig.getProfile(), "skpic").toFile().getPath();
+        log.info("StoreDataSync初始化-本地调拨文件存储路径:{}", dbFilePath);
+        log.info("StoreDataSync初始化-启用调拨文件同步开关:{}", fileSyncEnable);
         List<SysConfig> sysConfigs = configService.selectConfigList(new SysConfig());
         for (SysConfig sysConfig : sysConfigs) {
             if (sysConfig.getConfigKey().equals(jlOffsetKey)) {
@@ -215,7 +229,9 @@ public class StoreDataSync {
         // 创建HTTP客户端
         this.httpClient = HttpClients.custom().setConnectionManager(connManager).setDefaultRequestConfig(requestConfig).build();
 
-        scheduler.scheduleAtFixedRate(this::syncDbFile, 0, 1, TimeUnit.SECONDS);
+        if (fileSyncEnable) {
+            scheduler.scheduleAtFixedRate(this::syncDbFile, 0, 1, TimeUnit.SECONDS);
+        }
     }
 
     /**
@@ -300,10 +316,8 @@ public class StoreDataSync {
             for (WmsMaterialOut w : wzjtViewDbSks) {
 
                 String imagePath = w.getImagePath();
-                ;
-
-                if (imagePath != null) {
-                    w.setImagePath(w.getImagePath().replace("d:/skpic/", "e:/skpic"));
+                if (!Strings.isEmpty(imagePath)) {
+                    w.setImagePath(Paths.get(dbFilePath, w.getImagePath().replace("d:/skpic/", "skpic/")).toFile().getPath());
                 }
                 // 插入到大仓出库数据表
                 wmsMaterialOutService.insertWmsMaterialOut(w);
@@ -321,21 +335,27 @@ public class StoreDataSync {
                 wmsMaterialStaticsDay.setAreaCodes(getAreaName(w));
                 wmsMaterialStaticsDayService.updateWmsMaterialStaticsDay(wmsMaterialStaticsDay);
 
-                WmsMaterialOutFileSyncQueue wmsMaterialOutFileSyncQueue = new WmsMaterialOutFileSyncQueue();
-                wmsMaterialOutFileSyncQueue.set调拨明细编号(w.getAllotId());
-                if (w.getMeasureImageFile() != null && imagePath != null) {
-                    for (String file : w.getMeasureImageFile().split(",")) {
-                        wmsMaterialOutFileSyncQueue.set字段名称("计量图片文件");
-                        wmsMaterialOutFileSyncQueue.set文件路径(imagePath + file);
-                        wmsMaterialOutFileSyncQueueService.insertWmsMaterialOutFileSyncQueue(wmsMaterialOutFileSyncQueue);
+                if (!Strings.isEmpty(w.getAllotId())) {
+                    WmsMaterialOutFileSyncQueue wmsMaterialOutFileSyncQueue = new WmsMaterialOutFileSyncQueue();
+                    wmsMaterialOutFileSyncQueue.set调拨明细编号(w.getAllotId());
+                    if (!Strings.isEmpty(w.getMeasureImageFile()) && !Strings.isEmpty(imagePath)) {
+                        for (String file : w.getMeasureImageFile().split(",")) {
+                            if (!Strings.isEmpty(file)) {
+                                wmsMaterialOutFileSyncQueue.set字段名称("计量图片文件");
+                                wmsMaterialOutFileSyncQueue.set文件路径(Paths.get(imagePath, file).toFile().getPath());
+                                wmsMaterialOutFileSyncQueueService.insertWmsMaterialOutFileSyncQueue(wmsMaterialOutFileSyncQueue);
+                            }
+                        }
                     }
-                }
 
-                if (w.getTareImageFile() != null && imagePath != null) {
-                    for (String file : w.getTareImageFile().split(",")) {
-                        wmsMaterialOutFileSyncQueue.set字段名称("皮重图片文件");
-                        wmsMaterialOutFileSyncQueue.set文件路径(imagePath + file);
-                        wmsMaterialOutFileSyncQueueService.insertWmsMaterialOutFileSyncQueue(wmsMaterialOutFileSyncQueue);
+                    if (!Strings.isEmpty(w.getTareImageFile()) && !Strings.isEmpty(imagePath)) {
+                        for (String file : w.getTareImageFile().split(",")) {
+                            if (!Strings.isEmpty(file)) {
+                                wmsMaterialOutFileSyncQueue.set字段名称("皮重图片文件");
+                                wmsMaterialOutFileSyncQueue.set文件路径(Paths.get(imagePath, file).toFile().getPath());
+                                wmsMaterialOutFileSyncQueueService.insertWmsMaterialOutFileSyncQueue(wmsMaterialOutFileSyncQueue);
+                            }
+                        }
                     }
                 }
             }
@@ -434,28 +454,38 @@ public class StoreDataSync {
     }
 
     private void syncDbFile() {
-        PageUtils.startPage();
-        WmsMaterialOutFileSyncQueue wmsMaterialOutFileSyncQueue = new WmsMaterialOutFileSyncQueue();
-        List<WmsMaterialOutFileSyncQueue> wmsMaterialOutFileSyncQueues = wmsMaterialOutFileSyncQueueService.selectWmsMaterialOutFileSyncQueueList(wmsMaterialOutFileSyncQueue);
+
+        List<WmsMaterialOutFileSyncQueue> wmsMaterialOutFileSyncQueues = wmsMaterialOutFileSyncQueueService.selectWmsMaterialOutFileSyncQueueListByCount(10);
         for (WmsMaterialOutFileSyncQueue w : wmsMaterialOutFileSyncQueues) {
+            if (Strings.isEmpty(w.get调拨明细编号()) || Strings.isEmpty(w.get文件路径())) {
+                continue;
+            }
             String url = this.fileApiUrl + w.get文件路径();
-            try (CloseableHttpResponse response = httpClient.execute(new HttpGet(url))) {
+            HttpGet get = new HttpGet(url);
+            get.addHeader("Accept", "image/jpeg,image/jpg,image/png,image/gif,*/*;q=0.8");
+            get.addHeader("Accept-Encoding", "gzip, deflate");
+            get.addHeader("Accept-Language", "zh-CN,zh;q=0.9");
+            get.addHeader("Cache-Control", "no-cache");
+            get.addHeader("Connection", "keep-alive");
+            get.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36");
+            try (CloseableHttpResponse response = httpClient.execute(get)) {
                 int statusCode = response.getStatusLine().getStatusCode();
                 if (statusCode == HttpStatus.SC_OK) {
-                    String folder = w.get文件路径().substring(0, w.get文件路径().lastIndexOf("/"));
-                    File saveDir = new File(folder);
-                    if (!saveDir.exists()) {
-                        saveDir.mkdirs();
+                    Path filePath = Paths.get(dbFilePath, w.get文件路径().replace("d:/skpic/", ""));
+                    File file = filePath.toFile();
+                    File parentFile = file.getParentFile();
+                    if (parentFile != null && !parentFile.exists()) {
+                        parentFile.mkdirs();
                     }
-                    try (FileOutputStream fos = new FileOutputStream(saveDir)) {
+                    try (FileOutputStream fos = new FileOutputStream(file)) {
                         response.getEntity().writeTo(fos);
                         wmsMaterialOutFileSyncQueueService.deleteWmsMaterialOutFileSyncQueueBy调拨明细编号(w.get调拨明细编号());
                     }
                 } else {
                     throw new RuntimeException("HTTP Get 下载调拨相关文件失败: " + statusCode + "[ " + url + " ]");
                 }
-            } catch (IOException e) {
-                log.error(e.getMessage(), e);
+            } catch (Exception e) {
+                log.error("下载文件失败: {}", e.getMessage(), e);
             }
         }
     }

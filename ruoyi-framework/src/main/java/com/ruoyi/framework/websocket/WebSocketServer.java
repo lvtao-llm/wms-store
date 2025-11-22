@@ -250,46 +250,50 @@ public class WebSocketServer {
             }
             clientSessions.put(requestId, session);
 
-
             // 首次连接时向客户端发送消息
+            this.firstData(session);
 
-            // 设备服务
-            IWmsDeviceService wmsDeviceService = SpringUtils.getBean(IWmsDeviceService.class);
-
-            // 摄像头设备
-            WmsDevice wmsDevice = new WmsDevice();
-            wmsDevice.setDeviceType("摄像头");
-            List<WmsDevice> wmsDevicesCamera = wmsDeviceService.selectWmsDeviceList(wmsDevice);
-
-            // 传感器设备
-            wmsDevice.setDeviceType("传感器");
-            List<WmsDevice> wmsDevicesSensor = wmsDeviceService.selectWmsDeviceList(wmsDevice);
-            wmsDevicesSensor.addAll(wmsDevicesCamera);
-
-            // 向客户端发送的消息体
-            Map<String, Object> deviceBody = new HashMap<String, Object>() {
-                {
-                    put("msgType", "摄像头与传感器");
-                    put("rules", wmsDevicesSensor);
-                }
-            };
-
-            // 转JSON字符串
-            String deviceJson = new JSONObject(deviceBody).toJSONString();
-
-            // 向当前连接发送初始数据
-            session.getAsyncRemote().sendText(deviceJson);
-
-            List<WmsArea360> wmsArea360s = wmsArea360Service.selectWmsArea360List(new WmsArea360());
-            Map<String, Object> wmsArea360sBody = new HashMap<String, Object>() {{
-                put("msgType", "photo360");
-                put("data", wmsArea360s);
-            }};
-            String area360Json = new JSONObject(wmsArea360sBody).toJSONString();
-            session.getAsyncRemote().sendText(area360Json);
         } catch (Exception e) {
             log.error("连接异常:", e);
         }
+    }
+
+    private void firstData(Session session) {
+        // 设备服务
+        IWmsDeviceService wmsDeviceService = SpringUtils.getBean(IWmsDeviceService.class);
+
+        // 查询条件
+        WmsDevice wmsDeviceQuery = new WmsDevice();
+
+        // 摄像头设备
+        wmsDeviceQuery.setDeviceType("摄像头");
+        List<WmsDevice> wmsDevicesCamera = wmsDeviceService.selectWmsDeviceList(wmsDeviceQuery);
+
+        // 传感器设备
+        wmsDeviceQuery.setDeviceType("传感器");
+        List<WmsDevice> wmsDevicesSensor = wmsDeviceService.selectWmsDeviceList(wmsDeviceQuery);
+
+        // 向客户端发送的消息体
+        Map<String, Object> deviceBody = new HashMap<String, Object>() {
+            {
+                put("msgType", "摄像头与传感器");
+                put("rules", new ArrayList<WmsDevice>() {{
+                    addAll(wmsDevicesCamera);
+                    addAll(wmsDevicesSensor);
+                }});
+            }
+        };
+        // 向当前连接发送初始摄像头与传感器数据
+        session.getAsyncRemote().sendText(new JSONObject(deviceBody).toJSONString());
+
+        // 区域点位全景数据
+        List<WmsArea360> wmsArea360s = wmsArea360Service.selectWmsArea360List(new WmsArea360());
+        Map<String, Object> wmsArea360sBody = new HashMap<String, Object>() {{
+            put("msgType", "photo360");
+            put("data", wmsArea360s);
+        }};
+        // 向当前连接发送初始区域点位全景数据
+        session.getAsyncRemote().sendText(new JSONObject(wmsArea360sBody).toJSONString());
     }
 
     /**

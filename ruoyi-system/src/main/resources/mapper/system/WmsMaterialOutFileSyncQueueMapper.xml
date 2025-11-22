@@ -28,6 +28,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where 调拨明细编号 = #{调拨明细编号}
     </select>
 
+    <select id="selectWmsMaterialOutFileSyncQueueListByCount">
+        <include refid="selectWmsMaterialOutFileSyncQueueVo"/>
+        limit #{count}
+    </select>
+
     <insert id="insertWmsMaterialOutFileSyncQueue" parameterType="WmsMaterialOutFileSyncQueue">
         insert into wms_material_out_file_sync_queue
         <trim prefix="(" suffix=")" suffixOverrides=",">
