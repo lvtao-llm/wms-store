@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
@@ -47,25 +48,25 @@ public class GoPrivateSync {
      * 定时同步Lanya定位数据开关
      */
     @Value("${lanya.position.sync-api.enabled:false}")
-    private boolean enablePositionApiSync;
-
-    /**
-     * 定时同步Lanya报警数据开关
-     */
-    @Value("${lanya.alarm.sync-api.enabled:false}")
-    private boolean enableAlarmApiSync;
+    private boolean positionSyncEnabled;
 
     /**
      * 定时同步Lanya定位数据API地址
      */
     @Value("${lanya.position.sync-api.api-url:http://112.98.110.101:10030/system/lanya_position_history/new}")
-    private String apiUrlPosition;
+    private String positionSyncUrl;
+
+    /**
+     * 定时同步Lanya报警数据开关
+     */
+    @Value("${lanya.alarm.sync-api.enabled:false}")
+    private boolean sosSyncEnabled;
 
     /**
      * 定时同步Lanya定位数据API地址
      */
     @Value("${lanya.alarm.sync-api.api-url:http://112.98.110.101:10030/system/lanya_core_alarm/new-sos}")
-    private String apiUrlSos;
+    private String sosSyncUrl;
 
     /**
      * JSON对象转换器
@@ -83,16 +84,25 @@ public class GoPrivateSync {
     @Autowired
     private ILanyaPositionHistoryService lanyaPositionHistoryService;
 
+    @PostConstruct
+    public void init() {
+        log.info("同步凯德信定位卡数据到物资公司开关：{}", positionSyncEnabled);
+        log.info("同步凯德信定位卡数据到物资公司数据请求URL:{}", positionSyncUrl);
+        log.info("同步凯德信定位卡SOS报警数据到物资公司开关：{}", sosSyncEnabled);
+        log.info("同步凯德信定位卡SOS报警数据到物资公司数据请求URL:{}", sosSyncUrl);
+    }
+
     public void CoreAlarmSync() throws ParseException, IOException {
-        if (!enableAlarmApiSync) {
+        if (!sosSyncEnabled) {
             return;
         }
 
-        try (CloseableHttpResponse response = httpUtil.executeGet(this.apiUrlSos)) {
+        log.info("开始同步凯德信定位卡SOS报警数据到物资公司");
+        try (CloseableHttpResponse response = httpUtil.executeGet(this.sosSyncUrl)) {
             int statusCode = response.getStatusLine().getStatusCode();
             if (statusCode == HttpStatus.SC_OK) {
                 String content = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
-                log.info("CoreAlarmSync获取数据({})成功:{}", this.apiUrlSos, content);
+                log.info("CoreAlarmSync获取数据({})成功:{}", this.sosSyncUrl, content);
                 JSONObject object = this.mapper.readValue(content, JSONObject.class);
                 for (int i = 0; i < object.getJSONArray("rows").size(); i++) {
                     JSONObject row = object.getJSONArray("rows").getJSONObject(i);
@@ -100,21 +110,23 @@ public class GoPrivateSync {
                     lanyaCoreAlarmService.insertLanyaCoreAlarm(position);
                 }
             } else {
-                throw new RuntimeException("HTTP Get请求失败: " + statusCode + "[ " + this.apiUrlSos + " ]");
+                throw new RuntimeException("HTTP Get请求失败: " + statusCode + "[ " + this.sosSyncUrl + " ]");
             }
         }
+        log.info("凯德信定位卡SOS报警数据到物资公司同步完成");
     }
 
     public void PositionSync() throws ParseException, IOException {
-        if (!enablePositionApiSync) {
+        if (!positionSyncEnabled) {
             return;
         }
 
-        try (CloseableHttpResponse response = httpUtil.executeGet(this.apiUrlPosition)) {
+        log.info("开始同步凯德信定位卡数据到物资公司");
+        try (CloseableHttpResponse response = httpUtil.executeGet(this.positionSyncUrl)) {
             int statusCode = response.getStatusLine().getStatusCode();
             if (statusCode == HttpStatus.SC_OK) {
                 String content = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
-                log.info("PositionSync获取数据({})成功:{}", this.apiUrlPosition, content);
+                log.info("PositionSync获取数据({})成功:{}", this.positionSyncUrl, content);
                 JSONObject object = this.mapper.readValue(content, JSONObject.class);
                 for (int i = 0; i < object.getJSONArray("rows").size(); i++) {
                     JSONObject row = object.getJSONArray("rows").getJSONObject(i);
@@ -124,8 +136,9 @@ public class GoPrivateSync {
                     lanyaPositionHistoryService.insertLanyaPositionHistory(position, tableName);
                 }
             } else {
-                throw new RuntimeException("HTTP Get请求失败: " + statusCode + "[ " + this.apiUrlPosition + " ]");
+                throw new RuntimeException("HTTP Get请求失败: " + statusCode + "[ " + this.positionSyncUrl + " ]");
             }
         }
+        log.info("凯德信定位卡数据到物资公司同步完成");
     }
 }
