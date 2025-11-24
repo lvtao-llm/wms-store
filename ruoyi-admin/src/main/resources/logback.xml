@@ -86,11 +86,11 @@
     </appender>
 
     <!-- 定义摄像头流相关日志的 appender -->
-    <appender name="realtime-data-podcast" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${log.path}/realtime-data-podcast.log</file>
+    <appender name="websocket-data" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.path}/websocket-data.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- 按天回滚 daily -->
-            <fileNamePattern>${log.path}/%d{yyyy-MM-dd}/realtime-data-podcast.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>${log.path}/%d{yyyy-MM-dd}/websocket-data.%d{yyyy-MM-dd}.log</fileNamePattern>
             <!-- 日志最大的历史 60天 -->
             <maxHistory>60</maxHistory>
         </rollingPolicy>
@@ -149,8 +149,8 @@
         <appender-ref ref="camera-stream"/>
     </logger>
 
-    <logger name="realtime-data-podcast" level="info">
-        <appender-ref ref="realtime-data-podcast"/>
+    <logger name="websocket-data" level="info">
+        <appender-ref ref="websocket-data"/>
     </logger>
 
     <logger name="wzgs-sync" level="info">

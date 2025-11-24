@@ -46,7 +46,7 @@ public class WebSocketServer {
     /**
      * WebSocketServer 日志控制器
      */
-    private static final Logger log = LoggerFactory.getLogger("realtime-data-podcast");
+    private static final Logger log = LoggerFactory.getLogger("websocket-data");
 
     /**
      * 第三方授权
@@ -273,27 +273,35 @@ public class WebSocketServer {
         wmsDeviceQuery.setDeviceType("传感器");
         List<WmsDevice> wmsDevicesSensor = wmsDeviceService.selectWmsDeviceList(wmsDeviceQuery);
 
+        // 区域点位全景数据
+        List<WmsArea360> wmsArea360s = wmsArea360Service.selectWmsArea360List(new WmsArea360());
+        List<JSONObject> wmsArea360sBody = new ArrayList<>();
+        for(WmsArea360 wmsArea360 : wmsArea360s){
+            JSONObject wmsArea360Body = new JSONObject();
+            wmsArea360Body.put("id", wmsArea360.getId());
+            wmsArea360Body.put("deviceName", wmsArea360.getName());
+            wmsArea360Body.put("deviceType", "传感器");
+            wmsArea360Body.put("longitude", wmsArea360.getLongitude());
+            wmsArea360Body.put("latitude", wmsArea360.getLatitude());
+            wmsArea360Body.put("altitude", 0);
+            wmsArea360Body.put("type", "watch");
+            wmsArea360Body.put("photo360", wmsArea360.getImage());
+            wmsArea360sBody.add(wmsArea360Body);
+        }
+
         // 向客户端发送的消息体
         Map<String, Object> deviceBody = new HashMap<String, Object>() {
             {
                 put("msgType", "摄像头与传感器");
-                put("rules", new ArrayList<WmsDevice>() {{
+                put("rules", new ArrayList<Object>() {{
                     addAll(wmsDevicesCamera);
                     addAll(wmsDevicesSensor);
+                    addAll(wmsArea360sBody);
                 }});
             }
         };
         // 向当前连接发送初始摄像头与传感器数据
         session.getAsyncRemote().sendText(new JSONObject(deviceBody).toJSONString());
-
-        // 区域点位全景数据
-        List<WmsArea360> wmsArea360s = wmsArea360Service.selectWmsArea360List(new WmsArea360());
-        Map<String, Object> wmsArea360sBody = new HashMap<String, Object>() {{
-            put("msgType", "photo360");
-            put("data", wmsArea360s);
-        }};
-        // 向当前连接发送初始区域点位全景数据
-        session.getAsyncRemote().sendText(new JSONObject(wmsArea360sBody).toJSONString());
     }
 
     /**

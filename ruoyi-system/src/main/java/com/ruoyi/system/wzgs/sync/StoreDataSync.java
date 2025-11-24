@@ -372,6 +372,7 @@ public class StoreDataSync {
             return;
         }
 
+        log.info("开始同步库存数据...");
         // 查询参数
         WmsMaterialStock wzjtViewDbSk = new WmsMaterialStock();
 
@@ -408,11 +409,12 @@ public class StoreDataSync {
         SimpleDateFormat sdfTableSuffix = new SimpleDateFormat("yyyyMMdd");
         String ymd = sdfTableSuffix.format(new Date());
 
-        // 查询参数
-        WmsMaterialStock wzjtViewDbSk = new WmsMaterialStock();
+        log.info("开始同步车辆预约数据...");
 
         // 获取新的库存数据
         List<WmsVehicleGatepass> appointments = wzjtViewYySkMapper.selectViewYySkList();
+
+        log.info("获取车辆预约数据完成，共{}条数据", appointments.size());
 
         // 删除大仓库存数据
         WmsVehicleGatepass query = new WmsVehicleGatepass();
@@ -451,11 +453,14 @@ public class StoreDataSync {
             w.setAreaCodes(String.join(",", areaCodes));
             wmsVehicleGatepassService.insertWmsVehicleGatepass(w);
         }
+        log.info("同步车辆预约数据完成");
     }
 
     private void syncDbFile() {
 
+        log.info("开始同步调拨文件数据...");
         List<WmsMaterialOutFileSyncQueue> wmsMaterialOutFileSyncQueues = wmsMaterialOutFileSyncQueueService.selectWmsMaterialOutFileSyncQueueListByCount(10);
+        log.info("获取调拨文件数据完成，共{}条数据", wmsMaterialOutFileSyncQueues.size());
         for (WmsMaterialOutFileSyncQueue w : wmsMaterialOutFileSyncQueues) {
             if (Strings.isEmpty(w.get调拨明细编号()) || Strings.isEmpty(w.get文件路径())) {
                 continue;
@@ -471,7 +476,7 @@ public class StoreDataSync {
             try (CloseableHttpResponse response = httpClient.execute(get)) {
                 int statusCode = response.getStatusLine().getStatusCode();
                 if (statusCode == HttpStatus.SC_OK) {
-                    Path filePath = Paths.get(dbFilePath, w.get文件路径().replace("d:/skpic/", ""));
+                    Path filePath = Paths.get(dbFilePath, w.get文件路径().replace("d:/skpic/", "skpic/"));
                     File file = filePath.toFile();
                     File parentFile = file.getParentFile();
                     if (parentFile != null && !parentFile.exists()) {
@@ -488,6 +493,7 @@ public class StoreDataSync {
                 log.error("下载文件失败: {}", e.getMessage(), e);
             }
         }
+        log.info("同步调拨文件数据完成");
     }
 
     /**
