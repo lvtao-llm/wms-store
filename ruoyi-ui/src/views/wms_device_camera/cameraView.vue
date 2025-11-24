@@ -49,6 +49,11 @@ export default {
         channel: 1,
         tag: "video_left",
         player: null,
+      },
+      {
+        channel: 2,
+        tag: "video_right",
+        player: null,
       }
     ];
   },
@@ -88,7 +93,7 @@ export default {
                   {
                     type: "flv",
                     isLive: true,
-                    url: `ws://localhost:10041/live/${res.id}`,
+                    url: `ws://${baseUrl}:${res.port}/live/${res.id}`,
                   },
                   {
                     enableWorker: false,
