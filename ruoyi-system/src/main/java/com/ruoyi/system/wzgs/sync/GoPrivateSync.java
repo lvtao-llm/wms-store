@@ -50,7 +50,7 @@ public class GoPrivateSync {
     private boolean enablePositionApiSync;
 
     /**
-     * 定时同步Lanya定位数据开关
+     * 定时同步Lanya报警数据开关
      */
     @Value("${lanya.alarm.sync-api.enabled:false}")
     private boolean enableAlarmApiSync;
@@ -64,7 +64,7 @@ public class GoPrivateSync {
     /**
      * 定时同步Lanya定位数据API地址
      */
-    @Value("${lanya.position.sync-api.api-url:http://112.98.110.101:10030/system/lanya_core_alarm/new-sos}")
+    @Value("${lanya.alarm.sync-api.api-url:http://112.98.110.101:10030/system/lanya_core_alarm/new-sos}")
     private String apiUrlSos;
 
     /**

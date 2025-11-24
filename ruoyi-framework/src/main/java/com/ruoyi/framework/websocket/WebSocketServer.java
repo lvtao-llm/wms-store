@@ -97,17 +97,26 @@ public class WebSocketServer {
      */
     private WebSocketClient thirdWebSocketClient;
 
+
     /**
      * 报警规则服务
      */
+    private static IWmsAlarmRuleService wmsAlarmRuleService;
+
     @Autowired
-    private IWmsAlarmRuleService wmsAlarmRuleService;
+    public void setWmsAlarmRuleService(IWmsAlarmRuleService wmsAlarmRuleService) {
+        WebSocketServer.wmsAlarmRuleService = wmsAlarmRuleService;
+    }
 
     /**
      * 设备服务
      */
-    @Autowired
     private static IWmsDeviceService wmsDeviceService;
+
+    @Autowired
+    public void setWmsDeviceService(IWmsDeviceService wmsDeviceService) {
+        WebSocketServer.wmsDeviceService = wmsDeviceService;
+    }
 
     /**
      * 存储消息队列
@@ -117,29 +126,57 @@ public class WebSocketServer {
     /**
      * 物料日统计服务
      */
+    private static IWmsMaterialStaticsDayService wmsMaterialStaticsDayService;
+
     @Autowired
-    private IWmsMaterialStaticsDayService wmsMaterialStaticsDayService;
+    public void setWmsMaterialStaticsDayService(IWmsMaterialStaticsDayService wmsMaterialStaticsDayService) {
+        WebSocketServer.wmsMaterialStaticsDayService = wmsMaterialStaticsDayService;
+    }
 
     /**
      * 区域服务
      */
-    @Autowired
-    private IWmsAreaService wmsAreaService;
+    private static IWmsAreaService wmsAreaService;
 
     @Autowired
-    private IWmsMaterialInService wmsMaterialInService;
+    public void setWmsAreaService(IWmsAreaService wmsAreaService) {
+        WebSocketServer.wmsAreaService = wmsAreaService;
+    }
+
+    private static IWmsMaterialInService wmsMaterialInService;
 
     @Autowired
-    private IWmsMaterialOutService wmsMaterialOutService;
+    public void setWmsMaterialInService(IWmsMaterialInService wmsMaterialInService) {
+        WebSocketServer.wmsMaterialInService = wmsMaterialInService;
+    }
+
+    private static IWmsMaterialOutService wmsMaterialOutService;
 
     @Autowired
-    private IWmsMaterialStockService wmsMaterialStockService;
+    public void setWmsMaterialOutService(IWmsMaterialOutService wmsMaterialOutService) {
+        WebSocketServer.wmsMaterialOutService = wmsMaterialOutService;
+    }
+
+    private static IWmsMaterialStockService wmsMaterialStockService;
 
     @Autowired
-    private ILanyaCorePersonService lanyaCorePersonService;
+    public void setWmsMaterialStockService(IWmsMaterialStockService wmsMaterialStockService) {
+        WebSocketServer.wmsMaterialStockService = wmsMaterialStockService;
+    }
+
+    private static ILanyaCorePersonService lanyaCorePersonService;
 
     @Autowired
-    private IWmsArea360Service wmsArea360Service;
+    public void setLanyaCorePersonService(ILanyaCorePersonService lanyaCorePersonService) {
+        WebSocketServer.lanyaCorePersonService = lanyaCorePersonService;
+    }
+
+    private static IWmsArea360Service wmsArea360Service;
+
+    @Autowired
+    public void setWmsArea360Service(IWmsArea360Service wmsArea360Service) {
+        WebSocketServer.wmsArea360Service = wmsArea360Service;
+    }
 
     /**
      * 时间格式 年月日
@@ -149,11 +186,16 @@ public class WebSocketServer {
     /**
      * Lanya定位数据数据服务
      */
+    private static ILanyaPositionHistoryService lanyaPositionHistoryService;
+
     @Autowired
-    private ILanyaPositionHistoryService lanyaPositionHistoryService;
+    public void setLanyaPositionHistoryService(ILanyaPositionHistoryService lanyaPositionHistoryService) {
+        WebSocketServer.lanyaPositionHistoryService = lanyaPositionHistoryService;
+    }
 
     private Date mockPersonDate = null;
     private Date mockVehiclDate = null;
+
 
     /**
      * 初始化
@@ -259,9 +301,6 @@ public class WebSocketServer {
     }
 
     private void firstData(Session session) {
-        // 设备服务
-        IWmsDeviceService wmsDeviceService = SpringUtils.getBean(IWmsDeviceService.class);
-
         // 查询条件
         WmsDevice wmsDeviceQuery = new WmsDevice();
 
@@ -276,7 +315,7 @@ public class WebSocketServer {
         // 区域点位全景数据
         List<WmsArea360> wmsArea360s = wmsArea360Service.selectWmsArea360List(new WmsArea360());
         List<JSONObject> wmsArea360sBody = new ArrayList<>();
-        for(WmsArea360 wmsArea360 : wmsArea360s){
+        for (WmsArea360 wmsArea360 : wmsArea360s) {
             JSONObject wmsArea360Body = new JSONObject();
             wmsArea360Body.put("id", wmsArea360.getId());
             wmsArea360Body.put("deviceName", wmsArea360.getName());

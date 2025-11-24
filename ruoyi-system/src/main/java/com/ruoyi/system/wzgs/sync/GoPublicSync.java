@@ -5,6 +5,8 @@ import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.system.domain.WmsCardContentSend;
 import com.ruoyi.system.mapper.WmsCardContentSendMapper;
 import com.ruoyi.system.utils.HttpUtil;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,16 +39,27 @@ public class GoPublicSync {
     @Value("${lanya.card-message.sync-api.api-url:http://112.98.110.101:10030/system/wms_card_content_send}")
     private String apiUrl;
 
+    @Value("${lanya.card-message-broadcast.sync.enabled:false}")
+    private boolean enableCardMessageBroadCase;
+
     /**
      * 卡信息播报同步
      *
      * @throws IOException
      */
     public void CardMessageBroadCase() throws IOException {
+        if (!enableCardMessageBroadCase) {
+            return;
+        }
         List<WmsCardContentSend> wmsCardContentSends = wmsCardContentSendMapper.selectWmsCardContentNew();
         for (WmsCardContentSend wmsCardContentSend : wmsCardContentSends) {
             JSONObject jsonObject = (JSONObject) JSON.toJSON(wmsCardContentSend);
-            httpUtil.executePost(this.apiUrl, jsonObject);
+            try (CloseableHttpResponse response = httpUtil.executePost(this.apiUrl, jsonObject)) {
+                int statusCode = response.getStatusLine().getStatusCode();
+                if (statusCode == HttpStatus.SC_OK) {
+                    wmsCardContentSendMapper.deleteWmsCardContentSendById(wmsCardContentSend.getId());
+                }
+            }
         }
     }
 }

@@ -127,7 +127,8 @@ public class SecurityConfig {
                                     "/system/wms_inspection_rule/**",
                                     "/system/wms_device_camera_log/**",
                                     "/common/upload/**",
-                                    "/api/camera/stream/receive/**"
+                                    "/api/camera/stream/receive/**",
+                                    "api/camera/stream/start/**"
                             ).permitAll()
                             // 静态资源，可匿名访问
                             .antMatchers(HttpMethod.GET, "/", "/*.html", "/**/*.html", "/**/*.css", "/**/*.js", "/profile/**").permitAll()

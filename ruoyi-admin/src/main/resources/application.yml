@@ -158,13 +158,26 @@ lanya:
       past-table: # 是否在启动时同步过往的表
         enabled: false
     sync-api: # 同步 101 机器的position_history 表数据到物资公司90数据库
-      enabled: false # 物资公司跳板部署打开
+      enabled: true # 物资公司跳板部署打开（true）
       api-url: http://112.98.110.101:10030/system/lanya_position_history/new
     mock: # 模拟数据
       enabled: false # 模拟数据时打开
+
   issuing: # device_card_sender_log 表数据同步
     sync: # 同步 lanya device_card_sender_log 表数据到 wms 数据库
-      enabled: true # 物资公司90部署打开
+      enabled: false # 物资公司90部署打开
+
+  # 定时同步物资公司发送定位卡播报信息到凯德信
+  card-message-broadcast:
+    sync:
+      # 物资公司跳板服务器打开（true）
+      enabled: true
+  # 定时同步凯德信定位卡点击报警信息到物资公司
+  alarm:
+    sync-api:
+      # 物资公司跳板服务器打开（true）
+      enabled: true
+      api-url: http://112.98.110.101:10030/system/wzgs_alarm/new
 
 wzgs:
 

@@ -35,7 +35,6 @@ server:
 # 日志配置
 logging:
   level:
-    com.ruoyi: debug
     org.springframework: warn
     org.springframework.web.socket: debug
     javax.websocket: debug
@@ -77,7 +76,7 @@ spring:
     # 数据库索引
     database: 0
     # 密码
-    password:
+    password: wms_ipc
     # 连接超时时间
     timeout: 10s
     lettuce:
@@ -98,7 +97,7 @@ token:
   # 令牌密钥
   secret: abcdefghijklmnopqrstuvwxyz
   # 令牌有效期（默认30分钟）
-  expireTime: 30
+  expireTime: 1440
 
 # MyBatis配置
 mybatis:
@@ -142,10 +141,10 @@ lanya:
   base-url: 112.98.110.101:8091/gateway-service # 指向 lanya 服务的地址
   username: admin # lanya 服务用户名
   password: xrkc168168 # lanya 服务密码
-  enabled-ws: true # 是否接收 lanya websocket 消息
+  enabled-lanya-websocket-subscribe: false # 是否接收 lanya websocket 消息
 
-  # 将 lanya 服务的消息转发给 forward-url 指向的地址 （指向10.63.228.90部署的本程序）
-  forward-url: http://10.63.228.90:10030/system/lanya-transfer/message-endpoint
+  # 将 lanya 服务的消息转发给 forward-url 指向的地址
+  forward-url: http://localhost:10030/system/lanya-transfer/message-endpoint
 
   # 是否将 lanya 服务的消息转发给 forward-url 指向的地址
   forward-enable: false
@@ -155,41 +154,62 @@ lanya:
 
   position: # position_history 表数据同步
     sync-table: # 同步 lanya position_history 表数据并执行报警规则检测
-      enabled: false # 物资公司228.90部署打开
+      enabled: false # 物资公司90部署打开
       past-table: # 是否在启动时同步过往的表
         enabled: false
     sync-api: # 同步 101 机器的position_history 表数据到物资公司90数据库
-      enabled: true # 物资公司跳板部署打开
+      enabled: true # 物资公司跳板部署打开（true）
       api-url: http://112.98.110.101:10030/system/lanya_position_history/new
     mock: # 模拟数据
       enabled: false # 模拟数据时打开
+
   issuing: # device_card_sender_log 表数据同步
     sync: # 同步 lanya device_card_sender_log 表数据到 wms 数据库
       enabled: false # 物资公司90部署打开
+
+  # 定时同步物资公司发送定位卡播报信息到凯德信
+  card-message-broadcast:
+    sync:
+      # 物资公司跳板服务器打开（true）
+      enabled: true
+  # 定时同步凯德信定位卡点击报警信息到物资公司
+  alarm:
+    sync-api:
+      # 物资公司跳板服务器打开（true）
+      enabled: true
+      api-url: http://112.98.110.101:10030/system/wzgs_alarm/new
 
 wzgs:
 
   jl: # 接料数据表同步
     sync:
-      enabled: false # 物资公司90部署打开
+      enabled: true # 物资公司90部署打开
 
   db: # 调拨数据表同步
     sync:
       enabled: false # 物资公司90部署打开
+      file-api-url: http://112.98.110.101:10050/download/resource?resource=
 
   kc: # 库存数据表同步
+    sync:
+      enabled: false # 物资公司90部署打开
+
+  yy: # 预约数据表同步
     sync:
       enabled: false # 物资公司90部署打开
 wms:
   ws-data:
     # 人员报警 websocket 定时任务
-    person-alarm: 0/5 * * * * ?
+    person-alarm: 0 0 0 1 1 ?
 
     # 车辆报警 websocket 定时任务
-    vehicle-alarm: 0/5 * * * * ?
+    vehicle-alarm: 0 0 0 1 1 ?
 
     # 物资统计 websocket 定时任务
-    material-statics: 0/5 * * * * ?
+    material-statics: 0 0 0 1 1 ?
 
     # 区域统计 websocket 定时任务
-    area-statics: 0/5 * * * * ?
+    area-statics: 0 0 0 1 1 ?
+
+media-server:
+  ffmpeg-command: ffmpeg -rtsp_transport udp -i %s -c:v copy -an -fflags +genpts -use_wallclock_as_timestamps 1 -flags +global_header -flush_packets 1 -f flv
