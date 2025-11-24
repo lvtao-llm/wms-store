@@ -8,10 +8,10 @@
       v-show="showSearch"
       label-width="68px"
     >
-      <el-form-item label="设备名称" prop="deviceName">
+      <el-form-item label="车牌机名称" prop="deviceName">
         <el-input
           v-model="queryParams.deviceName"
-          placeholder="请输入设备名称"
+          placeholder="请输入车牌机名称"
           clearable
           @keyup.enter.native="handleQuery"
         />
@@ -89,17 +89,16 @@
       @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="设备名称" align="center" prop="deviceName" />
+      <el-table-column label="车牌机名称" align="center" prop="deviceName" />
       <el-table-column label="序号SN" align="center" prop="serialNumber" />
+      <el-table-column label="型号" align="center" prop="model" />
       <el-table-column
-        label="设备描述"
+        label="车牌机描述"
         align="center"
         prop="deviceDescription"
       />
       <el-table-column label="经度" align="center" prop="longitude" />
       <el-table-column label="纬度" align="center" prop="latitude" />
-      <el-table-column label="高度" align="center" prop="altitude" />
-      <el-table-column label="型号" align="center" prop="model" />
       <el-table-column label="摄像头1 ip" align="center" prop="ip1" />
       <el-table-column label="摄像头2 ip" align="center" prop="ip2" />
       <el-table-column
@@ -154,16 +153,16 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改设备对话框 -->
+    <!-- 添加或修改车牌机对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="180px">
-        <el-form-item label="设备名称" prop="deviceName">
-          <el-input v-model="form.deviceName" placeholder="请输入设备名称" />
+        <el-form-item label="车牌机名称" prop="deviceName">
+          <el-input v-model="form.deviceName" placeholder="请输入车牌机名称" />
         </el-form-item>
-        <el-form-item label="设备描述" prop="deviceDescription">
+        <el-form-item label="车牌机描述" prop="deviceDescription">
           <el-input
             v-model="form.deviceDescription"
-            placeholder="请输入设备描述"
+            placeholder="请输入车牌机描述"
           />
         </el-form-item>
         <el-form-item label="型号" prop="model">
@@ -178,34 +177,10 @@
         <el-form-item label="纬度" prop="latitude">
           <el-input v-model="form.latitude" placeholder="请输入摄像头纬度" />
         </el-form-item>
-        <el-form-item label="摄像头1 IP地址" prop="serialNumber">
-          <el-input v-model="info.ip1" placeholder="请输入序号SN" />
-        </el-form-item>
-        <el-form-item label="摄像头1 端口" prop="serialNumber">
-          <el-input v-model="info.port1" placeholder="请输入序号SN" />
-        </el-form-item>
-        <el-form-item label="摄像头1 用户名" prop="serialNumber">
-          <el-input v-model="info.username1" placeholder="请输入序号SN" />
-        </el-form-item>
-        <el-form-item label="摄像头1 密码" prop="serialNumber">
-          <el-input v-model="info.password1" placeholder="请输入序号SN" />
-        </el-form-item>
-        <el-form-item label="摄像头1 通道" prop="serialNumber">
+        <el-form-item label="左画面通道" prop="serialNumber">
           <el-input v-model="info.channel1" placeholder="请输入序号SN" />
         </el-form-item>
-        <el-form-item label="摄像头2 IP地址" prop="serialNumber">
-          <el-input v-model="info.ip2" placeholder="请输入序号SN" />
-        </el-form-item>
-        <el-form-item label="摄像头2 端口" prop="serialNumber">
-          <el-input v-model="info.port2" placeholder="请输入序号SN" />
-        </el-form-item>
-        <el-form-item label="摄像头2 用户名" prop="serialNumber">
-          <el-input v-model="info.username2" placeholder="请输入序号SN" />
-        </el-form-item>
-        <el-form-item label="摄像头2 密码" prop="serialNumber">
-          <el-input v-model="info.password2" placeholder="请输入序号SN" />
-        </el-form-item>
-        <el-form-item label="摄像头2 通道" prop="serialNumber">
+        <el-form-item label="右画面通道" prop="serialNumber">
           <el-input v-model="info.channel2" placeholder="请输入序号SN" />
         </el-form-item>
       </el-form>
@@ -254,7 +229,7 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
-      // 设备表格数据
+      // 车牌机表格数据
       wms_deviceList: [],
       // 弹出层标题
       title: "",
@@ -300,7 +275,7 @@ export default {
     this.getList();
   },
   methods: {
-    /** 查询设备列表 */
+    /** 查询车牌机列表 */
     getList() {
       this.loading = true;
       listWms_device(this.queryParams).then((response) => {
@@ -351,15 +326,15 @@ export default {
         delFlag: null,
       };
       this.info = {
-        ip1: null,
-        port1: null,
-        username1: null,
-        password1: null,
+        ip1: "10.61.102.150",
+        port1: "556",
+        username1: "admin",
+        password1: "Ll112233",
         channel1: null,
-        ip2: null,
-        port2: null,
-        username2: null,
-        password2: null,
+        ip2: "10.61.102.150",
+        port2: "556",
+        username2: "admin",
+        password2: "Ll112233",
         channel2: null,
       };
       this.resetForm("form");
@@ -384,7 +359,7 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加设备";
+      this.title = "添加摄像头";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
@@ -394,7 +369,7 @@ export default {
         this.form = response.data;
         this.info = response.data.data ? JSON.parse(response.data.data) : {};
         this.open = true;
-        this.title = "修改设备";
+        this.title = "修改摄像头";
       });
     },
     /** 提交按钮 */
@@ -422,7 +397,7 @@ export default {
     handleDelete(row) {
       const ids = row.id || this.ids;
       this.$modal
-        .confirm('是否确认删除设备编号为"' + ids + '"的数据项？')
+        .confirm('是否确认删除车牌机编号为"' + ids + '"的数据项？')
         .then(function () {
           return delWms_device(ids);
         })

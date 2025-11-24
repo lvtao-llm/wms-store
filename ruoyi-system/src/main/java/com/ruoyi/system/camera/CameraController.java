@@ -103,15 +103,32 @@ public class CameraController {
             res.put("port", port);
             res.put("rtspUrl", rtspUrl);
             res.put("mpeg-command", mpegCommand);
-            log.info("启动流成功: {}", res);
-            return ResponseEntity.ok(res);
+            res.put("code", 200);
+            Map<String, Object> response = new LinkedHashMap<>();
+            response.put("data", res);
+            response.put("success", true);
+            response.put("id", id);
+            response.put("message", "流启动成功");
+            response.put("port", port);
+            response.put("rtspUrl", rtspUrl);
+            response.put("mpeg-command", mpegCommand);
+            response.put("code", 200);
+            log.info("启动流成功: {}", response);
+            return ResponseEntity.ok(response);
 
         } catch (Exception e) {
             Map<String, Object> res = new HashMap<>();
             res.put("success", false);
             res.put("message", "启动流失败: " + e.getMessage());
-            log.error("启动流失败: {}", res);
-            return ResponseEntity.status(500).body(res);
+            res.put("code", 500);
+            Map<String, Object> response = new LinkedHashMap<>();
+            response.put("data", res);
+            response.put("code",500);
+            response.put("message", "启动流失败: " + e.getMessage());
+            response.put("success", false);
+
+            log.error("启动流失败: {}", response);
+            return ResponseEntity.status(500).body(response);
         }
     }
 

@@ -70,13 +70,13 @@ spring:
   # redis 配置
   redis:
     # 地址
-    host: localhost
+    host: 10.63.228.93
     # 端口，默认为6379
     port: 6379
     # 数据库索引
-    database: 0
+    database: 11
     # 密码
-    password: wms_ipc
+    password: Vx5XCE894K=0%&
     # 连接超时时间
     timeout: 10s
     lettuce:
