@@ -60,7 +60,6 @@ public class LanyaCoreAlarmController extends BaseController {
     /**
      * 查询报警记录列表
      */
-    @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
     @GetMapping("/new-sos")
     public TableDataInfo newSos() throws ParseException {
         SysConfig sysConfig = null;

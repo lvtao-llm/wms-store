@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ruoyi.common.utils.ThirdPartyAuth;
 import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.system.domain.*;
+import com.ruoyi.system.lanya.data.AlarmDetection;
 import com.ruoyi.system.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,6 +97,16 @@ public class WebSocketServer {
      * 目标服务器会话
      */
     private WebSocketClient thirdWebSocketClient;
+
+    /**
+     * 报警检测服务
+     */
+    private static AlarmDetection alarmDetection;
+
+    @Autowired
+    public void setAlarmDetection(AlarmDetection alarmDetection) {
+        WebSocketServer.alarmDetection = alarmDetection;
+    }
 
 
     /**
@@ -182,6 +193,11 @@ public class WebSocketServer {
      * 时间格式 年月日
      */
     SimpleDateFormat sdfYearMonDay = new SimpleDateFormat("yyyy-MM-dd");
+
+    /**
+     * 时间格式 年月日 时分秒
+     */
+    SimpleDateFormat sdfYearMondayHourMinSec = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     /**
      * Lanya定位数据数据服务
@@ -387,9 +403,9 @@ public class WebSocketServer {
             {
                 put("msgType", "vehicleAlarm");
                 put("rules", new ArrayList<WmsVehicleAlarmRule>() {{
-                    add(new WmsVehicleAlarmRule("未授权进入", 0, 1));
-                    add(new WmsVehicleAlarmRule("未预约进入", 0, 1));
-                    add(new WmsVehicleAlarmRule("轨迹异常", 0, 1));
+                    add(new WmsVehicleAlarmRule("未授权进入", 0, 0));
+                    add(new WmsVehicleAlarmRule("未预约进入", 0, 0));
+                    add(new WmsVehicleAlarmRule("轨迹异常", 0, 0));
                 }});
             }
         };
@@ -402,15 +418,11 @@ public class WebSocketServer {
      */
     @Scheduled(cron = "${wms.ws-data.person-alarm:0/10 * * * * ?}")
     public void personAlarmData() {
-        List<WmsAlarmRule> wmsAlarmRules = wmsAlarmRuleService.selectWmsAlarmRuleList(new WmsAlarmRule());
-        for (WmsAlarmRule wmsAlarmRule : wmsAlarmRules) {
-            wmsAlarmRule.setPercentage(33.1);
-            wmsAlarmRule.setCount(10);
-        }
+        Map<WmsAlarmRule, AlarmDetection.RuleAreaWrap> rules = alarmDetection.getRules();
         Map<String, Object> personAlarm = new HashMap<String, Object>() {
             {
                 put("msgType", "personAlarm");
-                put("rules", wmsAlarmRules);
+                put("rules", rules.keySet());
             }
         };
         String json = new JSONObject(personAlarm).toJSONString();
@@ -486,14 +498,14 @@ public class WebSocketServer {
      * 物料统计数据
      */
     @Scheduled(cron = "${wms.ws-data.material-db:0/10 * * * * ?}")
-    public void materialDbData() {
+    public void materialDbData() throws ParseException {
         // 使用异步发送替代阻塞发送
-        WmsMaterialOut wmsMaterialOut = new WmsMaterialOut();
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_YEAR, -1);
-        String ymd = sdfYearMonDay.format(calendar.getTime());
-        wmsMaterialOut.setOutboundTime(calendar.getTime());
-        List<WmsMaterialOut> wmsMaterialOuts = wmsMaterialOutService.selectWmsMaterialOutList(wmsMaterialOut);
+        String start = sdfYearMonDay.format(calendar.getTime()) + " 00:00:00";
+        String end = sdfYearMonDay.format(calendar.getTime()) + " 23:59:59";
+
+        List<WmsMaterialOut> wmsMaterialOuts = wmsMaterialOutService.selectWmsMaterialOutListByDateRange(sdfYearMondayHourMinSec.parse(start), sdfYearMondayHourMinSec.parse(end));
         JSONObject materialLog = new JSONObject();
         JSONArray materialLogData = new JSONArray();
         materialLog.put("msgType", "materialDbLog");
@@ -501,14 +513,16 @@ public class WebSocketServer {
         materialLog.put("total", wmsMaterialOuts.size());
         for (int i = 0; i < wmsMaterialOuts.size(); i++) {
             WmsMaterialOut d = wmsMaterialOuts.get(i);
-            JSONObject materialLogDataItem = new JSONObject();
-            materialLogDataItem.put("sort", i);
-            materialLogDataItem.put("materialName", d.getWzmc());
-            materialLogDataItem.put("materialCode", d.getWzbm());
-            materialLogDataItem.put("materialType", d.getWzlb());
-            materialLogDataItem.put("stockOut", d.getActualQuantity());
-            materialLogDataItem.put("areaName", d.getAreaCodes());
-            materialLogData.add(materialLogDataItem);
+            if (d.getActualQuantity() > 0) {
+                JSONObject materialLogDataItem = new JSONObject();
+                materialLogDataItem.put("sort", i);
+                materialLogDataItem.put("materialName", d.getWzmc());
+                materialLogDataItem.put("materialCode", d.getWzbm());
+                materialLogDataItem.put("materialType", d.getWzlb());
+                materialLogDataItem.put("stockOut", d.getActualQuantity());
+                materialLogDataItem.put("areaName", d.getAreaCodes());
+                materialLogData.add(materialLogDataItem);
+            }
         }
         messageQueue.add(materialLog.toString());
     }
@@ -532,15 +546,17 @@ public class WebSocketServer {
         materialLog.put("total", wmsMaterialStocks.size());
         for (int i = 0; i < wmsMaterialStocks.size(); i++) {
             WmsMaterialStock d = wmsMaterialStocks.get(i);
-            JSONObject materialLogDataItem = new JSONObject();
-            materialLogDataItem.put("sort", i);
-            materialLogDataItem.put("materialName", d.getWzmc());
-            materialLogDataItem.put("materialCode", d.getWzbm());
-            materialLogDataItem.put("materialType", d.getWzlb());
-            materialLogDataItem.put("stock", d.getBookWeight());
-            materialLogDataItem.put("areaNames", d.getAreaNames());
-            materialLogDataItem.put("areaCodes", d.getAreaCodes());
-            materialLogData.add(materialLogDataItem);
+            if (d.getActualWeight() >= 0) {
+                JSONObject materialLogDataItem = new JSONObject();
+                materialLogDataItem.put("sort", i);
+                materialLogDataItem.put("materialName", d.getWzmc());
+                materialLogDataItem.put("materialCode", d.getWzbm());
+                materialLogDataItem.put("materialType", d.getWzlb());
+                materialLogDataItem.put("stock", d.getActualWeight());
+                materialLogDataItem.put("areaNames", d.getAreaNames());
+                materialLogDataItem.put("areaCodes", d.getAreaCodes());
+                materialLogData.add(materialLogDataItem);
+            }
         }
         messageQueue.add(materialLog.toString());
     }

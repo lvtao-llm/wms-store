@@ -123,7 +123,7 @@ public class CameraController {
             res.put("code", 500);
             Map<String, Object> response = new LinkedHashMap<>();
             response.put("data", res);
-            response.put("code",500);
+            response.put("code", 500);
             response.put("message", "启动流失败: " + e.getMessage());
             response.put("success", false);
 
@@ -157,7 +157,7 @@ public class CameraController {
                 InetSocketAddress socketAddress = new InetSocketAddress(port);
                 mediaServer.start(socketAddress);
             } catch (Exception e) {
-                log.error("媒体服务器启动失败: {}", e.getMessage());
+                log.error("媒体服务器启动失败: {}", e.getMessage(), e);
             }
         }, 0, TimeUnit.SECONDS);
     }

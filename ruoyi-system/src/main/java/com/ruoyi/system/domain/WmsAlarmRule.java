@@ -91,8 +91,16 @@ public class WmsAlarmRule extends BaseEntity {
      * 最大人数
      */
     private Integer maxPeopleCount;
-    private double percentage;
-    private int count;
+
+    /**
+     * 百分比
+     */
+    private double percentage = 0;
+
+    /**
+     * 统计数量
+     */
+    private int count = 0;
 
     public void setAlarmRuleId(Long alarmRuleId) {
         this.alarmRuleId = alarmRuleId;

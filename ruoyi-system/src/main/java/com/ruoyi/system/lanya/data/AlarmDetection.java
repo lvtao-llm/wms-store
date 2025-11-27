@@ -32,6 +32,10 @@ public class AlarmDetection {
     @Autowired
     private IWmsAreaService wmsAreaService;
 
+    public Map<WmsAlarmRule, RuleAreaWrap> getRules() {
+        return rules;
+    }
+
     /**
      * 告警规则与区域映射
      */
@@ -99,10 +103,10 @@ public class AlarmDetection {
 
             // 遍历目标区域Code
             for (String c : targetCodes) {
-
+                long targetCode = Long.parseLong(c);
                 // 匹配目标区域的WmsArea对象
                 for (WmsArea area : wmsAreas.values()) {
-                    if (area.getAreaId() == Integer.parseInt(c) && area.getGeometry() != null) {
+                    if (area.getAreaId() == targetCode && area.getGeometry() != null) {
                         rules.put(rule, new RuleAreaWrap(area, area.getGeometry()));
                         break;
                     }
@@ -256,6 +260,7 @@ public class AlarmDetection {
             }
             if (isAlarm) {
                 detected.add(new AlarmResult(entry.getKey(), entry.getValue().area));
+                entry.getKey().setCount(entry.getKey().getCount() + 1);
             }
 
 
@@ -341,7 +346,7 @@ public class AlarmDetection {
         return new ArrayList<>();
     }
 
-    static class RuleAreaWrap {
+    static public class RuleAreaWrap {
         public WmsArea area;
         public Geometry geometry;
         public Map<Long, Long> enterTime = new HashMap<>();

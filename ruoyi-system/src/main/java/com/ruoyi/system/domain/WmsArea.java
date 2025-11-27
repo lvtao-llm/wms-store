@@ -236,10 +236,10 @@ public class WmsArea extends BaseEntity {
             if (array.containsKey("path")) {
                 JSONArray points = array.getJSONArray("path");
                 for (int i = 0; i < points.size(); i++) {
-                    if (!points.getJSONObject(i).containsKey("longitudel") || !points.getJSONObject(i).containsKey("latitudel")) {
-                        return new ArrayList<>();
+                    if (!points.getJSONObject(i).containsKey("longitude") || !points.getJSONObject(i).containsKey("latitude")) {
+                        return list;
                     }
-                    list.add(new double[]{points.getJSONObject(i).getDouble("longitudel"), points.getJSONObject(i).getDouble("latitudel")});
+                    list.add(new double[]{points.getJSONObject(i).getDouble("longitude"), points.getJSONObject(i).getDouble("latitude")});
                 }
             }
         }

@@ -1,7 +1,9 @@
 package com.ruoyi.system.mapper;
 
+import java.util.Date;
 import java.util.List;
 import com.ruoyi.system.domain.WmsMaterialOut;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 调拨视图Mapper接口
@@ -58,4 +60,6 @@ public interface WmsMaterialOutMapper
      * @return 结果
      */
     public int deleteWmsMaterialOutByAllotDetailIds(String[] allotDetailIds);
+
+    List<WmsMaterialOut> selectWmsMaterialOutListByDateRange(@Param("start") Date start,@Param("end") Date end);
 }

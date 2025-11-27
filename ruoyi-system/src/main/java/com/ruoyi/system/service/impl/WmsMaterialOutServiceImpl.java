@@ -1,5 +1,7 @@
 package com.ruoyi.system.service.impl;
 
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -89,5 +91,10 @@ public class WmsMaterialOutServiceImpl implements IWmsMaterialOutService
     public int deleteWmsMaterialOutByAllotDetailId(String allotDetailId)
     {
         return wmsMaterialOutMapper.deleteWmsMaterialOutByAllotDetailId(allotDetailId);
+    }
+
+    @Override
+    public List<WmsMaterialOut> selectWmsMaterialOutListByDateRange(Date start, Date end) {
+        return wmsMaterialOutMapper.selectWmsMaterialOutListByDateRange(start, end);
     }
 }

@@ -128,7 +128,9 @@ public class SecurityConfig {
                                     "/system/wms_device_camera_log/**",
                                     "/common/upload/**",
                                     "/api/camera/stream/receive/**",
-                                    "/api/camera/stream/start/**"
+                                    "/api/camera/stream/start/**",
+                                    "/system/lanya_core_alarm/new-sos",
+                                    "/system/wzgs_alarm/new"
                             ).permitAll()
                             // 静态资源，可匿名访问
                             .antMatchers(HttpMethod.GET, "/", "/*.html", "/**/*.html", "/**/*.css", "/**/*.js", "/profile/**").permitAll()

@@ -1,5 +1,6 @@
 package com.ruoyi.system.service;
 
+import java.util.Date;
 import java.util.List;
 import com.ruoyi.system.domain.WmsMaterialOut;
 
@@ -58,4 +59,6 @@ public interface IWmsMaterialOutService
      * @return 结果
      */
     public int deleteWmsMaterialOutByAllotDetailId(String allotDetailId);
+
+    List<WmsMaterialOut> selectWmsMaterialOutListByDateRange(Date parse, Date parse1);
 }

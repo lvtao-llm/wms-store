@@ -263,8 +263,8 @@ export default {
           return {
             ...item,
             wlsbjg: item.wlsbjg ? item.wlsbjg.split(' ').slice(0, 2).join(' ') : item.wlsbjg,
-            img1: item.img1 ? item.img1.split(",").map(img => path.join("/profile/", item.imagePath, img)) : [],
-            img2: item.mg2 ? item.mg2.split(",").map(img => path.join("/profile/", item.imagePath, img)) : []
+            img1: item.img1 ? item.img1.split(",").map(img => path.join("/profile/", img)) : [],
+            img2: item.mg2 ? item.mg2.split(",").map(img => path.join("/profile/", img)) : []
           }
         })
         this.total = response.total

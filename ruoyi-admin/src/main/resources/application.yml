@@ -171,13 +171,13 @@ lanya:
   card-message-broadcast:
     sync:
       # 物资公司跳板服务器打开（true）
-      enabled: true
+      enabled: false
   # 定时同步凯德信定位卡点击报警信息到物资公司
   alarm:
     sync-api:
       # 物资公司跳板服务器打开（true）
-      enabled: true
-      api-url: http://112.98.110.101:10030/system/wzgs_alarm/new
+      enabled: false
+      api-url: http://112.98.110.101:10030/system/lanya_core_alarm/new-sos
 
 wzgs:
 

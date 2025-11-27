@@ -104,10 +104,12 @@ public class GoPrivateSync {
                 String content = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
                 log.info("CoreAlarmSync获取数据({})成功:{}", this.sosSyncUrl, content);
                 JSONObject object = this.mapper.readValue(content, JSONObject.class);
-                for (int i = 0; i < object.getJSONArray("rows").size(); i++) {
-                    JSONObject row = object.getJSONArray("rows").getJSONObject(i);
-                    LanyaCoreAlarm position = row.toJavaObject(LanyaCoreAlarm.class);
-                    lanyaCoreAlarmService.insertLanyaCoreAlarm(position);
+                if (object != null && object.containsKey("rows")) {
+                    for (int i = 0; i < object.getJSONArray("rows").size(); i++) {
+                        JSONObject row = object.getJSONArray("rows").getJSONObject(i);
+                        LanyaCoreAlarm position = row.toJavaObject(LanyaCoreAlarm.class);
+                        lanyaCoreAlarmService.insertLanyaCoreAlarm(position);
+                    }
                 }
             } else {
                 throw new RuntimeException("HTTP Get请求失败: " + statusCode + "[ " + this.sosSyncUrl + " ]");

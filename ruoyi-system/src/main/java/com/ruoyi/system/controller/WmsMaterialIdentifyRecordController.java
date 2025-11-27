@@ -1,7 +1,14 @@
 package com.ruoyi.system.controller;
 
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
+import com.ruoyi.common.config.RuoYiConfig;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,14 +30,13 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 物料识别记录Controller
- * 
+ *
  * @author ruoyi
  * @date 2025-11-21
  */
 @RestController
 @RequestMapping("/system/wms_material_identify_record")
-public class WmsMaterialIdentifyRecordController extends BaseController
-{
+public class WmsMaterialIdentifyRecordController extends BaseController {
     @Autowired
     private IWmsMaterialIdentifyRecordService wmsMaterialIdentifyRecordService;
 
@@ -39,11 +45,35 @@ public class WmsMaterialIdentifyRecordController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('system:wms_material_identify_record:list')")
     @GetMapping("/list")
-    public TableDataInfo list(WmsMaterialIdentifyRecord wmsMaterialIdentifyRecord)
-    {
+    public TableDataInfo list(WmsMaterialIdentifyRecord wmsMaterialIdentifyRecord) {
         startPage();
         List<WmsMaterialIdentifyRecord> list = wmsMaterialIdentifyRecordService.selectWmsMaterialIdentifyRecordList(wmsMaterialIdentifyRecord);
-        return getDataTable(list);
+        JSONArray jsonArray = new JSONArray();
+        for (WmsMaterialIdentifyRecord record : list) {
+            JSONObject jsonObject = JSONObject.from(record);
+            if (jsonObject.containsKey("img1") && jsonObject.getString("img1") != null) {
+                String[] images = jsonObject.getString("img1").split(",");
+                List<String> imagePaths1 = new ArrayList<>();
+                for (int i = 0; i < images.length; i++) {
+                    String p = Paths.get(jsonObject.getString("imagePath"), images[i]).toFile().getPath().replace("\\", "/").replace(RuoYiConfig.getProfile() + "/", "");
+                    imagePaths1.add(p);
+                    jsonObject.put("img1Url" + i, p);
+                }
+                jsonObject.put("img1", String.join(",", imagePaths1));
+            }
+            if (jsonObject.containsKey("mg2") && jsonObject.getString("mg2") != null) {
+                String[] images = jsonObject.getString("mg2").split(",");
+                List<String> imagePaths2 = new ArrayList<>();
+                for (int i = 0; i < images.length; i++) {
+                    String p = Paths.get(jsonObject.getString("imagePath"), images[i]).toFile().getPath().replace("\\", "/").replace(RuoYiConfig.getProfile() + "/", "");
+                    imagePaths2.add(p);
+                    jsonObject.put("img2Url" + i, p);
+                }
+                jsonObject.put("mg2", String.join(",", imagePaths2));
+            }
+            jsonArray.add(jsonObject);
+        }
+        return getDataTable(jsonArray);
     }
 
     /**
@@ -52,8 +82,7 @@ public class WmsMaterialIdentifyRecordController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_material_identify_record:export')")
     @Log(title = "物料识别记录", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, WmsMaterialIdentifyRecord wmsMaterialIdentifyRecord)
-    {
+    public void export(HttpServletResponse response, WmsMaterialIdentifyRecord wmsMaterialIdentifyRecord) {
         List<WmsMaterialIdentifyRecord> list = wmsMaterialIdentifyRecordService.selectWmsMaterialIdentifyRecordList(wmsMaterialIdentifyRecord);
         ExcelUtil<WmsMaterialIdentifyRecord> util = new ExcelUtil<WmsMaterialIdentifyRecord>(WmsMaterialIdentifyRecord.class);
         util.exportExcel(response, list, "物料识别记录数据");
@@ -64,8 +93,7 @@ public class WmsMaterialIdentifyRecordController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('system:wms_material_identify_record:query')")
     @GetMapping(value = "/{ymd}")
-    public AjaxResult getInfo(@PathVariable("ymd") String ymd)
-    {
+    public AjaxResult getInfo(@PathVariable("ymd") String ymd) {
         return success(wmsMaterialIdentifyRecordService.selectWmsMaterialIdentifyRecordByYmd(ymd));
     }
 
@@ -75,8 +103,7 @@ public class WmsMaterialIdentifyRecordController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_material_identify_record:add')")
     @Log(title = "物料识别记录", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody WmsMaterialIdentifyRecord wmsMaterialIdentifyRecord)
-    {
+    public AjaxResult add(@RequestBody WmsMaterialIdentifyRecord wmsMaterialIdentifyRecord) {
         return toAjax(wmsMaterialIdentifyRecordService.insertWmsMaterialIdentifyRecord(wmsMaterialIdentifyRecord));
     }
 
@@ -86,8 +113,7 @@ public class WmsMaterialIdentifyRecordController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_material_identify_record:edit')")
     @Log(title = "物料识别记录", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody WmsMaterialIdentifyRecord wmsMaterialIdentifyRecord)
-    {
+    public AjaxResult edit(@RequestBody WmsMaterialIdentifyRecord wmsMaterialIdentifyRecord) {
         return toAjax(wmsMaterialIdentifyRecordService.updateWmsMaterialIdentifyRecord(wmsMaterialIdentifyRecord));
     }
 
@@ -96,9 +122,8 @@ public class WmsMaterialIdentifyRecordController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('system:wms_material_identify_record:remove')")
     @Log(title = "物料识别记录", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ymds}")
-    public AjaxResult remove(@PathVariable String[] ymds)
-    {
+    @DeleteMapping("/{ymds}")
+    public AjaxResult remove(@PathVariable String[] ymds) {
         return toAjax(wmsMaterialIdentifyRecordService.deleteWmsMaterialIdentifyRecordByYmds(ymds));
     }
 }

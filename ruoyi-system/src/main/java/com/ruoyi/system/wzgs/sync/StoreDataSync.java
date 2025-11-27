@@ -187,6 +187,7 @@ public class StoreDataSync {
 
     @Value("${wzgs.db.sync.file-api-url:http://localhost:10050/download/resource?resource=}")
     private String fileApiUrl;
+
     private CloseableHttpClient httpClient;
 
     private String dbFilePath;
@@ -317,7 +318,7 @@ public class StoreDataSync {
 
                 String imagePath = w.getImagePath();
                 if (!Strings.isEmpty(imagePath)) {
-                    w.setImagePath(Paths.get(dbFilePath, w.getImagePath().replace("d:/skpic/", "skpic/")).toFile().getPath());
+                    w.setImagePath(Paths.get(dbFilePath, w.getImagePath().replace("d:/skpic/", "")).toFile().getPath());
                 }
                 // 插入到大仓出库数据表
                 wmsMaterialOutService.insertWmsMaterialOut(w);
@@ -465,7 +466,8 @@ public class StoreDataSync {
             if (Strings.isEmpty(w.get调拨明细编号()) || Strings.isEmpty(w.get文件路径())) {
                 continue;
             }
-            String url = this.fileApiUrl + w.get文件路径();
+            String url = (this.fileApiUrl + w.get文件路径()).replace("\\", "/");
+            log.info("开始同步调拨文件数据,数据url:{}", url);
             HttpGet get = new HttpGet(url);
             get.addHeader("Accept", "image/jpeg,image/jpg,image/png,image/gif,*/*;q=0.8");
             get.addHeader("Accept-Encoding", "gzip, deflate");
@@ -475,15 +477,18 @@ public class StoreDataSync {
             get.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36");
             try (CloseableHttpResponse response = httpClient.execute(get)) {
                 int statusCode = response.getStatusLine().getStatusCode();
+                log.info("开始同步调拨文件数据,数据状态码:{}", statusCode);
                 if (statusCode == HttpStatus.SC_OK) {
-                    Path filePath = Paths.get(dbFilePath, w.get文件路径().replace("d:/skpic/", "skpic/"));
+                    Path filePath = Paths.get(dbFilePath, w.get文件路径().replace("d:\\skpic\\", ""));
                     File file = filePath.toFile();
                     File parentFile = file.getParentFile();
+                    log.info("开始同步调拨文件数据,文件保存路径:{}", filePath);
                     if (parentFile != null && !parentFile.exists()) {
                         parentFile.mkdirs();
                     }
                     try (FileOutputStream fos = new FileOutputStream(file)) {
                         response.getEntity().writeTo(fos);
+                        log.info("同步调拨文件数据写入完成:{}", file);
                         wmsMaterialOutFileSyncQueueService.deleteWmsMaterialOutFileSyncQueueBy调拨明细编号(w.get调拨明细编号());
                     }
                 } else {
