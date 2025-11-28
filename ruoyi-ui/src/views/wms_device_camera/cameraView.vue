@@ -32,7 +32,7 @@
 
 <script>
 import flvjs from "flv.js";
-import { streamStart } from "@/api/system/wms_camera";
+import {streamStart} from "@/api/system/wms_camera";
 
 export default {
   props: ["name"],
@@ -77,7 +77,7 @@ export default {
             }
 
             // 启动摄像头流
-            streamStart(this.deviceId, p.channel)
+            streamStart("device", this.deviceId, p.channel)
               .then((res) => {
                 if (!res.success) {
                   console.error("启动摄像头流失败:", res.msg);

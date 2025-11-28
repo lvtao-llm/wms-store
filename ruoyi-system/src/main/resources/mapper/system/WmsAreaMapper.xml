@@ -23,10 +23,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
         <result property="delFlag"    column="del_flag"    />
+        <result property="cameras" column="cameras"/>
     </resultMap>
 
     <sql id="selectWmsAreaVo">
-        select area_id, area_code, area_name, area_type, area_color, area_function, area_safety_notice, area_polygon, area_risk_level, enabled, remark, photos, photo360, create_by, create_time, update_by, update_time, del_flag from wms_area
+        select area_id, area_code, area_name, area_type, area_color, area_function, area_safety_notice, area_polygon, area_risk_level, enabled, remark, photos, photo360, create_by, create_time, update_by, update_time, del_flag, cameras from wms_area
     </sql>
 
     <select id="selectWmsAreaList" parameterType="WmsArea" resultMap="WmsAreaResult">
@@ -71,6 +72,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="delFlag != null">del_flag,</if>
             <if test="photos != null">photos,</if>
             <if test="photo360 != null">photo360,</if>
+            <if test="cameras != null">cameras,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="areaCode != null and areaCode != ''">#{areaCode},</if>
@@ -90,6 +92,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="delFlag != null">#{delFlag},</if>
             <if test="photos != null">#{photos},</if>
             <if test="photo360 != null">#{photo360},</if>
+            <if test="cameras != null">#{cameras},</if>
          </trim>
     </insert>
 
@@ -113,6 +116,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="delFlag != null">del_flag = #{delFlag},</if>
             <if test="photos != null">photos = #{photos},</if>
             <if test="photo360 != null">photo360 = #{photo360},</if>
+            <if test="cameras != null">cameras = #{cameras},</if>
         </trim>
         where area_id = #{areaId}
     </update>

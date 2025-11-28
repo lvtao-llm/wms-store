@@ -55,50 +55,67 @@ public class CameraController {
     @Value("${server.port:10030}")
     private Integer serverPort;
 
+    @Value("${media-server.ip:10.61.102.150}")
+    private String NVRIp;
+    @Value("${media-server.username:admin}")
+    private String NVRUsername;
+    @Value("${media-server.password:Ll112233}")
+    private String NVRPassword;
+    @Value("${media-server.port:556}")
+    private String NVRPort;
+
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
     /**
      * 启动摄像头流
      */
-    @GetMapping("/stream/start/{cameraId}/{channel}")
-    public ResponseEntity<Map<String, Object>> startStream(@PathVariable String cameraId, @PathVariable String channel) {
+    @GetMapping("/stream/start/{type}/{id}/{num}")
+    public ResponseEntity<Map<String, Object>> startStream(@PathVariable String type, @PathVariable String id, @PathVariable String num) {
         try {
-            if (!"1".equals(channel) && !"2".equals(channel)) {
+            if (!"1".equals(num) && !"2".equals(num)) {
                 Map<String, Object> res = new HashMap<>();
                 res.put("success", false);
                 res.put("message", "channel只能是1或2");
                 return ResponseEntity.status(500).body(res);
             }
 
-            JSONObject data = getCameraInfo(cameraId);
-            String id = UUID.randomUUID().toString().replace("-", "");
-            String rtspUrl = null;
+            String streamId = UUID.randomUUID().toString().replace("-", "");
+            String rtspUrl;
+            String channelNum = "";
 
-            if ("1".equals(channel)) {
-                rtspUrl = String.format("rtsp://%s:%s@%s:%s/h264/%s/sub/av_stream",
-                        data.getString("username1"),
-                        data.getString("password1"),
-                        data.getString("ip1"),
-                        data.getString("port1"),
-                        data.getString("channel1")
-                );
+            if ("area".equals(type)) {
+                JSONObject data = getCameraInfo(id);
+                if ("1".equals(num)) {
+                    channelNum = data.getString("channel1");
+                }
+                if ("2".equals(num)) {
+                    channelNum = data.getString("channel2");
+                }
             }
-            if ("2".equals(channel)) {
-                rtspUrl = String.format("rtsp://%s:%s@%s:%s/h264/%s/sub/av_stream",
-                        data.getString("username2"),
-                        data.getString("password2"),
-                        data.getString("ip2"),
-                        data.getString("port2"),
-                        data.getString("channel2")
-                );
+            if ("device".equals(type)) {
+                JSONObject data = getCameraInfo(Long.parseLong(id));
+                if ("1".equals(num)) {
+                    channelNum = data.getString("channel1");
+                }
+                if ("2".equals(num)) {
+                    channelNum = data.getString("channel2");
+                }
             }
-            String mpegCommand = String.format(ffmpegCommand + " http://localhost:%s/api/camera/stream/receive/%s", rtspUrl, serverPort, id).replace("  ", " ");
-            FFmpegWrap fFmpegWrap = new FFmpegWrap(id, cameraId + "-" + channel, rtspUrl, mpegCommand);
-            cameraServeice.activeWrap.put(id, fFmpegWrap);
+
+            rtspUrl = String.format("rtsp://%s:%s@%s:%s/h264/%s/sub/av_stream",
+                    NVRUsername,
+                    NVRPassword,
+                    NVRIp,
+                    NVRPort,
+                    channelNum);
+
+            String mpegCommand = String.format(ffmpegCommand + " http://localhost:%s/api/camera/stream/receive/%s", rtspUrl, serverPort, streamId).replace("  ", " ");
+            FFmpegWrap fFmpegWrap = new FFmpegWrap(streamId, id + "-" + num, rtspUrl, mpegCommand);
+            cameraServeice.activeWrap.put(streamId, fFmpegWrap);
 
             Map<String, Object> res = new HashMap<>();
             res.put("success", true);
-            res.put("id", id);
+            res.put("id", streamId);
             res.put("message", "流启动成功");
             res.put("port", port);
             res.put("rtspUrl", rtspUrl);
@@ -107,7 +124,7 @@ public class CameraController {
             Map<String, Object> response = new LinkedHashMap<>();
             response.put("data", res);
             response.put("success", true);
-            response.put("id", id);
+            response.put("id", streamId);
             response.put("message", "流启动成功");
             response.put("port", port);
             response.put("rtspUrl", rtspUrl);
@@ -191,10 +208,36 @@ public class CameraController {
     }
 
 
-    private JSONObject getCameraInfo(String cameraId) throws Exception {
-        WmsDevice wmsDevice = wmsDeviceService.selectWmsDeviceById(Long.parseLong(cameraId));
+    private JSONObject getCameraInfo(Long cameraId) throws Exception {
+        WmsDevice wmsDevice = wmsDeviceService.selectWmsDeviceById(cameraId);
         if (wmsDevice == null) {
             throw new Exception("设备不存在");
+        }
+        if (wmsDevice.getData() == null) {
+            throw new Exception("设备数据为空");
+        }
+        JSONObject cameraInfo;
+        try {
+            cameraInfo = JSONObject.parseObject(wmsDevice.getData());
+        } catch (Exception e) {
+            throw new Exception("设备数据格式错误:" + e.getMessage());
+        }
+        return cameraInfo;
+    }
+
+    private JSONObject getCameraInfo(String cameraId) throws Exception {
+        WmsDevice wmsDevice = new WmsDevice();
+        wmsDevice.setDeviceName(cameraId);
+        wmsDevice.setDeviceType("摄像头");
+        List<WmsDevice> wmsDevices = wmsDeviceService.selectWmsDeviceList(wmsDevice);
+        if (wmsDevices.isEmpty()) {
+            throw new Exception("设备不存在");
+        }
+        for (WmsDevice d : wmsDevices) {
+            if (d.getDeviceName().equals(cameraId)) {
+                wmsDevice = d;
+                break;
+            }
         }
         if (wmsDevice.getData() == null) {
             throw new Exception("设备数据为空");

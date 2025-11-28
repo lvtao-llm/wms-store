@@ -113,6 +113,12 @@ public class WmsArea extends BaseEntity {
     private int visitorCount = 0;
 
     /**
+     * 相机
+     */
+    @Excel(name = "相机")
+    private String cameras;
+
+    /**
      * 车辆数
      */
     @JsonIgnore
@@ -292,5 +298,13 @@ public class WmsArea extends BaseEntity {
 
     public void setVisitorCount(int visitorCount) {
         this.visitorCount = visitorCount;
+    }
+
+    public String getCameras() {
+        return cameras;
+    }
+
+    public void setCameras(String cameras) {
+        this.cameras = cameras;
     }
 }
