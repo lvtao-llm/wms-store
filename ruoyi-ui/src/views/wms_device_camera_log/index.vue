@@ -145,7 +145,7 @@
       <el-table-column label="图片" align="center" prop="base64">
         <template slot-scope="scope">
             <image-preview
-              :src="scope.row.photos"
+              :src="scope.row.base64"
               :width="50"
               :height="50"
               style="margin-right: 5px; margin-bottom: 5px"
