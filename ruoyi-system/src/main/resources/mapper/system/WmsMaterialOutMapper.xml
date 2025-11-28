@@ -1,86 +1,352 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.system.mapper.WmsMaterialOutMapper">
-    
+
     <resultMap type="WmsMaterialOut" id="WmsMaterialOutResult">
-        <result property="allotDetailId"    column="allot_detail_id"    />
-        <result property="storehouseId"    column="storehouse_id"    />
-        <result property="documentType"    column="document_type"    />
-        <result property="carNumber"    column="car_number"    />
-        <result property="carModel"    column="car_model"    />
-        <result property="grossWeight"    column="gross_weight"    />
-        <result property="tareWeight"    column="tare_weight"    />
-        <result property="netWeight"    column="net_weight"    />
-        <result property="meterId"    column="meter_id"    />
-        <result property="department"    column="department"    />
-        <result property="measureImageFile"    column="measure_image_file"    />
-        <result property="measureVideoFile"    column="measure_video_file"    />
-        <result property="guard"    column="guard"    />
-        <result property="outboundTime"    column="outbound_time"    />
-        <result property="measurer"    column="measurer"    />
-        <result property="measureTime"    column="measure_time"    />
-        <result property="tareImageFile"    column="tare_image_file"    />
-        <result property="tareVideoFile"    column="tare_video_file"    />
-        <result property="documentStatus"    column="document_status"    />
-        <result property="custodian"    column="custodian"    />
-        <result property="operateTime"    column="operate_time"    />
-        <result property="adjustQuantity"    column="adjust_quantity"    />
-        <result property="measureCurvature"    column="measure_curvature"    />
-        <result property="outboundId"    column="outbound_id"    />
-        <result property="measureType"    column="measure_type"    />
-        <result property="pieceCount"    column="piece_count"    />
-        <result property="originalDocumentId"    column="original_document_id"    />
-        <result property="remark"    column="remark"    />
-        <result property="cardId"    column="card_id"    />
-        <result property="allotId"    column="allot_id"    />
-        <result property="allotCode"    column="allot_code"    />
-        <result property="allotType"    column="allot_type"    />
-        <result property="customerCode"    column="customer_code"    />
-        <result property="customerName"    column="customer_name"    />
-        <result property="materialGroup"    column="material_group"    />
-        <result property="wzbm"    column="wzbm"    />
-        <result property="wzmc"    column="wzmc"    />
-        <result property="jldw"    column="jldw"    />
-        <result property="salesCompany"    column="sales_company"    />
-        <result property="storehouse"    column="storehouse"    />
-        <result property="materialYard"    column="material_yard"    />
-        <result property="allotQuantity"    column="allot_quantity"    />
-        <result property="actualQuantity"    column="actual_quantity"    />
-        <result property="carCount"    column="car_count"    />
-        <result property="plannedPrice"    column="planned_price"    />
-        <result property="salesPrice"    column="sales_price"    />
-        <result property="taxRate"    column="tax_rate"    />
-        <result property="allotOperator"    column="allot_operator"    />
-        <result property="allotTime"    column="allot_time"    />
-        <result property="balance"    column="balance"    />
-        <result property="tailMaterial"    column="tail_material"    />
-        <result property="surplusMaterial"    column="surplus_material"    />
-        <result property="carCount1"    column="car_count1"    />
-        <result property="isMultiCar"    column="is_multi_car"    />
-        <result property="reportRemark"    column="report_remark"    />
-        <result property="firstTareWeight"    column="first_tare_weight"    />
-        <result property="department1"    column="department1"    />
-        <result property="yardCode"    column="yard_code"    />
-        <result property="reporter"    column="reporter"    />
-        <result property="adjustRemark"    column="adjust_remark"    />
-        <result property="storehouseImage"    column="storehouse_image"    />
-        <result property="imagePath"    column="image_path"    />
-        <result property="multiAllotDetail"    column="multi_allot_detail"    />
-        <result property="netWeight1"    column="net_weight1"    />
-        <result property="businessYearMonth"    column="business_year_month"    />
-        <result property="squad"    column="squad"    />
-        <result property="materialGroup1"    column="material_group1"    />
-        <result property="custodianId"    column="custodian_id"    />
-        <result property="shortCode"    column="short_code"    />
-        <result property="selfMergeCategory"    column="self_merge_category"    />
-        <result property="custodianName"    column="custodian_name"    />
-        <result property="status"    column="status"    />
+        <result property="allotDetailId" column="allot_detail_id"/>
+        <result property="storehouseId" column="storehouse_id"/>
+        <result property="documentType" column="document_type"/>
+        <result property="carNumber" column="car_number"/>
+        <result property="carModel" column="car_model"/>
+        <result property="grossWeight" column="gross_weight"/>
+        <result property="tareWeight" column="tare_weight"/>
+        <result property="netWeight" column="net_weight"/>
+        <result property="meterId" column="meter_id"/>
+        <result property="department" column="department"/>
+        <result property="measureImageFile" column="measure_image_file"/>
+        <result property="measureVideoFile" column="measure_video_file"/>
+        <result property="guard" column="guard"/>
+        <result property="outboundTime" column="outbound_time"/>
+        <result property="measurer" column="measurer"/>
+        <result property="measureTime" column="measure_time"/>
+        <result property="tareImageFile" column="tare_image_file"/>
+        <result property="tareVideoFile" column="tare_video_file"/>
+        <result property="documentStatus" column="document_status"/>
+        <result property="custodian" column="custodian"/>
+        <result property="operateTime" column="operate_time"/>
+        <result property="adjustQuantity" column="adjust_quantity"/>
+        <result property="measureCurvature" column="measure_curvature"/>
+        <result property="outboundId" column="outbound_id"/>
+        <result property="measureType" column="measure_type"/>
+        <result property="pieceCount" column="piece_count"/>
+        <result property="originalDocumentId" column="original_document_id"/>
+        <result property="remark" column="remark"/>
+        <result property="cardId" column="card_id"/>
+        <result property="allotId" column="allot_id"/>
+        <result property="allotCode" column="allot_code"/>
+        <result property="allotType" column="allot_type"/>
+        <result property="customerCode" column="customer_code"/>
+        <result property="customerName" column="customer_name"/>
+        <result property="materialGroup" column="material_group"/>
+        <result property="wzbm" column="wzbm"/>
+        <result property="wzmc" column="wzmc"/>
+        <result property="jldw" column="jldw"/>
+        <result property="salesCompany" column="sales_company"/>
+        <result property="storehouse" column="storehouse"/>
+        <result property="materialYard" column="material_yard"/>
+        <result property="allotQuantity" column="allot_quantity"/>
+        <result property="actualQuantity" column="actual_quantity"/>
+        <result property="carCount" column="car_count"/>
+        <result property="plannedPrice" column="planned_price"/>
+        <result property="salesPrice" column="sales_price"/>
+        <result property="taxRate" column="tax_rate"/>
+        <result property="allotOperator" column="allot_operator"/>
+        <result property="allotTime" column="allot_time"/>
+        <result property="balance" column="balance"/>
+        <result property="tailMaterial" column="tail_material"/>
+        <result property="surplusMaterial" column="surplus_material"/>
+        <result property="carCount1" column="car_count1"/>
+        <result property="isMultiCar" column="is_multi_car"/>
+        <result property="reportRemark" column="report_remark"/>
+        <result property="firstTareWeight" column="first_tare_weight"/>
+        <result property="department1" column="department1"/>
+        <result property="yardCode" column="yard_code"/>
+        <result property="reporter" column="reporter"/>
+        <result property="adjustRemark" column="adjust_remark"/>
+        <result property="storehouseImage" column="storehouse_image"/>
+        <result property="imagePath" column="image_path"/>
+        <result property="multiAllotDetail" column="multi_allot_detail"/>
+        <result property="netWeight1" column="net_weight1"/>
+        <result property="businessYearMonth" column="business_year_month"/>
+        <result property="squad" column="squad"/>
+        <result property="materialGroup1" column="material_group1"/>
+        <result property="custodianId" column="custodian_id"/>
+        <result property="shortCode" column="short_code"/>
+        <result property="selfMergeCategory" column="self_merge_category"/>
+        <result property="custodianName" column="custodian_name"/>
+        <result property="status" column="status"/>
     </resultMap>
 
+    <select id="selectWmsMaterialOutListByAreaNames" resultMap="WmsMaterialOutResult">
+        select * from wms_material_out
+        <where>
+            wzmc in (
+            <foreach item="item" collection="wzmcs" separator=",">
+                #{item}
+            </foreach>
+            )
+            <if test="wmsMaterialOut.allotDetailId != null  and wmsMaterialOut.allotDetailId != ''">and allot_detail_id
+                = #{wmsMaterialOut.allotDetailId}
+            </if>
+            <if test="wmsMaterialOut.storehouseId != null  and wmsMaterialOut.storehouseId != ''">and storehouse_id =
+                #{wmsMaterialOut.storehouseId}
+            </if>
+            <if test="wmsMaterialOut.documentType != null  and wmsMaterialOut.documentType != ''">and document_type =
+                #{wmsMaterialOut.documentType}
+            </if>
+            <if test="wmsMaterialOut.carNumber != null  and wmsMaterialOut.carNumber != ''">and car_number =
+                #{wmsMaterialOut.carNumber}
+            </if>
+            <if test="wmsMaterialOut.carModel != null  and wmsMaterialOut.carModel != ''">and car_model =
+                #{wmsMaterialOut.carModel}
+            </if>
+            <if test="wmsMaterialOut.grossWeight != null ">and gross_weight = #{wmsMaterialOut.grossWeight}</if>
+            <if test="wmsMaterialOut.tareWeight != null ">and tare_weight = #{wmsMaterialOut.tareWeight}</if>
+            <if test="wmsMaterialOut.netWeight != null ">and net_weight = #{wmsMaterialOut.netWeight}</if>
+            <if test="wmsMaterialOut.meterId != null  and wmsMaterialOut.meterId != ''">and meter_id =
+                #{wmsMaterialOut.meterId}
+            </if>
+            <if test="wmsMaterialOut.department != null  and wmsMaterialOut.department != ''">and department =
+                #{wmsMaterialOut.department}
+            </if>
+            <if test="wmsMaterialOut.measureImageFile != null  and wmsMaterialOut.measureImageFile != ''">and
+                measure_image_file =
+                #{wmsMaterialOut.measureImageFile}
+            </if>
+            <if test="wmsMaterialOut.measureVideoFile != null  and wmsMaterialOut.measureVideoFile != ''">and
+                measure_video_file =
+                #{wmsMaterialOut.measureVideoFile}
+            </if>
+            <if test="wmsMaterialOut.guard != null  and wmsMaterialOut.guard != ''">and guard =
+                #{wmsMaterialOut.guard}
+            </if>
+            <if test="wmsMaterialOut.outboundTime != null ">and outbound_time = #{wmsMaterialOut.outboundTime}</if>
+            <if test="wmsMaterialOut.measurer != null  and wmsMaterialOut.measurer != ''">and measurer =
+                #{wmsMaterialOut.measurer}
+            </if>
+            <if test="wmsMaterialOut.measureTime != null ">and measure_time = #{wmsMaterialOut.measureTime}</if>
+            <if test="wmsMaterialOut.tareImageFile != null  and wmsMaterialOut.tareImageFile != ''">and tare_image_file
+                = #{wmsMaterialOut.tareImageFile}
+            </if>
+            <if test="wmsMaterialOut.tareVideoFile != null  and wmsMaterialOut.tareVideoFile != ''">and tare_video_file
+                = #{wmsMaterialOut.tareVideoFile}
+            </if>
+            <if test="wmsMaterialOut.documentStatus != null  and wmsMaterialOut.documentStatus != ''">and
+                document_status = #{wmsMaterialOut.documentStatus}
+            </if>
+            <if test="wmsMaterialOut.custodian != null  and wmsMaterialOut.custodian != ''">and custodian =
+                #{wmsMaterialOut.custodian}
+            </if>
+            <if test="wmsMaterialOut.operateTime != null ">and operate_time = #{wmsMaterialOut.operateTime}</if>
+            <if test="wmsMaterialOut.adjustQuantity != null ">and adjust_quantity = #{wmsMaterialOut.adjustQuantity}
+            </if>
+            <if test="wmsMaterialOut.measureCurvature != null  and wmsMaterialOut.measureCurvature != ''">and
+                measure_curvature =
+                #{wmsMaterialOut.measureCurvature}
+            </if>
+            <if test="wmsMaterialOut.outboundId != null  and wmsMaterialOut.outboundId != ''">and outbound_id =
+                #{wmsMaterialOut.outboundId}
+            </if>
+            <if test="wmsMaterialOut.measureType != null  and wmsMaterialOut.measureType != ''">and measure_type =
+                #{wmsMaterialOut.measureType}
+            </if>
+            <if test="wmsMaterialOut.pieceCount != null  and wmsMaterialOut.pieceCount != ''">and piece_count =
+                #{wmsMaterialOut.pieceCount}
+            </if>
+            <if test="wmsMaterialOut.originalDocumentId != null  and wmsMaterialOut.originalDocumentId != ''">and
+                original_document_id =
+                #{wmsMaterialOut.originalDocumentId}
+            </if>
+            <if test="wmsMaterialOut.cardId != null  and wmsMaterialOut.cardId != ''">and card_id =
+                #{wmsMaterialOut.cardId}
+            </if>
+            <if test="wmsMaterialOut.allotId != null  and wmsMaterialOut.allotId != ''">and allot_id =
+                #{wmsMaterialOut.allotId}
+            </if>
+            <if test="wmsMaterialOut.allotCode != null  and wmsMaterialOut.allotCode != ''">and allot_code =
+                #{wmsMaterialOut.allotCode}
+            </if>
+            <if test="wmsMaterialOut.allotType != null  and wmsMaterialOut.allotType != ''">and allot_type =
+                #{wmsMaterialOut.allotType}
+            </if>
+            <if test="wmsMaterialOut.customerCode != null  and wmsMaterialOut.customerCode != ''">and customer_code =
+                #{wmsMaterialOut.customerCode}
+            </if>
+            <if test="wmsMaterialOut.customerName != null  and wmsMaterialOut.customerName != ''">and customer_name like
+                concat('%', #{wmsMaterialOut.customerName},
+                '%')
+            </if>
+            <if test="wmsMaterialOut.materialGroup != null  and wmsMaterialOut.materialGroup != ''">and material_group =
+                #{wmsMaterialOut.materialGroup}
+            </if>
+            <if test="wmsMaterialOut.wzbm != null  and wmsMaterialOut.wzbm != ''">and wzbm = #{wmsMaterialOut.wzbm}</if>
+            <if test="wmsMaterialOut.wzmc != null  and wmsMaterialOut.wzmc != ''">and wzmc like concat('%',
+                #{wmsMaterialOut.wzmc}, '%')
+            </if>
+            <if test="wmsMaterialOut.jldw != null  and wmsMaterialOut.jldw != ''">and jldw = #{wmsMaterialOut.jldw}</if>
+            <if test="wmsMaterialOut.salesCompany != null  and wmsMaterialOut.salesCompany != ''">and sales_company =
+                #{wmsMaterialOut.salesCompany}
+            </if>
+            <if test="wmsMaterialOut.storehouse != null  and wmsMaterialOut.storehouse != ''">and storehouse =
+                #{wmsMaterialOut.storehouse}
+            </if>
+            <if test="wmsMaterialOut.materialYard != null  and wmsMaterialOut.materialYard != ''">and material_yard =
+                #{wmsMaterialOut.materialYard}
+            </if>
+            <if test="wmsMaterialOut.allotQuantity != null ">and allot_quantity = #{wmsMaterialOut.allotQuantity}</if>
+            <if test="wmsMaterialOut.actualQuantity != null ">and actual_quantity = #{wmsMaterialOut.actualQuantity}
+            </if>
+            <if test="wmsMaterialOut.carCount != null ">and car_count = #{wmsMaterialOut.carCount}</if>
+            <if test="wmsMaterialOut.plannedPrice != null ">and planned_price = #{wmsMaterialOut.plannedPrice}</if>
+            <if test="wmsMaterialOut.salesPrice != null ">and sales_price = #{wmsMaterialOut.salesPrice}</if>
+            <if test="wmsMaterialOut.taxRate != null ">and tax_rate = #{wmsMaterialOut.taxRate}</if>
+            <if test="wmsMaterialOut.allotOperator != null  and allotOperator != ''">and allot_operator =
+                #{wmsMaterialOut.allotOperator}
+            </if>
+            <if test="wmsMaterialOut.allotTime != null ">and allot_time = #{wmsMaterialOut.allotTime}</if>
+            <if test="wmsMaterialOut.balance != null ">and balance = #{wmsMaterialOut.balance}</if>
+            <if test="wmsMaterialOut.tailMaterial != null ">and tail_material = #{wmsMaterialOut.tailMaterial}</if>
+            <if test="wmsMaterialOut.surplusMaterial != null ">and surplus_material =
+                #{wmsMaterialOut.surplusMaterial}
+            </if>
+            <if test="wmsMaterialOut.carCount1 != null ">and car_count1 = #{wmsMaterialOut.carCount1}</if>
+            <if test="wmsMaterialOut.isMultiCar != null  and wmsMaterialOut.isMultiCar != ''">and is_multi_car =
+                #{wmsMaterialOut.isMultiCar}
+            </if>
+            <if test="wmsMaterialOut.reportRemark != null  and wmsMaterialOut.reportRemark != ''">and report_remark =
+                #{wmsMaterialOut.reportRemark}
+            </if>
+            <if test="wmsMaterialOut.firstTareWeight != null ">and first_tare_weight =
+                #{wmsMaterialOut.firstTareWeight}
+            </if>
+            <if test="wmsMaterialOut.department1 != null  and wmsMaterialOut.department1 != ''">and department1 =
+                #{wmsMaterialOut.department1}
+            </if>
+            <if test="wmsMaterialOut.yardCode != null  and wmsMaterialOut.yardCode != ''">and yard_code =
+                #{wmsMaterialOut.yardCode}
+            </if>
+            <if test="wmsMaterialOut.reporter != null  and wmsMaterialOut.reporter != ''">and reporter =
+                #{wmsMaterialOut.reporter}
+            </if>
+            <if test="wmsMaterialOut.adjustRemark != null  and wmsMaterialOut.adjustRemark != ''">and adjust_remark =
+                #{wmsMaterialOut.adjustRemark}
+            </if>
+            <if test="wmsMaterialOut.storehouseImage != null  and wmsMaterialOut.storehouseImage != ''">and
+                storehouse_image = #{wmsMaterialOut.storehouseImage}
+            </if>
+            <if test="wmsMaterialOut.imagePath != null  and wmsMaterialOut.imagePath != ''">and image_path =
+                #{wmsMaterialOut.imagePath}
+            </if>
+            <if test="wmsMaterialOut.multiAllotDetail != null  and wmsMaterialOut.multiAllotDetail != ''">and
+                multi_allot_detail =
+                #{wmsMaterialOut.multiAllotDetail}
+            </if>
+            <if test="wmsMaterialOut.netWeight1 != null ">and net_weight1 = #{wmsMaterialOut.netWeight1}</if>
+            <if test="wmsMaterialOut.businessYearMonth != null  and wmsMaterialOut.businessYearMonth != ''">and
+                business_year_month =
+                #{wmsMaterialOut.businessYearMonth}
+            </if>
+            <if test="wmsMaterialOut.squad != null  and wmsMaterialOut.squad != ''">and squad =
+                #{wmsMaterialOut.squad}
+            </if>
+            <if test="wmsMaterialOut.materialGroup1 != null  and wmsMaterialOut.materialGroup1 != ''">and
+                material_group1 = #{wmsMaterialOut.materialGroup1}
+            </if>
+            <if test="wmsMaterialOut.custodianId != null  and wmsMaterialOut.custodianId != ''">and custodian_id =
+                #{wmsMaterialOut.custodianId}
+            </if>
+            <if test="wmsMaterialOut.shortCode != null  and wmsMaterialOut.shortCode != ''">and short_code =
+                #{wmsMaterialOut.shortCode}
+            </if>
+            <if test="wmsMaterialOut.selfMergeCategory != null  and wmsMaterialOut.selfMergeCategory != ''">and
+                self_merge_category =
+                #{wmsMaterialOut.selfMergeCategory}
+            </if>
+            <if test="wmsMaterialOut.custodianName != null  and wmsMaterialOut.custodianName != ''">and custodian_name
+                like concat('%',
+                #{wmsMaterialOut.custodianName}, '%')
+            </if>
+            <if test="wmsMaterialOut.status != null  and wmsMaterialOut.status != ''">and status =
+                #{wmsMaterialOut.status}
+            </if>
+        </where>
+    </select>
     <sql id="selectWmsMaterialOutVo">
-        select allot_detail_id, storehouse_id, document_type, car_number, car_model, gross_weight, tare_weight, net_weight, meter_id, department, measure_image_file, measure_video_file, guard, outbound_time, measurer, measure_time, tare_image_file, tare_video_file, document_status, custodian, operate_time, adjust_quantity, measure_curvature, outbound_id, measure_type, piece_count, original_document_id, remark, card_id, allot_id, allot_code, allot_type, customer_code, customer_name, material_group, wzbm, wzmc, jldw, sales_company, storehouse, material_yard, allot_quantity, actual_quantity, car_count, planned_price, sales_price, tax_rate, allot_operator, allot_time, balance, tail_material, surplus_material, car_count1, is_multi_car, report_remark, first_tare_weight, department1, yard_code, reporter, adjust_remark, storehouse_image, image_path, multi_allot_detail, net_weight1, business_year_month, squad, material_group1, custodian_id, short_code, self_merge_category, custodian_name, status from wms_material_out
+        select allot_detail_id,
+               storehouse_id,
+               document_type,
+               car_number,
+               car_model,
+               gross_weight,
+               tare_weight,
+               net_weight,
+               meter_id,
+               department,
+               measure_image_file,
+               measure_video_file,
+               guard,
+               outbound_time,
+               measurer,
+               measure_time,
+               tare_image_file,
+               tare_video_file,
+               document_status,
+               custodian,
+               operate_time,
+               adjust_quantity,
+               measure_curvature,
+               outbound_id,
+               measure_type,
+               piece_count,
+               original_document_id,
+               remark,
+               card_id,
+               allot_id,
+               allot_code,
+               allot_type,
+               customer_code,
+               customer_name,
+               material_group,
+               wzbm,
+               wzmc,
+               jldw,
+               sales_company,
+               storehouse,
+               material_yard,
+               allot_quantity,
+               actual_quantity,
+               car_count,
+               planned_price,
+               sales_price,
+               tax_rate,
+               allot_operator,
+               allot_time,
+               balance,
+               tail_material,
+               surplus_material,
+               car_count1,
+               is_multi_car,
+               report_remark,
+               first_tare_weight,
+               department1,
+               yard_code,
+               reporter,
+               adjust_remark,
+               storehouse_image,
+               image_path,
+               multi_allot_detail,
+               net_weight1,
+               business_year_month,
+               squad,
+               material_group1,
+               custodian_id,
+               short_code,
+               self_merge_category,
+               custodian_name,
+               status
+        from wms_material_out
     </sql>
 
     <select id="selectWmsMaterialOutListByDateRange" resultMap="WmsMaterialOutResult">
@@ -90,81 +356,99 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectWmsMaterialOutList" parameterType="WmsMaterialOut" resultMap="WmsMaterialOutResult">
         <include refid="selectWmsMaterialOutVo"/>
-        <where>  
-            <if test="allotDetailId != null  and allotDetailId != ''"> and allot_detail_id = #{allotDetailId}</if>
-            <if test="storehouseId != null  and storehouseId != ''"> and storehouse_id = #{storehouseId}</if>
-            <if test="documentType != null  and documentType != ''"> and document_type = #{documentType}</if>
-            <if test="carNumber != null  and carNumber != ''"> and car_number = #{carNumber}</if>
-            <if test="carModel != null  and carModel != ''"> and car_model = #{carModel}</if>
-            <if test="grossWeight != null "> and gross_weight = #{grossWeight}</if>
-            <if test="tareWeight != null "> and tare_weight = #{tareWeight}</if>
-            <if test="netWeight != null "> and net_weight = #{netWeight}</if>
-            <if test="meterId != null  and meterId != ''"> and meter_id = #{meterId}</if>
-            <if test="department != null  and department != ''"> and department = #{department}</if>
-            <if test="measureImageFile != null  and measureImageFile != ''"> and measure_image_file = #{measureImageFile}</if>
-            <if test="measureVideoFile != null  and measureVideoFile != ''"> and measure_video_file = #{measureVideoFile}</if>
-            <if test="guard != null  and guard != ''"> and guard = #{guard}</if>
-            <if test="outboundTime != null "> and outbound_time = #{outboundTime}</if>
-            <if test="measurer != null  and measurer != ''"> and measurer = #{measurer}</if>
-            <if test="measureTime != null "> and measure_time = #{measureTime}</if>
-            <if test="tareImageFile != null  and tareImageFile != ''"> and tare_image_file = #{tareImageFile}</if>
-            <if test="tareVideoFile != null  and tareVideoFile != ''"> and tare_video_file = #{tareVideoFile}</if>
-            <if test="documentStatus != null  and documentStatus != ''"> and document_status = #{documentStatus}</if>
-            <if test="custodian != null  and custodian != ''"> and custodian = #{custodian}</if>
-            <if test="operateTime != null "> and operate_time = #{operateTime}</if>
-            <if test="adjustQuantity != null "> and adjust_quantity = #{adjustQuantity}</if>
-            <if test="measureCurvature != null  and measureCurvature != ''"> and measure_curvature = #{measureCurvature}</if>
-            <if test="outboundId != null  and outboundId != ''"> and outbound_id = #{outboundId}</if>
-            <if test="measureType != null  and measureType != ''"> and measure_type = #{measureType}</if>
-            <if test="pieceCount != null  and pieceCount != ''"> and piece_count = #{pieceCount}</if>
-            <if test="originalDocumentId != null  and originalDocumentId != ''"> and original_document_id = #{originalDocumentId}</if>
-            <if test="cardId != null  and cardId != ''"> and card_id = #{cardId}</if>
-            <if test="allotId != null  and allotId != ''"> and allot_id = #{allotId}</if>
-            <if test="allotCode != null  and allotCode != ''"> and allot_code = #{allotCode}</if>
-            <if test="allotType != null  and allotType != ''"> and allot_type = #{allotType}</if>
-            <if test="customerCode != null  and customerCode != ''"> and customer_code = #{customerCode}</if>
-            <if test="customerName != null  and customerName != ''"> and customer_name like concat('%', #{customerName}, '%')</if>
-            <if test="materialGroup != null  and materialGroup != ''"> and material_group = #{materialGroup}</if>
-            <if test="wzbm != null  and wzbm != ''"> and wzbm = #{wzbm}</if>
-            <if test="wzmc != null  and wzmc != ''"> and wzmc like concat('%', #{wzmc}, '%')</if>
-            <if test="jldw != null  and jldw != ''"> and jldw = #{jldw}</if>
-            <if test="salesCompany != null  and salesCompany != ''"> and sales_company = #{salesCompany}</if>
-            <if test="storehouse != null  and storehouse != ''"> and storehouse = #{storehouse}</if>
-            <if test="materialYard != null  and materialYard != ''"> and material_yard = #{materialYard}</if>
-            <if test="allotQuantity != null "> and allot_quantity = #{allotQuantity}</if>
-            <if test="actualQuantity != null "> and actual_quantity = #{actualQuantity}</if>
-            <if test="carCount != null "> and car_count = #{carCount}</if>
-            <if test="plannedPrice != null "> and planned_price = #{plannedPrice}</if>
-            <if test="salesPrice != null "> and sales_price = #{salesPrice}</if>
-            <if test="taxRate != null "> and tax_rate = #{taxRate}</if>
-            <if test="allotOperator != null  and allotOperator != ''"> and allot_operator = #{allotOperator}</if>
-            <if test="allotTime != null "> and allot_time = #{allotTime}</if>
-            <if test="balance != null "> and balance = #{balance}</if>
-            <if test="tailMaterial != null "> and tail_material = #{tailMaterial}</if>
-            <if test="surplusMaterial != null "> and surplus_material = #{surplusMaterial}</if>
-            <if test="carCount1 != null "> and car_count1 = #{carCount1}</if>
-            <if test="isMultiCar != null  and isMultiCar != ''"> and is_multi_car = #{isMultiCar}</if>
-            <if test="reportRemark != null  and reportRemark != ''"> and report_remark = #{reportRemark}</if>
-            <if test="firstTareWeight != null "> and first_tare_weight = #{firstTareWeight}</if>
-            <if test="department1 != null  and department1 != ''"> and department1 = #{department1}</if>
-            <if test="yardCode != null  and yardCode != ''"> and yard_code = #{yardCode}</if>
-            <if test="reporter != null  and reporter != ''"> and reporter = #{reporter}</if>
-            <if test="adjustRemark != null  and adjustRemark != ''"> and adjust_remark = #{adjustRemark}</if>
-            <if test="storehouseImage != null  and storehouseImage != ''"> and storehouse_image = #{storehouseImage}</if>
-            <if test="imagePath != null  and imagePath != ''"> and image_path = #{imagePath}</if>
-            <if test="multiAllotDetail != null  and multiAllotDetail != ''"> and multi_allot_detail = #{multiAllotDetail}</if>
-            <if test="netWeight1 != null "> and net_weight1 = #{netWeight1}</if>
-            <if test="businessYearMonth != null  and businessYearMonth != ''"> and business_year_month = #{businessYearMonth}</if>
-            <if test="squad != null  and squad != ''"> and squad = #{squad}</if>
-            <if test="materialGroup1 != null  and materialGroup1 != ''"> and material_group1 = #{materialGroup1}</if>
-            <if test="custodianId != null  and custodianId != ''"> and custodian_id = #{custodianId}</if>
-            <if test="shortCode != null  and shortCode != ''"> and short_code = #{shortCode}</if>
-            <if test="selfMergeCategory != null  and selfMergeCategory != ''"> and self_merge_category = #{selfMergeCategory}</if>
-            <if test="custodianName != null  and custodianName != ''"> and custodian_name like concat('%', #{custodianName}, '%')</if>
-            <if test="status != null  and status != ''"> and status = #{status}</if>
+        <where>
+            <if test="allotDetailId != null  and allotDetailId != ''">and allot_detail_id = #{allotDetailId}</if>
+            <if test="storehouseId != null  and storehouseId != ''">and storehouse_id = #{storehouseId}</if>
+            <if test="documentType != null  and documentType != ''">and document_type = #{documentType}</if>
+            <if test="carNumber != null  and carNumber != ''">and car_number = #{carNumber}</if>
+            <if test="carModel != null  and carModel != ''">and car_model = #{carModel}</if>
+            <if test="grossWeight != null ">and gross_weight = #{grossWeight}</if>
+            <if test="tareWeight != null ">and tare_weight = #{tareWeight}</if>
+            <if test="netWeight != null ">and net_weight = #{netWeight}</if>
+            <if test="meterId != null  and meterId != ''">and meter_id = #{meterId}</if>
+            <if test="department != null  and department != ''">and department = #{department}</if>
+            <if test="measureImageFile != null  and measureImageFile != ''">and measure_image_file =
+                #{measureImageFile}
+            </if>
+            <if test="measureVideoFile != null  and measureVideoFile != ''">and measure_video_file =
+                #{measureVideoFile}
+            </if>
+            <if test="guard != null  and guard != ''">and guard = #{guard}</if>
+            <if test="outboundTime != null ">and outbound_time = #{outboundTime}</if>
+            <if test="measurer != null  and measurer != ''">and measurer = #{measurer}</if>
+            <if test="measureTime != null ">and measure_time = #{measureTime}</if>
+            <if test="tareImageFile != null  and tareImageFile != ''">and tare_image_file = #{tareImageFile}</if>
+            <if test="tareVideoFile != null  and tareVideoFile != ''">and tare_video_file = #{tareVideoFile}</if>
+            <if test="documentStatus != null  and documentStatus != ''">and document_status = #{documentStatus}</if>
+            <if test="custodian != null  and custodian != ''">and custodian = #{custodian}</if>
+            <if test="operateTime != null ">and operate_time = #{operateTime}</if>
+            <if test="adjustQuantity != null ">and adjust_quantity = #{adjustQuantity}</if>
+            <if test="measureCurvature != null  and measureCurvature != ''">and measure_curvature =
+                #{measureCurvature}
+            </if>
+            <if test="outboundId != null  and outboundId != ''">and outbound_id = #{outboundId}</if>
+            <if test="measureType != null  and measureType != ''">and measure_type = #{measureType}</if>
+            <if test="pieceCount != null  and pieceCount != ''">and piece_count = #{pieceCount}</if>
+            <if test="originalDocumentId != null  and originalDocumentId != ''">and original_document_id =
+                #{originalDocumentId}
+            </if>
+            <if test="cardId != null  and cardId != ''">and card_id = #{cardId}</if>
+            <if test="allotId != null  and allotId != ''">and allot_id = #{allotId}</if>
+            <if test="allotCode != null  and allotCode != ''">and allot_code = #{allotCode}</if>
+            <if test="allotType != null  and allotType != ''">and allot_type = #{allotType}</if>
+            <if test="customerCode != null  and customerCode != ''">and customer_code = #{customerCode}</if>
+            <if test="customerName != null  and customerName != ''">and customer_name like concat('%', #{customerName},
+                '%')
+            </if>
+            <if test="materialGroup != null  and materialGroup != ''">and material_group = #{materialGroup}</if>
+            <if test="wzbm != null  and wzbm != ''">and wzbm = #{wzbm}</if>
+            <if test="wzmc != null  and wzmc != ''">and wzmc like concat('%', #{wzmc}, '%')</if>
+            <if test="jldw != null  and jldw != ''">and jldw = #{jldw}</if>
+            <if test="salesCompany != null  and salesCompany != ''">and sales_company = #{salesCompany}</if>
+            <if test="storehouse != null  and storehouse != ''">and storehouse = #{storehouse}</if>
+            <if test="materialYard != null  and materialYard != ''">and material_yard = #{materialYard}</if>
+            <if test="allotQuantity != null ">and allot_quantity = #{allotQuantity}</if>
+            <if test="actualQuantity != null ">and actual_quantity = #{actualQuantity}</if>
+            <if test="carCount != null ">and car_count = #{carCount}</if>
+            <if test="plannedPrice != null ">and planned_price = #{plannedPrice}</if>
+            <if test="salesPrice != null ">and sales_price = #{salesPrice}</if>
+            <if test="taxRate != null ">and tax_rate = #{taxRate}</if>
+            <if test="allotOperator != null  and allotOperator != ''">and allot_operator = #{allotOperator}</if>
+            <if test="allotTime != null ">and allot_time = #{allotTime}</if>
+            <if test="balance != null ">and balance = #{balance}</if>
+            <if test="tailMaterial != null ">and tail_material = #{tailMaterial}</if>
+            <if test="surplusMaterial != null ">and surplus_material = #{surplusMaterial}</if>
+            <if test="carCount1 != null ">and car_count1 = #{carCount1}</if>
+            <if test="isMultiCar != null  and isMultiCar != ''">and is_multi_car = #{isMultiCar}</if>
+            <if test="reportRemark != null  and reportRemark != ''">and report_remark = #{reportRemark}</if>
+            <if test="firstTareWeight != null ">and first_tare_weight = #{firstTareWeight}</if>
+            <if test="department1 != null  and department1 != ''">and department1 = #{department1}</if>
+            <if test="yardCode != null  and yardCode != ''">and yard_code = #{yardCode}</if>
+            <if test="reporter != null  and reporter != ''">and reporter = #{reporter}</if>
+            <if test="adjustRemark != null  and adjustRemark != ''">and adjust_remark = #{adjustRemark}</if>
+            <if test="storehouseImage != null  and storehouseImage != ''">and storehouse_image = #{storehouseImage}</if>
+            <if test="imagePath != null  and imagePath != ''">and image_path = #{imagePath}</if>
+            <if test="multiAllotDetail != null  and multiAllotDetail != ''">and multi_allot_detail =
+                #{multiAllotDetail}
+            </if>
+            <if test="netWeight1 != null ">and net_weight1 = #{netWeight1}</if>
+            <if test="businessYearMonth != null  and businessYearMonth != ''">and business_year_month =
+                #{businessYearMonth}
+            </if>
+            <if test="squad != null  and squad != ''">and squad = #{squad}</if>
+            <if test="materialGroup1 != null  and materialGroup1 != ''">and material_group1 = #{materialGroup1}</if>
+            <if test="custodianId != null  and custodianId != ''">and custodian_id = #{custodianId}</if>
+            <if test="shortCode != null  and shortCode != ''">and short_code = #{shortCode}</if>
+            <if test="selfMergeCategory != null  and selfMergeCategory != ''">and self_merge_category =
+                #{selfMergeCategory}
+            </if>
+            <if test="custodianName != null  and custodianName != ''">and custodian_name like concat('%',
+                #{custodianName}, '%')
+            </if>
+            <if test="status != null  and status != ''">and status = #{status}</if>
         </where>
     </select>
-    
+
     <select id="selectWmsMaterialOutByAllotDetailId" parameterType="String" resultMap="WmsMaterialOutResult">
         <include refid="selectWmsMaterialOutVo"/>
         where allot_detail_id = #{allotDetailId}
@@ -245,7 +529,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="selfMergeCategory != null">self_merge_category,</if>
             <if test="custodianName != null">custodian_name,</if>
             <if test="status != null">status,</if>
-         </trim>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="allotDetailId != null">#{allotDetailId},</if>
             <if test="storehouseId != null">#{storehouseId},</if>
@@ -319,7 +603,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="selfMergeCategory != null">#{selfMergeCategory},</if>
             <if test="custodianName != null">#{custodianName},</if>
             <if test="status != null">#{status},</if>
-         </trim>
+        </trim>
     </insert>
 
     <update id="updateWmsMaterialOut" parameterType="WmsMaterialOut">
@@ -401,11 +685,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
     <delete id="deleteWmsMaterialOutByAllotDetailId" parameterType="String">
-        delete from wms_material_out where allot_detail_id = #{allotDetailId}
+        delete
+        from wms_material_out
+        where allot_detail_id = #{allotDetailId}
     </delete>
 
     <delete id="deleteWmsMaterialOutByAllotDetailIds" parameterType="String">
-        delete from wms_material_out where allot_detail_id in 
+        delete from wms_material_out where allot_detail_id in
         <foreach item="allotDetailId" collection="array" open="(" separator="," close=")">
             #{allotDetailId}
         </foreach>

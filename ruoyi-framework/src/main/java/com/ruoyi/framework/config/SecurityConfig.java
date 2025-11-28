@@ -130,7 +130,10 @@ public class SecurityConfig {
                                     "/api/camera/stream/receive/**",
                                     "/api/camera/stream/start/**",
                                     "/system/lanya_core_alarm/new-sos",
-                                    "/system/wzgs_alarm/new"
+                                    "/system/wzgs_alarm/new",
+                                    "/system/wms_material_in/list/**",
+                                    "/system/wms_material_out/list/**",
+                                    "/system/wms_material_stock/list/**"
                             ).permitAll()
                             // 静态资源，可匿名访问
                             .antMatchers(HttpMethod.GET, "/", "/*.html", "/**/*.html", "/**/*.css", "/**/*.js", "/profile/**").permitAll()

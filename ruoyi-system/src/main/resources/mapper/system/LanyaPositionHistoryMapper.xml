@@ -64,7 +64,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select id, accept_time, card_id, card_type, beacon_id, longitude, latitude, distance, layer_id, layer_height, create_time, person_id, person_type, staff_type, real_name, dept_id, post_id, contractor_id, altitude, rtk_position_mode
         from ${tableName}
         where create_time > #{time}
-        order by id asc
+        order by create_time asc
         limit #{count}
     </select>
 

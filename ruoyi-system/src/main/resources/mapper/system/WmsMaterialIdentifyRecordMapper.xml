@@ -31,7 +31,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="czs != null  and czs != ''"> and car_model = #{czs}</if>
         </where>
     </select>
-    
+
+    <select id="selectWmsMaterialIdentifyRecordListByRange" resultMap="WmsMaterialIdentifyRecordResult">
+        <include refid="selectWmsMaterialIdentifyRecordVo"/>
+        where outbound_time between #{start} and #{end}
+        order by outbound_time
+    </select>
+
     <select id="selectWmsMaterialIdentifyRecordByYmd" parameterType="String" resultMap="WmsMaterialIdentifyRecordResult">
         <include refid="selectWmsMaterialIdentifyRecordVo"/>
         where ymd = #{ymd}

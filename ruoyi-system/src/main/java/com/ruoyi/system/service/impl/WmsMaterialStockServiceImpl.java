@@ -1,6 +1,7 @@
 package com.ruoyi.system.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.ruoyi.system.domain.WmsArea;
@@ -110,5 +111,10 @@ public class WmsMaterialStockServiceImpl implements IWmsMaterialStockService {
     @Override
     public int deleteWmsMaterialStockAll() {
         return wmsMaterialStockMapper.deleteWmsMaterialStockAll();
+    }
+
+    @Override
+    public List<WmsMaterialStock> selectWmsMaterialStockListByAreaNames(WmsMaterialStock wmsMaterialStock, List<String> wzbm) {
+        return wmsMaterialStockMapper.selectWmsMaterialStockListByAreaNames(wmsMaterialStock, wzbm);
     }
 }

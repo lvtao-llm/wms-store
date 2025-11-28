@@ -315,6 +315,8 @@ public class WmsMaterialIn extends WmsMaterialDesc {
     @Excel(name = "现场员姓名")
     private String xcyxm;
 
+    private String areaName;
+
     private Long materialDescId;
 
     public void setMaterialDescId(Long id) {
@@ -761,5 +763,13 @@ public class WmsMaterialIn extends WmsMaterialDesc {
 
     public Long getMaterialDescId() {
         return materialDescId;
+    }
+
+    public String getAreaName() {
+        return areaName;
+    }
+
+    public void setAreaName(String areaName) {
+        this.areaName = areaName;
     }
 }

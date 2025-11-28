@@ -2,8 +2,10 @@ package com.ruoyi.system.controller;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
@@ -62,7 +64,6 @@ public class LanyaPositionHistoryController extends BaseController {
      * 时间格式
      */
     SimpleDateFormat sdfYMD = new SimpleDateFormat("yyyyMMdd");
-
     /**
      * 查询历史轨迹列表
      */
@@ -147,27 +148,35 @@ public class LanyaPositionHistoryController extends BaseController {
 
         if (list.isEmpty()) {
             // 将 Date 转换为 LocalDateTime
-            LocalDateTime offsetDateTime = offset.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-            LocalDateTime currentDateTime = LocalDateTime.now();
+            LocalDate offsetDate = offset.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            // 获取当前时间
+            LocalDate currentDate = LocalDate.now();
 
-            // 计算两个日期之间的天数差
-            long daysBetween = ChronoUnit.DAYS.between(offsetDateTime, currentDateTime);
+            // 计算当前日期与offset之间的天数差
+            long daysBetween = ChronoUnit.DAYS.between(offsetDate, currentDate);
 
-            if (daysBetween >= 1) {
+            if (daysBetween > 0) {
+                // 如果offset不是今天，则遍历所有日期
                 for (int i = 0; i < daysBetween; i++) {
-                    offsetDateTime = offsetDateTime.plusDays(1).truncatedTo(ChronoUnit.DAYS);
-                    tableName = "position_history_" + sdfYMD.format(Date.from(offsetDateTime.atZone(ZoneId.systemDefault()).toInstant()));
+                    offsetDate = offsetDate.plusDays(1);
+                    String ymd = offsetDate.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+                    tableName = "position_history_" + ymd;
+                    offset = sdfDateTime.parse(offsetDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " 00:00:00.000");
+                    sysConfig.setConfigValue(sdfDateTime.format(offset));
+                    configService.updateConfig(sysConfig);
                     int exists = lanyaPositionHistoryService.checkTableExists(tableName);
                     if (exists == 1) {
-                        list = lanyaPositionHistoryService.selectLanyaPositionHistoryListStartTime(Date.from(offsetDateTime.atZone(ZoneId.systemDefault()).toInstant()), 1000, tableName);
+                        list = lanyaPositionHistoryService.selectLanyaPositionHistoryListStartTime(offset, 1000, tableName);
+                        if (!list.isEmpty()) {
+                            break;
+                        }
                     }
-
                 }
             }
         }
 
         if (!list.isEmpty()) {
-            sysConfig.setConfigValue(sdfDateTime.format(list.get(list.size() - 1).getAcceptTime()));
+            sysConfig.setConfigValue(sdfDateTime.format(list.get(list.size() - 1).getCreateTime()));
             configService.updateConfig(sysConfig);
         }
 

@@ -97,4 +97,9 @@ public class WmsMaterialOutServiceImpl implements IWmsMaterialOutService
     public List<WmsMaterialOut> selectWmsMaterialOutListByDateRange(Date start, Date end) {
         return wmsMaterialOutMapper.selectWmsMaterialOutListByDateRange(start, end);
     }
+
+    @Override
+    public List<WmsMaterialOut> selectWmsMaterialOutListByAreaNames(WmsMaterialOut wmsMaterialOut, List<String> wzbm) {
+        return wmsMaterialOutMapper.selectWmsMaterialOutListByAreaNames(wmsMaterialOut, wzbm);
+    }
 }

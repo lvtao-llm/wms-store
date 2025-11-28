@@ -133,13 +133,18 @@ public class GoPrivateSync {
                 for (int i = 0; i < object.getJSONArray("rows").size(); i++) {
                     JSONObject row = object.getJSONArray("rows").getJSONObject(i);
                     LanyaPositionHistory position = row.toJavaObject(LanyaPositionHistory.class);
-                    String tableName = "position_history_" + sdfTableSuffix.format(position.getAcceptTime());
+                    String tableName = "position_history_" + sdfTableSuffix.format(position.getCreateTime());
+                    log.info("PositionSync转换数据对象成功:[{}]{}", tableName, position);
                     lanyaPositionHistoryService.createTable(tableName);
+                    log.info("PositionSync创建表成功:[{}]", tableName);
+                    position.setAcceptTime(position.getCreateTime());
                     lanyaPositionHistoryService.insertLanyaPositionHistory(position, tableName);
                 }
             } else {
                 throw new RuntimeException("HTTP Get请求失败: " + statusCode + "[ " + this.positionSyncUrl + " ]");
             }
+        } catch (Exception e) {
+            log.error("同步凯德信定位卡数据到物资公司发生错误", e);
         }
         log.info("凯德信定位卡数据到物资公司同步完成");
     }

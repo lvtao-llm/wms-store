@@ -1,5 +1,6 @@
 package com.ruoyi.system.service.impl;
 
+import java.util.Collections;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -89,5 +90,10 @@ public class WmsMaterialIdentifyRecordServiceImpl implements IWmsMaterialIdentif
     public int deleteWmsMaterialIdentifyRecordByYmd(String ymd)
     {
         return wmsMaterialIdentifyRecordMapper.deleteWmsMaterialIdentifyRecordByYmd(ymd);
+    }
+
+    @Override
+    public List<WmsMaterialIdentifyRecord> selectWmsMaterialIdentifyRecordListByRange(String start, String end) {
+        return wmsMaterialIdentifyRecordMapper.selectWmsMaterialIdentifyRecordListByRange(start, end);
     }
 }

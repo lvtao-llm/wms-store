@@ -58,4 +58,6 @@ public interface IWmsMaterialIdentifyRecordService
      * @return 结果
      */
     public int deleteWmsMaterialIdentifyRecordByYmd(String ymd);
+
+    List<WmsMaterialIdentifyRecord> selectWmsMaterialIdentifyRecordListByRange(String start, String end);
 }

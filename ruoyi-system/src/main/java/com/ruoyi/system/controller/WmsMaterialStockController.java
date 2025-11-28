@@ -1,6 +1,7 @@
 package com.ruoyi.system.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
@@ -39,7 +40,11 @@ public class WmsMaterialStockController extends BaseController {
     @Autowired
     private IWmsMaterialStockService wmsMaterialStockService;
 
+    @Autowired
+    private IWmsAreaService wmsAreaService;
 
+    @Autowired
+    private IWmsMaterialDescService wmsMaterialDescService;
 
     /**
      * 查询库存视图列表
@@ -50,6 +55,41 @@ public class WmsMaterialStockController extends BaseController {
 
         startPage();
         List<WmsMaterialStock> list = wmsMaterialStockService.selectWmsMaterialStockList(wmsMaterialStock);
+        return getDataTable(list);
+    }
+
+    @GetMapping("/list/{areaName}")
+    public TableDataInfo list(WmsMaterialStock wmsMaterialStock, @PathVariable(value = "areaName", required = false) String areaName) {
+        startPage();
+        List<WmsMaterialStock> list = new ArrayList<>();
+        if (areaName != null) {
+            WmsArea wmsArea = new WmsArea();
+            wmsArea.setAreaName(areaName);
+            List<WmsArea> wmsAreas = wmsAreaService.selectWmsAreaList(wmsArea);
+            if (wmsAreas.isEmpty()) {
+                return getDataTable(list);
+            }
+            wmsArea = wmsAreas.get(0);
+            List<WmsMaterialDesc> wmsMaterialDescs = wmsMaterialDescService.selectWmsMaterialDescList(new WmsMaterialDesc());
+            List<String> wzbm = new ArrayList<>();
+            for (WmsMaterialDesc desc : wmsMaterialDescs) {
+                if (desc.getAreaCodes() == null) {
+                    continue;
+                }
+                String[] ids = desc.getAreaCodes().split(",");
+                String id = wmsArea.getAreaId() + "";
+                if (Arrays.asList(ids).contains(id)) {
+                    wzbm.add(desc.getWzmc());
+                }
+            }
+            if(wzbm.isEmpty()){
+                return getDataTable(list);
+            }
+            list = wmsMaterialStockService.selectWmsMaterialStockListByAreaNames(wmsMaterialStock, wzbm);
+        } else {
+            list = wmsMaterialStockService.selectWmsMaterialStockList(wmsMaterialStock);
+        }
+
         return getDataTable(list);
     }
 

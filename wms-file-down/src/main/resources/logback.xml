@@ -91,9 +91,9 @@
         <appender-ref ref="sys-user"/>
     </logger>
 
-    <logger name="com.ruoyi.system.mapper.LanyaPositionHistoryMapper.showPositionHistoryTableNames" level="INFO"/>
-    <logger name="com.ruoyi.system.mapper.LanyaPositionHistoryMapper.selectLanyaPositionHistoryListStartTime" level="INFO"/>
-    <logger name="com.ruoyi.system.mapper.LanyaPositionHistoryMapper.selectLanyaPositionHistoryListByTable" level="INFO"/>
+<!--    <logger name="com.ruoyi.system.mapper.LanyaPositionHistoryMapper.showPositionHistoryTableNames" level="INFO"/>-->
+<!--    <logger name="com.ruoyi.system.mapper.LanyaPositionHistoryMapper.selectLanyaPositionHistoryListStartTime" level="INFO"/>-->
+<!--    <logger name="com.ruoyi.system.mapper.LanyaPositionHistoryMapper.selectLanyaPositionHistoryListByTable" level="INFO"/>-->
 
     <logger name="com.ruoyi.system.mapper.WmsAlarmRuleMapper.selectWmsAlarmRuleList" level="INFO"/>
     <logger name="com.ruoyi.system.mapper.WmsMaterialDescMapper.selectWmsMaterialDescList" level="INFO"/>

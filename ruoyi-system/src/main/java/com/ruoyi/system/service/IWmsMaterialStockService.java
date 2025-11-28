@@ -60,4 +60,6 @@ public interface IWmsMaterialStockService
     public int deleteWmsMaterialStockByInventoryId(String inventoryId);
 
     int deleteWmsMaterialStockAll();
+
+    List<WmsMaterialStock> selectWmsMaterialStockListByAreaNames(WmsMaterialStock wmsMaterialStock, List<String> wzbm);
 }

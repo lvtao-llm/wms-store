@@ -25,6 +25,32 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="areaCodes"    column="area_codes"    />
     </resultMap>
 
+    <select id="selectWmsMaterialStockListByAreaNames">
+        select * from wms_material_stock a
+        <where>
+            a.wzmc in (
+            <foreach item="item" collection="wzmcs" separator=",">
+                #{item}
+            </foreach>
+            )
+            <if test="wmsMaterialStock.inventoryId != null  and wmsMaterialStock.inventoryId != ''"> and a.inventory_id = #{wmsMaterialStock.inventoryId}</if>
+            <if test="wmsMaterialStock.wzbm != null  and wmsMaterialStock.wzbm != ''"> and a.wzbm = #{wmsMaterialStock.wmsMaterialStock.wzbm}</if>
+            <if test="wmsMaterialStock.actualWeight != null "> and a.actual_weight = #{wmsMaterialStock.actualWeight}</if>
+            <if test="wmsMaterialStock.status != null  and wmsMaterialStock.status != ''"> and a.status = #{wmsMaterialStock.status}</if>
+            <if test="wmsMaterialStock.wzmc != null  and wmsMaterialStock.wzmc != ''"> and a.wzmc like concat('%', #{wmsMaterialStock.wmsMaterialStock.wzmc}, '%')</if>
+            <if test="wmsMaterialStock.jldw != null  and wmsMaterialStock.jldw != ''"> and a.jldw = #{wmsMaterialStock.wmsMaterialStock.jldw}</if>
+            <if test="wmsMaterialStock.warehouse != null  and wmsMaterialStock.warehouse != ''"> and a.warehouse = #{wmsMaterialStock.warehouse}</if>
+            <if test="wmsMaterialStock.bookWeight != null "> and a.book_weight = #{wmsMaterialStock.bookWeight}</if>
+            <if test="wmsMaterialStock.varietyCode != null  and wmsMaterialStock.varietyCode != ''"> and a.variety_code = #{wmsMaterialStock.varietyCode}</if>
+            <if test="wmsMaterialStock.pzmc != null  and wmsMaterialStock.pzmc != ''"> and a.pzmc like concat('%', #{wmsMaterialStock.wmsMaterialStock.pzmc}, '%')</if>
+            <if test="wmsMaterialStock.wzlb != null  and wmsMaterialStock.wzlb != ''"> and a.wzlb = #{wmsMaterialStock.wmsMaterialStock.wzlb}</if>
+            <if test="wmsMaterialStock.reservedWeight != null "> and a.reserved_weight = #{wmsMaterialStock.reservedWeight}</if>
+            <if test="wmsMaterialStock.availableWeight != null "> and a.available_weight = #{wmsMaterialStock.availableWeight}</if>
+            <if test="wmsMaterialStock.squadron != null  and wmsMaterialStock.squadron != ''"> and a.squadron = #{wmsMaterialStock.squadron}</if>
+            <if test="wmsMaterialStock.team != null  and wmsMaterialStock.team != ''"> and a.team = #{wmsMaterialStock.team}</if>
+            <if test="wmsMaterialStock.company != null  and wmsMaterialStock.company != ''"> and a.company = #{wmsMaterialStock.company}</if>
+        </where>
+    </select>
     <sql id="selectWmsMaterialStockVo">
         select inventory_id, wzbm, actual_weight, status, remark, wzmc, jldw, warehouse, book_weight, pzmc, wzlb, reserved_weight, available_weight, squadron, team, company from wms_material_stock
     </sql>

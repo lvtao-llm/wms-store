@@ -61,4 +61,6 @@ public interface IWmsMaterialOutService
     public int deleteWmsMaterialOutByAllotDetailId(String allotDetailId);
 
     List<WmsMaterialOut> selectWmsMaterialOutListByDateRange(Date parse, Date parse1);
+
+    List<WmsMaterialOut> selectWmsMaterialOutListByAreaNames(WmsMaterialOut wmsMaterialIn, List<String> wzbm);
 }

@@ -1,17 +1,18 @@
 package com.ruoyi.system.controller;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.alibaba.fastjson2.JSONObject;
+import com.ruoyi.system.domain.WmsArea;
+import com.ruoyi.system.domain.WmsMaterialDesc;
+import com.ruoyi.system.service.IWmsAreaService;
+import com.ruoyi.system.service.IWmsMaterialDescService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -23,26 +24,70 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 接料视图Controller
- * 
+ *
  * @author ruoyi
  * @date 2025-11-08
  */
 @RestController
 @RequestMapping("/system/wms_material_in")
-public class WmsMaterialInController extends BaseController
-{
+public class WmsMaterialInController extends BaseController {
     @Autowired
     private IWmsMaterialInService wmsMaterialInService;
+
+    @Autowired
+    private IWmsAreaService wmsAreaService;
+
+    @Autowired
+    private IWmsMaterialDescService wmsMaterialDescService;
 
     /**
      * 查询接料视图列表
      */
     @PreAuthorize("@ss.hasPermi('system:wms_material_in:list')")
     @GetMapping("/list")
-    public TableDataInfo list(WmsMaterialIn wmsMaterialIn)
-    {
+    public TableDataInfo list(WmsMaterialIn wmsMaterialIn) {
         startPage();
-        List<WmsMaterialIn> list = wmsMaterialInService.selectWmsMaterialInList(wmsMaterialIn);
+
+        List<WmsMaterialIn> wmsMaterialIns = wmsMaterialInService.selectWmsMaterialInList(wmsMaterialIn);
+
+        return getDataTable(wmsMaterialIns);
+    }
+
+    /**
+     * 查询接料视图列表
+     */
+    @GetMapping("/list/{areaName}")
+    public TableDataInfo list(WmsMaterialIn wmsMaterialIn, @PathVariable(value = "areaName", required = false) String areaName) {
+        startPage();
+        List<WmsMaterialIn> list = new ArrayList<>();
+        if (areaName != null) {
+            WmsArea wmsArea = new WmsArea();
+            wmsArea.setAreaName(areaName);
+            List<WmsArea> wmsAreas = wmsAreaService.selectWmsAreaList(wmsArea);
+            if (wmsAreas.isEmpty()) {
+                return getDataTable(list);
+            }
+            wmsArea = wmsAreas.get(0);
+            List<WmsMaterialDesc> wmsMaterialDescs = wmsMaterialDescService.selectWmsMaterialDescList(new WmsMaterialDesc());
+            List<String> wzbm = new ArrayList<>();
+            for (WmsMaterialDesc desc : wmsMaterialDescs) {
+                if (desc.getAreaCodes() == null) {
+                    continue;
+                }
+                String[] ids = desc.getAreaCodes().split(",");
+                String id = wmsArea.getAreaId() + "";
+                if (Arrays.asList(ids).contains(id)) {
+                    wzbm.add(desc.getWzmc());
+                }
+            }
+            if(wzbm.isEmpty()){
+                return getDataTable(list);
+            }
+            list = wmsMaterialInService.selectWmsMaterialInListByAreaNames(wmsMaterialIn, wzbm);
+        } else {
+            list = wmsMaterialInService.selectWmsMaterialInList(wmsMaterialIn);
+        }
+
         return getDataTable(list);
     }
 
@@ -52,8 +97,7 @@ public class WmsMaterialInController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_material_in:export')")
     @Log(title = "接料视图", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, WmsMaterialIn wmsMaterialIn)
-    {
+    public void export(HttpServletResponse response, WmsMaterialIn wmsMaterialIn) {
         List<WmsMaterialIn> list = wmsMaterialInService.selectWmsMaterialInList(wmsMaterialIn);
         ExcelUtil<WmsMaterialIn> util = new ExcelUtil<WmsMaterialIn>(WmsMaterialIn.class);
         util.exportExcel(response, list, "接料视图数据");
@@ -64,8 +108,7 @@ public class WmsMaterialInController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('system:wms_material_in:query')")
     @GetMapping(value = "/{jlBh}")
-    public AjaxResult getInfo(@PathVariable("jlBh") String jlBh)
-    {
+    public AjaxResult getInfo(@PathVariable("jlBh") String jlBh) {
         return success(wmsMaterialInService.selectWmsMaterialInByJlBh(jlBh));
     }
 
@@ -75,8 +118,7 @@ public class WmsMaterialInController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_material_in:add')")
     @Log(title = "接料视图", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody WmsMaterialIn wmsMaterialIn)
-    {
+    public AjaxResult add(@RequestBody WmsMaterialIn wmsMaterialIn) {
         return toAjax(wmsMaterialInService.insertWmsMaterialIn(wmsMaterialIn));
     }
 
@@ -86,8 +128,7 @@ public class WmsMaterialInController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_material_in:edit')")
     @Log(title = "接料视图", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody WmsMaterialIn wmsMaterialIn)
-    {
+    public AjaxResult edit(@RequestBody WmsMaterialIn wmsMaterialIn) {
         return toAjax(wmsMaterialInService.updateWmsMaterialIn(wmsMaterialIn));
     }
 
@@ -96,9 +137,8 @@ public class WmsMaterialInController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('system:wms_material_in:remove')")
     @Log(title = "接料视图", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{jlBhs}")
-    public AjaxResult remove(@PathVariable String[] jlBhs)
-    {
+    @DeleteMapping("/{jlBhs}")
+    public AjaxResult remove(@PathVariable String[] jlBhs) {
         return toAjax(wmsMaterialInService.deleteWmsMaterialInByJlBhs(jlBhs));
     }
 }

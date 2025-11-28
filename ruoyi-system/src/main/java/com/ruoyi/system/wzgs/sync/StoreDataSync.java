@@ -25,9 +25,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.resource.ResourceTransformer;
+import org.springframework.web.servlet.resource.ResourceTransformerChain;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -48,7 +52,7 @@ import java.util.concurrent.TimeUnit;
  * @since 2025/11/8
  */
 @Service
-public class StoreDataSync {
+public class StoreDataSync implements ResourceTransformer {
 
     private static final Logger log = LoggerFactory.getLogger("wzgs-sync");
 
@@ -197,7 +201,12 @@ public class StoreDataSync {
      */
     @PostConstruct
     public void init() throws Exception {
-        dbFilePath = Paths.get(RuoYiConfig.getProfile(), "skpic").toFile().getPath();
+        if (RuoYiConfig.getProfile() == null) {
+            log.error("StoreDataSync初始化-未设置profile");
+            fileSyncEnable = false;
+        } else {
+            dbFilePath = Paths.get(RuoYiConfig.getProfile(), "skpic").toFile().getPath();
+        }
         log.info("StoreDataSync初始化-本地调拨文件存储路径:{}", dbFilePath);
         log.info("StoreDataSync初始化-启用调拨文件同步开关:{}", fileSyncEnable);
         List<SysConfig> sysConfigs = configService.selectConfigList(new SysConfig());
@@ -549,5 +558,20 @@ public class StoreDataSync {
             }
         }
         return String.join(",", areaCodes);
+    }
+
+    @Override
+    public Resource transform(HttpServletRequest request, Resource resource, ResourceTransformerChain transformerChain) throws IOException {
+        // 在这里可以对资源进行处理
+        // 例如：添加水印、修改内容、记录日志等
+
+        // 调用链中的下一个转换器
+        Resource transformedResource = transformerChain.transform(request, resource);
+
+        // 可以在这里添加后处理逻辑
+        // 比如记录资源访问日志
+        System.out.println("Accessing resource: " + resource.getFilename());
+
+        return transformedResource;
     }
 }

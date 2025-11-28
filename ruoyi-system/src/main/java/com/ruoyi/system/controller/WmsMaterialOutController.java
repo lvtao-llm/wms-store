@@ -1,7 +1,14 @@
 package com.ruoyi.system.controller;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.system.domain.WmsArea;
+import com.ruoyi.system.domain.WmsMaterialDesc;
+import com.ruoyi.system.service.IWmsAreaService;
+import com.ruoyi.system.service.IWmsMaterialDescService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,6 +41,12 @@ public class WmsMaterialOutController extends BaseController
     @Autowired
     private IWmsMaterialOutService wmsMaterialOutService;
 
+    @Autowired
+    private IWmsAreaService wmsAreaService;
+
+    @Autowired
+    private IWmsMaterialDescService wmsMaterialDescService;
+
     /**
      * 查询调拨视图列表
      */
@@ -43,6 +56,41 @@ public class WmsMaterialOutController extends BaseController
     {
         startPage();
         List<WmsMaterialOut> list = wmsMaterialOutService.selectWmsMaterialOutList(wmsMaterialOut);
+        return getDataTable(list);
+    }
+
+    @GetMapping("/list/{areaName}")
+    public TableDataInfo list(WmsMaterialOut wmsMaterialIn, @PathVariable(value = "areaName", required = false) String areaName) {
+        startPage();
+        List<WmsMaterialOut> list = new ArrayList<>();
+        if (areaName != null) {
+            WmsArea wmsArea = new WmsArea();
+            wmsArea.setAreaName(areaName);
+            List<WmsArea> wmsAreas = wmsAreaService.selectWmsAreaList(wmsArea);
+            if (wmsAreas.isEmpty()) {
+                return getDataTable(list);
+            }
+            wmsArea = wmsAreas.get(0);
+            List<WmsMaterialDesc> wmsMaterialDescs = wmsMaterialDescService.selectWmsMaterialDescList(new WmsMaterialDesc());
+            List<String> wzbm = new ArrayList<>();
+            for (WmsMaterialDesc desc : wmsMaterialDescs) {
+                if (desc.getAreaCodes() == null) {
+                    continue;
+                }
+                String[] ids = desc.getAreaCodes().split(",");
+                String id = wmsArea.getAreaId() + "";
+                if (Arrays.asList(ids).contains(id)) {
+                    wzbm.add(desc.getWzmc());
+                }
+            }
+            if(wzbm.isEmpty()){
+                return getDataTable(list);
+            }
+            list = wmsMaterialOutService.selectWmsMaterialOutListByAreaNames(wmsMaterialIn, wzbm);
+        } else {
+            list = wmsMaterialOutService.selectWmsMaterialOutList(wmsMaterialIn);
+        }
+
         return getDataTable(list);
     }
 

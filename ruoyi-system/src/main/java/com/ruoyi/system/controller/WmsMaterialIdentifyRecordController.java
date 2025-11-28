@@ -1,7 +1,10 @@
 package com.ruoyi.system.controller;
 
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
@@ -9,6 +12,7 @@ import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.config.RuoYiConfig;
 import org.apache.logging.log4j.util.Strings;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,6 +43,9 @@ import com.ruoyi.common.core.page.TableDataInfo;
 public class WmsMaterialIdentifyRecordController extends BaseController {
     @Autowired
     private IWmsMaterialIdentifyRecordService wmsMaterialIdentifyRecordService;
+    @Value("${wms.wms-material-identify-record-list-day-offset:-1}")
+    private int huokou;
+    SimpleDateFormat sdfYearMonDay = new SimpleDateFormat("yyyy-MM-dd");
 
     /**
      * 查询物料识别记录列表
@@ -46,9 +53,15 @@ public class WmsMaterialIdentifyRecordController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:wms_material_identify_record:list')")
     @GetMapping("/list")
     public TableDataInfo list(WmsMaterialIdentifyRecord wmsMaterialIdentifyRecord) {
-        startPage();
-        List<WmsMaterialIdentifyRecord> list = wmsMaterialIdentifyRecordService.selectWmsMaterialIdentifyRecordList(wmsMaterialIdentifyRecord);
-        JSONArray jsonArray = new JSONArray();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR, huokou);
+        String start = sdfYearMonDay.format(calendar.getTime()) + " 00:00:00";
+        String end = sdfYearMonDay.format(new Date()) + " 23:59:59";
+
+        List<WmsMaterialIdentifyRecord> list = wmsMaterialIdentifyRecordService.selectWmsMaterialIdentifyRecordListByRange(start, end);
+
+        List<JSONObject> jsonArray = new ArrayList<>();
         for (WmsMaterialIdentifyRecord record : list) {
             JSONObject jsonObject = JSONObject.from(record);
             if (jsonObject.containsKey("img1") && jsonObject.getString("img1") != null) {
@@ -56,8 +69,10 @@ public class WmsMaterialIdentifyRecordController extends BaseController {
                 List<String> imagePaths1 = new ArrayList<>();
                 for (int i = 0; i < images.length; i++) {
                     String p = Paths.get(jsonObject.getString("imagePath"), images[i]).toFile().getPath().replace("\\", "/").replace(RuoYiConfig.getProfile() + "/", "");
-                    imagePaths1.add(p);
-                    jsonObject.put("img1Url" + i, p);
+                    if (i == 0) {
+                        imagePaths1.add(p);
+                        jsonObject.put("img1Url" + i, p);
+                    }
                 }
                 jsonObject.put("img1", String.join(",", imagePaths1));
             }
@@ -66,9 +81,11 @@ public class WmsMaterialIdentifyRecordController extends BaseController {
                 List<String> imagePaths2 = new ArrayList<>();
                 for (int i = 0; i < images.length; i++) {
                     String p = Paths.get(jsonObject.getString("imagePath"), images[i]).toFile().getPath().replace("\\", "/").replace(RuoYiConfig.getProfile() + "/", "");
+                    if(i==images.length-1){
                     imagePaths2.add(p);
                     jsonObject.put("img2Url" + i, p);
                 }
+                    }
                 jsonObject.put("mg2", String.join(",", imagePaths2));
             }
             jsonArray.add(jsonObject);

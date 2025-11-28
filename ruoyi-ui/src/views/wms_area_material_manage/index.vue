@@ -244,7 +244,7 @@ export default {
         pageSize: 10,
         areaCode: null,
         areaName: null,
-        areaType: '物料区域',
+        areaType: '料场区域',
         areaFunction: null,
         areaSafetyNotice: null,
         areaPolygon: null,
@@ -252,7 +252,7 @@ export default {
         enabled: null,
       },
       // 表单参数
-      form: {areaType: '物料区域'},
+      form: {areaType: '料场区域'},
       // 表单校验
       rules: {
         areaName: [
@@ -288,7 +288,7 @@ export default {
         areaId: null,
         areaCode: null,
         areaName: null,
-        areaType: "物料区域",
+        areaType: "料场区域",
         areaFunction: null,
         areaSafetyNotice: null,
         areaPolygon: null,
@@ -331,7 +331,7 @@ export default {
       const areaId = row.areaId || this.ids;
       getArea(areaId).then((response) => {
         this.form = response.data;
-        this.form.areaType = '物料区域';
+        this.form.areaType = '料场区域';
         this.open = true;
         this.title = "修改区域";
       });
