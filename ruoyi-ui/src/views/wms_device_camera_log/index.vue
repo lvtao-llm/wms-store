@@ -142,7 +142,16 @@
       <el-table-column label="车型" align="center" prop="cx" />
       <el-table-column label="颜色" align="center" prop="ys" />
       <el-table-column label="是否穿戴工服" align="center" prop="sfcdgf" />
-      <el-table-column label="颜色" align="center" prop="base64" />
+      <el-table-column label="图片" align="center" prop="base64">
+        <template slot-scope="scope">
+            <image-preview
+              :src="scope.row.photos"
+              :width="50"
+              :height="50"
+              style="margin-right: 5px; margin-bottom: 5px"
+            />
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -162,7 +171,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
