@@ -1,6 +1,13 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
+    <el-form
+      :model="queryParams"
+      ref="queryForm"
+      size="small"
+      :inline="true"
+      v-show="showSearch"
+      label-width="68px"
+    >
       <el-form-item label="库存编号" prop="inventoryId">
         <el-input
           v-model="queryParams.inventoryId"
@@ -18,8 +25,16 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        <el-button
+          type="primary"
+          icon="el-icon-search"
+          size="mini"
+          @click="handleQuery"
+          >搜索</el-button
+        >
+        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
+          >重置</el-button
+        >
       </el-form-item>
     </el-form>
 
@@ -32,12 +47,21 @@
           size="mini"
           @click="handleExport"
           v-hasPermi="['system:wms_material_stock:export']"
-        >导出</el-button>
+          >导出</el-button
+        >
       </el-col>
-      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+      <right-toolbar
+        :showSearch.sync="showSearch"
+        @queryTable="getList"
+      ></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="wms_material_stockList" @selection-change="handleSelectionChange">
+    <el-table
+      height="500"
+      v-loading="loading"
+      :data="wms_material_stockList"
+      @selection-change="handleSelectionChange"
+    >
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="库存编号" align="center" prop="inventoryId" />
       <el-table-column label="物资编码" align="center" prop="materialCode" />
@@ -50,20 +74,27 @@
       <el-table-column label="账存重量" align="center" prop="bookWeight" />
       <el-table-column label="品种编码" align="center" prop="varietyCode" />
       <el-table-column label="品种名称" align="center" prop="varietyName" />
-      <el-table-column label="物资类别" align="center" prop="materialCategory" />
+      <el-table-column
+        label="物资类别"
+        align="center"
+        prop="materialCategory"
+      />
       <el-table-column label="预拨重量" align="center" prop="reservedWeight" />
       <el-table-column label="可拨重量" align="center" prop="availableWeight" />
       <el-table-column label="中队" align="center" prop="squadron" />
       <el-table-column label="班组" align="center" prop="team" />
       <el-table-column label="所属公司" align="center" prop="company" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
-        </template>
+      <el-table-column
+        label="操作"
+        align="center"
+        class-name="small-padding fixed-width"
+      >
+        <template slot-scope="scope"> </template>
       </el-table-column>
     </el-table>
 
     <pagination
-      v-show="total>0"
+      v-show="total > 0"
       :total="total"
       :page.sync="queryParams.pageNum"
       :limit.sync="queryParams.pageSize"
@@ -104,13 +135,22 @@
           <el-input v-model="form.varietyName" placeholder="请输入品种名称" />
         </el-form-item>
         <el-form-item label="物资类别" prop="materialCategory">
-          <el-input v-model="form.materialCategory" placeholder="请输入物资类别" />
+          <el-input
+            v-model="form.materialCategory"
+            placeholder="请输入物资类别"
+          />
         </el-form-item>
         <el-form-item label="预拨重量" prop="reservedWeight">
-          <el-input v-model="form.reservedWeight" placeholder="请输入预拨重量" />
+          <el-input
+            v-model="form.reservedWeight"
+            placeholder="请输入预拨重量"
+          />
         </el-form-item>
         <el-form-item label="可拨重量" prop="availableWeight">
-          <el-input v-model="form.availableWeight" placeholder="请输入可拨重量" />
+          <el-input
+            v-model="form.availableWeight"
+            placeholder="请输入可拨重量"
+          />
         </el-form-item>
         <el-form-item label="中队" prop="squadron">
           <el-input v-model="form.squadron" placeholder="请输入中队" />
@@ -131,7 +171,13 @@
 </template>
 
 <script>
-import { listWms_material_stock, getWms_material_stock, delWms_material_stock, addWms_material_stock, updateWms_material_stock } from "@/api/system/wms_material_stock"
+import {
+  listWms_material_stock,
+  getWms_material_stock,
+  delWms_material_stock,
+  addWms_material_stock,
+  updateWms_material_stock,
+} from "@/api/system/wms_material_stock";
 
 export default {
   name: "Wms_material_stock",
@@ -174,32 +220,31 @@ export default {
         availableWeight: null,
         squadron: null,
         team: null,
-        company: null
+        company: null,
       },
       // 表单参数
       form: {},
       // 表单校验
-      rules: {
-      }
-    }
+      rules: {},
+    };
   },
   created() {
-    this.getList()
+    this.getList();
   },
   methods: {
     /** 查询库存视图列表 */
     getList() {
-      this.loading = true
-      listWms_material_stock(this.queryParams).then(response => {
-        this.wms_material_stockList = response.rows
-        this.total = response.total
-        this.loading = false
-      })
+      this.loading = true;
+      listWms_material_stock(this.queryParams).then((response) => {
+        this.wms_material_stockList = response.rows;
+        this.total = response.total;
+        this.loading = false;
+      });
     },
     // 取消按钮
     cancel() {
-      this.open = false
-      this.reset()
+      this.open = false;
+      this.reset();
     },
     // 表单重置
     reset() {
@@ -220,78 +265,86 @@ export default {
         availableWeight: null,
         squadron: null,
         team: null,
-        company: null
-      }
-      this.resetForm("form")
+        company: null,
+      };
+      this.resetForm("form");
     },
     /** 搜索按钮操作 */
     handleQuery() {
-      this.queryParams.pageNum = 1
-      this.getList()
+      this.queryParams.pageNum = 1;
+      this.getList();
     },
     /** 重置按钮操作 */
     resetQuery() {
-      this.resetForm("queryForm")
-      this.handleQuery()
+      this.resetForm("queryForm");
+      this.handleQuery();
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.inventoryId)
-      this.single = selection.length!==1
-      this.multiple = !selection.length
+      this.ids = selection.map((item) => item.inventoryId);
+      this.single = selection.length !== 1;
+      this.multiple = !selection.length;
     },
     /** 新增按钮操作 */
     handleAdd() {
-      this.reset()
-      this.open = true
-      this.title = "添加库存视图"
+      this.reset();
+      this.open = true;
+      this.title = "添加库存视图";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
-      this.reset()
-      const inventoryId = row.inventoryId || this.ids
-      getWms_material_stock(inventoryId).then(response => {
-        this.form = response.data
-        this.open = true
-        this.title = "修改库存视图"
-      })
+      this.reset();
+      const inventoryId = row.inventoryId || this.ids;
+      getWms_material_stock(inventoryId).then((response) => {
+        this.form = response.data;
+        this.open = true;
+        this.title = "修改库存视图";
+      });
     },
     /** 提交按钮 */
     submitForm() {
-      this.$refs["form"].validate(valid => {
+      this.$refs["form"].validate((valid) => {
         if (valid) {
           if (this.form.inventoryId != null) {
-            updateWms_material_stock(this.form).then(response => {
-              this.$modal.msgSuccess("修改成功")
-              this.open = false
-              this.getList()
-            })
+            updateWms_material_stock(this.form).then((response) => {
+              this.$modal.msgSuccess("修改成功");
+              this.open = false;
+              this.getList();
+            });
           } else {
-            addWms_material_stock(this.form).then(response => {
-              this.$modal.msgSuccess("新增成功")
-              this.open = false
-              this.getList()
-            })
+            addWms_material_stock(this.form).then((response) => {
+              this.$modal.msgSuccess("新增成功");
+              this.open = false;
+              this.getList();
+            });
           }
         }
-      })
+      });
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const inventoryIds = row.inventoryId || this.ids
-      this.$modal.confirm('是否确认删除库存视图编号为"' + inventoryIds + '"的数据项？').then(function() {
-        return delWms_material_stock(inventoryIds)
-      }).then(() => {
-        this.getList()
-        this.$modal.msgSuccess("删除成功")
-      }).catch(() => {})
+      const inventoryIds = row.inventoryId || this.ids;
+      this.$modal
+        .confirm('是否确认删除库存视图编号为"' + inventoryIds + '"的数据项？')
+        .then(function () {
+          return delWms_material_stock(inventoryIds);
+        })
+        .then(() => {
+          this.getList();
+          this.$modal.msgSuccess("删除成功");
+        })
+        .catch(() => {});
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('system/wms_material_stock/export', {
-        ...this.queryParams
-      }, `wms_material_stock_${new Date().getTime()}.xlsx`)
-    }
-  }
-}
+      this.download(
+        "system/wms_material_stock/export",
+        {
+          ...this.queryParams,
+        },
+        `wms_material_stock_${new Date().getTime()}.xlsx`
+      );
+    },
+  },
+};
 </script>

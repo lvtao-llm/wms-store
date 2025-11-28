@@ -1,6 +1,13 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
+    <el-form
+      :model="queryParams"
+      ref="queryForm"
+      size="small"
+      :inline="true"
+      v-show="showSearch"
+      label-width="68px"
+    >
       <el-form-item label="调拨明细编号" prop="allotDetailId">
         <el-input
           v-model="queryParams.allotDetailId"
@@ -18,8 +25,16 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        <el-button
+          type="primary"
+          icon="el-icon-search"
+          size="mini"
+          @click="handleQuery"
+          >搜索</el-button
+        >
+        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
+          >重置</el-button
+        >
       </el-form-item>
     </el-form>
 
@@ -32,14 +47,27 @@
           size="mini"
           @click="handleExport"
           v-hasPermi="['system:wms_material_out:export']"
-        >导出</el-button>
+          >导出</el-button
+        >
       </el-col>
-      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+      <right-toolbar
+        :showSearch.sync="showSearch"
+        @queryTable="getList"
+      ></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="wms_material_outList" @selection-change="handleSelectionChange">
+    <el-table
+      height="500"
+      v-loading="loading"
+      :data="wms_material_outList"
+      @selection-change="handleSelectionChange"
+    >
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="调拨明细编号" align="center" prop="allotDetailId" />
+      <el-table-column
+        label="调拨明细编号"
+        align="center"
+        prop="allotDetailId"
+      />
       <el-table-column label="库房编号" align="center" prop="storehouseId" />
       <el-table-column label="单据类型" align="center" prop="documentType" />
       <el-table-column label="车号" align="center" prop="carNumber" />
@@ -50,30 +78,53 @@
       <el-table-column label="仪表编号" align="center" prop="meterId" />
       <el-table-column label="部门" align="center" prop="department" />
       <el-table-column label="门卫" align="center" prop="guard" />
-      <el-table-column label="出库时间" align="center" prop="outboundTime" width="180">
+      <el-table-column
+        label="出库时间"
+        align="center"
+        prop="outboundTime"
+        width="180"
+      >
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.outboundTime, '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(scope.row.outboundTime, "{y}-{m}-{d}") }}</span>
         </template>
       </el-table-column>
       <el-table-column label="计量员" align="center" prop="measurer" />
-      <el-table-column label="计量时间" align="center" prop="measureTime" width="180">
+      <el-table-column
+        label="计量时间"
+        align="center"
+        prop="measureTime"
+        width="180"
+      >
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.measureTime, '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(scope.row.measureTime, "{y}-{m}-{d}") }}</span>
         </template>
       </el-table-column>
       <el-table-column label="单据状态" align="center" prop="documentStatus" />
       <el-table-column label="保管员" align="center" prop="custodian" />
-      <el-table-column label="操作时间" align="center" prop="operateTime" width="180">
+      <el-table-column
+        label="操作时间"
+        align="center"
+        prop="operateTime"
+        width="180"
+      >
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.operateTime, '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(scope.row.operateTime, "{y}-{m}-{d}") }}</span>
         </template>
       </el-table-column>
       <el-table-column label="调整数量" align="center" prop="adjustQuantity" />
-      <el-table-column label="计量曲率" align="center" prop="measureCurvature" />
+      <el-table-column
+        label="计量曲率"
+        align="center"
+        prop="measureCurvature"
+      />
       <el-table-column label="出库编号" align="center" prop="outboundId" />
       <el-table-column label="计量类型" align="center" prop="measureType" />
       <el-table-column label="件数" align="center" prop="pieceCount" />
-      <el-table-column label="原单编号" align="center" prop="originalDocumentId" />
+      <el-table-column
+        label="原单编号"
+        align="center"
+        prop="originalDocumentId"
+      />
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="卡号" align="center" prop="cardId" />
       <el-table-column label="调拨编号" align="center" prop="allotId" />
@@ -95,9 +146,14 @@
       <el-table-column label="销售单价" align="center" prop="salesPrice" />
       <el-table-column label="税率" align="center" prop="taxRate" />
       <el-table-column label="调拨员" align="center" prop="allotOperator" />
-      <el-table-column label="调拨时间" align="center" prop="allotTime" width="180">
+      <el-table-column
+        label="调拨时间"
+        align="center"
+        prop="allotTime"
+        width="180"
+      >
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.allotTime, '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(scope.row.allotTime, "{y}-{m}-{d}") }}</span>
         </template>
       </el-table-column>
       <el-table-column label="余额" align="center" prop="balance" />
@@ -111,25 +167,39 @@
       <el-table-column label="料场编码" align="center" prop="yardCode" />
       <el-table-column label="报号人" align="center" prop="reporter" />
       <el-table-column label="调整备注" align="center" prop="adjustRemark" />
-      <el-table-column label="多调拨单明细" align="center" prop="multiAllotDetail" />
+      <el-table-column
+        label="多调拨单明细"
+        align="center"
+        prop="multiAllotDetail"
+      />
       <el-table-column label="净重1" align="center" prop="netWeight1" />
-      <el-table-column label="业务年月" align="center" prop="businessYearMonth" />
+      <el-table-column
+        label="业务年月"
+        align="center"
+        prop="businessYearMonth"
+      />
       <el-table-column label="中队" align="center" prop="squad" />
       <el-table-column label="物料组1" align="center" prop="materialGroup1" />
       <el-table-column label="保管员id" align="center" prop="custodianId" />
       <el-table-column label="简码" align="center" prop="shortCode" />
-      <el-table-column label="自合并分类" align="center" prop="selfMergeCategory" />
+      <el-table-column
+        label="自合并分类"
+        align="center"
+        prop="selfMergeCategory"
+      />
       <el-table-column label="保管员姓名" align="center" prop="custodianName" />
       <el-table-column label="状态" align="center" prop="status" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
-
-        </template>
+      <el-table-column
+        label="操作"
+        align="center"
+        class-name="small-padding fixed-width"
+      >
+        <template slot-scope="scope"> </template>
       </el-table-column>
     </el-table>
 
     <pagination
-      v-show="total>0"
+      v-show="total > 0"
       :total="total"
       :page.sync="queryParams.pageNum"
       :limit.sync="queryParams.pageSize"
@@ -140,7 +210,10 @@
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="调拨明细编号" prop="allotDetailId">
-          <el-input v-model="form.allotDetailId" placeholder="请输入调拨明细编号" />
+          <el-input
+            v-model="form.allotDetailId"
+            placeholder="请输入调拨明细编号"
+          />
         </el-form-item>
         <el-form-item label="库房编号" prop="storehouseId">
           <el-input v-model="form.storehouseId" placeholder="请输入库房编号" />
@@ -167,55 +240,67 @@
           <el-input v-model="form.department" placeholder="请输入部门" />
         </el-form-item>
         <el-form-item label="计量图片文件" prop="measureImageFile">
-          <file-upload v-model="form.measureImageFile"/>
+          <file-upload v-model="form.measureImageFile" />
         </el-form-item>
         <el-form-item label="计量录像文件" prop="measureVideoFile">
-          <file-upload v-model="form.measureVideoFile"/>
+          <file-upload v-model="form.measureVideoFile" />
         </el-form-item>
         <el-form-item label="门卫" prop="guard">
           <el-input v-model="form.guard" placeholder="请输入门卫" />
         </el-form-item>
         <el-form-item label="出库时间" prop="outboundTime">
-          <el-date-picker clearable
+          <el-date-picker
+            clearable
             v-model="form.outboundTime"
             type="date"
             value-format="yyyy-MM-dd"
-            placeholder="请选择出库时间">
+            placeholder="请选择出库时间"
+          >
           </el-date-picker>
         </el-form-item>
         <el-form-item label="计量员" prop="measurer">
           <el-input v-model="form.measurer" placeholder="请输入计量员" />
         </el-form-item>
         <el-form-item label="计量时间" prop="measureTime">
-          <el-date-picker clearable
+          <el-date-picker
+            clearable
             v-model="form.measureTime"
             type="date"
             value-format="yyyy-MM-dd"
-            placeholder="请选择计量时间">
+            placeholder="请选择计量时间"
+          >
           </el-date-picker>
         </el-form-item>
         <el-form-item label="皮重图片文件" prop="tareImageFile">
-          <file-upload v-model="form.tareImageFile"/>
+          <file-upload v-model="form.tareImageFile" />
         </el-form-item>
         <el-form-item label="皮重录像文件" prop="tareVideoFile">
-          <file-upload v-model="form.tareVideoFile"/>
+          <file-upload v-model="form.tareVideoFile" />
         </el-form-item>
         <el-form-item label="保管员" prop="custodian">
           <el-input v-model="form.custodian" placeholder="请输入保管员" />
         </el-form-item>
         <el-form-item label="操作时间" prop="operateTime">
-          <el-date-picker clearable
+          <el-date-picker
+            clearable
             v-model="form.operateTime"
             type="date"
             value-format="yyyy-MM-dd"
-            placeholder="请选择操作时间">
+            placeholder="请选择操作时间"
+          >
           </el-date-picker>
         </el-form-item>
         <el-form-item label="调整数量" prop="adjustQuantity">
-          <el-input v-model="form.adjustQuantity" placeholder="请输入调整数量" />
+          <el-input
+            v-model="form.adjustQuantity"
+            placeholder="请输入调整数量"
+          />
         </el-form-item>
         <el-form-item label="计量曲率" prop="measureCurvature">
-          <el-input v-model="form.measureCurvature" placeholder="请输入计量曲率" />
+          <el-input
+            v-model="form.measureCurvature"
+            placeholder="请输入计量曲率"
+          />
         </el-form-item>
         <el-form-item label="出库编号" prop="outboundId">
           <el-input v-model="form.outboundId" placeholder="请输入出库编号" />
@@ -224,7 +309,10 @@
           <el-input v-model="form.pieceCount" placeholder="请输入件数" />
         </el-form-item>
         <el-form-item label="原单编号" prop="originalDocumentId">
-          <el-input v-model="form.originalDocumentId" placeholder="请输入原单编号" />
+          <el-input
+            v-model="form.originalDocumentId"
+            placeholder="请输入原单编号"
+          />
         </el-form-item>
         <el-form-item label="备注" prop="remark">
           <el-input v-model="form.remark" placeholder="请输入备注" />
@@ -269,7 +357,10 @@
           <el-input v-model="form.allotQuantity" placeholder="请输入调拨数量" />
         </el-form-item>
         <el-form-item label="实发数量" prop="actualQuantity">
-          <el-input v-model="form.actualQuantity" placeholder="请输入实发数量" />
+          <el-input
+            v-model="form.actualQuantity"
+            placeholder="请输入实发数量"
+          />
         </el-form-item>
         <el-form-item label="车数" prop="carCount">
           <el-input v-model="form.carCount" placeholder="请输入车数" />
@@ -287,11 +378,13 @@
           <el-input v-model="form.allotOperator" placeholder="请输入调拨员" />
         </el-form-item>
         <el-form-item label="调拨时间" prop="allotTime">
-          <el-date-picker clearable
+          <el-date-picker
+            clearable
             v-model="form.allotTime"
             type="date"
             value-format="yyyy-MM-dd"
-            placeholder="请选择调拨时间">
+            placeholder="请选择调拨时间"
+          >
           </el-date-picker>
         </el-form-item>
         <el-form-item label="余额" prop="balance">
@@ -313,7 +406,10 @@
           <el-input v-model="form.reportRemark" placeholder="请输入报号备注" />
         </el-form-item>
         <el-form-item label="首次皮重" prop="firstTareWeight">
-          <el-input v-model="form.firstTareWeight" placeholder="请输入首次皮重" />
+          <el-input
+            v-model="form.firstTareWeight"
+            placeholder="请输入首次皮重"
+          />
         </el-form-item>
         <el-form-item label="部门1" prop="department1">
           <el-input v-model="form.department1" placeholder="请输入部门1" />
@@ -328,19 +424,25 @@
           <el-input v-model="form.adjustRemark" placeholder="请输入调整备注" />
         </el-form-item>
         <el-form-item label="库房图片" prop="storehouseImage">
-          <image-upload v-model="form.storehouseImage"/>
+          <image-upload v-model="form.storehouseImage" />
         </el-form-item>
         <el-form-item label="图片路径" prop="imagePath">
           <el-input v-model="form.imagePath" placeholder="请输入图片路径" />
         </el-form-item>
         <el-form-item label="多调拨单明细" prop="multiAllotDetail">
-          <el-input v-model="form.multiAllotDetail" placeholder="请输入多调拨单明细" />
+          <el-input
+            v-model="form.multiAllotDetail"
+            placeholder="请输入多调拨单明细"
+          />
         </el-form-item>
         <el-form-item label="净重1" prop="netWeight1">
           <el-input v-model="form.netWeight1" placeholder="请输入净重1" />
         </el-form-item>
         <el-form-item label="业务年月" prop="businessYearMonth">
-          <el-input v-model="form.businessYearMonth" placeholder="请输入业务年月" />
+          <el-input
+            v-model="form.businessYearMonth"
+            placeholder="请输入业务年月"
+          />
         </el-form-item>
         <el-form-item label="中队" prop="squad">
           <el-input v-model="form.squad" placeholder="请输入中队" />
@@ -355,10 +457,16 @@
           <el-input v-model="form.shortCode" placeholder="请输入简码" />
         </el-form-item>
         <el-form-item label="自合并分类" prop="selfMergeCategory">
-          <el-input v-model="form.selfMergeCategory" placeholder="请输入自合并分类" />
+          <el-input
+            v-model="form.selfMergeCategory"
+            placeholder="请输入自合并分类"
+          />
         </el-form-item>
         <el-form-item label="保管员姓名" prop="custodianName">
-          <el-input v-model="form.custodianName" placeholder="请输入保管员姓名" />
+          <el-input
+            v-model="form.custodianName"
+            placeholder="请输入保管员姓名"
+          />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -370,7 +478,13 @@
 </template>
 
 <script>
-import { listWms_material_out, getWms_material_out, delWms_material_out, addWms_material_out, updateWms_material_out } from "@/api/system/wms_material_out"
+import {
+  listWms_material_out,
+  getWms_material_out,
+  delWms_material_out,
+  addWms_material_out,
+  updateWms_material_out,
+} from "@/api/system/wms_material_out";
 
 export default {
   name: "Wms_material_out",
@@ -468,32 +582,31 @@ export default {
         shortCode: null,
         selfMergeCategory: null,
         custodianName: null,
-        status: null
+        status: null,
       },
       // 表单参数
       form: {},
       // 表单校验
-      rules: {
-      }
-    }
+      rules: {},
+    };
   },
   created() {
-    this.getList()
+    this.getList();
   },
   methods: {
     /** 查询调拨视图列表 */
     getList() {
-      this.loading = true
-      listWms_material_out(this.queryParams).then(response => {
-        this.wms_material_outList = response.rows
-        this.total = response.total
-        this.loading = false
-      })
+      this.loading = true;
+      listWms_material_out(this.queryParams).then((response) => {
+        this.wms_material_outList = response.rows;
+        this.total = response.total;
+        this.loading = false;
+      });
     },
     // 取消按钮
     cancel() {
-      this.open = false
-      this.reset()
+      this.open = false;
+      this.reset();
     },
     // 表单重置
     reset() {
@@ -569,78 +682,86 @@ export default {
         shortCode: null,
         selfMergeCategory: null,
         custodianName: null,
-        status: null
-      }
-      this.resetForm("form")
+        status: null,
+      };
+      this.resetForm("form");
     },
     /** 搜索按钮操作 */
     handleQuery() {
-      this.queryParams.pageNum = 1
-      this.getList()
+      this.queryParams.pageNum = 1;
+      this.getList();
     },
     /** 重置按钮操作 */
     resetQuery() {
-      this.resetForm("queryForm")
-      this.handleQuery()
+      this.resetForm("queryForm");
+      this.handleQuery();
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.allotDetailId)
-      this.single = selection.length!==1
-      this.multiple = !selection.length
+      this.ids = selection.map((item) => item.allotDetailId);
+      this.single = selection.length !== 1;
+      this.multiple = !selection.length;
     },
     /** 新增按钮操作 */
     handleAdd() {
-      this.reset()
-      this.open = true
-      this.title = "添加调拨视图"
+      this.reset();
+      this.open = true;
+      this.title = "添加调拨视图";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
-      this.reset()
-      const allotDetailId = row.allotDetailId || this.ids
-      getWms_material_out(allotDetailId).then(response => {
-        this.form = response.data
-        this.open = true
-        this.title = "修改调拨视图"
-      })
+      this.reset();
+      const allotDetailId = row.allotDetailId || this.ids;
+      getWms_material_out(allotDetailId).then((response) => {
+        this.form = response.data;
+        this.open = true;
+        this.title = "修改调拨视图";
+      });
     },
     /** 提交按钮 */
     submitForm() {
-      this.$refs["form"].validate(valid => {
+      this.$refs["form"].validate((valid) => {
         if (valid) {
           if (this.form.allotDetailId != null) {
-            updateWms_material_out(this.form).then(response => {
-              this.$modal.msgSuccess("修改成功")
-              this.open = false
-              this.getList()
-            })
+            updateWms_material_out(this.form).then((response) => {
+              this.$modal.msgSuccess("修改成功");
+              this.open = false;
+              this.getList();
+            });
           } else {
-            addWms_material_out(this.form).then(response => {
-              this.$modal.msgSuccess("新增成功")
-              this.open = false
-              this.getList()
-            })
+            addWms_material_out(this.form).then((response) => {
+              this.$modal.msgSuccess("新增成功");
+              this.open = false;
+              this.getList();
+            });
           }
         }
-      })
+      });
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const allotDetailIds = row.allotDetailId || this.ids
-      this.$modal.confirm('是否确认删除调拨视图编号为"' + allotDetailIds + '"的数据项？').then(function() {
-        return delWms_material_out(allotDetailIds)
-      }).then(() => {
-        this.getList()
-        this.$modal.msgSuccess("删除成功")
-      }).catch(() => {})
+      const allotDetailIds = row.allotDetailId || this.ids;
+      this.$modal
+        .confirm('是否确认删除调拨视图编号为"' + allotDetailIds + '"的数据项？')
+        .then(function () {
+          return delWms_material_out(allotDetailIds);
+        })
+        .then(() => {
+          this.getList();
+          this.$modal.msgSuccess("删除成功");
+        })
+        .catch(() => {});
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('system/wms_material_out/export', {
-        ...this.queryParams
-      }, `wms_material_out_${new Date().getTime()}.xlsx`)
-    }
-  }
-}
+      this.download(
+        "system/wms_material_out/export",
+        {
+          ...this.queryParams,
+        },
+        `wms_material_out_${new Date().getTime()}.xlsx`
+      );
+    },
+  },
+};
 </script>

@@ -1386,6 +1386,36 @@ export default {
 
         response.rows.forEach(processItem);
       });
+
+      setTimeout(() => {
+        if (this.selectData.length > 0) {
+          this.selectData.forEach((v) => {
+            const parts = v["fuzzy"].split("-");
+            const name = parts[0];
+            const description = parts[2];
+            const timestamp = parts[1];
+            const newName =
+              name +
+              "-" +
+              this.convertTimestampToDate(timestamp) +
+              "-" +
+              description;
+            v.fuzzy = newName;
+          });
+        }
+      }, 300);
+    },
+    convertTimestampToDate(timestampStr) {
+      // 解析时间戳字符串
+      const date = new Date(timestampStr);
+
+      // 获取年月日
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0"); // 月份从0开始，需要+1
+      const day = String(date.getDate()).padStart(2, "0");
+
+      // 返回 yyyy-dd-mm 格式
+      return `${year}-${month}-${day}`;
     },
 
     getTime(time) {
@@ -1432,21 +1462,18 @@ export default {
     },
 
     handleSelectChange(val) {
-      // positionHistoryPositionFindPersonHistoryList({
-      //   personId: this.queryParams.status.personId,
-      //   vehiclePlateNo: this.queryParams.vehiclePlateNo.personId,
-      //   date: "",
-      //   time: [],
-      //   beginTime: this.dateRange[0],
-      //   endTime: this.dateRange[1],
-      // }).then((res) => {
-      //   if (res.code == 200) {
-      //     this.tableData = res.data;
-      //   }
-      // });
+      this.queryParams.status = val.fuzzy;
       let trajectoryData = val.trajectoryPoints
         ? JSON.parse(val.trajectoryPoints)
         : [];
+      if (!trajectoryData.length) {
+        this.cleanupAnimation();
+        this.isShowQ = false;
+        this.isBf = false;
+
+        this.$message.warning("暂无轨迹数据");
+        return;
+      }
 
       // 如果数据还没有转换过且启用了坐标转换，进行坐标转换（兼容旧数据）
       // 注意：由于在 remoteSearchUser 中已经转换，这里主要是为了兼容直接传入的数据

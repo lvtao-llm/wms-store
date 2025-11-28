@@ -26,11 +26,13 @@ export default {
           // author: "作者名称", // 左下角信息框中的作者名称，如果不需要，直接把这行注掉
           sceneFadeDuration: 1000, // 跳转的时候淡入淡出属性，时间为毫秒
           autoLoad: true, // 自动加载
-          autoRotate: -2, // 自动旋转
+          gyroscope: true,
+          autoRotate: -5, // 自动旋转
         },
         // 全景图配置
         scenes: {
           circle: {
+            gyroscope: true,
             // 场景id
             // title: "当前全景画面名称", // 左下角信息框中显示现在所在位置名称，如果不需要，直接把这行注掉
             hfov: 110, // 水平视角，根据调整来展示宽度，数值越大看的越窄，数值越小，看的越宽，正常默认110
