@@ -133,9 +133,9 @@
       <el-table-column label="客户编码" align="center" prop="customerCode" />
       <el-table-column label="客户名称" align="center" prop="customerName" />
       <el-table-column label="物料组" align="center" prop="materialGroup" />
-      <el-table-column label="物资编码" align="center" prop="materialCode" />
-      <el-table-column label="物资名称" align="center" prop="materialName" />
-      <el-table-column label="计量单位" align="center" prop="measureUnit" />
+      <el-table-column label="物资编码" align="center" prop="wzbm" />
+      <el-table-column label="物资名称" align="center" prop="wzmc" />
+      <el-table-column label="计量单位" align="center" prop="jldw" />
       <el-table-column label="销售公司" align="center" prop="salesCompany" />
       <el-table-column label="库房" align="center" prop="storehouse" />
       <el-table-column label="料场" align="center" prop="materialYard" />

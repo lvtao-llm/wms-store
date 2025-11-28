@@ -72,8 +72,8 @@
       <el-table-column label="计量单位" align="center" prop="unit" />
       <el-table-column label="库房" align="center" prop="warehouse" />
       <el-table-column label="账存重量" align="center" prop="bookWeight" />
-      <el-table-column label="品种编码" align="center" prop="varietyCode" />
-      <el-table-column label="品种名称" align="center" prop="varietyName" />
+      <el-table-column label="品种编码" align="center" prop="pzbm" />
+      <el-table-column label="品种名称" align="center" prop="pzmc" />
       <el-table-column
         label="物资类别"
         align="center"
@@ -107,7 +107,7 @@
         <el-form-item label="库存编号" prop="inventoryId">
           <el-input v-model="form.inventoryId" placeholder="请输入库存编号" />
         </el-form-item>
-        <el-form-item label="物资编码" prop="materialCode">
+        <el-form-item label="物资编码" prop="wzbm">
           <el-input v-model="form.materialCode" placeholder="请输入物资编码" />
         </el-form-item>
         <el-form-item label="实存重量" prop="actualWeight">
@@ -116,10 +116,10 @@
         <el-form-item label="备注" prop="remark">
           <el-input v-model="form.remark" placeholder="请输入备注" />
         </el-form-item>
-        <el-form-item label="物资名称" prop="materialName">
+        <el-form-item label="物资名称" prop="wzmc">
           <el-input v-model="form.materialName" placeholder="请输入物资名称" />
         </el-form-item>
-        <el-form-item label="计量单位" prop="unit">
+        <el-form-item label="计量单位" prop="jldw">
           <el-input v-model="form.unit" placeholder="请输入计量单位" />
         </el-form-item>
         <el-form-item label="库房" prop="warehouse">
