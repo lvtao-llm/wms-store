@@ -41,10 +41,22 @@ import com.ruoyi.common.core.page.TableDataInfo;
 @RestController
 @RequestMapping("/system/wms_material_identify_record")
 public class WmsMaterialIdentifyRecordController extends BaseController {
+
+    /**
+     * 服务对象
+     */
     @Autowired
     private IWmsMaterialIdentifyRecordService wmsMaterialIdentifyRecordService;
+
+    /**
+     * 取当前日向前几天的list数据
+     */
     @Value("${wms.wms-material-identify-record-list-day-offset:-1}")
     private int huokou;
+
+    /**
+     * 获取当前时间
+     */
     SimpleDateFormat sdfYearMonDay = new SimpleDateFormat("yyyy-MM-dd");
 
     /**
@@ -81,11 +93,11 @@ public class WmsMaterialIdentifyRecordController extends BaseController {
                 List<String> imagePaths2 = new ArrayList<>();
                 for (int i = 0; i < images.length; i++) {
                     String p = Paths.get(jsonObject.getString("imagePath"), images[i]).toFile().getPath().replace("\\", "/").replace(RuoYiConfig.getProfile() + "/", "");
-                    if(i==images.length-1){
-                    imagePaths2.add(p);
-                    jsonObject.put("img2Url" + i, p);
-                }
+                    if (i == images.length - 1) {
+                        imagePaths2.add(p);
+                        jsonObject.put("img2Url" + i, p);
                     }
+                }
                 jsonObject.put("mg2", String.join(",", imagePaths2));
             }
             jsonArray.add(jsonObject);

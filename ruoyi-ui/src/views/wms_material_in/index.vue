@@ -122,17 +122,6 @@
         </template>
       </el-table-column>
       <el-table-column label="验收人" align="center" prop="ysr" />
-      <el-table-column label="验收时间" align="center" prop="yssj" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.yssj, '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="稽核人" align="center" prop="jhr" />
-      <el-table-column label="稽核时间" align="center" prop="jhsj" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.jhsj, '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
       <el-table-column label="到库时间" align="center" prop="dksj" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.dksj, '{y}-{m}-{d}') }}</span>

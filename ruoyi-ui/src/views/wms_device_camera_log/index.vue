@@ -17,22 +17,22 @@
           placeholder="请选择时间">
         </el-date-picker>
       </el-form-item>
-      <el-form-item label="是否有车" prop="yc">
-        <el-input
-          v-model="queryParams.yc"
-          placeholder="请输入是否有车"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="是否有人" prop="yr">
-        <el-input
-          v-model="queryParams.yr"
-          placeholder="请输入是否有人"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
+<!--      <el-form-item label="是否有车" prop="yc">-->
+<!--        <el-input-->
+<!--          v-model="queryParams.yc"-->
+<!--          placeholder="请输入是否有车"-->
+<!--          clearable-->
+<!--          @keyup.enter.native="handleQuery"-->
+<!--        />-->
+<!--      </el-form-item>-->
+<!--      <el-form-item label="是否有人" prop="yr">-->
+<!--        <el-input-->
+<!--          v-model="queryParams.yr"-->
+<!--          placeholder="请输入是否有人"-->
+<!--          clearable-->
+<!--          @keyup.enter.native="handleQuery"-->
+<!--        />-->
+<!--      </el-form-item>-->
       <el-form-item label="车牌号" prop="cph">
         <el-input
           v-model="queryParams.cph"
@@ -127,7 +127,7 @@
 
     <el-table v-loading="loading" :data="wms_device_camera_logList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="主键" align="center" prop="id" />
+<!--      <el-table-column label="主键" align="center" prop="id" />-->
       <el-table-column label="类别" align="center" prop="type" />
       <el-table-column label="点位名称" align="center" prop="dwmc" />
       <el-table-column label="时间" align="center" prop="sj" width="180">
@@ -135,13 +135,13 @@
           <span>{{ parseTime(scope.row.sj, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="是否有车" align="center" prop="yc" />
-      <el-table-column label="是否有人" align="center" prop="yr" />
+<!--      <el-table-column label="是否有车" align="center" prop="yc" />-->
+<!--      <el-table-column label="是否有人" align="center" prop="yr" />-->
       <el-table-column label="车牌号" align="center" prop="cph" />
       <el-table-column label="车轴" align="center" prop="cz" />
       <el-table-column label="车型" align="center" prop="cx" />
       <el-table-column label="颜色" align="center" prop="ys" />
-      <el-table-column label="是否穿戴工服" align="center" prop="sfcdgf" />
+<!--      <el-table-column label="是否穿戴工服" align="center" prop="sfcdgf" />-->
       <el-table-column label="图片" align="center" prop="base64">
         <template slot-scope="scope">
             <image-preview

@@ -100,7 +100,6 @@
         </template>
       </el-table-column>
       <el-table-column label="单据状态" align="center" prop="documentStatus" />
-      <el-table-column label="保管员" align="center" prop="custodian" />
       <el-table-column
         label="操作时间"
         align="center"
@@ -112,25 +111,10 @@
         </template>
       </el-table-column>
       <el-table-column label="调整数量" align="center" prop="adjustQuantity" />
-      <el-table-column
-        label="计量曲率"
-        align="center"
-        prop="measureCurvature"
-      />
       <el-table-column label="出库编号" align="center" prop="outboundId" />
       <el-table-column label="计量类型" align="center" prop="measureType" />
-      <el-table-column label="件数" align="center" prop="pieceCount" />
-      <el-table-column
-        label="原单编号"
-        align="center"
-        prop="originalDocumentId"
-      />
-      <el-table-column label="备注" align="center" prop="remark" />
-      <el-table-column label="卡号" align="center" prop="cardId" />
-      <el-table-column label="调拨编号" align="center" prop="allotId" />
       <el-table-column label="调拨编码" align="center" prop="allotCode" />
       <el-table-column label="调拨类型" align="center" prop="allotType" />
-      <el-table-column label="客户编码" align="center" prop="customerCode" />
       <el-table-column label="客户名称" align="center" prop="customerName" />
       <el-table-column label="物料组" align="center" prop="materialGroup" />
       <el-table-column label="物资编码" align="center" prop="wzbm" />
@@ -161,17 +145,11 @@
       <el-table-column label="余料" align="center" prop="surplusMaterial" />
       <el-table-column label="车数1" align="center" prop="carCount1" />
       <el-table-column label="是否多车" align="center" prop="isMultiCar" />
-      <el-table-column label="报号备注" align="center" prop="reportRemark" />
       <el-table-column label="首次皮重" align="center" prop="firstTareWeight" />
       <el-table-column label="部门1" align="center" prop="department1" />
       <el-table-column label="料场编码" align="center" prop="yardCode" />
       <el-table-column label="报号人" align="center" prop="reporter" />
       <el-table-column label="调整备注" align="center" prop="adjustRemark" />
-      <el-table-column
-        label="多调拨单明细"
-        align="center"
-        prop="multiAllotDetail"
-      />
       <el-table-column label="净重1" align="center" prop="netWeight1" />
       <el-table-column
         label="业务年月"
@@ -180,7 +158,6 @@
       />
       <el-table-column label="中队" align="center" prop="squad" />
       <el-table-column label="物料组1" align="center" prop="materialGroup1" />
-      <el-table-column label="保管员id" align="center" prop="custodianId" />
       <el-table-column label="简码" align="center" prop="shortCode" />
       <el-table-column
         label="自合并分类"
@@ -294,12 +271,6 @@
           <el-input
             v-model="form.adjustQuantity"
             placeholder="请输入调整数量"
-          />
-        </el-form-item>
-        <el-form-item label="计量曲率" prop="measureCurvature">
-          <el-input
-            v-model="form.measureCurvature"
-            placeholder="请输入计量曲率"
           />
         </el-form-item>
         <el-form-item label="出库编号" prop="outboundId">

@@ -64,20 +64,18 @@
     >
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="库存编号" align="center" prop="inventoryId" />
-      <el-table-column label="物资编码" align="center" prop="materialCode" />
+      <el-table-column label="物资编码" align="center" prop="wzbm" />
       <el-table-column label="实存重量" align="center" prop="actualWeight" />
       <el-table-column label="状态" align="center" prop="status" />
-      <el-table-column label="备注" align="center" prop="remark" />
-      <el-table-column label="物资名称" align="center" prop="materialName" />
-      <el-table-column label="计量单位" align="center" prop="unit" />
+      <el-table-column label="物资名称" align="center" prop="wzmc" />
+      <el-table-column label="计量单位" align="center" prop="jldw" />
       <el-table-column label="库房" align="center" prop="warehouse" />
       <el-table-column label="账存重量" align="center" prop="bookWeight" />
-      <el-table-column label="品种编码" align="center" prop="pzbm" />
       <el-table-column label="品种名称" align="center" prop="pzmc" />
       <el-table-column
         label="物资类别"
         align="center"
-        prop="materialCategory"
+        prop="wzlb"
       />
       <el-table-column label="预拨重量" align="center" prop="reservedWeight" />
       <el-table-column label="可拨重量" align="center" prop="availableWeight" />

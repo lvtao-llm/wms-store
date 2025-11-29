@@ -115,8 +115,6 @@
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="物料编码" align="center" prop="wzbm" />
       <el-table-column label="物料名称" align="center" prop="wzmc" />
-      <el-table-column label="规格" align="center" prop="pzmc" />
-      <el-table-column label="型号" align="center" prop="wzlb" />
       <el-table-column label="存放区域" align="center" prop="areaCodes">
         <template slot-scope="scope">
           <dict-tag

@@ -210,6 +210,7 @@ wms:
 
     # 区域统计 websocket 定时任务
     area-statics: 0/5 * * * * ?
+  wms-material-identify-record-list-day-offset: -5
 
 media-server:
   ffmpeg-command: ffmpeg -rtsp_transport udp -i %s -c:v copy -an -fflags +genpts -use_wallclock_as_timestamps 1 -flags +global_header -flush_packets 1 -f flv

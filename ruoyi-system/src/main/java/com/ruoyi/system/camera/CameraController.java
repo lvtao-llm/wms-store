@@ -113,33 +113,31 @@ public class CameraController {
             FFmpegWrap fFmpegWrap = new FFmpegWrap(streamId, id + "-" + num, rtspUrl, mpegCommand);
             cameraServeice.activeWrap.put(streamId, fFmpegWrap);
 
-            Map<String, Object> res = new HashMap<>();
-            res.put("success", true);
-            res.put("id", streamId);
-            res.put("message", "流启动成功");
-            res.put("port", port);
-            res.put("rtspUrl", rtspUrl);
-            res.put("mpeg-command", mpegCommand);
-            res.put("code", 200);
+            Map<String, Object> data = new HashMap<>();
+            data.put("success", true);
+            data.put("id", streamId);
+            data.put("message", "流启动成功");
+            data.put("port", port);
+            data.put("rtspUrl", rtspUrl);
+            data.put("mpeg-command", mpegCommand);
+            data.put("code", 200);
             Map<String, Object> response = new LinkedHashMap<>();
-            response.put("data", res);
-            response.put("success", true);
+            response.put("data", data);
             response.put("id", streamId);
+            response.put("success", true);
             response.put("message", "流启动成功");
             response.put("port", port);
-            response.put("rtspUrl", rtspUrl);
-            response.put("mpeg-command", mpegCommand);
             response.put("code", 200);
             log.info("启动流成功: {}", response);
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
-            Map<String, Object> res = new HashMap<>();
-            res.put("success", false);
-            res.put("message", "启动流失败: " + e.getMessage());
-            res.put("code", 500);
+            Map<String, Object> data = new HashMap<>();
+            data.put("success", false);
+            data.put("message", "启动流失败: " + e.getMessage());
+            data.put("code", 500);
             Map<String, Object> response = new LinkedHashMap<>();
-            response.put("data", res);
+            response.put("data", data);
             response.put("code", 500);
             response.put("message", "启动流失败: " + e.getMessage());
             response.put("success", false);

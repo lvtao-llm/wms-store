@@ -1,7 +1,12 @@
 package com.ruoyi.system.controller;
 
-import java.util.List;
+import java.util.*;
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;
+
+import com.alibaba.fastjson2.JSONObject;
+import com.ruoyi.system.domain.WmsDevice;
+import com.ruoyi.system.service.IWmsDeviceService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,26 +28,51 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 摄像头识别日志Controller
- * 
+ *
  * @author ruoyi
  * @date 2025-11-11
  */
 @RestController
 @RequestMapping("/system/wms_device_camera_log")
-public class WmsDeviceCameraLogController extends BaseController
-{
+public class WmsDeviceCameraLogController extends BaseController {
     @Autowired
     private IWmsDeviceCameraLogService wmsDeviceCameraLogService;
 
+    @Autowired
+    private IWmsDeviceService wmsDeviceService;
+
+    private static Map<String, String> ipMapDeviceName = new HashMap<>();
+
+    @PostConstruct
+    public void init() {
+        WmsDevice wmsDevice = new WmsDevice();
+        wmsDevice.setDeviceType("摄像头");
+        List<WmsDevice> wmsDevices = wmsDeviceService.selectWmsDeviceList(wmsDevice);
+        for (WmsDevice wmsDevice1 : wmsDevices) {
+            String data = wmsDevice1.getData();
+            JSONObject jsonObject = JSONObject.parseObject(data);
+            if (jsonObject.containsKey("ip1")) {
+                ipMapDeviceName.put(jsonObject.getString("ip1"), wmsDevice1.getDeviceName());
+            }
+            if (jsonObject.containsKey("ip2")) {
+                ipMapDeviceName.put(jsonObject.getString("ip2"), wmsDevice1.getDeviceName());
+            }
+        }
+        logger.info("摄像头设备名称：{}", ipMapDeviceName);
+    }
     /**
      * 查询摄像头识别日志列表
      */
     @PreAuthorize("@ss.hasPermi('system:wms_device_camera_log:list')")
     @GetMapping("/list")
-    public TableDataInfo list(WmsDeviceCameraLog wmsDeviceCameraLog)
-    {
+    public TableDataInfo list(WmsDeviceCameraLog wmsDeviceCameraLog) {
         startPage();
         List<WmsDeviceCameraLog> list = wmsDeviceCameraLogService.selectWmsDeviceCameraLogList(wmsDeviceCameraLog);
+        for (WmsDeviceCameraLog cameraLog : list) {
+            if (ipMapDeviceName.containsKey(cameraLog.getDwmc())) {
+                cameraLog.setDwmc(ipMapDeviceName.get(cameraLog.getDwmc()));
+            }
+        }
         return getDataTable(list);
     }
 
@@ -52,8 +82,7 @@ public class WmsDeviceCameraLogController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_device_camera_log:export')")
     @Log(title = "摄像头识别日志", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, WmsDeviceCameraLog wmsDeviceCameraLog)
-    {
+    public void export(HttpServletResponse response, WmsDeviceCameraLog wmsDeviceCameraLog) {
         List<WmsDeviceCameraLog> list = wmsDeviceCameraLogService.selectWmsDeviceCameraLogList(wmsDeviceCameraLog);
         ExcelUtil<WmsDeviceCameraLog> util = new ExcelUtil<WmsDeviceCameraLog>(WmsDeviceCameraLog.class);
         util.exportExcel(response, list, "摄像头识别日志数据");
@@ -64,8 +93,7 @@ public class WmsDeviceCameraLogController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('system:wms_device_camera_log:query')")
     @GetMapping(value = "/{id}")
-    public AjaxResult getInfo(@PathVariable("id") Long id)
-    {
+    public AjaxResult getInfo(@PathVariable("id") Long id) {
         return success(wmsDeviceCameraLogService.selectWmsDeviceCameraLogById(id));
     }
 
@@ -74,8 +102,7 @@ public class WmsDeviceCameraLogController extends BaseController
      */
     @Log(title = "摄像头识别日志", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody WmsDeviceCameraLog wmsDeviceCameraLog)
-    {
+    public AjaxResult add(@RequestBody WmsDeviceCameraLog wmsDeviceCameraLog) {
         return toAjax(wmsDeviceCameraLogService.insertWmsDeviceCameraLog(wmsDeviceCameraLog));
     }
 
@@ -85,8 +112,7 @@ public class WmsDeviceCameraLogController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_device_camera_log:edit')")
     @Log(title = "摄像头识别日志", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody WmsDeviceCameraLog wmsDeviceCameraLog)
-    {
+    public AjaxResult edit(@RequestBody WmsDeviceCameraLog wmsDeviceCameraLog) {
         return toAjax(wmsDeviceCameraLogService.updateWmsDeviceCameraLog(wmsDeviceCameraLog));
     }
 
@@ -95,9 +121,8 @@ public class WmsDeviceCameraLogController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('system:wms_device_camera_log:remove')")
     @Log(title = "摄像头识别日志", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
-    public AjaxResult remove(@PathVariable Long[] ids)
-    {
+    @DeleteMapping("/{ids}")
+    public AjaxResult remove(@PathVariable Long[] ids) {
         return toAjax(wmsDeviceCameraLogService.deleteWmsDeviceCameraLogByIds(ids));
     }
 }
