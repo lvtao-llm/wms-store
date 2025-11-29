@@ -28,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -49,6 +50,8 @@ public class LanyaTransferController extends BaseController {
 
     @Autowired
     private ILanyaCoreAlarmService lanyaCoreAlarmService;
+
+    private SimpleDateFormat YMDhmsSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     /**
      * 获取人员实时定位
@@ -220,8 +223,13 @@ public class LanyaTransferController extends BaseController {
         HashMap<?, ?> res = (HashMap<?, ?>) thirdPartyAuth.callThirdParty("/monitor-service/cardSender/cardSenderLog", HttpMethod.POST, body);
         ArrayList<HashMap<String, Object>> data = (ArrayList<HashMap<String, Object>>) res.get("data");
 
-        HashMap<Integer, HashMap<String, Object>> sending = new HashMap<>();
+        // 完整的记录
         List<HashMap<String, Object>> complete = new ArrayList<>();
+
+        // 临时记录
+        List<Integer> senderIds = new ArrayList<>();
+
+        // 遍历记录
         for (int i = data.size() - 1; i >= 0; i--) {
             HashMap<String, Object> obj = data.get(i);
 
@@ -232,23 +240,30 @@ public class LanyaTransferController extends BaseController {
 
             if (((Integer) obj.get("cardSenderType")) == 0) {
                 // cardSenderType 0:还卡记录
-                if (sending.containsKey((Integer) obj.get("cardId"))) {
-                    HashMap<String, Object> send = sending.remove(obj.get("cardId"));
-                    send.put("returnCardTime", obj.get("createTime"));
-                    send.put("returnCardId", obj.get("id"));
-                    complete.add(0, send);
-                } else {
-                    obj.put("returnCardTime", obj.get("createTime"));
-                    obj.put("return_card_id", obj.get("id"));
+                boolean isExist = false;
+                for (int j = complete.size() - 1; j >= 0; j--) {
+                    if (complete.get(j).get("cardId").equals(obj.get("cardId"))) {
+                        HashMap<String, Object> record = complete.get(j);
+                        record.put("returnCardTime", obj.get("createTime"));
+                        record.put("returnCardId", obj.get("id"));
+                        isExist = true;
+                        break;
+                    }
+                }
+                if (!isExist) {
+                    // 如果不存在则添加到完整的记录中
                     obj.put("sendCardTime", null);
                     obj.put("sendCardId", null);
+                    obj.put("returnCardTime", obj.get("createTime"));
+                    obj.put("returnCardId", obj.get("id"));
                     complete.add(0, obj);
                 }
+                senderIds.remove((Integer) obj.get("cardId"));
             }
 
             if (((Integer) obj.get("cardSenderType")) == 1) {
                 // cardSenderType 1:发卡记录
-                if (sending.containsKey((Integer) obj.get("cardId"))) {
+                if (senderIds.contains((Integer) obj.get("cardId"))) {
                     // 如果有发卡记录有可能是卡机那头的错误（不好理解卡机的记录）导致的重复发卡
                     continue;
                 } else {
@@ -256,9 +271,11 @@ public class LanyaTransferController extends BaseController {
                     obj.put("returnCardId", null);
                     obj.put("sendCardTime", obj.get("createTime"));
                     obj.put("sendCardId", obj.get("id"));
-                    sending.put((Integer) obj.get("cardId"), obj);
+                    complete.add(obj);
+                    senderIds.add((Integer) obj.get("cardId"));
                 }
             }
+
         }
         return AjaxResult.success(complete);
     }
@@ -379,7 +396,6 @@ public class LanyaTransferController extends BaseController {
     }
 
     /**
-     *
      * @param body
      * @return
      * @throws JsonProcessingException
@@ -400,10 +416,9 @@ public class LanyaTransferController extends BaseController {
     }
 
     /**
-     *
      * @param body {
-     *              cardIds	卡号列表
-     *              content	下发内容
+     *             cardIds	卡号列表
+     *             content	下发内容
      *             }
      * @return
      * @throws JsonProcessingException
