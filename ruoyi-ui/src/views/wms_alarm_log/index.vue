@@ -59,7 +59,7 @@
       </el-table-column>
       <el-table-column label="异常行为" align="center" prop="alarmBehavior"/>
       <el-table-column label="处理结果" align="center" prop="alarmResult"/>
-      <el-table-column label="处理人员" align="center" prop="alarmHandler"/>
+<!--      <el-table-column label="处理人员" align="center" prop="alarmHandler"/>-->
       <el-table-column label="处理时间" align="center" prop="alarmHandleTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.alarmHandleTime, '{y}-{m}-{d}') }}</span>
@@ -67,6 +67,14 @@
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-view"
+            @click="handleView(scope.row)"
+            v-hasPermi="['system:wms_alarm_log:query']"
+          >核实
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -78,12 +86,23 @@
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
-
+    <!-- 添加或修改报警信息对话框 -->
+    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
+      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+        <el-form-item label="问题描述" prop="alarmResult">
+          <el-input v-model="form.alarmResult" placeholder="请输入问题描述"/>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button @click="cancel">取 消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import {listWms_alarm_log} from "@/api/system/wms_alarm_log"
+import {listWms_alarm_log, updateWms_alarm_log} from "@/api/system/wms_alarm_log"
 import {listArea} from "@/api/system/wms_area"
 
 export default {
@@ -108,6 +127,7 @@ export default {
       title: "",
       // 是否显示弹出层
       open: false,
+      form: {},
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -154,7 +174,11 @@ export default {
           this.loading = false
         })
       })
-
+    },
+    reset() {
+      this.form = {
+        alarmResult: null
+      }
     },
     // 取消按钮
     cancel() {
@@ -182,7 +206,25 @@ export default {
       this.download('system/wms_alarm_log/export', {
         ...this.queryParams
       }, `wms_alarm_log_${new Date().getTime()}.xlsx`)
-    }
+    },
+    handleView(row) {
+      this.reset()
+      this.title = "核实"
+      this.open = true
+      this.form = row
+    },
+    /** 提交按钮 */
+    submitForm() {
+      this.$refs["form"].validate(valid => {
+        if (valid) {
+          updateWms_alarm_log(this.form).then(response => {
+            this.$modal.msgSuccess("修改成功")
+            this.open = false
+            this.getList()
+          })
+        }
+      })
+    },
   }
 }
 </script>

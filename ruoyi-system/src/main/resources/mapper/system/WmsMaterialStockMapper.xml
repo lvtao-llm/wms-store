@@ -25,7 +25,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="areaCodes"    column="area_codes"    />
     </resultMap>
 
-    <select id="selectWmsMaterialStockListByAreaNames">
+    <select id="selectWmsMaterialStockListByAreaNames"  resultMap="WmsMaterialStockResult">
         select * from wms_material_stock a
         <where>
             a.wzmc in (

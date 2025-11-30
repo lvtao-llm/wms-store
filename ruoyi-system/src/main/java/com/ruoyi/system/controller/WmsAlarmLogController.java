@@ -1,7 +1,9 @@
 package com.ruoyi.system.controller;
 
+import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,14 +25,13 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 报警信息记录Controller
- * 
+ *
  * @author ruoyi
  * @date 2025-10-17
  */
 @RestController
 @RequestMapping("/system/wms_alarm_log")
-public class WmsAlarmLogController extends BaseController
-{
+public class WmsAlarmLogController extends BaseController {
     @Autowired
     private IWmsAlarmLogService wmsAlarmLogService;
 
@@ -39,8 +40,7 @@ public class WmsAlarmLogController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('system:wms_alarm_log:list')")
     @GetMapping("/list")
-    public TableDataInfo list(WmsAlarmLog wmsAlarmLog)
-    {
+    public TableDataInfo list(WmsAlarmLog wmsAlarmLog) {
         startPage();
         List<WmsAlarmLog> list = wmsAlarmLogService.selectWmsAlarmLogList(wmsAlarmLog);
         return getDataTable(list);
@@ -52,8 +52,7 @@ public class WmsAlarmLogController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_alarm_log:export')")
     @Log(title = "报警信息记录", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, WmsAlarmLog wmsAlarmLog)
-    {
+    public void export(HttpServletResponse response, WmsAlarmLog wmsAlarmLog) {
         List<WmsAlarmLog> list = wmsAlarmLogService.selectWmsAlarmLogList(wmsAlarmLog);
         ExcelUtil<WmsAlarmLog> util = new ExcelUtil<WmsAlarmLog>(WmsAlarmLog.class);
         util.exportExcel(response, list, "报警信息记录数据");
@@ -64,8 +63,7 @@ public class WmsAlarmLogController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('system:wms_alarm_log:query')")
     @GetMapping(value = "/{alarmId}")
-    public AjaxResult getInfo(@PathVariable("alarmId") Long alarmId)
-    {
+    public AjaxResult getInfo(@PathVariable("alarmId") Long alarmId) {
         return success(wmsAlarmLogService.selectWmsAlarmLogByAlarmId(alarmId));
     }
 
@@ -75,8 +73,7 @@ public class WmsAlarmLogController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_alarm_log:add')")
     @Log(title = "报警信息记录", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody WmsAlarmLog wmsAlarmLog)
-    {
+    public AjaxResult add(@RequestBody WmsAlarmLog wmsAlarmLog) {
         return toAjax(wmsAlarmLogService.insertWmsAlarmLog(wmsAlarmLog));
     }
 
@@ -86,8 +83,8 @@ public class WmsAlarmLogController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_alarm_log:edit')")
     @Log(title = "报警信息记录", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody WmsAlarmLog wmsAlarmLog)
-    {
+    public AjaxResult edit(@RequestBody WmsAlarmLog wmsAlarmLog) {
+        wmsAlarmLog.setAlarmHandleTime(new Date());
         return toAjax(wmsAlarmLogService.updateWmsAlarmLog(wmsAlarmLog));
     }
 
@@ -96,9 +93,8 @@ public class WmsAlarmLogController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('system:wms_alarm_log:remove')")
     @Log(title = "报警信息记录", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{alarmIds}")
-    public AjaxResult remove(@PathVariable Long[] alarmIds)
-    {
+    @DeleteMapping("/{alarmIds}")
+    public AjaxResult remove(@PathVariable Long[] alarmIds) {
         return toAjax(wmsAlarmLogService.deleteWmsAlarmLogByAlarmIds(alarmIds));
     }
 }

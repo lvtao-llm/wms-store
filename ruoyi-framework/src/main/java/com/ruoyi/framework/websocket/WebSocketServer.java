@@ -90,11 +90,18 @@ public class WebSocketServer {
     @Value("${lanya.position.mock.personIds:1988583160362352641,1925015210049478657}")
     private Long[] mockPersonIds;
 
+    @Value("${lanya.position.mock.personChangeIds:1988583160362352641,1925015210049478657}")
+    private Long[] mockPersonChangeIds;
+    @Value("${lanya.position.mock.personRealNames:吕涛,于俊春,张伟星,张平}")
+    private String[] mockPersonRealNames;
     /**
      * 模拟人员数据: 车辆ID
      */
     @Value("${lanya.position.mock.vehicleIds:1925015210049478657,1925015210049478657}")
     private Long[] mockVehicleIds;
+
+    @Value("${lanya.position.mock.vehicleChangeIds:1925015210049478657,1925015210049478657}")
+    private Long[] mockVehicleChangeIds;
 
     /**
      * 模拟人员数据: 日期表达式
@@ -690,69 +697,54 @@ public class WebSocketServer {
     /**
      * 创建LanyaPositionHistory数据模拟器
      */
-    @Scheduled(cron = "0/10 * * * * ?")
+    @Scheduled(cron = "0/2 * * * * ?")
     public void generateMockVehiclePositionHistoryData() throws ParseException {
         if (!enableMock) {
             return;
         }
+
+        DecimalFormat df = new DecimalFormat("#.##");
 
         // 创建所需的JSONObject
         JSONObject locationData = new JSONObject();
         locationData.put("msgType", "currentVehicleLocation");
         locationData.put("total", 1);
 
-
         // 创建personTypeStatistics数组
         JSONArray personTypeStats = new JSONArray();
 
-        // 添加contractor类型统计
-        JSONObject contractorStat = new JSONObject();
-        contractorStat.put("count", 0);
-        contractorStat.put("personType", "contractor");
-        contractorStat.put("personTypeName", "承包商");
-        contractorStat.put("ratio", 0);
-        personTypeStats.add(contractorStat);
-
         // 添加staff类型统计
         JSONObject staffStat = new JSONObject();
-        staffStat.put("count", 0);
+        staffStat.put("count", mockVehicleIds.length);
         staffStat.put("personType", "staff");
         staffStat.put("personTypeName", "员工");
-        staffStat.put("ratio", 0);
+        staffStat.put("ratio", df.format((float) mockVehicleIds.length / mockVehicleIds.length * 100));
         personTypeStats.add(staffStat);
 
-        // 添加visitor类型统计
-        JSONObject visitorStat = new JSONObject();
-        visitorStat.put("count", 0);
-        visitorStat.put("personType", "visitor");
-        visitorStat.put("personTypeName", "访客");
-        visitorStat.put("ratio", 0);
-        personTypeStats.add(visitorStat);
-
         locationData.put("personTypeStatistics", personTypeStats);
-
+        JSONArray dataArray = new JSONArray();
         for (int i = 0; i < mockVehicleIds.length; i++) {
+            log.info("开始查询mockVehicleIds[{}]:{}-{}-{}-{}", mockVehicleNumbers[i], mockVehicleTable[i], mockVehicleIds[i], mockVehicleDates[i], sdfYearMondayHourMinSec.format(mockVehicleDates[i]));
             List<LanyaPositionHistory> trajectory = lanyaPositionHistoryService.selectLanyaPositionHistoryListByTable(mockVehicleTable[i], mockVehicleIds[i], mockVehicleDates[i]);
+            log.info("查询到LanyaPositionHistory数据共{}条:{}", trajectory.size(), trajectory);
             for (LanyaPositionHistory history : trajectory) {
                 JSONObject locationDataItem = JSONObject.from(history);
                 locationDataItem.put("vehicleNumber", mockVehicleNumbers[i]);
                 locationDataItem.put("realName", mockVehicleNumbers[i]);
+                locationDataItem.put("personId", mockVehicleChangeIds[i]);
                 // 创建空的data数组
                 mockVehicleDates[i] = history.getCreateTime();
-                JSONArray dataArray = new JSONArray();
                 dataArray.add(locationDataItem);
-                locationData.put("data", dataArray);
-                messageQueue.add(locationData.toString());
             }
         }
-
-
+        locationData.put("data", dataArray);
+        messageQueue.add(locationData.toString());
     }
 
     /**
      * 创建LanyaPositionHistory数据模拟器
      */
-    @Scheduled(cron = "0/10 * * * * ?")
+    @Scheduled(cron = "0/2 * * * * ?")
     public void generateMockPersonPositionHistoryData() throws ParseException {
         if (!enableMock) {
             return;
@@ -780,15 +772,15 @@ public class WebSocketServer {
 
         // 添加staff类型统计
         JSONObject staffStat = new JSONObject();
-        staffStat.put("count", staffCount);
+        staffStat.put("count", mockPersonIds.length);
         staffStat.put("personType", "staff");
         staffStat.put("personTypeName", "内部员工");
-        staffStat.put("ratio", df.format(staffCount / lanyaCorePeople.size()));
+        staffStat.put("ratio", df.format((float) mockPersonIds.length / mockPersonIds.length * 100));
         personTypeStats.add(staffStat);
 
         // 添加visitor类型统计
         JSONObject visitorStat = new JSONObject();
-        visitorStat.put("count", visitorCount);
+        visitorStat.put("count", 0);
         visitorStat.put("personType", "visitor");
         visitorStat.put("personTypeName", "临时访客");
         visitorStat.put("ratio", 0);
@@ -796,18 +788,21 @@ public class WebSocketServer {
 
         locationData.put("personTypeStatistics", personTypeStats);
 
+        JSONArray dataArray = new JSONArray();
         for (int i = 0; i < mockPersonIds.length; i++) {
+            log.info("开始查询mockPersonIds[{}]:{}-{}-{}", i, mockPersonIds[i], mockPersonTable[i], mockPersonDates[i]);
             List<LanyaPositionHistory> trajectory = lanyaPositionHistoryService.selectLanyaPositionHistoryListByTable(mockPersonTable[i], mockPersonIds[i], mockPersonDates[i]);
+            log.info("查询到LanyaPositionHistory数据共{}条:{}", trajectory.size(), trajectory);
             for (LanyaPositionHistory history : trajectory) {
                 // 创建空的data数组
                 mockPersonDates[i] = history.getCreateTime();
-                JSONArray dataArray = new JSONArray();
+                history.setPersonId(mockPersonChangeIds[i]);
+                history.setRealName(mockPersonRealNames[i]);
                 dataArray.add(history);
-                locationData.put("data", dataArray);
-                messageQueue.add(locationData.toString());
             }
         }
-
+        locationData.put("data", dataArray);
+        messageQueue.add(locationData.toString());
     }
 
     public void setServerAlreadyStarted() {

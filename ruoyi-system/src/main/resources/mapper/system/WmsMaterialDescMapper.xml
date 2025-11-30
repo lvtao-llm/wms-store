@@ -18,6 +18,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
         <result property="keyPoints"    column="key_points"    />
+        <result property="actualWeight" column="actual_weight"/>
     </resultMap>
 
     <sql id="selectWmsMaterialDescVo">

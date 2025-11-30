@@ -30,12 +30,6 @@ public class WmsMaterialStock extends WmsMaterialDesc {
     private String wzbm;
 
     /**
-     * 实存重量
-     */
-    @Excel(name = "实存重量")
-    private Double actualWeight;
-
-    /**
      * 状态
      */
     @Excel(name = "状态")
@@ -133,14 +127,6 @@ public class WmsMaterialStock extends WmsMaterialDesc {
     @Override
     public void setWzbm(String wzbm) {
         this.wzbm = wzbm;
-    }
-
-    public Double getActualWeight() {
-        return actualWeight;
-    }
-
-    public void setActualWeight(Double actualWeight) {
-        this.actualWeight = actualWeight;
     }
 
     public String getStatus() {

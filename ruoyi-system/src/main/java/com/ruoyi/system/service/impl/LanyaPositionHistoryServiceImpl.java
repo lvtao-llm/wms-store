@@ -84,7 +84,9 @@ public class LanyaPositionHistoryServiceImpl implements ILanyaPositionHistorySer
     @DataSource(DataSourceType.SLAVE)
     @Override
     public int insertLanyaPositionHistory(LanyaPositionHistory lanyaPositionHistory, String tableName) {
-        lanyaPositionHistory.setCreateTime(DateUtils.getNowDate());
+        if (lanyaPositionHistory.getCreateTime() == null) {
+            lanyaPositionHistory.setCreateTime(DateUtils.getNowDate());
+        }
         return lanyaPositionHistoryMapper.insertLanyaPositionHistoryByTable(lanyaPositionHistory, tableName);
     }
 

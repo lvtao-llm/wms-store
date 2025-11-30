@@ -7,52 +7,77 @@ import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
  * 物料描述档案对象 wms_material_desc
- * 
+ *
  * @author ruoyi
  * @date 2025-11-07
  */
-public class WmsMaterialDesc extends BaseEntity
-{
+public class WmsMaterialDesc extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
-    /** 主键 */
+    /**
+     * 主键
+     */
     private Long materialDescId;
 
-    /** 物料编码 */
+    /**
+     * 物料编码
+     */
     @Excel(name = "物资编码")
     private String wzbm;
 
-    /** 物料名称 */
+    /**
+     * 物料名称
+     */
     @Excel(name = "物资名称")
     private String wzmc;
 
-    /** 规格 */
+    /**
+     * 规格
+     */
     @Excel(name = "品种名称")
     private String pzmc;
 
-    /** 型号 */
+    /**
+     * 型号
+     */
     @Excel(name = "物资类别")
     private String wzlb;
 
-    /** 存放区域 */
+    /**
+     * 存放区域
+     */
     @Excel(name = "存放区域")
     private String areaCodes;
 
-    /** 单位 */
+    /**
+     * 单位
+     */
     @Excel(name = "计量单位")
     private String jldw;
 
-    /** 存放条件 */
+    /**
+     * 存放条件
+     */
     @Excel(name = "存放条件")
     private String materialRequirements;
 
-    /** 安全注意事项 */
+    /**
+     * 安全注意事项
+     */
     @Excel(name = "安全注意事项")
     private String materialSafetyNotice;
 
-    /** 关键点位 */
+    /**
+     * 关键点位
+     */
     @Excel(name = "关键点位")
     private String keyPoints;
+
+    /**
+     * 实际重量
+     */
+    @Excel(name = "实际重量")
+    private Double actualWeight;
 
     public Long getMaterialDescId() {
         return materialDescId;
@@ -132,5 +157,13 @@ public class WmsMaterialDesc extends BaseEntity
 
     public void setKeyPoints(String keyPoints) {
         this.keyPoints = keyPoints;
+    }
+
+    public Double getActualWeight() {
+        return actualWeight;
+    }
+
+    public void setActualWeight(Double actualWeight) {
+        this.actualWeight = actualWeight;
     }
 }

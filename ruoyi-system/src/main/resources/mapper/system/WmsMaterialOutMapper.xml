@@ -272,6 +272,7 @@
                 #{wmsMaterialOut.status}
             </if>
         </where>
+        order by outbound_time desc
     </select>
     <sql id="selectWmsMaterialOutVo">
         select allot_detail_id,

@@ -60,61 +60,68 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </sql>
 
     <select id="selectWmsMaterialInListByAreaNames" resultMap="WmsMaterialInResult">
-            select * from wms_material_desc
+        select * from wms_material_desc
         <where>
             wzmc in (
             <foreach item="item" collection="areaNames" separator=",">
                 #{item}
             </foreach>
             )
-            <if test="wmsMaterialIn.jlBh != null  and wmsMaterialIn.jlBh != ''"> and jl_bh = #{wmsMaterialIn.jlBh}</if>
-            <if test="wmsMaterialIn.dhBh != null  and wmsMaterialIn.dhBh != ''"> and dh_bh = #{wmsMaterialIn.dhBh}</if>
-            <if test="wmsMaterialIn.hpBh != null  and wmsMaterialIn.hpBh != ''"> and hp_bh = #{wmsMaterialIn.hpBh}</if>
-            <if test="wmsMaterialIn.dhLx != null  and wmsMaterialIn.dhLx != ''"> and dh_lx = #{wmsMaterialIn.dhLx}</if>
-            <if test="wmsMaterialIn.kf != null  and wmsMaterialIn.kf != ''"> and kf = #{wmsMaterialIn.kf}</if>
-            <if test="wmsMaterialIn.djLx != null  and wmsMaterialIn.djLx != ''"> and dj_lx = #{wmsMaterialIn.djLx}</if>
-            <if test="wmsMaterialIn.ch != null  and wmsMaterialIn.ch != ''"> and ch = #{wmsMaterialIn.ch}</if>
-            <if test="wmsMaterialIn.cs != null "> and cs = #{wmsMaterialIn.cs}</if>
-            <if test="wmsMaterialIn.asYdh != null  and wmsMaterialIn.asYdh != ''"> and as_ydh = #{wmsMaterialIn.asYdh}</if>
-            <if test="wmsMaterialIn.fysl != null "> and fysl = #{wmsMaterialIn.fysl}</if>
-            <if test="wmsMaterialIn.dhsl != null "> and dhsl = #{wmsMaterialIn.dhsl}</if>
-            <if test="wmsMaterialIn.jly != null  and wmsMaterialIn.jly != ''"> and jly = #{wmsMaterialIn.jly}</if>
-            <if test="wmsMaterialIn.jlsj != null "> and jlsj = #{wmsMaterialIn.jlsj}</if>
-            <if test="wmsMaterialIn.csMc != null  and wmsMaterialIn.csMc != ''"> and cs_mc = #{wmsMaterialIn.csMc}</if>
-            <if test="wmsMaterialIn.wzbm != null  and wmsMaterialIn.wzbm != ''"> and wzbm = #{wmsMaterialIn.wzbm}</if>
-            <if test="wmsMaterialIn.jllx != null  and wmsMaterialIn.jllx != ''"> and jllx = #{wmsMaterialIn.jllx}</if>
-            <if test="wmsMaterialIn.jlr != null  and wmsMaterialIn.jlr != ''"> and jlr = #{wmsMaterialIn.jlr}</if>
-            <if test="wmsMaterialIn.jlsjR != null "> and jlsj_r = #{wmsMaterialIn.jlsjR}</if>
-            <if test="wmsMaterialIn.bgy != null  and wmsMaterialIn.bgy != ''"> and bgy = #{wmsMaterialIn.bgy}</if>
-            <if test="wmsMaterialIn.zd != null  and wmsMaterialIn.zd != ''"> and zd = #{wmsMaterialIn.zd}</if>
-            <if test="wmsMaterialIn.lz != null  and wmsMaterialIn.lz != ''"> and lz = #{wmsMaterialIn.lz}</if>
-            <if test="wmsMaterialIn.jlsjT != null "> and jlsj_t = #{wmsMaterialIn.jlsjT}</if>
-            <if test="wmsMaterialIn.ysr != null  and wmsMaterialIn.ysr != ''"> and ysr = #{wmsMaterialIn.ysr}</if>
-            <if test="wmsMaterialIn.yssj != null "> and yssj = #{wmsMaterialIn.yssj}</if>
-            <if test="wmsMaterialIn.jhr != null  and wmsMaterialIn.jhr != ''"> and jhr = #{wmsMaterialIn.jhr}</if>
-            <if test="wmsMaterialIn.jhsj != null "> and jhsj = #{wmsMaterialIn.jhsj}</if>
-            <if test="wmsMaterialIn.dksj != null "> and dksj = #{wmsMaterialIn.dksj}</if>
-            <if test="wmsMaterialIn.fysj != null "> and fysj = #{wmsMaterialIn.fysj}</if>
-            <if test="wmsMaterialIn.fyfs != null  and wmsMaterialIn.fyfs != ''"> and fyfs = #{wmsMaterialIn.fyfs}</if>
-            <if test="wmsMaterialIn.fz != null  and wmsMaterialIn.fz != ''"> and fz = #{wmsMaterialIn.fz}</if>
-            <if test="wmsMaterialIn.dz != null  and wmsMaterialIn.dz != ''"> and dz = #{wmsMaterialIn.dz}</if>
-            <if test="wmsMaterialIn.yynY != null  and wmsMaterialIn.yynY != ''"> and yyn_y = #{wmsMaterialIn.yynY}</if>
-            <if test="wmsMaterialIn.zt != null  and wmsMaterialIn.zt != ''"> and zt = #{wmsMaterialIn.zt}</if>
-            <if test="wmsMaterialIn.xcbh != null  and wmsMaterialIn.xcbh != ''"> and xcbh = #{wmsMaterialIn.xcbh}</if>
-            <if test="wmsMaterialIn.pzbm != null  and wmsMaterialIn.pzbm != ''"> and pzbm = #{wmsMaterialIn.pzbm}</if>
-            <if test="wmsMaterialIn.wzmc != null  and wmsMaterialIn.wzmc != ''"> and wzmc = #{wmsMaterialIn.wzmc}</if>
-            <if test="wmsMaterialIn.jldw != null  and wmsMaterialIn.jldw != ''"> and jldw = #{wmsMaterialIn.jldw}</if>
-            <if test="wmsMaterialIn.wzlb != null  and wmsMaterialIn.wzlb != ''"> and wzlb = #{wmsMaterialIn.wzlb}</if>
-            <if test="wmsMaterialIn.ysrBm != null  and wmsMaterialIn.ysrBm != ''"> and ysr_bm = #{wmsMaterialIn.ysrBm}</if>
-            <if test="wmsMaterialIn.jlrBm != null  and wmsMaterialIn.jlrBm != ''"> and jlr_bm = #{wmsMaterialIn.jlrBm}</if>
-            <if test="wmsMaterialIn.pzmc != null  and wmsMaterialIn.pzmc != ''"> and pzmc = #{wmsMaterialIn.pzmc}</if>
-            <if test="wmsMaterialIn.ywfgs != null  and wmsMaterialIn.ywfgs != ''"> and ywfgs = #{wmsMaterialIn.ywfgs}</if>
-            <if test="wmsMaterialIn.zxzdMc != null  and wmsMaterialIn.zxzdMc != ''"> and zxzd_mc = #{wmsMaterialIn.zxzdMc}</if>
-            <if test="wmsMaterialIn.xcfs != null  and wmsMaterialIn.xcfs != ''"> and xcfs = #{wmsMaterialIn.xcfs}</if>
-            <if test="wmsMaterialIn.xczysjQ != null "> and xczysj_q = #{wmsMaterialIn.xczysjQ}</if>
-            <if test="wmsMaterialIn.xczysjZ != null "> and xczysj_z = #{wmsMaterialIn.xczysjZ}</if>
-            <if test="wmsMaterialIn.cksj != null "> and cksj = #{wmsMaterialIn.cksj}</if>
-            <if test="wmsMaterialIn.xcyxm != null  and wmsMaterialIn.xcyxm != ''"> and xcyxm = #{wmsMaterialIn.xcyxm}</if>
+            <if test="wmsMaterialIn.jlBh != null  and wmsMaterialIn.jlBh != ''">and jl_bh = #{wmsMaterialIn.jlBh}</if>
+            <if test="wmsMaterialIn.dhBh != null  and wmsMaterialIn.dhBh != ''">and dh_bh = #{wmsMaterialIn.dhBh}</if>
+            <if test="wmsMaterialIn.hpBh != null  and wmsMaterialIn.hpBh != ''">and hp_bh = #{wmsMaterialIn.hpBh}</if>
+            <if test="wmsMaterialIn.dhLx != null  and wmsMaterialIn.dhLx != ''">and dh_lx = #{wmsMaterialIn.dhLx}</if>
+            <if test="wmsMaterialIn.kf != null  and wmsMaterialIn.kf != ''">and kf = #{wmsMaterialIn.kf}</if>
+            <if test="wmsMaterialIn.djLx != null  and wmsMaterialIn.djLx != ''">and dj_lx = #{wmsMaterialIn.djLx}</if>
+            <if test="wmsMaterialIn.ch != null  and wmsMaterialIn.ch != ''">and ch = #{wmsMaterialIn.ch}</if>
+            <if test="wmsMaterialIn.cs != null ">and cs = #{wmsMaterialIn.cs}</if>
+            <if test="wmsMaterialIn.asYdh != null  and wmsMaterialIn.asYdh != ''">and as_ydh = #{wmsMaterialIn.asYdh}
+            </if>
+            <if test="wmsMaterialIn.fysl != null ">and fysl = #{wmsMaterialIn.fysl}</if>
+            <if test="wmsMaterialIn.dhsl != null ">and dhsl = #{wmsMaterialIn.dhsl}</if>
+            <if test="wmsMaterialIn.jly != null  and wmsMaterialIn.jly != ''">and jly = #{wmsMaterialIn.jly}</if>
+            <if test="wmsMaterialIn.jlsj != null ">and jlsj = #{wmsMaterialIn.jlsj}</if>
+            <if test="wmsMaterialIn.csMc != null  and wmsMaterialIn.csMc != ''">and cs_mc = #{wmsMaterialIn.csMc}</if>
+            <if test="wmsMaterialIn.wzbm != null  and wmsMaterialIn.wzbm != ''">and wzbm = #{wmsMaterialIn.wzbm}</if>
+            <if test="wmsMaterialIn.jllx != null  and wmsMaterialIn.jllx != ''">and jllx = #{wmsMaterialIn.jllx}</if>
+            <if test="wmsMaterialIn.jlr != null  and wmsMaterialIn.jlr != ''">and jlr = #{wmsMaterialIn.jlr}</if>
+            <if test="wmsMaterialIn.jlsjR != null ">and jlsj_r = #{wmsMaterialIn.jlsjR}</if>
+            <if test="wmsMaterialIn.bgy != null  and wmsMaterialIn.bgy != ''">and bgy = #{wmsMaterialIn.bgy}</if>
+            <if test="wmsMaterialIn.zd != null  and wmsMaterialIn.zd != ''">and zd = #{wmsMaterialIn.zd}</if>
+            <if test="wmsMaterialIn.lz != null  and wmsMaterialIn.lz != ''">and lz = #{wmsMaterialIn.lz}</if>
+            <if test="wmsMaterialIn.jlsjT != null ">and jlsj_t = #{wmsMaterialIn.jlsjT}</if>
+            <if test="wmsMaterialIn.ysr != null  and wmsMaterialIn.ysr != ''">and ysr = #{wmsMaterialIn.ysr}</if>
+            <if test="wmsMaterialIn.yssj != null ">and yssj = #{wmsMaterialIn.yssj}</if>
+            <if test="wmsMaterialIn.jhr != null  and wmsMaterialIn.jhr != ''">and jhr = #{wmsMaterialIn.jhr}</if>
+            <if test="wmsMaterialIn.jhsj != null ">and jhsj = #{wmsMaterialIn.jhsj}</if>
+            <if test="wmsMaterialIn.dksj != null ">and dksj = #{wmsMaterialIn.dksj}</if>
+            <if test="wmsMaterialIn.fysj != null ">and fysj = #{wmsMaterialIn.fysj}</if>
+            <if test="wmsMaterialIn.fyfs != null  and wmsMaterialIn.fyfs != ''">and fyfs = #{wmsMaterialIn.fyfs}</if>
+            <if test="wmsMaterialIn.fz != null  and wmsMaterialIn.fz != ''">and fz = #{wmsMaterialIn.fz}</if>
+            <if test="wmsMaterialIn.dz != null  and wmsMaterialIn.dz != ''">and dz = #{wmsMaterialIn.dz}</if>
+            <if test="wmsMaterialIn.yynY != null  and wmsMaterialIn.yynY != ''">and yyn_y = #{wmsMaterialIn.yynY}</if>
+            <if test="wmsMaterialIn.zt != null  and wmsMaterialIn.zt != ''">and zt = #{wmsMaterialIn.zt}</if>
+            <if test="wmsMaterialIn.xcbh != null  and wmsMaterialIn.xcbh != ''">and xcbh = #{wmsMaterialIn.xcbh}</if>
+            <if test="wmsMaterialIn.pzbm != null  and wmsMaterialIn.pzbm != ''">and pzbm = #{wmsMaterialIn.pzbm}</if>
+            <if test="wmsMaterialIn.wzmc != null  and wmsMaterialIn.wzmc != ''">and wzmc = #{wmsMaterialIn.wzmc}</if>
+            <if test="wmsMaterialIn.jldw != null  and wmsMaterialIn.jldw != ''">and jldw = #{wmsMaterialIn.jldw}</if>
+            <if test="wmsMaterialIn.wzlb != null  and wmsMaterialIn.wzlb != ''">and wzlb = #{wmsMaterialIn.wzlb}</if>
+            <if test="wmsMaterialIn.ysrBm != null  and wmsMaterialIn.ysrBm != ''">and ysr_bm = #{wmsMaterialIn.ysrBm}
+            </if>
+            <if test="wmsMaterialIn.jlrBm != null  and wmsMaterialIn.jlrBm != ''">and jlr_bm = #{wmsMaterialIn.jlrBm}
+            </if>
+            <if test="wmsMaterialIn.pzmc != null  and wmsMaterialIn.pzmc != ''">and pzmc = #{wmsMaterialIn.pzmc}</if>
+            <if test="wmsMaterialIn.ywfgs != null  and wmsMaterialIn.ywfgs != ''">and ywfgs = #{wmsMaterialIn.ywfgs}
+            </if>
+            <if test="wmsMaterialIn.zxzdMc != null  and wmsMaterialIn.zxzdMc != ''">and zxzd_mc =
+                #{wmsMaterialIn.zxzdMc}
+            </if>
+            <if test="wmsMaterialIn.xcfs != null  and wmsMaterialIn.xcfs != ''">and xcfs = #{wmsMaterialIn.xcfs}</if>
+            <if test="wmsMaterialIn.xczysjQ != null ">and xczysj_q = #{wmsMaterialIn.xczysjQ}</if>
+            <if test="wmsMaterialIn.xczysjZ != null ">and xczysj_z = #{wmsMaterialIn.xczysjZ}</if>
+            <if test="wmsMaterialIn.cksj != null ">and cksj = #{wmsMaterialIn.cksj}</if>
+            <if test="wmsMaterialIn.xcyxm != null  and wmsMaterialIn.xcyxm != ''">and xcyxm = #{wmsMaterialIn.xcyxm}
+            </if>
         </where>
     </select>
 
