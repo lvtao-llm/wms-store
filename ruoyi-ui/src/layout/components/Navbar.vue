@@ -17,7 +17,14 @@
     <div class="right-menu">
       <template v-if="device !== 'mobile'">
         <!-- <search id="header-search" class="right-menu-item" /> -->
-
+        <el-tooltip content="跳转首页大屏" effect="dark" placement="bottom">
+          <img
+            @click="to3d"
+            style="width: 23px; height: 23px"
+            class="icon-img"
+            src="@/assets/images/地图.svg"
+          />
+        </el-tooltip>
         <el-tooltip content="车辆报警" effect="dark" placement="bottom">
           <img
             style="width: 23px; height: 23px"
@@ -149,6 +156,16 @@ export default {
     },
     setLayout(event) {
       this.$emit("setLayout");
+    },
+    to3d() {
+      const baseUrl = process.env.VUE_APP_BASE_URL;
+      const index = baseUrl.lastIndexOf(":");
+      const str = baseUrl.substring(0, index);
+      const type = str.slice(-2);
+      const root = type == "93" ? ":10032" : ":8095";
+      const url = str + root;
+      console.log();
+      window.open(url, "_self");
     },
     logout() {
       this.$confirm("确定注销并退出系统吗？", "提示", {
