@@ -4,8 +4,8 @@ module.exports = {
    */
   title: process.env.VUE_APP_TITLE,
 
-  iframeUrl: 'http://localhost:8888',
-  // iframeUrl: 'http://112.98.110.101:8094',
+  // iframeUrl: 'http://localhost:8888',
+  iframeUrl: 'http://112.98.110.101:8094',
   // iframeUrl: 'http://10.63.228.93:10033',
 
   /**
