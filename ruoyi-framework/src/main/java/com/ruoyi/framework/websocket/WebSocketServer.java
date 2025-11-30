@@ -54,22 +54,27 @@ public class WebSocketServer {
      */
     @Autowired
     private ThirdPartyAuth thirdPartyAuth;
+
+    /**
+     * 服务器是否已经就绪
+     */
     private static boolean serverAlreadyStarted = false;
 
     /**
-     * 设置目标服务器基础地址
+     * 定时同步Lanya设备卡发送日志开关
      */
-    @Value("${lanya.base-url:112.98.110.101:8091/gateway-service}")
-    private void setBaseUrl(String baseUrl) {
-        WebSocketServer.baseUrl = baseUrl;
-    }
-
     @Value("${lanya.enabled-lanya-websocket-subscribe:false}")
     private boolean enabledLanyaWebsocketSubscribe;
 
+    /**
+     * 定时同步Lanya设备卡发送日志开关
+     */
     @Value("${lanya.forward-url}")
     private String forwardUrl;
 
+    /**
+     * 定时同步Lanya设备卡发送日志开关
+     */
     @Value("${lanya.forward-enable:false}")
     private boolean forwardEnable;
 
@@ -79,6 +84,59 @@ public class WebSocketServer {
     @Value("${lanya.position.mock.enabled:false}")
     private boolean enableMock;
 
+    /**
+     * 模拟人员数据: 人员ID
+     */
+    @Value("${lanya.position.mock.personIds:1988583160362352641,1925015210049478657}")
+    private Long[] mockPersonIds;
+
+    /**
+     * 模拟人员数据: 车辆ID
+     */
+    @Value("${lanya.position.mock.vehicleIds:1925015210049478657,1925015210049478657}")
+    private Long[] mockVehicleIds;
+
+    /**
+     * 模拟人员数据: 日期表达式
+     */
+    @Value("${lanya.position.mock.personDates:2025-11-11 10:00:00,2025-11-12 10:00:00}")
+    private String[] mockPersonDateExps;
+
+    /**
+     * 模拟人员数据: 日期
+     */
+    private Date[] mockPersonDates;
+
+    /**
+     * 模拟人员数据: 表名称
+     */
+    private String[] mockPersonTable;
+
+    /**
+     * 模拟车辆数据: 日期表达式
+     */
+    @Value("${lanya.position.mock.vehicleDates:2025-11-11 10:00:00,2025-11-12 10:00:00}")
+    private String[] mockVehicleDateExps;
+
+    /**
+     * 模拟车辆数据: 日期
+     */
+    private Date[] mockVehicleDates;
+
+    /**
+     * 模拟车辆数据: 表名称
+     */
+    private String[] mockVehicleTable;
+
+    /**
+     * 模拟车辆数据: 车牌
+     */
+    @Value("${lanya.position.mock.vehicleNumbers:黑E98977,黑E34934}")
+    private String[] mockVehicleNumbers;
+
+    /**
+     * 是否保存人员位置
+     */
     @Value("${lanya.save-person-location:false}")
     private boolean savePersonLocation;
 
@@ -86,6 +144,11 @@ public class WebSocketServer {
      * 目标服务器基础地址
      */
     private static String baseUrl;
+
+    @Value("${lanya.base-url:112.98.110.101:8091/gateway-service}")
+    private void setBaseUrl(String baseUrl) {
+        WebSocketServer.baseUrl = baseUrl;
+    }
 
     /**
      * 存储浏览器会话队列
@@ -209,17 +272,47 @@ public class WebSocketServer {
         WebSocketServer.lanyaPositionHistoryService = lanyaPositionHistoryService;
     }
 
-    private Date mockPersonDate = null;
-    private Date mockVehiclDate = null;
-
 
     /**
      * 初始化
      */
     @PostConstruct
     public void init() {
-        // 启动消息处理线程
-        startMessageProcessor();
+        try {
+            // 初始化时间格式
+            SimpleDateFormat YMD = new SimpleDateFormat("yyyyMMdd");
+
+            // 初始化模拟人员数据时间
+            mockPersonDates = new Date[mockPersonDateExps.length];
+            // 模拟人员数据表名称
+            mockPersonTable = new String[mockPersonDateExps.length];
+            for (int i = 0; i < mockPersonDateExps.length; i++) {
+                // 模拟人员数据时间
+                mockPersonDates[i] = sdfYearMondayHourMinSec.parse(mockPersonDateExps[i]);
+                // 模拟人员数据表名称
+                mockPersonTable[i] = "position_history_" + YMD.format(mockPersonDates[i]);
+            }
+
+            // 初始化模拟车辆数据时间
+            mockVehicleDates = new Date[mockVehicleDateExps.length];
+            // 模拟车辆数据表名称
+            mockVehicleTable = new String[mockVehicleDateExps.length];
+            for (int i = 0; i < mockVehicleDateExps.length; i++) {
+                // 模拟车辆数据时间
+                mockVehicleDates[i] = sdfYearMondayHourMinSec.parse(mockVehicleDateExps[i]);
+                // 模拟车辆数据表名称
+                mockVehicleTable[i] = "position_history_" + YMD.format(mockVehicleDates[i]);
+            }
+        } catch (Exception e) {
+            log.error("初始化模拟数据参数失败", e);
+        }
+
+        try {
+            // 启动消息处理线程
+            startMessageProcessor();
+        } catch (Exception e) {
+            log.error("初始化消息发送线程失败", e);
+        }
 
         if (!enabledLanyaWebsocketSubscribe) {
             log.info("Lanya WebSocket 订阅未启用");
@@ -299,6 +392,7 @@ public class WebSocketServer {
     @OnOpen
     public void onOpen(Session session, @PathParam("requestId") String requestId) throws Exception {
         try {
+            log.info("客户端连接成功:{}", requestId);
             // 将客户端会话存储到Map中
             if (clientSessions.containsKey(requestId)) {
                 Session sess = clientSessions.remove(requestId);
@@ -356,6 +450,7 @@ public class WebSocketServer {
             }
         };
         // 向当前连接发送初始摄像头与传感器数据
+        log.info("向客户端发送初始数据:{}", deviceBody);
         session.getAsyncRemote().sendText(new JSONObject(deviceBody).toJSONString());
     }
 
@@ -364,6 +459,7 @@ public class WebSocketServer {
      */
     @OnClose
     public void onClose(Session session, @PathParam("requestId") String requestId) throws IOException {
+        log.info("客户端连接关闭:{}", requestId);
         // 清理资源
         if (clientSessions.containsKey(requestId)) {
             Session sess = clientSessions.remove(requestId);
@@ -378,6 +474,7 @@ public class WebSocketServer {
      */
     @OnError
     public void onError(Session session, @PathParam("requestId") String requestId, Throwable exception) throws Exception {
+        log.error("客户端抛出异常:{}", requestId, exception);
         // 清理资源
         if (clientSessions.containsKey(requestId)) {
             Session sess = clientSessions.remove(requestId);
@@ -392,6 +489,7 @@ public class WebSocketServer {
      */
     @OnMessage
     public void onMessage(String message, Session session, @PathParam("requestId") String requestId) {
+        log.info("收到客户端消息:{}-{}", requestId, message);
     }
 
     /**
@@ -633,20 +731,22 @@ public class WebSocketServer {
 
         locationData.put("personTypeStatistics", personTypeStats);
 
-        if (mockVehiclDate == null) {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            mockVehiclDate = sdf.parse("2025-11-11 10:00:00");
+        for (int i = 0; i < mockVehicleIds.length; i++) {
+            List<LanyaPositionHistory> trajectory = lanyaPositionHistoryService.selectLanyaPositionHistoryListByTable(mockVehicleTable[i], mockVehicleIds[i], mockVehicleDates[i]);
+            for (LanyaPositionHistory history : trajectory) {
+                JSONObject locationDataItem = JSONObject.from(history);
+                locationDataItem.put("vehicleNumber", mockVehicleNumbers[i]);
+                locationDataItem.put("realName", mockVehicleNumbers[i]);
+                // 创建空的data数组
+                mockVehicleDates[i] = history.getCreateTime();
+                JSONArray dataArray = new JSONArray();
+                dataArray.add(locationDataItem);
+                locationData.put("data", dataArray);
+                messageQueue.add(locationData.toString());
+            }
         }
 
-        List<LanyaPositionHistory> trajectory = lanyaPositionHistoryService.selectLanyaPositionHistoryListByTable("position_history_20251111", 1988037106810236930L, mockPersonDate);
-        for (LanyaPositionHistory history : trajectory) {
-            // 创建空的data数组
-            mockVehiclDate = history.getCreateTime();
-            JSONArray dataArray = new JSONArray();
-            dataArray.add(history);
-            locationData.put("data", dataArray);
-            messageQueue.add(locationData.toString());
-        }
+
     }
 
     /**
@@ -696,20 +796,18 @@ public class WebSocketServer {
 
         locationData.put("personTypeStatistics", personTypeStats);
 
-        if (mockPersonDate == null) {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            mockPersonDate = sdf.parse("2025-11-11 09:30:00");
+        for (int i = 0; i < mockPersonIds.length; i++) {
+            List<LanyaPositionHistory> trajectory = lanyaPositionHistoryService.selectLanyaPositionHistoryListByTable(mockPersonTable[i], mockPersonIds[i], mockPersonDates[i]);
+            for (LanyaPositionHistory history : trajectory) {
+                // 创建空的data数组
+                mockPersonDates[i] = history.getCreateTime();
+                JSONArray dataArray = new JSONArray();
+                dataArray.add(history);
+                locationData.put("data", dataArray);
+                messageQueue.add(locationData.toString());
+            }
         }
 
-        List<LanyaPositionHistory> trajectory = lanyaPositionHistoryService.selectLanyaPositionHistoryListByTable("position_history_20251111", 1988037106810236930L, mockPersonDate);
-        for (LanyaPositionHistory history : trajectory) {
-            // 创建空的data数组
-            mockPersonDate = history.getCreateTime();
-            JSONArray dataArray = new JSONArray();
-            dataArray.add(history);
-            locationData.put("data", dataArray);
-            messageQueue.add(locationData.toString());
-        }
     }
 
     public void setServerAlreadyStarted() {

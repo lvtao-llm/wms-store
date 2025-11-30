@@ -116,7 +116,18 @@ public class LanyaTransferController extends BaseController {
     public Object machineListDetail(@Param("deviceSn") String deviceSn) throws JsonProcessingException {
         Map<String, Object> body = new HashMap<>();
         body.put("deviceSn", deviceSn);
-        return thirdPartyAuth.callThirdParty("/monitor-service/cardSender/getListDetail", HttpMethod.POST, body);
+        HashMap<?, ?> res = (HashMap<?, ?>) thirdPartyAuth.callThirdParty("/monitor-service/cardSender/getListDetail", HttpMethod.POST, body);
+        ArrayList<HashMap<String, Object>> cardSenderDetailGroupList = (ArrayList<HashMap<String, Object>>) ((HashMap<String, Object>) res.get("data")).get("cardSenderDetailGroupList");
+        ArrayList<HashMap<String, Object>> newData = new ArrayList<HashMap<String, Object>>();
+        for (int i = 0; i < 4; i++) {
+            newData.add(cardSenderDetailGroupList.get(i));
+        }
+        for (int i = 7; i > 3; i--) {
+            newData.add(cardSenderDetailGroupList.get(i));
+        }
+
+        ((HashMap<String, Object>) res.get("data")).put("cardSenderDetailGroupList", newData);
+        return res;
     }
 
     /**
@@ -271,6 +282,7 @@ public class LanyaTransferController extends BaseController {
                     obj.put("returnCardId", null);
                     obj.put("sendCardTime", obj.get("createTime"));
                     obj.put("sendCardId", obj.get("id"));
+                    obj.put("personType", obj.get("personPhoto") == null ? "临时访客" : "内部员工");
                     complete.add(obj);
                     senderIds.add((Integer) obj.get("cardId"));
                 }

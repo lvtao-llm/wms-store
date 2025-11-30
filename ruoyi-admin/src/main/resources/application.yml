@@ -161,7 +161,13 @@ lanya:
       enabled: false # 物资公司跳板部署打开（true）
       api-url: http://112.98.110.101:10030/system/lanya_position_history/new
     mock: # 模拟数据
-      enabled: false # 模拟数据时打开
+      enabled: true # 模拟数据时打开
+      personIds: 1925015210049478657,1925015210049478657
+      personDates: 2025-11-10 10:00:00,2025-11-10 10:00:00
+      vehicleIds: 1925015210049478657,1925015210049478657
+      vehicleDates: 2025-11-10 10:00:00,2025-11-10 10:00:00
+      vehicleNumbers: 川A12345,川A12345
+
 
   issuing: # device_card_sender_log 表数据同步
     sync: # 同步 lanya device_card_sender_log 表数据到 wms 数据库
