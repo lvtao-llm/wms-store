@@ -16,6 +16,13 @@ export function getArea(areaId) {
     method: 'get'
   })
 }
+// 区域查询摄像头
+export function streamStarts(name, channel) {
+  return request({
+    url: "/api/camera/stream/start/area/" + name + "/" + channel,
+    method: 'get'
+  })
+}
 
 // 新增区域
 export function addArea(data) {
