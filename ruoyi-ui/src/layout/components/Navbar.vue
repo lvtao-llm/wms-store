@@ -207,7 +207,7 @@ export default {
   width: 20px;
   height: 20px;
   vertical-align: 13px;
-  margin-right: 5px;
+  margin-right: 15px;
 }
 .navbar {
   height: 50px;
