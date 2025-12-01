@@ -18,6 +18,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="alarmRuleRelatedDept"    column="alarm_rule_related_dept"    />
         <result property="alarmRuleNoticeType"    column="alarm_rule_notice_type"    />
         <result property="maxPeopleCount"    column="max_people_count"    />
+        <result property="alarmType"    column="alarm_type"    />
     </resultMap>
 
     <sql id="selectWmsAlarmRuleVo">
@@ -33,7 +34,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                alarm_rule_enabled,
                alarm_rule_related_people,
                alarm_rule_related_dept,
-               alarm_rule_notice_type
+               alarm_rule_notice_type,
+               alarm_type
         from wms_alarm_rule
     </sql>
 
@@ -53,6 +55,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="alarmRuleRelatedDept != null  and alarmRuleRelatedDept != ''"> and alarm_rule_related_dept = #{alarmRuleRelatedDept}</if>
             <if test="alarmRuleNoticeType != null  and alarmRuleNoticeType != ''"> and alarm_rule_notice_type = #{alarmRuleNoticeType}</if>
             <if test="maxPeopleCount != null  and alarmRuleNoticeType != ''"> and max_people_count = #{maxPeopleCount}</if>
+             <if test="alarmType != null  and alarmType != ''"> and alarm_type = #{alarmType}</if>
         </where>
     </select>
     
@@ -77,6 +80,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="alarmRuleRelatedDept != null">alarm_rule_related_dept,</if>
             <if test="alarmRuleNoticeType != null">alarm_rule_notice_type,</if>
             <if test="maxPeopleCount != null">max_people_count,</if>
+            <if test="alarmType != null">alarm_type,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="alarmRuleId != null">#{alarmRuleId},</if>
@@ -92,6 +96,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="alarmRuleRelatedDept != null">#{alarmRuleRelatedDept},</if>
             <if test="alarmRuleNoticeType != null">#{alarmRuleNoticeType},</if>
             <if test="maxPeopleCount != null">#{maxPeopleCount},</if>
+            <if test="alarmType != null">#{alarmType},</if>
          </trim>
     </insert>
 
@@ -110,6 +115,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="alarmRuleRelatedDept != null">alarm_rule_related_dept = #{alarmRuleRelatedDept},</if>
             <if test="alarmRuleNoticeType != null">alarm_rule_notice_type = #{alarmRuleNoticeType},</if>
             <if test="maxPeopleCount != null">max_people_count = #{maxPeopleCount},</if>
+            <if test="alarmType != null">alarm_type = #{alarmType},</if>
         </trim>
         where alarm_rule_id = #{alarmRuleId}
     </update>

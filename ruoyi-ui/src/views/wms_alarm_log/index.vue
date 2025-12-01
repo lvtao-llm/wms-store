@@ -59,7 +59,7 @@
       </el-table-column>
       <el-table-column label="异常行为" align="center" prop="alarmBehavior"/>
       <el-table-column label="处理结果" align="center" prop="alarmResult"/>
-<!--      <el-table-column label="处理人员" align="center" prop="alarmHandler"/>-->
+      <!--      <el-table-column label="处理人员" align="center" prop="alarmHandler"/>-->
       <el-table-column label="处理时间" align="center" prop="alarmHandleTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.alarmHandleTime, '{y}-{m}-{d}') }}</span>
@@ -148,10 +148,11 @@ export default {
         alarmHandleTime: null,
       },
       // 表单校验
-      areas: []
+      areas: [],
     }
   },
   created() {
+    this.queryParams.alarmType = this.$route.params.type;
     this.getList()
   },
   methods: {

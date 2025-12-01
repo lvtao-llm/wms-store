@@ -88,6 +88,12 @@ public class WmsAlarmRule extends BaseEntity {
     private String alarmRuleNoticeType;
 
     /**
+     * 报警类型
+     */
+    @Excel(name = "报警类型")
+    private String alarmType;
+
+    /**
      * 最大人数
      */
     private Integer maxPeopleCount;
@@ -238,5 +244,13 @@ public class WmsAlarmRule extends BaseEntity {
 
     public int getCount() {
         return count;
+    }
+
+    public String getAlarmType() {
+        return alarmType;
+    }
+
+    public void setAlarmType(String alarmType) {
+        this.alarmType = alarmType;
     }
 }

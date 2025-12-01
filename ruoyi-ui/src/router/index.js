@@ -493,13 +493,13 @@ export const dynamicRoutes = [
     permissions: ['system:role:edit'],
     children: [
       {
-        path: 'people-rule',
+        path: 'people-rule/:type',
         component: () => import('@/views/wms_alarm_rule/index'),
         name: '人员报警规则',
         meta: {title: '人员报警规则'}
       },
       {
-        path: 'people-log',
+        path: 'people-log/:type',
         component: () => import('@/views/wms_alarm_log/index'),
         name: '人员报警记录',
         meta: {title: '人员报警记录'}

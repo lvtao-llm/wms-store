@@ -89,12 +89,12 @@
           <dict-tag :options="dict.type.sys_normal_disable" :value="scope.row.alarmRuleEnabled"/>
         </template>
       </el-table-column>
-      <el-table-column label="关联人员" align="center" prop="alarmRuleRelatedPeople">
+      <el-table-column label="授权人员" align="center" prop="alarmRuleRelatedPeople">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.wms_internal_people" :value="scope.row.alarmRuleRelatedPeople"/>
         </template>
       </el-table-column>
-      <el-table-column label="关联岗位" align="center" prop="alarmRuleRelatedDept">
+      <el-table-column label="授权岗位" align="center" prop="alarmRuleRelatedDept">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.wms_internal_post" :value="scope.row.alarmRuleRelatedDept"/>
         </template>
@@ -284,16 +284,18 @@ export default {
         alarmRuleEnabled: null,
         alarmRuleRelatedPeople: null,
         alarmRuleRelatedDept: null,
-        alarmRuleNoticeType: null
+        alarmRuleNoticeType: null,
+        alarmType:null
       },
       // 表单参数
       form: {},
       // 表单校验
       rules: {},
-      areas: []
+      areas: [],
     }
   },
   created() {
+    this.queryParams.alarmType = this.$route.params.type;
     this.getList()
   },
   methods: {
