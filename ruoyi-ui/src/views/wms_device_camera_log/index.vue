@@ -41,38 +41,38 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="车轴" prop="cz">
-        <el-input
-          v-model="queryParams.cz"
-          placeholder="请输入车轴"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="车型" prop="cx">
-        <el-input
-          v-model="queryParams.cx"
-          placeholder="请输入车型"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="颜色" prop="ys">
-        <el-input
-          v-model="queryParams.ys"
-          placeholder="请输入颜色"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="是否穿戴工服" prop="sfcdgf">
-        <el-input
-          v-model="queryParams.sfcdgf"
-          placeholder="请输入是否穿戴工服"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
+<!--      <el-form-item label="车轴" prop="cz">-->
+<!--        <el-input-->
+<!--          v-model="queryParams.cz"-->
+<!--          placeholder="请输入车轴"-->
+<!--          clearable-->
+<!--          @keyup.enter.native="handleQuery"-->
+<!--        />-->
+<!--      </el-form-item>-->
+<!--      <el-form-item label="车型" prop="cx">-->
+<!--        <el-input-->
+<!--          v-model="queryParams.cx"-->
+<!--          placeholder="请输入车型"-->
+<!--          clearable-->
+<!--          @keyup.enter.native="handleQuery"-->
+<!--        />-->
+<!--      </el-form-item>-->
+<!--      <el-form-item label="颜色" prop="ys">-->
+<!--        <el-input-->
+<!--          v-model="queryParams.ys"-->
+<!--          placeholder="请输入颜色"-->
+<!--          clearable-->
+<!--          @keyup.enter.native="handleQuery"-->
+<!--        />-->
+<!--      </el-form-item>-->
+<!--      <el-form-item label="是否穿戴工服" prop="sfcdgf">-->
+<!--        <el-input-->
+<!--          v-model="queryParams.sfcdgf"-->
+<!--          placeholder="请输入是否穿戴工服"-->
+<!--          clearable-->
+<!--          @keyup.enter.native="handleQuery"-->
+<!--        />-->
+<!--      </el-form-item>-->
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -138,9 +138,9 @@
 <!--      <el-table-column label="是否有车" align="center" prop="yc" />-->
 <!--      <el-table-column label="是否有人" align="center" prop="yr" />-->
       <el-table-column label="车牌号" align="center" prop="cph" />
-      <el-table-column label="车轴" align="center" prop="cz" />
-      <el-table-column label="车型" align="center" prop="cx" />
-      <el-table-column label="颜色" align="center" prop="ys" />
+<!--      <el-table-column label="车轴" align="center" prop="cz" />-->
+<!--      <el-table-column label="车型" align="center" prop="cx" />-->
+<!--      <el-table-column label="颜色" align="center" prop="ys" />-->
 <!--      <el-table-column label="是否穿戴工服" align="center" prop="sfcdgf" />-->
       <el-table-column label="图片" align="center" prop="base64">
         <template slot-scope="scope">
@@ -203,21 +203,21 @@
         <el-form-item label="车牌号" prop="cph">
           <el-input v-model="form.cph" placeholder="请输入车牌号" />
         </el-form-item>
-        <el-form-item label="车轴" prop="cz">
-          <el-input v-model="form.cz" placeholder="请输入车轴" />
-        </el-form-item>
-        <el-form-item label="车型" prop="cx">
-          <el-input v-model="form.cx" placeholder="请输入车型" />
-        </el-form-item>
-        <el-form-item label="颜色" prop="ys">
-          <el-input v-model="form.ys" placeholder="请输入颜色" />
-        </el-form-item>
-        <el-form-item label="是否穿戴工服" prop="sfcdgf">
-          <el-input v-model="form.sfcdgf" placeholder="请输入是否穿戴工服" />
-        </el-form-item>
-        <el-form-item label="颜色" prop="base64">
-          <el-input v-model="form.base64" type="textarea" placeholder="请输入内容" />
-        </el-form-item>
+<!--        <el-form-item label="车轴" prop="cz">-->
+<!--          <el-input v-model="form.cz" placeholder="请输入车轴" />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="车型" prop="cx">-->
+<!--          <el-input v-model="form.cx" placeholder="请输入车型" />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="颜色" prop="ys">-->
+<!--          <el-input v-model="form.ys" placeholder="请输入颜色" />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="是否穿戴工服" prop="sfcdgf">-->
+<!--          <el-input v-model="form.sfcdgf" placeholder="请输入是否穿戴工服" />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="颜色" prop="base64">-->
+<!--          <el-input v-model="form.base64" type="textarea" placeholder="请输入内容" />-->
+<!--        </el-form-item>-->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>

@@ -37,7 +37,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="ys != null  and ys != ''"> and ys = #{ys}</if>
             <if test="sfcdgf != null  and sfcdgf != ''"> and sfcdgf = #{sfcdgf}</if>
             <if test="base64 != null  and base64 != ''"> and base64 = #{base64}</if>
+            and length(cph) between 7 and 8
         </where>
+        order by sj desc
     </select>
     
     <select id="selectWmsDeviceCameraLogById" parameterType="Long" resultMap="WmsDeviceCameraLogResult">

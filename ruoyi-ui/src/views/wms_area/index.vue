@@ -433,8 +433,10 @@ export default {
       const areaId = row.areaId || this.ids;
       getArea(areaId).then((response) => {
         this.form = response.data;
-        if (this.form.cameras.length) {
+        if (this.form.cameras && this.form.cameras.length) {
           this.form.cameras = this.form.cameras.split(",");
+        }else{
+          this.form.cameras = [];
         }
         this.open = true;
         this.title = "修改区域";

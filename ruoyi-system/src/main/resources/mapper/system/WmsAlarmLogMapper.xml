@@ -47,6 +47,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="alarmHandler != null  and alarmHandler != ''"> and alarm_handler = #{alarmHandler}</if>
             <if test="alarmHandleTime != null "> and alarm_handle_time = #{alarmHandleTime}</if>
         </where>
+        order by alarm_id desc
     </select>
     
     <select id="selectWmsAlarmLogByAlarmId" parameterType="Long" resultMap="WmsAlarmLogResult">
