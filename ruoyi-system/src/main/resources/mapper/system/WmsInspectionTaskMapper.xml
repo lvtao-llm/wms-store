@@ -30,6 +30,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="inspectionResult != null  and inspectionResult != ''"> and inspection_result = #{inspectionResult}</if>
             <if test="taskStatus != null  and taskStatus != ''"> and task_status = #{taskStatus}</if>
         </where>
+        order by id desc
     </select>
     
     <select id="selectWmsInspectionTaskById" parameterType="Long" resultMap="WmsInspectionTaskResult">

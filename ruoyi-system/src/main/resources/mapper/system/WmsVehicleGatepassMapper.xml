@@ -47,6 +47,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="gatepassGateOutPhoto != null  and gatepassGateOutPhoto != ''"> and gatepass_gate_out_photo = #{gatepassGateOutPhoto}</if>
             <if test="gatepassDwellTime != null "> and gatepass_dwell_time = #{gatepassDwellTime}</if>
         </where>
+        order by gatepass_id desc
     </select>
     
     <select id="selectWmsVehicleGatepassByGatepassId" parameterType="Long" resultMap="WmsVehicleGatepassResult">

@@ -18,17 +18,17 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
-        <el-button
-          type="primary"
-          plain
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-          v-hasPermi="['system:wms_alarm_rule:add']"
-        >新增
-        </el-button>
-      </el-col>
+<!--      <el-col :span="1.5">-->
+<!--        <el-button-->
+<!--          type="primary"-->
+<!--          plain-->
+<!--          icon="el-icon-plus"-->
+<!--          size="mini"-->
+<!--          @click="handleAdd"-->
+<!--          v-hasPermi="['system:wms_alarm_rule:add']"-->
+<!--        >新增-->
+<!--        </el-button>-->
+<!--      </el-col>-->
       <el-col :span="1.5">
         <el-button
           type="success"
@@ -41,18 +41,18 @@
         >修改
         </el-button>
       </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="danger"
-          plain
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-          v-hasPermi="['system:wms_alarm_rule:remove']"
-        >删除
-        </el-button>
-      </el-col>
+<!--      <el-col :span="1.5">-->
+<!--        <el-button-->
+<!--          type="danger"-->
+<!--          plain-->
+<!--          icon="el-icon-delete"-->
+<!--          size="mini"-->
+<!--          :disabled="multiple"-->
+<!--          @click="handleDelete"-->
+<!--          v-hasPermi="['system:wms_alarm_rule:remove']"-->
+<!--        >删除-->
+<!--        </el-button>-->
+<!--      </el-col>-->
       <el-col :span="1.5">
         <el-button
           type="warning"
@@ -69,14 +69,7 @@
 
     <el-table v-loading="loading" :data="wms_alarm_ruleList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center"/>
-      <el-table-column label="规则名" align="center" prop="alarmRuleName"/>
-      <el-table-column label="时间阈值" align="center" prop="alarmRuleTimeThreshold"/>
-      <el-table-column label="距离阈值" align="center" prop="alarmRuleDistThreshold"/>
-      <el-table-column label="目标区域" align="center" prop="alarmRuleTargetAreaName">
-        <template slot-scope="scope">
-          <dict-tag :options="dict.type.wms_area_names" :value="scope.row.alarmRuleTargetAreaName"/>
-        </template>
-      </el-table-column>
+<!--      <el-table-column label="规则名" align="center" prop="alarmRuleName"/>-->
       <el-table-column label="报警类型" align="center" prop="alarmRuleType">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.wms_alarm_type" :value="scope.row.alarmRuleType"/>
@@ -84,11 +77,19 @@
       </el-table-column>
       <el-table-column label="周期开始时间" align="center" prop="alarmRuleEffectivePeriodS"/>
       <el-table-column label="周期结束时间" align="center" prop="alarmRuleEffectivePeriodE"/>
-      <el-table-column label="是否启用" align="center" prop="alarmRuleEnabled">
+      <el-table-column label="时间阈值" align="center" prop="alarmRuleTimeThreshold"/>
+      <el-table-column label="距离阈值" align="center" prop="alarmRuleDistThreshold"/>
+      <el-table-column label="目标区域" align="center" prop="alarmRuleTargetAreaName">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_normal_disable" :value="scope.row.alarmRuleEnabled"/>
+          <dict-tag :options="dict.type.wms_area_names" :value="scope.row.alarmRuleTargetAreaName"/>
         </template>
       </el-table-column>
+
+<!--      <el-table-column label="是否启用" align="center" prop="alarmRuleEnabled">-->
+<!--        <template slot-scope="scope">-->
+<!--          <dict-tag :options="dict.type.sys_normal_disable" :value="scope.row.alarmRuleEnabled"/>-->
+<!--        </template>-->
+<!--      </el-table-column>-->
       <el-table-column label="授权人员" align="center" prop="alarmRuleRelatedPeople">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.wms_internal_people" :value="scope.row.alarmRuleRelatedPeople"/>
@@ -114,14 +115,14 @@
             v-hasPermi="['system:wms_alarm_rule:edit']"
           >修改
           </el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-            v-hasPermi="['system:wms_alarm_rule:remove']"
-          >删除
-          </el-button>
+<!--          <el-button-->
+<!--            size="mini"-->
+<!--            type="text"-->
+<!--            icon="el-icon-delete"-->
+<!--            @click="handleDelete(scope.row)"-->
+<!--            v-hasPermi="['system:wms_alarm_rule:remove']"-->
+<!--          >删除-->
+<!--          </el-button>-->
         </template>
       </el-table-column>
     </el-table>
@@ -138,7 +139,7 @@
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="120px">
         <el-form-item label="报警类型" prop="alarmRuleType">
-          <el-select v-model="form.alarmRuleType" placeholder="请选择报警类型">
+          <el-select v-model="form.alarmRuleType" placeholder="请选择报警类型" disabled="disabled">
             <el-option
               v-for="dict in dict.type.wms_alarm_type"
               :key="dict.value"
@@ -147,25 +148,6 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="时间阈值" prop="alarmRuleTimeThreshold">
-          <el-input v-model="form.alarmRuleTimeThreshold" placeholder="请输入时间阈值"/>
-        </el-form-item>
-        <el-form-item label="距离阈值" prop="alarmRuleDistThreshold">
-          <el-input v-model="form.alarmRuleDistThreshold" placeholder="请输入距离阈值"/>
-        </el-form-item>
-        <el-form-item label="目标区域" prop="alarmRuleTargetAreaCode">
-          <el-select v-model="form.alarmRuleTargetAreaCode"
-                     multiple
-                     placeholder="请选择目标区域">
-            <el-option
-              v-for="dict in dict.type.wms_area_names"
-              :key="dict.value"
-              :label="dict.label"
-              :value="dict.value"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-
         <el-form-item label="周期开始时间" prop="alarmRuleEffectivePeriodS">
           <el-time-picker
             v-model="form.alarmRuleEffectivePeriodS"
@@ -182,17 +164,37 @@
             placeholder="选择生效周期结束时间">
           </el-time-picker>
         </el-form-item>
-        <el-form-item label="是否启用" prop="alarmRuleEnabled">
-          <el-select v-model="form.alarmRuleEnabled" placeholder="请选择是否启用">
+        <el-form-item label="时间阈值" prop="alarmRuleTimeThreshold">
+          <el-input v-model="form.alarmRuleTimeThreshold" placeholder="请输入时间阈值" style="width: 100%"/>
+        </el-form-item>
+        <el-form-item label="距离阈值" prop="alarmRuleDistThreshold">
+          <el-input v-model="form.alarmRuleDistThreshold" placeholder="请输入距离阈值" style="width: 100%"/>
+        </el-form-item>
+        <el-form-item label="目标区域" prop="alarmRuleTargetAreaCode">
+          <el-select v-model="form.alarmRuleTargetAreaCode"
+                     multiple
+                     placeholder="请选择目标区域">
             <el-option
-              v-for="dict in dict.type.sys_normal_disable"
+              v-for="dict in dict.type.wms_area_names"
               :key="dict.value"
               :label="dict.label"
               :value="dict.value"
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="关联人员" prop="alarmRuleRelatedPeople">
+
+
+<!--        <el-form-item label="是否启用" prop="alarmRuleEnabled">-->
+<!--          <el-select v-model="form.alarmRuleEnabled" placeholder="请选择是否启用">-->
+<!--            <el-option-->
+<!--              v-for="dict in dict.type.sys_normal_disable"-->
+<!--              :key="dict.value"-->
+<!--              :label="dict.label"-->
+<!--              :value="dict.value"-->
+<!--            ></el-option>-->
+<!--          </el-select>-->
+<!--        </el-form-item>-->
+        <-item label="关联人员" prop="alarmRuleRelatedPeople">
           <el-select
             multiple
             v-model="form.alarmRuleRelatedPeople"
@@ -204,7 +206,7 @@
               :value="dict.value"
             ></el-option>
           </el-select>
-        </el-form-item>
+        </-item>
         <el-form-item label="关联岗位" prop="alarmRuleRelatedDept">
           <el-select v-model="form.alarmRuleRelatedDept" placeholder="请选择关联岗位">
             <el-option
@@ -216,7 +218,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="通知方式" prop="alarmRuleNoticeType">
-          <el-select v-model="form.alarmRuleNoticeType" placeholder="请选择通知方式">
+          <el-select v-model="form.alarmRuleNoticeType" multiple placeholder="请选择通知方式">
             <el-option
               v-for="dict in dict.type.wms_notice_type"
               :key="dict.value"
@@ -285,7 +287,7 @@ export default {
         alarmRuleRelatedPeople: null,
         alarmRuleRelatedDept: null,
         alarmRuleNoticeType: null,
-        alarmType:null
+        alarmType: null
       },
       // 表单参数
       form: {},
@@ -394,6 +396,8 @@ export default {
       const alarmRuleId = row.alarmRuleId || this.ids
       getWms_alarm_rule(alarmRuleId).then(response => {
         this.form = response.data
+
+        // 处理报警区域数组
         if (this.form.alarmRuleTargetAreaCode && typeof this.form.alarmRuleTargetAreaCode === 'string') {
           this.form.alarmRuleTargetAreaCode = this.form.alarmRuleTargetAreaCode.split(',').map(id => parseInt(id, 10))
           this.form.alarmRuleTargetAreaName = this.form.alarmRuleTargetAreaCode.map(areaId => {
@@ -407,11 +411,20 @@ export default {
 
         }
 
+        //  处理报警人员数组
         if (this.form.alarmRuleRelatedPeople && typeof this.form.alarmRuleRelatedPeople === 'string') {
           this.form.alarmRuleRelatedPeople = this.form.alarmRuleRelatedPeople.split(",")
         } else {
           this.form.alarmRuleRelatedPeople = []
         }
+
+        // 处理通知方式数组
+        if (this.form.alarmRuleNoticeType && typeof this.form.alarmRuleNoticeType === 'string') {
+          this.form.alarmRuleNoticeType = this.form.alarmRuleNoticeType.split(",")
+        } else {
+          this.form.alarmRuleNoticeType = []
+        }
+
         this.open = true
         this.title = "修改报警信息规则"
       })
@@ -422,6 +435,7 @@ export default {
         if (valid) {
           this.form.alarmRuleTargetAreaCode = this.form.alarmRuleTargetAreaCode.join(',')
           this.form.alarmRuleRelatedPeople = this.form.alarmRuleRelatedPeople.join(',')
+          this.form.alarmRuleNoticeType = this.form.alarmRuleNoticeType.join(',')
           if (this.form.alarmRuleId != null) {
             updateWms_alarm_rule(this.form).then(response => {
               this.$modal.msgSuccess("修改成功")

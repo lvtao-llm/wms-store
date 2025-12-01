@@ -421,7 +421,7 @@ public class StoreDataSync implements ResourceTransformer {
 
         log.info("开始同步车辆预约数据...");
 
-        // 获取新的库存数据
+        // 获取新的预约数据
         List<WmsVehicleGatepass> appointments = wzjtViewYySkMapper.selectViewYySkList();
 
         log.info("获取车辆预约数据完成，共{}条数据", appointments.size());
@@ -529,6 +529,7 @@ public class StoreDataSync implements ResourceTransformer {
             wmsMaterialDesc.setWzlb(wz.getWzlb());
             wmsMaterialDesc.setJldw(wz.getJldw());
             wmsMaterialDesc.setPzmc(wz.getPzmc());
+            wmsMaterialDesc.setAreaCodes("");
 
             // 插入到大仓物资描述
             wmsMaterialDescService.insertNewMaterialDesc(wmsMaterialDesc);
@@ -541,7 +542,7 @@ public class StoreDataSync implements ResourceTransformer {
         List<String> areaCodes = new ArrayList<>();
 
         // 获取大仓区域IDs
-        if (wmsMaterialDesc.getAreaCodes() != null && !wmsMaterialDesc.getAreaCodes().isEmpty()) {
+        if (!Strings.isEmpty(wmsMaterialDesc.getAreaCodes())) {
 
             // 拆分IDs到Array
             String[] codes = wmsMaterialDesc.getAreaCodes().split(",");
