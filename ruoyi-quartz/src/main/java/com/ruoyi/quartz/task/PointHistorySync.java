@@ -20,8 +20,8 @@ public class PointHistorySync {
         LanyaDataSync bean = SpringUtils.getBean(LanyaDataSync.class);
         try {
             SimpleDateFormat sdfTableSuffix = new SimpleDateFormat("yyyyMMdd");
-//            bean.PositionSync("position_history_" + sdfTableSuffix.format(new Date()));
-            bean.PositionSync("position_history_" + "20251111");
+            bean.PositionSync("position_history_" + sdfTableSuffix.format(new Date()));
+//            bean.PositionSync("position_history_" + "20251111");
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);

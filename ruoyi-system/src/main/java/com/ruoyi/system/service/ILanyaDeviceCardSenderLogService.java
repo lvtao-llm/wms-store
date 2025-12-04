@@ -73,5 +73,6 @@ public interface ILanyaDeviceCardSenderLogService {
     List<LanyaDeviceCardSenderLog> selectLanyaDeviceCardSenderLogListByNameCardType(String param);
 
 
+    LanyaDeviceCardSenderLog selectLanyaDeviceCardSenderLogByLastCardId(Long cardId);
 }
 

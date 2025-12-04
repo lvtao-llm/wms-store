@@ -523,11 +523,11 @@ public class WebSocketServer {
      */
     @Scheduled(cron = "${wms.ws-data.person-alarm:0/10 * * * * ?}")
     public void personAlarmData() {
-        Map<WmsAlarmRule, AlarmDetection.RuleAreaWrap> rules = alarmDetection.getRules();
+        List<WmsAlarmRule> rules = alarmDetection.getWmsAlarmRules();
         Map<String, Object> personAlarm = new HashMap<String, Object>() {
             {
                 put("msgType", "personAlarm");
-                put("rules", rules.keySet());
+                put("rules", rules);
             }
         };
         String json = new JSONObject(personAlarm).toJSONString();
@@ -685,7 +685,7 @@ public class WebSocketServer {
             areaLogDataItem.put("sort", i);
             areaLogDataItem.put("areaCode", a.getAreaCode());
             areaLogDataItem.put("areaType", a.getAreaType());
-            areaLogDataItem.put("personCount", a.getStuffCount());
+            areaLogDataItem.put("personCount", a.getStaffCount());
             areaLogDataItem.put("vehicleCount", a.getVehicleCount());
             areaLogDataItem.put("areaName", a.getAreaName());
             areaLogData.add(areaLogDataItem);
@@ -724,9 +724,7 @@ public class WebSocketServer {
         locationData.put("personTypeStatistics", personTypeStats);
         JSONArray dataArray = new JSONArray();
         for (int i = 0; i < mockVehicleIds.length; i++) {
-            log.info("开始查询mockVehicleIds[{}]:{}-{}-{}-{}", mockVehicleNumbers[i], mockVehicleTable[i], mockVehicleIds[i], mockVehicleDates[i], sdfYearMondayHourMinSec.format(mockVehicleDates[i]));
             List<LanyaPositionHistory> trajectory = lanyaPositionHistoryService.selectLanyaPositionHistoryListByTable(mockVehicleTable[i], mockVehicleIds[i], mockVehicleDates[i]);
-            log.info("查询到LanyaPositionHistory数据共{}条:{}", trajectory.size(), trajectory);
             for (LanyaPositionHistory history : trajectory) {
                 JSONObject locationDataItem = JSONObject.from(history);
                 locationDataItem.put("vehicleNumber", mockVehicleNumbers[i]);
@@ -757,7 +755,7 @@ public class WebSocketServer {
         int visitorCount = 0;
         for (Map.Entry<Long, WmsArea> entry : wmsAreas.entrySet()) {
             WmsArea a = entry.getValue();
-            staffCount += a.getStuffCount();
+            staffCount += a.getStaffCount();
             visitorCount += a.getVisitorCount();
         }
 
@@ -790,9 +788,7 @@ public class WebSocketServer {
 
         JSONArray dataArray = new JSONArray();
         for (int i = 0; i < mockPersonIds.length; i++) {
-            log.info("开始查询mockPersonIds[{}]:{}-{}-{}", i, mockPersonIds[i], mockPersonTable[i], mockPersonDates[i]);
             List<LanyaPositionHistory> trajectory = lanyaPositionHistoryService.selectLanyaPositionHistoryListByTable(mockPersonTable[i], mockPersonIds[i], mockPersonDates[i]);
-            log.info("查询到LanyaPositionHistory数据共{}条:{}", trajectory.size(), trajectory);
             for (LanyaPositionHistory history : trajectory) {
                 // 创建空的data数组
                 mockPersonDates[i] = history.getCreateTime();

@@ -108,4 +108,9 @@ public class LanyaDeviceCardSenderLogServiceImpl implements ILanyaDeviceCardSend
     public List<LanyaDeviceCardSenderLog> selectLanyaDeviceCardSenderLogListByNameCardType(String param) {
         return lanyaDeviceCardSenderLogMapper.selectLanyaDeviceCardSenderLogListByNameCardType(param);
     }
+
+    @Override
+    public LanyaDeviceCardSenderLog selectLanyaDeviceCardSenderLogByLastCardId(Long cardId) {
+        return lanyaDeviceCardSenderLogMapper.selectLanyaDeviceCardSenderLogByLastCardId(cardId);
+    }
 }

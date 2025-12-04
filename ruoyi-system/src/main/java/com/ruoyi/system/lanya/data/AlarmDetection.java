@@ -5,6 +5,8 @@ import com.ruoyi.system.domain.WmsAlarmRule;
 import com.ruoyi.system.domain.WmsArea;
 import com.ruoyi.system.service.IWmsAlarmRuleService;
 import com.ruoyi.system.service.IWmsAreaService;
+import lombok.Getter;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,23 +25,34 @@ public class AlarmDetection {
     /**
      * 告警规则服务
      */
-    @Autowired
     private IWmsAlarmRuleService wmsAlarmRuleService;
+
+    @Autowired
+    private void setWmsAlarmRuleService(IWmsAlarmRuleService wmsAlarmRuleService) {
+        this.wmsAlarmRuleService = wmsAlarmRuleService;
+    }
 
     /**
      * 区域服务
      */
-    @Autowired
     private IWmsAreaService wmsAreaService;
 
-    public Map<WmsAlarmRule, RuleAreaWrap> getRules() {
-        return rules;
+    @Autowired
+    private void setWmsAreaService(IWmsAreaService wmsAreaService) {
+        this.wmsAreaService = wmsAreaService;
     }
 
     /**
      * 告警规则与区域映射
      */
-    private final Map<WmsAlarmRule, RuleAreaWrap> rules = new HashMap<>();
+    @Getter
+    private final List<RuleAreaWrap> ruleAreaWraps = new ArrayList<>();
+
+    /**
+     * 告警规则
+     */
+    @Getter
+    private List<WmsAlarmRule> wmsAlarmRules;
 
     /**
      * 活跃卡列表
@@ -59,6 +72,8 @@ public class AlarmDetection {
     /**
      * 是否被初始化
      */
+    @Getter
+    @Setter
     private boolean isInitialized = false;
 
     /**
@@ -86,30 +101,24 @@ public class AlarmDetection {
             }
         }
 
-        List<WmsAlarmRule> wmsAlarmRules = wmsAlarmRuleService.selectWmsAlarmRuleList(new WmsAlarmRule());
+        wmsAlarmRules = wmsAlarmRuleService.selectWmsAlarmRuleList(new WmsAlarmRule());
 
-        // 遍历规则
+        // 初始化规则
         for (WmsAlarmRule rule : wmsAlarmRules) {
             if (rule.getAlarmRuleTargetAreaCode() == null) {
-                // 跳过无效规则
+                // 跳过没有绑定区域的无效规则
                 continue;
             }
 
             // 获取区域数组
             String[] targetCodes = rule.getAlarmRuleTargetAreaCode().split(",");
 
-            // 规则的目标区域列表
-            List<WmsArea> value = new ArrayList<>();
-
             // 遍历目标区域Code
             for (String c : targetCodes) {
                 long targetCode = Long.parseLong(c);
-                // 匹配目标区域的WmsArea对象
-                for (WmsArea area : wmsAreas.values()) {
-                    if (area.getAreaId() == targetCode && area.getGeometry() != null) {
-                        rules.put(rule, new RuleAreaWrap(area, area.getGeometry()));
-                        break;
-                    }
+                WmsArea area = wmsAreas.get(targetCode);
+                if (area != null) {
+                    ruleAreaWraps.add(new RuleAreaWrap(rule, area, area.getGeometry()));
                 }
             }
         }
@@ -137,12 +146,13 @@ public class AlarmDetection {
         }
     }
 
-    public List<AlarmResult> detect(LanyaPositionHistory position) {
+    public List<AlarmResult> detect(LanyaPositionHistory position, String type) {
         Point point = geometryFactory.createPoint(new Coordinate(position.getLongitude(), position.getLatitude()));
         // 发现的告警规则
         List<AlarmResult> detected = new ArrayList<>();
-
+        // 定位卡ID
         long cardId = position.getCardId();
+        // 定位数据产生时间
         Date time = position.getAcceptTime();
 
         if (!livePeopleCards.containsKey(cardId)) {
@@ -151,94 +161,112 @@ public class AlarmDetection {
         LiveCard liveCard = livePeopleCards.get(cardId);
         liveCard.point = point;
 
-        // 当前卡的geometry对象
-
+        // 区域内人员计数器
         for (WmsArea area : wmsAreaService.getAreaMap().values()) {
             if (area.getGeometry() == null) {
                 continue;
             }
-            // 判断点是否在多边形内
+            // 判断点是否在区域多边形内
             boolean inside = area.getGeometry().contains(point);
 
             if (inside) {
-                if (liveCard.getArea() != null && liveCard.getArea().getStuffCount() >= 0) {
-                    liveCard.getArea().setStuffCount(liveCard.getArea().getStuffCount() - 1);
+                // 如果liveCard的区域不为空，表示定位卡ID在上一个点位potion已经在区域内。那么把定位卡ID从之前所处的区域中移除。并且将定位卡ID更改到当前的区域内。
+                // 从定位卡ID在之前所处的区域中移除定位卡ID的计数器中移除。
+                if ("内部员工".equals(type) && liveCard.getArea() != null && liveCard.getArea().getStaffCount() >= 0) {
+                    // 将之前所处区域-1
+                    liveCard.getArea().setStaffCount(liveCard.getArea().getStaffCount() - 1);
+                    // 将当前定位卡ID所处的区域的计数器加1
+                    area.setStaffCount(liveCard.getArea().getStaffCount() - 1);
                 }
+                if ("外部访客".equals(type) && liveCard.getArea() != null && liveCard.getArea().getVisitorCount() >= 0) {
+                    // 将之前所处区域-1
+                    liveCard.getArea().setVisitorCount(liveCard.getArea().getVisitorCount() - 1);
+                    // 将当前定位卡ID所处的区域的计数器加1
+                    area.setVisitorCount(liveCard.getArea().getVisitorCount() - 1);
+                }
+                if ("车辆".equals(type) && liveCard.getArea() != null && liveCard.getArea().getVehicleCount() >= 0) {
+                    // 将之前所处区域-1
+                    liveCard.getArea().setVehicleCount(liveCard.getArea().getVehicleCount() - 1);
+                    // 将当前定位卡ID所处的区域的计数器加1
+                    area.setVehicleCount(liveCard.getArea().getVehicleCount() - 1);
+                }
+                // 将当前定位卡ID所处的区域赋值给liveCard
                 liveCard.setArea(area);
-                liveCard.getArea().setStuffCount(liveCard.getArea().getStuffCount() + 1);
             }
         }
 
 
         // 遍历所有告警规则
-        for (Map.Entry<WmsAlarmRule, RuleAreaWrap> entry : rules.entrySet()) {
+        for (RuleAreaWrap wrap : ruleAreaWraps) {
 
             // 规则
-            WmsAlarmRule rule = entry.getKey();
+            WmsAlarmRule rule = wrap.rule;
 
-            // 目标区域
-            RuleAreaWrap targetAreaWrap = entry.getValue();
+            if (!"人员".equals(rule.getAlarmType())) {
+                // 只检测人员报警规则
+                continue;
+            }
 
             // 是否发生了报警
             boolean isAlarm = false;
 
             // 判断点是否在多边形内
-            boolean inside = targetAreaWrap.geometry.contains(point);
+            boolean inside = wrap.geometry.contains(point);
 
             // 计算点到多边形边界的距离(度单位)
-            double dist = point.distance(targetAreaWrap.geometry) * 111320;
+            double dist = point.distance(wrap.geometry) * 111320;
 
             // 根据规则类型使用不同的检测方法
             switch (rule.getAlarmRuleType()) {
                 case "进入报警": {
                     if (inside && dist < rule.getAlarmRuleDistThreshold()) {
-                        if (!targetAreaWrap.enterTime.containsKey(cardId)) {
-                            targetAreaWrap.enterTime.put(cardId, time.getTime());
+                        if (!wrap.enterTime.containsKey(cardId)) {
+                            wrap.enterTime.put(cardId, time.getTime());
                         }
-                        Long enterTime = targetAreaWrap.enterTime.get(cardId);
+                        Long enterTime = wrap.enterTime.get(cardId);
                         isAlarm = (time.getTime() - enterTime) >= rule.getAlarmRuleTimeThreshold();
                     }
                     break;
                 }
                 case "越界报警": {
                     if (inside && dist < rule.getAlarmRuleDistThreshold()) {
-                        if (!targetAreaWrap.enterTime.containsKey(cardId)) {
-                            targetAreaWrap.enterTime.put(cardId, time.getTime());
+                        if (!wrap.enterTime.containsKey(cardId)) {
+                            wrap.enterTime.put(cardId, time.getTime());
                         }
-                        Long enterTime = targetAreaWrap.enterTime.get(cardId);
+                        Long enterTime = wrap.enterTime.get(cardId);
                         isAlarm = (time.getTime() - enterTime) >= rule.getAlarmRuleTimeThreshold();
                     }
                     break;
                 }
                 case "滞留报警": {
                     if (inside && dist < rule.getAlarmRuleDistThreshold()) {
-                        if (!targetAreaWrap.enterTime.containsKey(cardId)) {
-                            targetAreaWrap.enterTime.put(cardId, time.getTime());
+                        if (!wrap.enterTime.containsKey(cardId)) {
+                            wrap.enterTime.put(cardId, time.getTime());
                         }
-                        Long enterTime = targetAreaWrap.enterTime.get(cardId);
+                        Long enterTime = wrap.enterTime.get(cardId);
                         isAlarm = (time.getTime() - enterTime) >= rule.getAlarmRuleTimeThreshold();
                     }
                     break;
                 }
                 case "超员报警": {
                     if (inside && dist < rule.getAlarmRuleDistThreshold()) {
-                        if (!targetAreaWrap.enterTime.containsKey(cardId)) {
-                            targetAreaWrap.enterTime.put(cardId, time.getTime());
+                        if (!wrap.enterTime.containsKey(cardId)) {
+                            wrap.enterTime.put(cardId, time.getTime());
                         }
-                        Long enterTime = targetAreaWrap.enterTime.get(cardId);
-                        Long stayTime = time.getTime() - enterTime;
+                        Long enterTime = wrap.enterTime.get(cardId);
+                        long stayTime = time.getTime() - enterTime;
                         if (stayTime >= rule.getAlarmRuleTimeThreshold()) {
                             if (liveCard.onAreaWrap == null) {
-                                liveCard.onAreaWrap = targetAreaWrap;
+                                liveCard.onAreaWrap = wrap;
                             }
-                            if (liveCard.onAreaWrap != targetAreaWrap) {
+                            if (liveCard.onAreaWrap != wrap) {
                                 liveCard.onAreaWrap.enterTime.remove(cardId);
-                                liveCard.onAreaWrap = targetAreaWrap;
+                                liveCard.onAreaWrap = wrap;
                             }
 
-                            if (!targetAreaWrap.enterTime.containsKey(cardId)) {
-                                targetAreaWrap.enterTime.put(cardId, time.getTime());
-                                isAlarm = targetAreaWrap.enterTime.size() > rule.getMaxPeopleCount();
+                            if (!wrap.enterTime.containsKey(cardId)) {
+                                wrap.enterTime.put(cardId, time.getTime());
+                                isAlarm = wrap.enterTime.size() > rule.getMaxPeopleCount();
                             }
                         }
                     }
@@ -259,8 +287,8 @@ public class AlarmDetection {
                 }
             }
             if (isAlarm) {
-                detected.add(new AlarmResult(entry.getKey(), entry.getValue().area));
-                entry.getKey().setCount(entry.getKey().getCount() + 1);
+                detected.add(new AlarmResult(wrap.rule, wrap.area));
+                wrap.rule.setCount(wrap.rule.getCount() + 1);
             }
 
 
@@ -318,14 +346,6 @@ public class AlarmDetection {
         return groups;
     }
 
-    public boolean isInitialized() {
-        return isInitialized;
-    }
-
-    public void setInitialized(boolean initialized) {
-        isInitialized = initialized;
-    }
-
     public List<Object> getLiveVehicleTotal() {
         return new ArrayList<>();
     }
@@ -346,37 +366,39 @@ public class AlarmDetection {
         return new ArrayList<>();
     }
 
+    /**
+     * 规则区域包装类
+     */
     static public class RuleAreaWrap {
+        public final WmsAlarmRule rule;
         public WmsArea area;
         public Geometry geometry;
         public Map<Long, Long> enterTime = new HashMap<>();
 
-        public RuleAreaWrap(WmsArea area, Geometry geometry) {
+        public RuleAreaWrap(WmsAlarmRule rule, WmsArea area, Geometry geometry) {
+            this.rule = rule;
             this.area = area;
             this.geometry = geometry;
         }
     }
 
-    private class LiveCard {
+    /**
+     * 临时存储正在移动的卡
+     */
+    static class LiveCard {
+        @Getter
+        @Setter
+        private WmsArea area;
         public LanyaPositionHistory position;
         public RuleAreaWrap onAreaWrap;
         public Point point;
         public Long cardId;
         public String realName;
-        private WmsArea area;
 
         public LiveCard(LanyaPositionHistory position) {
             this.position = position;
             this.cardId = position.getCardId();
             this.realName = position.getRealName();
-        }
-
-        public WmsArea getArea() {
-            return area;
-        }
-
-        public void setArea(WmsArea area) {
-            this.area = area;
         }
     }
 }

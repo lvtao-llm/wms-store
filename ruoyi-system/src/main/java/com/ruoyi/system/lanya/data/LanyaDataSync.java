@@ -74,18 +74,23 @@ public class LanyaDataSync {
     private boolean enablePositionTableSync;
 
     /**
-     * 定时同步Lanya定位数据开关
+     * 启动时同步Lanya定位历史数据开关
      */
     @Value("${lanya.position.sync-table.past-table.enabled:false}")
     private boolean enablePositionTableSyncPast;
 
+    /**
+     * 定时同步Lanya定位数据表数据量
+     * 默认100
+     */
+    @Value("${lanya.position.sync-table.count-per-fetch:100}")
+    private int countPerFetch;
 
     /**
      * 定时同步Lanya设备卡发放日志开关
      */
     @Value("${lanya.issuing.sync.enabled:false}")
     private boolean enableIssuing;
-
 
     /**
      * 定时同步Lanya定位数据表名
@@ -108,11 +113,6 @@ public class LanyaDataSync {
     SysConfig cardLogConfig = new SysConfig(cardLogKey);
 
     /**
-     * 工作活动缓存
-     */
-    Map<Long, WmsDeviceCardWorkLog> workActivities = new HashMap<>();
-
-    /**
      * 工作活动缓存，按卡ID缓存
      */
     Map<Long, WmsDeviceCardWorkLog> workActivitiesByCardId = new HashMap<>();
@@ -126,7 +126,6 @@ public class LanyaDataSync {
      * 时间格式
      */
     SimpleDateFormat sdfTableSuffix = new SimpleDateFormat("yyyyMMdd");
-
 
     /**
      * HTTP客户端
@@ -197,32 +196,10 @@ public class LanyaDataSync {
                         "成功".equals(lanyaDeviceCardSenderLog.getResult())) {
 
                     // 发卡记录
-                    WmsDeviceCardWorkLog wordLog = new WmsDeviceCardWorkLog();
-                    wordLog.setCardId(lanyaDeviceCardSenderLog.getCardId());
-                    wordLog.setPersonPhoto(lanyaDeviceCardSenderLog.getPersonPhoto());
-                    wordLog.setPersonId(lanyaDeviceCardSenderLog.getPersonId());
-                    wordLog.setDeptId(lanyaDeviceCardSenderLog.getDeptId());
-                    wordLog.setRealName(lanyaDeviceCardSenderLog.getRealName());
-                    wordLog.setDeptName(lanyaDeviceCardSenderLog.getDeptName());
-                    wordLog.setIdNumber(lanyaDeviceCardSenderLog.getIdNumber());
-                    wordLog.setIdentifyType(lanyaDeviceCardSenderLog.getIdentifyType());
-                    wordLog.setSenderDeviceSn(lanyaDeviceCardSenderLog.getDeviceSn());
-                    wordLog.setSenderDeviceName(lanyaDeviceCardSenderLog.getDeviceName());
-                    wordLog.setSenderDeviceNum(lanyaDeviceCardSenderLog.getDeviceNum());
-                    wordLog.setSenderCommandTime(lanyaDeviceCardSenderLog.getCommandTime());
-                    wordLog.setSenderRentType(lanyaDeviceCardSenderLog.getRentType());
-                    wordLog.setSenderIdentifyTime(lanyaDeviceCardSenderLog.getIdentifyTime());
-                    wordLog.setSenderLanyaLogId(lanyaDeviceCardSenderLog.getId());
-                    wordLog.setCreateTime(new Date());
+                    WmsDeviceCardWorkLog workLog = parseWorkLog(lanyaDeviceCardSenderLog);
 
                     // 保存workLog记录
-                    if (wmsDeviceCardWorkLogService.selectWmsDeviceCardWorkLogCountBySenderLanyaLogId(lanyaDeviceCardSenderLog.getId()) == 0) {
-                        if (wmsDeviceCardWorkLogService.insertWmsDeviceCardWorkLog(wordLog) > 0) {
-                            initPosition(wordLog);
-                            workActivities.put(lanyaDeviceCardSenderLog.getId(), wordLog);
-                            workActivitiesByCardId.put(lanyaDeviceCardSenderLog.getCardId(), wordLog);
-                        }
-                    }
+                    saveWorkLog(workLog);
                 }
 
                 // 还卡
@@ -234,11 +211,11 @@ public class LanyaDataSync {
 
                     List<WmsDeviceCardWorkLog> wmsDeviceCardWorkLogs = wmsDeviceCardWorkLogService.selectWmsDeviceCardWorkLogListEnd(query);
                     if (wmsDeviceCardWorkLogs.isEmpty()) {
-                        log.error("--------------------------------------------------------------\r\nERROR:没有找到对应的发卡记录>\r\n{}\r\n--------------------------------------------------------------", query);
+                        log.error("-------------------------\r\nERROR:没有找到对应发卡记录>\r\n{}\r\n-------------------------", query);
                     }
 
                     if (wmsDeviceCardWorkLogs.size() > 1) {
-                        log.error("--------------------------------------------------------------\r\nERROR:找到多个发卡记录>\r\n{}\r\n--------------------------------------------------------------", query);
+                        log.error("---------------------------\r\nERROR:找到多个发卡记录>\r\n{}\r\n---------------------------", query);
                     }
 
                     if (!wmsDeviceCardWorkLogs.isEmpty()) {
@@ -288,7 +265,6 @@ public class LanyaDataSync {
                             wmsTrajectoryService.insertWmsTrajectory(wmsTrajectory);
 
                             // 移除workLog
-                            workActivities.remove(workLog.getId());
                             workActivitiesByCardId.remove(workLog.getCardId());
                         }
                     }
@@ -300,6 +276,36 @@ public class LanyaDataSync {
             }
 
             continueGet = !lanyaDeviceCardSenderLogs.isEmpty();
+        }
+    }
+
+    private WmsDeviceCardWorkLog parseWorkLog(LanyaDeviceCardSenderLog lanyaDeviceCardSenderLog) {
+        WmsDeviceCardWorkLog wordLog = new WmsDeviceCardWorkLog();
+        wordLog.setCardId(lanyaDeviceCardSenderLog.getCardId());
+        wordLog.setPersonPhoto(lanyaDeviceCardSenderLog.getPersonPhoto());
+        wordLog.setPersonId(lanyaDeviceCardSenderLog.getPersonId());
+        wordLog.setDeptId(lanyaDeviceCardSenderLog.getDeptId());
+        wordLog.setRealName(lanyaDeviceCardSenderLog.getRealName());
+        wordLog.setDeptName(lanyaDeviceCardSenderLog.getDeptName());
+        wordLog.setIdNumber(lanyaDeviceCardSenderLog.getIdNumber());
+        wordLog.setIdentifyType(lanyaDeviceCardSenderLog.getIdentifyType());
+        wordLog.setSenderDeviceSn(lanyaDeviceCardSenderLog.getDeviceSn());
+        wordLog.setSenderDeviceName(lanyaDeviceCardSenderLog.getDeviceName());
+        wordLog.setSenderDeviceNum(lanyaDeviceCardSenderLog.getDeviceNum());
+        wordLog.setSenderCommandTime(lanyaDeviceCardSenderLog.getCommandTime());
+        wordLog.setSenderRentType(lanyaDeviceCardSenderLog.getRentType());
+        wordLog.setSenderIdentifyTime(lanyaDeviceCardSenderLog.getIdentifyTime());
+        wordLog.setSenderLanyaLogId(lanyaDeviceCardSenderLog.getId());
+        wordLog.setCreateTime(new Date());
+        return wordLog;
+    }
+
+    private void saveWorkLog(WmsDeviceCardWorkLog workLog) {
+        if (wmsDeviceCardWorkLogService.selectWmsDeviceCardWorkLogCountBySenderLanyaLogId(workLog.getSenderLanyaLogId()) == 0) {
+            if (wmsDeviceCardWorkLogService.insertWmsDeviceCardWorkLog(workLog) > 0) {
+                initPosition(workLog);
+                workActivitiesByCardId.put(workLog.getCardId(), workLog);
+            }
         }
     }
 
@@ -337,32 +343,48 @@ public class LanyaDataSync {
         // 同步position_history表数据
         while (continueGet) {
 
-            // 获取count条position_history数据
-            int count = 100;
+            // 如果目标表不存在则直接放弃本次同步
             if (!lanyaPositionHistoryService.showPositionHistoryTableNames().contains(tableName)) {
                 continueGet = false;
                 break;
             }
-            List<LanyaPositionHistory> lanyaPositionHistories = lanyaPositionHistoryService.selectLanyaPositionHistoryListStartTime(positionOffset, count, tableName);
+
+            // 获取count条position_history数据
+            List<LanyaPositionHistory> lanyaPositionHistories = lanyaPositionHistoryService.selectLanyaPositionHistoryListStartTime(positionOffset, countPerFetch, tableName);
 
             // 循环处理数据
             for (LanyaPositionHistory position : lanyaPositionHistories) {
-
+                WmsDeviceCardWorkLog workLog = workActivitiesByCardId.get(position.getCardId());
+                if (workLog == null) {
+                    // 从wms_device_card_work_log表获取工作记录
+                    WmsDeviceCardWorkLog query = new WmsDeviceCardWorkLog();
+                    query.setCardId(position.getCardId());
+                    query.setRealName(position.getRealName());
+                    // 根据定位卡ID查找没有还卡的工作记录
+                    List<WmsDeviceCardWorkLog> wmsDeviceCardWorkLogs = wmsDeviceCardWorkLogService.selectWmsDeviceCardWorkLogListEnd(query);
+                    if (wmsDeviceCardWorkLogs.isEmpty()) {
+                        // 从lanya的device_card_sender_log表查询开进路
+                        LanyaDeviceCardSenderLog deviceCardSenderLog = lanyaDeviceCardSenderLogService.selectLanyaDeviceCardSenderLogByLastCardId(position.getCardId());
+                        if (deviceCardSenderLog.getCardSenderType() == 1) {
+                            // 如果定位卡ID最后一条是开记录则重建工作记录
+                            workLog = parseWorkLog(deviceCardSenderLog);
+                            saveWorkLog(workLog);
+                        } else {
+                            // 如果仍然没有则放弃此条数据
+                            continue;
+                        }
+                    } else {
+                        workLog = wmsDeviceCardWorkLogs.get(0);
+                    }
+                }
                 // 检测是否触发告警规则
-                List<AlarmResult> alarmRules = alarmDetection.detect(position);
+                List<AlarmResult> alarmRules = alarmDetection.detect(position, workLog.getIdentifyType().equals("face") ? "内部员工" : "外部访客");
 
 
                 // 如果有告警规则触发则在workActivities查询匹配的wms_device_card_work_log记录ID
                 if (!alarmRules.isEmpty()) {
                     // wms_device_card_work_log记录ID
-                    Long workId = null;
-
-                    for (WmsDeviceCardWorkLog workLog : workActivities.values()) {
-                        if (position.getCardId().equals(workLog.getCardId()) && position.getPersonId().equals(workLog.getPersonId())) {
-                            workId = workLog.getId();
-                        }
-                        break;
-                    }
+                    Long workId = position.getPersonId().equals(workLog.getPersonId()) ? workLog.getId() : null;
 
                     // 如果workActivities中没有匹配的wms_device_card_work_log记录ID则到数据库中查找
                     if (workId == null) {
@@ -390,10 +412,7 @@ public class LanyaDataSync {
                 }
 
                 // 添加轨迹给卡工作日志
-                WmsDeviceCardWorkLog workLog = workActivitiesByCardId.get(position.getCardId());
-                if (workLog != null) {
-                    workLog.getTrajectory().add(position);  //经度
-                }
+                workLog.getTrajectory().add(position);  //经度
 
                 // 更新本地position_history的offset
                 positionOffset = position.getAcceptTime();

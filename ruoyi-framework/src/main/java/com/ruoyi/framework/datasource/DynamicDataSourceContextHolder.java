@@ -1,15 +1,15 @@
 package com.ruoyi.framework.datasource;
 
+import com.ruoyi.common.utils.spring.SpringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * 数据源切换处理
- * 
+ *
  * @author ruoyi
  */
-public class DynamicDataSourceContextHolder
-{
+public class DynamicDataSourceContextHolder {
     public static final Logger log = LoggerFactory.getLogger(DynamicDataSourceContextHolder.class);
 
     /**
@@ -21,25 +21,25 @@ public class DynamicDataSourceContextHolder
     /**
      * 设置数据源的变量
      */
-    public static void setDataSourceType(String dsType)
-    {
-        log.info("切换到{}数据源", dsType);
+    public static void setDataSourceType(String dsType) {
+        String printDataSourceType = SpringUtils.getRequiredProperty("spring.datasource.print-data-source-type");
+        if (Boolean.parseBoolean(printDataSourceType)) {
+            log.info("切换到{}数据源", dsType);
+        }
         CONTEXT_HOLDER.set(dsType);
     }
 
     /**
      * 获得数据源的变量
      */
-    public static String getDataSourceType()
-    {
+    public static String getDataSourceType() {
         return CONTEXT_HOLDER.get();
     }
 
     /**
      * 清空数据源变量
      */
-    public static void clearDataSourceType()
-    {
+    public static void clearDataSourceType() {
         CONTEXT_HOLDER.remove();
     }
 }

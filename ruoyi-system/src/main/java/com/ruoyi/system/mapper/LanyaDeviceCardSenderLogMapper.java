@@ -32,8 +32,8 @@ public interface LanyaDeviceCardSenderLogMapper {
     /**
      * 查询人脸发卡记录列表
      *
-     * @param time 开始ID
-     * @param count         数量
+     * @param time  开始ID
+     * @param count 数量
      * @return 人脸发卡记录集合
      */
     List<LanyaDeviceCardSenderLog> selectLanyaDeviceCardSenderLogListStartTime(@Param("time") Date time, @Param("count") int count);
@@ -73,4 +73,5 @@ public interface LanyaDeviceCardSenderLogMapper {
     List<LanyaDeviceCardSenderLog> selectLanyaDeviceCardSenderLogListByNameCardType(String param);
 
 
+    LanyaDeviceCardSenderLog selectLanyaDeviceCardSenderLogByLastCardId(@Param("cardId") Long cardId);
 }

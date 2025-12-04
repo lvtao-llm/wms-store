@@ -104,19 +104,22 @@ public class WmsArea extends BaseEntity {
     private String delFlag;
 
     /**
-     * 人数
-     */
-    @JsonIgnore
-    private int stuffCount = 0;
-
-    @JsonIgnore
-    private int visitorCount = 0;
-
-    /**
      * 相机
      */
     @Excel(name = "相机")
     private String cameras;
+
+    /**
+     * 内部员工人数
+     */
+    @JsonIgnore
+    private int staffCount = 0;
+
+    /**
+     * 外部 visitor人数
+     */
+    @JsonIgnore
+    private int visitorCount = 0;
 
     /**
      * 车辆数
@@ -276,12 +279,12 @@ public class WmsArea extends BaseEntity {
         this.photo360 = photo360;
     }
 
-    public int getStuffCount() {
-        return stuffCount;
+    public int getStaffCount() {
+        return staffCount;
     }
 
-    public void setStuffCount(int stuffCount) {
-        this.stuffCount = stuffCount;
+    public void setStaffCount(int staffCount) {
+        this.staffCount = staffCount;
     }
 
     public int getVehicleCount() {

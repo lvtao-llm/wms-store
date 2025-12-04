@@ -85,7 +85,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="senderLanyaLogId != null "> and sender_lanya_log_id = #{senderLanyaLogId}</if>
             <if test="positionHistoryBeginId != null "> and position_history_begin_id = #{positionHistoryBeginId}</if>
             <if test="positionHistoryEndId != null "> and position_history_end_id = #{positionHistoryEndId}</if>
+            and return_device_sn is null
+            and return_device_name is null
+            and return_command_time is null
         </where>
+        order by id desc limit 1
     </select>
     
     <select id="selectWmsDeviceCardWorkLogById" parameterType="Long" resultMap="WmsDeviceCardWorkLogResult">
@@ -99,7 +103,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="selectWmsDeviceCardWorkLogCountBySenderLanyaLogId" resultType="Integer">
-        select count(1) from wms_device_card_work_log where sender_lanya_log_id = #{id}
+        select count(1) from wms_device_card_work_log where sender_lanya_log_id = #{id} and return_command_time is null and return_device_sn is null
     </select>
 
     <insert id="insertWmsDeviceCardWorkLog" parameterType="WmsDeviceCardWorkLog">

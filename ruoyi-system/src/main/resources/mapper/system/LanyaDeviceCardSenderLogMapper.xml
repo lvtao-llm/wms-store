@@ -142,6 +142,10 @@
           and (log.card_id LIKE CONCAT('%', #{param}, '%') or log.real_name LIKE CONCAT('%', #{param}, '%'))
     </select>
 
+    <select id="selectLanyaDeviceCardSenderLogByLastCardId" resultMap="LanyaDeviceCardSenderLogResult">
+        select * from device_card_sender_log where card_id = #{cardId} and result = '成功' order by id desc limit 1
+    </select>
+
     <insert id="insertLanyaDeviceCardSenderLog" parameterType="LanyaDeviceCardSenderLog">
         insert into device_card_sender_log
         <trim prefix="(" suffix=")" suffixOverrides=",">

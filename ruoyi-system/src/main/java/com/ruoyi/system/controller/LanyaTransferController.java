@@ -435,7 +435,6 @@ public class LanyaTransferController extends BaseController {
      * @return
      * @throws JsonProcessingException
      */
-    @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
     @PostMapping("/card/sendContent")
     public Object cardSendContent(@RequestBody JSONObject body) throws JsonProcessingException {
         return thirdPartyAuth.callThirdParty("/api-service/card/sendContent", HttpMethod.POST, body);
