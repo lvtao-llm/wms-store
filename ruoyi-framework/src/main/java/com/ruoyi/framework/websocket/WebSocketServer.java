@@ -269,6 +269,9 @@ public class WebSocketServer {
      */
     SimpleDateFormat sdfYearMondayHourMinSec = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
+    // 初始化时间格式
+    SimpleDateFormat YMD = new SimpleDateFormat("yyyyMMdd");
+
     /**
      * Lanya定位数据数据服务
      */
@@ -286,9 +289,6 @@ public class WebSocketServer {
     @PostConstruct
     public void init() {
         try {
-            // 初始化时间格式
-            SimpleDateFormat YMD = new SimpleDateFormat("yyyyMMdd");
-
             // 初始化模拟人员数据时间
             mockPersonDates = new Date[mockPersonDateExps.length];
             // 模拟人员数据表名称
@@ -692,6 +692,94 @@ public class WebSocketServer {
             i++;
         }
         messageQueue.add(areaLog.toString());
+    }
+
+    /**
+     * 创建LanyaPositionHistory数据模拟器
+     */
+    @Scheduled(cron = "0/2 * * * * ?")
+    public void realtimeVehiclePositionHistoryData() throws ParseException {
+        DecimalFormat df = new DecimalFormat("#.##");
+        String tableName = "position_history_" + YMD.format(new Date());
+        // 创建所需的JSONObject
+        JSONObject locationData = new JSONObject();
+        locationData.put("msgType", "currentVehicleLocation");
+        locationData.put("total", 1);
+
+        // 创建personTypeStatistics数组
+        JSONArray personTypeStats = new JSONArray();
+
+        // 添加staff类型统计
+        JSONObject staffStat = new JSONObject();
+        staffStat.put("count", mockVehicleIds.length);
+        staffStat.put("personType", "staff");
+        staffStat.put("personTypeName", "员工");
+        staffStat.put("ratio", df.format((float) mockVehicleIds.length / mockVehicleIds.length * 100));
+        personTypeStats.add(staffStat);
+
+        locationData.put("personTypeStatistics", personTypeStats);
+        JSONArray dataArray = new JSONArray();
+
+        List<LanyaPositionHistory> trajectory = lanyaPositionHistoryService.selectNewLanyaPositionHistoryListByTable(tableName);
+        for (LanyaPositionHistory history : trajectory) {
+            JSONObject locationDataItem = JSONObject.from(history);
+            dataArray.add(locationDataItem);
+        }
+
+        locationData.put("data", dataArray);
+        messageQueue.add(locationData.toString());
+    }
+
+    /**
+     * 创建LanyaPositionHistory数据模拟器
+     */
+    @Scheduled(cron = "0/2 * * * * ?")
+    public void realtimePersonPositionHistoryData() throws ParseException {
+        DecimalFormat df = new DecimalFormat("#.##");
+        String tableName = "position_history_" + YMD.format(new Date());
+        Map<Long, WmsArea> wmsAreas = wmsAreaService.getAreaMap();
+        int staffCount = 0;
+        int visitorCount = 0;
+        for (Map.Entry<Long, WmsArea> entry : wmsAreas.entrySet()) {
+            WmsArea a = entry.getValue();
+            staffCount += a.getStaffCount();
+            visitorCount += a.getVisitorCount();
+        }
+
+        // 创建所需的JSONObject
+        JSONObject locationData = new JSONObject();
+        locationData.put("msgType", "currentPersonLocation");
+        locationData.put("total", 1);
+
+
+        // 创建personTypeStatistics数组
+        JSONArray personTypeStats = new JSONArray();
+
+        // 添加staff类型统计
+        JSONObject staffStat = new JSONObject();
+        staffStat.put("count", mockPersonIds.length);
+        staffStat.put("personType", "staff");
+        staffStat.put("personTypeName", "内部员工");
+        staffStat.put("ratio", df.format((float) mockPersonIds.length / mockPersonIds.length * 100));
+        personTypeStats.add(staffStat);
+
+        // 添加visitor类型统计
+        JSONObject visitorStat = new JSONObject();
+        visitorStat.put("count", 0);
+        visitorStat.put("personType", "visitor");
+        visitorStat.put("personTypeName", "临时访客");
+        visitorStat.put("ratio", 0);
+        personTypeStats.add(visitorStat);
+
+        locationData.put("personTypeStatistics", personTypeStats);
+
+        JSONArray dataArray = new JSONArray();
+        List<LanyaPositionHistory> trajectory = lanyaPositionHistoryService.selectNewLanyaPositionHistoryListByTable(tableName);
+        for (LanyaPositionHistory history : trajectory) {
+            dataArray.add(history);
+        }
+        locationData.put("data", dataArray);
+        messageQueue.add(locationData.toString());
     }
 
     /**

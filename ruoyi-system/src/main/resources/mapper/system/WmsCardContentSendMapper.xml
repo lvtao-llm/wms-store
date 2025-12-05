@@ -10,6 +10,7 @@
         <result property="content" column="content"/>
         <result property="createBy" column="create_by"/>
         <result property="createTime" column="create_time"/>
+        <result property="goPublic" column="go_public"/>
     </resultMap>
 
     <sql id="selectWmsCardContentSendVo">
@@ -53,6 +54,7 @@
             <if test="content != null and content != ''">content = #{content},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="goPublic != null">go_public = #{goPublic},</if>
         </trim>
         where id = #{id}
     </update>

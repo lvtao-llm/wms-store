@@ -26,6 +26,9 @@ public class WmsCardContentSend extends BaseEntity
     @Excel(name = "内容")
     private String content;
 
+    /** 是否已同步到物资公司 */
+    private String goPublic;
+
     public void setId(Long id) 
     {
         this.id = id;
@@ -65,5 +68,13 @@ public class WmsCardContentSend extends BaseEntity
             .append("createBy", getCreateBy())
             .append("createTime", getCreateTime())
             .toString();
+    }
+
+    public String getGoPublic() {
+        return goPublic;
+    }
+
+    public void setGoPublic(String goPublic) {
+        this.goPublic = goPublic;
     }
 }

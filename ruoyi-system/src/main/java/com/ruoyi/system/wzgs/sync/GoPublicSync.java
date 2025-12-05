@@ -66,7 +66,8 @@ public class GoPublicSync {
             try (CloseableHttpResponse response = httpUtil.executePost(this.card_msgSyncUrl, jsonObject)) {
                 int statusCode = response.getStatusLine().getStatusCode();
                 if (statusCode == HttpStatus.SC_OK) {
-                    wmsCardContentSendMapper.deleteWmsCardContentSendById(wmsCardContentSend.getId());
+                    wmsCardContentSend.setGoPublic("Y");
+                    wmsCardContentSendMapper.updateWmsCardContentSend(wmsCardContentSend);
                 }
             }
         }

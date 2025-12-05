@@ -74,6 +74,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where accept_time >= #{begin} and accept_time <![CDATA[ <= ]]> #{end} and person_id = #{personId}
     </select>
 
+    <select id="selectNewLanyaPositionHistoryListByTable" resultMap="LanyaPositionHistoryResult">
+        select *
+        from (select *,
+                     ROW_NUMBER() OVER (PARTITION BY card_id ORDER BY create_time DESC, id DESC) as rn
+              from ${tableName}) t
+        where rn = 1
+    </select>
+
     <select id="selectLanyaPositionHistoryListStartTimeByCardAndName" resultMap="LanyaPositionHistoryResult">
         <include refid="selectLanyaPositionHistoryVo"/>
         where accept_time >= #{beginTime} and card_id = #{cardId} and real_name = #{realName}

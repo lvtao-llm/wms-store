@@ -92,4 +92,5 @@ public interface ILanyaPositionHistoryService {
     List<LanyaPositionHistory> selectLanyaPositionHistoryListByTableTimeRange(Date begin, Date end, Long personId, String tableName);
 
 
+    List<LanyaPositionHistory> selectNewLanyaPositionHistoryListByTable(String tableName);
 }

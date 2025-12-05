@@ -145,6 +145,11 @@ public class LanyaPositionHistoryServiceImpl implements ILanyaPositionHistorySer
         return lanyaPositionHistoryMapper.selectLanyaPositionHistoryListByTableTimeRange(begin, end, personId, tableName);
     }
 
+    @Override
+    public List<LanyaPositionHistory> selectNewLanyaPositionHistoryListByTable(String tableName) {
+        return lanyaPositionHistoryMapper.selectNewLanyaPositionHistoryListByTable(tableName);
+    }
+
     /**
      * 修改历史轨迹
      *
