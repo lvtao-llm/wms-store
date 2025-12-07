@@ -365,7 +365,7 @@ public class LanyaDataSync {
                     if (wmsDeviceCardWorkLogs.isEmpty()) {
                         // 从lanya的device_card_sender_log表查询开进路
                         LanyaDeviceCardSenderLog deviceCardSenderLog = lanyaDeviceCardSenderLogService.selectLanyaDeviceCardSenderLogByLastCardId(position.getCardId());
-                        if (deviceCardSenderLog.getCardSenderType() == 1) {
+                        if (deviceCardSenderLog != null && deviceCardSenderLog.getCardSenderType()!=null && deviceCardSenderLog.getCardSenderType() == 1) {
                             // 如果定位卡ID最后一条是开记录则重建工作记录
                             workLog = parseWorkLog(deviceCardSenderLog);
                             saveWorkLog(workLog);

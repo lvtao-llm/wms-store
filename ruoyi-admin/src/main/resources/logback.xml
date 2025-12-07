@@ -99,11 +99,11 @@
         </encoder>
     </appender>
 
-    <appender name="wzgs-sync" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${log.path}/wzgs-sync.log</file>
+    <appender name="sync-go-private" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.path}/sync-go-private.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- 按天回滚 daily -->
-            <fileNamePattern>${log.path}/%d{yyyy-MM-dd}/wzgs-sync.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>${log.path}/%d{yyyy-MM-dd}/sync-go-private.%d{yyyy-MM-dd}.log</fileNamePattern>
             <!-- 日志最大的历史 60天 -->
             <maxHistory>60</maxHistory>
         </rollingPolicy>
@@ -153,8 +153,8 @@
         <appender-ref ref="websocket-data"/>
     </logger>
 
-    <logger name="wzgs-sync" level="info">
-        <appender-ref ref="wzgs-sync"/>
+    <logger name="sync-go-private" level="info">
+        <appender-ref ref="sync-go-private"/>
     </logger>
 
     <logger name="sys-job" level="info">

@@ -3,10 +3,13 @@ package com.ruoyi.system.wzgs.sync;
 import com.alibaba.fastjson2.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ruoyi.system.domain.LanyaCoreAlarm;
+import com.ruoyi.system.domain.LanyaPositionCurrent;
 import com.ruoyi.system.domain.LanyaPositionHistory;
+import com.ruoyi.system.service.ILanyaPositionCurrentService;
 import com.ruoyi.system.service.ILanyaPositionHistoryService;
 import com.ruoyi.system.service.impl.LanyaCoreAlarmServiceImpl;
 import com.ruoyi.system.utils.HttpUtil;
+import com.ruoyi.system.websocket.WebSocketServer;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
@@ -30,7 +33,7 @@ import java.text.SimpleDateFormat;
 @Component
 public class GoPrivateSync {
 
-    private static final Logger log = LoggerFactory.getLogger("wzgs-sync");
+    private static final Logger log = LoggerFactory.getLogger("sync-go-private");
 
     /**
      * httpUtil
@@ -48,13 +51,25 @@ public class GoPrivateSync {
      * 定时同步Lanya定位数据开关
      */
     @Value("${lanya.position.sync-api.enabled:false}")
-    private boolean positionSyncEnabled;
+    private boolean positionHistorySyncEnabled;
 
     /**
      * 定时同步Lanya定位数据API地址
      */
     @Value("${lanya.position.sync-api.api-url:http://112.98.110.101:10030/system/lanya_position_history/new}")
-    private String positionSyncUrl;
+    private String positionHistorySyncUrl;
+
+    /**
+     * 定时同步Lanya定位数据开关
+     */
+    @Value("${lanya.position-current.sync-api.enabled:false}")
+    private boolean positionCurrentSyncEnabled;
+
+    /**
+     * 定时同步Lanya定位数据API地址
+     */
+    @Value("${lanya.position-current.sync-api.api-url:http://112.98.110.101:10030/system/system/position_current/list}")
+    private String positionCurrentSyncUrl;
 
     /**
      * 定时同步Lanya报警数据开关
@@ -84,10 +99,16 @@ public class GoPrivateSync {
     @Autowired
     private ILanyaPositionHistoryService lanyaPositionHistoryService;
 
+    @Autowired
+    WebSocketServer webSocketServer;
+
+    @Autowired
+    private ILanyaPositionCurrentService lanyaPositionCurrentService;
+
     @PostConstruct
     public void init() {
-        log.info("同步凯德信定位卡数据到物资公司开关：{}", positionSyncEnabled);
-        log.info("同步凯德信定位卡数据到物资公司数据请求URL:{}", positionSyncUrl);
+        log.info("同步凯德信定位卡数据到物资公司开关：{}", positionHistorySyncEnabled);
+        log.info("同步凯德信定位卡数据到物资公司数据请求URL:{}", positionHistorySyncUrl);
         log.info("同步凯德信定位卡SOS报警数据到物资公司开关：{}", sosSyncEnabled);
         log.info("同步凯德信定位卡SOS报警数据到物资公司数据请求URL:{}", sosSyncUrl);
     }
@@ -118,34 +139,53 @@ public class GoPrivateSync {
         log.info("凯德信定位卡SOS报警数据到物资公司同步完成");
     }
 
-    public void PositionSync() throws ParseException, IOException {
-        if (!positionSyncEnabled) {
+    public void PositionHistorySync() throws ParseException, IOException {
+        if (!positionHistorySyncEnabled) {
             return;
         }
 
-        log.info("开始同步凯德信定位卡数据到物资公司");
-        try (CloseableHttpResponse response = httpUtil.executeGet(this.positionSyncUrl)) {
+        try (CloseableHttpResponse response = httpUtil.executeGet(this.positionHistorySyncUrl)) {
             int statusCode = response.getStatusLine().getStatusCode();
             if (statusCode == HttpStatus.SC_OK) {
                 String content = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
-                log.info("PositionSync获取数据({})成功:{}", this.positionSyncUrl, content);
                 JSONObject object = this.mapper.readValue(content, JSONObject.class);
                 for (int i = 0; i < object.getJSONArray("rows").size(); i++) {
                     JSONObject row = object.getJSONArray("rows").getJSONObject(i);
                     LanyaPositionHistory position = row.toJavaObject(LanyaPositionHistory.class);
                     String tableName = "position_history_" + sdfTableSuffix.format(position.getCreateTime());
-                    log.info("PositionSync转换数据对象成功:[{}]{}", tableName, position);
                     lanyaPositionHistoryService.createTable(tableName);
-                    log.info("PositionSync创建表成功:[{}]", tableName);
                     position.setAcceptTime(position.getCreateTime());
                     lanyaPositionHistoryService.insertLanyaPositionHistory(position, tableName);
                 }
             } else {
-                throw new RuntimeException("HTTP Get请求失败: " + statusCode + "[ " + this.positionSyncUrl + " ]");
+                throw new RuntimeException("HTTP Get请求失败: " + statusCode + "[ " + this.positionHistorySyncUrl + " ]");
             }
         } catch (Exception e) {
-            log.error("同步凯德信定位卡数据到物资公司发生错误", e);
+            log.error("同步凯德信定位卡历史数据到物资公司发生错误", e);
         }
-        log.info("凯德信定位卡数据到物资公司同步完成");
+        log.info("凯德信定位卡历史数据到物资公司同步完成");
+    }
+
+    public void PositionRealtimeSync() {
+        if (!positionCurrentSyncEnabled) {
+            return;
+        }
+        try (CloseableHttpResponse response = httpUtil.executeGet(this.positionCurrentSyncUrl)) {
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode == HttpStatus.SC_OK) {
+                lanyaPositionCurrentService.deleteLanyaPositionCurrentAll();
+                String content = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
+                JSONObject object = this.mapper.readValue(content, JSONObject.class);
+                for (int i = 0; i < object.getJSONArray("rows").size(); i++) {
+                    JSONObject row = object.getJSONArray("rows").getJSONObject(i);
+                    LanyaPositionCurrent position = row.toJavaObject(LanyaPositionCurrent.class);
+                    lanyaPositionCurrentService.insertLanyaPositionCurrent(position);
+                }
+            } else {
+                throw new RuntimeException("HTTP Get请求失败: " + statusCode + "[ " + this.positionHistorySyncUrl + " ]");
+            }
+        } catch (Exception e) {
+            log.error("同步凯德信定位卡历史数据到物资公司发生错误", e);
+        }
     }
 }

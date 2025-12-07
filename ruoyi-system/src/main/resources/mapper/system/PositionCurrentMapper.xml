@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.PositionCurrentMapper">
+    
+    <resultMap type="PositionCurrent" id="PositionCurrentResult">
+        <result property="id"    column="id"    />
+        <result property="acceptTime"    column="accept_time"    />
+        <result property="cardId"    column="card_id"    />
+        <result property="cardType"    column="card_type"    />
+        <result property="beaconId"    column="beacon_id"    />
+        <result property="longitude"    column="longitude"    />
+        <result property="latitude"    column="latitude"    />
+        <result property="distance"    column="distance"    />
+        <result property="layerId"    column="layer_id"    />
+        <result property="layerHeight"    column="layer_height"    />
+        <result property="pressure"    column="pressure"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="personId"    column="person_id"    />
+        <result property="personType"    column="person_type"    />
+        <result property="personAttribute"    column="person_attribute"    />
+        <result property="staffType"    column="staff_type"    />
+        <result property="realName"    column="real_name"    />
+        <result property="personPhoto"    column="person_photo"    />
+        <result property="jobNumber"    column="job_number"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="deptName"    column="dept_name"    />
+        <result property="postId"    column="post_id"    />
+        <result property="postName"    column="post_name"    />
+        <result property="contractorId"    column="contractor_id"    />
+        <result property="contractorName"    column="contractor_name"    />
+        <result property="stillStatus"    column="still_status"    />
+        <result property="positionType"    column="position_type"    />
+        <result property="altitude"    column="altitude"    />
+        <result property="rtkPositionMode"    column="rtk_position_mode"    />
+        <result property="buildingId"    column="building_id"    />
+        <result property="buildingName"    column="building_name"    />
+    </resultMap>
+
+    <sql id="selectPositionCurrentVo">
+        select id, accept_time, card_id, card_type, beacon_id, longitude, latitude, distance, layer_id, layer_height, pressure, create_time, person_id, person_type, person_attribute, staff_type, real_name, person_photo, job_number, dept_id, dept_name, post_id, post_name, contractor_id, contractor_name, still_status, position_type, altitude, rtk_position_mode, building_id, building_name from position_current
+    </sql>
+
+    <select id="selectPositionCurrentList" parameterType="PositionCurrent" resultMap="PositionCurrentResult">
+        <include refid="selectPositionCurrentVo"/>
+        <where>  
+            <if test="acceptTime != null "> and accept_time = #{acceptTime}</if>
+            <if test="cardId != null "> and card_id = #{cardId}</if>
+            <if test="cardType != null  and cardType != ''"> and card_type = #{cardType}</if>
+            <if test="beaconId != null "> and beacon_id = #{beaconId}</if>
+            <if test="longitude != null "> and longitude = #{longitude}</if>
+            <if test="latitude != null "> and latitude = #{latitude}</if>
+            <if test="distance != null "> and distance = #{distance}</if>
+            <if test="layerId != null  and layerId != ''"> and layer_id = #{layerId}</if>
+            <if test="layerHeight != null "> and layer_height = #{layerHeight}</if>
+            <if test="pressure != null "> and pressure = #{pressure}</if>
+            <if test="personId != null "> and person_id = #{personId}</if>
+            <if test="personType != null  and personType != ''"> and person_type = #{personType}</if>
+            <if test="personAttribute != null  and personAttribute != ''"> and person_attribute = #{personAttribute}</if>
+            <if test="staffType != null  and staffType != ''"> and staff_type = #{staffType}</if>
+            <if test="realName != null  and realName != ''"> and real_name like concat('%', #{realName}, '%')</if>
+            <if test="personPhoto != null  and personPhoto != ''"> and person_photo = #{personPhoto}</if>
+            <if test="jobNumber != null  and jobNumber != ''"> and job_number = #{jobNumber}</if>
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+            <if test="deptName != null  and deptName != ''"> and dept_name like concat('%', #{deptName}, '%')</if>
+            <if test="postId != null "> and post_id = #{postId}</if>
+            <if test="postName != null  and postName != ''"> and post_name like concat('%', #{postName}, '%')</if>
+            <if test="contractorId != null "> and contractor_id = #{contractorId}</if>
+            <if test="contractorName != null  and contractorName != ''"> and contractor_name like concat('%', #{contractorName}, '%')</if>
+            <if test="stillStatus != null "> and still_status = #{stillStatus}</if>
+            <if test="positionType != null  and positionType != ''"> and position_type = #{positionType}</if>
+            <if test="altitude != null "> and altitude = #{altitude}</if>
+            <if test="rtkPositionMode != null  and rtkPositionMode != ''"> and rtk_position_mode = #{rtkPositionMode}</if>
+            <if test="buildingId != null "> and building_id = #{buildingId}</if>
+            <if test="buildingName != null  and buildingName != ''"> and building_name like concat('%', #{buildingName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectPositionCurrentById" parameterType="Long" resultMap="PositionCurrentResult">
+        <include refid="selectPositionCurrentVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertPositionCurrent" parameterType="PositionCurrent" useGeneratedKeys="true" keyProperty="id">
+        insert into position_current
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="acceptTime != null">accept_time,</if>
+            <if test="cardId != null">card_id,</if>
+            <if test="cardType != null">card_type,</if>
+            <if test="beaconId != null">beacon_id,</if>
+            <if test="longitude != null">longitude,</if>
+            <if test="latitude != null">latitude,</if>
+            <if test="distance != null">distance,</if>
+            <if test="layerId != null">layer_id,</if>
+            <if test="layerHeight != null">layer_height,</if>
+            <if test="pressure != null">pressure,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="personId != null">person_id,</if>
+            <if test="personType != null">person_type,</if>
+            <if test="personAttribute != null">person_attribute,</if>
+            <if test="staffType != null">staff_type,</if>
+            <if test="realName != null">real_name,</if>
+            <if test="personPhoto != null">person_photo,</if>
+            <if test="jobNumber != null">job_number,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="deptName != null">dept_name,</if>
+            <if test="postId != null">post_id,</if>
+            <if test="postName != null">post_name,</if>
+            <if test="contractorId != null">contractor_id,</if>
+            <if test="contractorName != null">contractor_name,</if>
+            <if test="stillStatus != null">still_status,</if>
+            <if test="positionType != null">position_type,</if>
+            <if test="altitude != null">altitude,</if>
+            <if test="rtkPositionMode != null">rtk_position_mode,</if>
+            <if test="buildingId != null">building_id,</if>
+            <if test="buildingName != null">building_name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="acceptTime != null">#{acceptTime},</if>
+            <if test="cardId != null">#{cardId},</if>
+            <if test="cardType != null">#{cardType},</if>
+            <if test="beaconId != null">#{beaconId},</if>
+            <if test="longitude != null">#{longitude},</if>
+            <if test="latitude != null">#{latitude},</if>
+            <if test="distance != null">#{distance},</if>
+            <if test="layerId != null">#{layerId},</if>
+            <if test="layerHeight != null">#{layerHeight},</if>
+            <if test="pressure != null">#{pressure},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="personId != null">#{personId},</if>
+            <if test="personType != null">#{personType},</if>
+            <if test="personAttribute != null">#{personAttribute},</if>
+            <if test="staffType != null">#{staffType},</if>
+            <if test="realName != null">#{realName},</if>
+            <if test="personPhoto != null">#{personPhoto},</if>
+            <if test="jobNumber != null">#{jobNumber},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="deptName != null">#{deptName},</if>
+            <if test="postId != null">#{postId},</if>
+            <if test="postName != null">#{postName},</if>
+            <if test="contractorId != null">#{contractorId},</if>
+            <if test="contractorName != null">#{contractorName},</if>
+            <if test="stillStatus != null">#{stillStatus},</if>
+            <if test="positionType != null">#{positionType},</if>
+            <if test="altitude != null">#{altitude},</if>
+            <if test="rtkPositionMode != null">#{rtkPositionMode},</if>
+            <if test="buildingId != null">#{buildingId},</if>
+            <if test="buildingName != null">#{buildingName},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePositionCurrent" parameterType="PositionCurrent">
+        update position_current
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="acceptTime != null">accept_time = #{acceptTime},</if>
+            <if test="cardId != null">card_id = #{cardId},</if>
+            <if test="cardType != null">card_type = #{cardType},</if>
+            <if test="beaconId != null">beacon_id = #{beaconId},</if>
+            <if test="longitude != null">longitude = #{longitude},</if>
+            <if test="latitude != null">latitude = #{latitude},</if>
+            <if test="distance != null">distance = #{distance},</if>
+            <if test="layerId != null">layer_id = #{layerId},</if>
+            <if test="layerHeight != null">layer_height = #{layerHeight},</if>
+            <if test="pressure != null">pressure = #{pressure},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="personId != null">person_id = #{personId},</if>
+            <if test="personType != null">person_type = #{personType},</if>
+            <if test="personAttribute != null">person_attribute = #{personAttribute},</if>
+            <if test="staffType != null">staff_type = #{staffType},</if>
+            <if test="realName != null">real_name = #{realName},</if>
+            <if test="personPhoto != null">person_photo = #{personPhoto},</if>
+            <if test="jobNumber != null">job_number = #{jobNumber},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="deptName != null">dept_name = #{deptName},</if>
+            <if test="postId != null">post_id = #{postId},</if>
+            <if test="postName != null">post_name = #{postName},</if>
+            <if test="contractorId != null">contractor_id = #{contractorId},</if>
+            <if test="contractorName != null">contractor_name = #{contractorName},</if>
+            <if test="stillStatus != null">still_status = #{stillStatus},</if>
+            <if test="positionType != null">position_type = #{positionType},</if>
+            <if test="altitude != null">altitude = #{altitude},</if>
+            <if test="rtkPositionMode != null">rtk_position_mode = #{rtkPositionMode},</if>
+            <if test="buildingId != null">building_id = #{buildingId},</if>
+            <if test="buildingName != null">building_name = #{buildingName},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePositionCurrentById" parameterType="Long">
+        delete from position_current where id = #{id}
+    </delete>
+
+    <delete id="deletePositionCurrentByIds" parameterType="String">
+        delete from position_current where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

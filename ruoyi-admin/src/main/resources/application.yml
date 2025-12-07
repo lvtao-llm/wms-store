@@ -191,7 +191,7 @@ wzgs:
 
   jl: # 接料数据表同步
     sync:
-      enabled: true # 物资公司90部署打开
+      enabled: false # 物资公司90部署打开
 
   db: # 调拨数据表同步
     sync:
