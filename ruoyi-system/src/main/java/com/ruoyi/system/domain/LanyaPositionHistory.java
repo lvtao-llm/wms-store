@@ -22,8 +22,9 @@ public class LanyaPositionHistory extends BaseEntity
     private Long id;
 
     /** 接收时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "接收时间", width = 30, dateFormat = "yyyy-MM-dd")
+//    @JsonFormat(pattern = "yyyy-MM-dd")
+//    @Excel(name = "接收时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @Excel(name = "接收时间")
     private Date acceptTime;
 
     /** 卡号 */
@@ -40,15 +41,15 @@ public class LanyaPositionHistory extends BaseEntity
 
     /** 经度 */
     @Excel(name = "经度")
-    private double longitude;
+    private Double longitude;
 
     /** 纬度 */
     @Excel(name = "纬度")
-    private double latitude;
+    private Double latitude;
 
     /** 距离 */
     @Excel(name = "距离")
-    private double distance;
+    private Double distance;
 
     /** 楼层 */
     @Excel(name = "楼层")
@@ -144,32 +145,32 @@ public class LanyaPositionHistory extends BaseEntity
         return beaconId;
     }
 
-    public void setLongitude(double longitude)
+    public void setLongitude(Double longitude)
     {
         this.longitude = longitude;
     }
 
-    public double getLongitude()
+    public Double getLongitude()
     {
         return longitude;
     }
 
-    public void setLatitude(double latitude)
+    public void setLatitude(Double latitude)
     {
         this.latitude = latitude;
     }
 
-    public double getLatitude()
+    public Double getLatitude()
     {
         return latitude;
     }
 
-    public void setDistance(double distance)
+    public void setDistance(Double distance)
     {
         this.distance = distance;
     }
 
-    public double getDistance()
+    public Double getDistance()
     {
         return distance;
     }

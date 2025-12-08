@@ -10,11 +10,11 @@ import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
  * 实时定位对象 position_current
- * 
+ *
  * @author ruoyi
  * @date 2025-12-05
  */
-public class LanyaPositionCurrent extends BaseEntity
+public class LanyaPositionCurrent extends LanyaPositionHistory
 {
     private static final long serialVersionUID = 1L;
 
@@ -41,15 +41,15 @@ public class LanyaPositionCurrent extends BaseEntity
 
     /** 经度 */
     @Excel(name = "经度")
-    private BigDecimal longitude;
+    private Double longitude;
 
     /** 纬度 */
     @Excel(name = "纬度")
-    private BigDecimal latitude;
+    private Double latitude;
 
     /** 距离 */
     @Excel(name = "距离")
-    private BigDecimal distance;
+    private Double distance;
 
     /** 层ID */
     @Excel(name = "层ID")
@@ -57,7 +57,7 @@ public class LanyaPositionCurrent extends BaseEntity
 
     /** 层高 */
     @Excel(name = "层高")
-    private Long layerHeight;
+    private Integer layerHeight;
 
     /** 气压 */
     @Excel(name = "气压")
@@ -139,302 +139,302 @@ public class LanyaPositionCurrent extends BaseEntity
     @Excel(name = "楼宇名称")
     private String buildingName;
 
-    public void setId(Long id) 
+    public void setId(Long id)
     {
         this.id = id;
     }
 
-    public Long getId() 
+    public Long getId()
     {
         return id;
     }
 
-    public void setAcceptTime(Date acceptTime) 
+    public void setAcceptTime(Date acceptTime)
     {
         this.acceptTime = acceptTime;
     }
 
-    public Date getAcceptTime() 
+    public Date getAcceptTime()
     {
         return acceptTime;
     }
 
-    public void setCardId(Long cardId) 
+    public void setCardId(Long cardId)
     {
         this.cardId = cardId;
     }
 
-    public Long getCardId() 
+    public Long getCardId()
     {
         return cardId;
     }
 
-    public void setCardType(String cardType) 
+    public void setCardType(String cardType)
     {
         this.cardType = cardType;
     }
 
-    public String getCardType() 
+    public String getCardType()
     {
         return cardType;
     }
 
-    public void setBeaconId(Long beaconId) 
+    public void setBeaconId(Long beaconId)
     {
         this.beaconId = beaconId;
     }
 
-    public Long getBeaconId() 
+    public Long getBeaconId()
     {
         return beaconId;
     }
 
-    public void setLongitude(BigDecimal longitude) 
+    public void setLongitude(Double longitude)
     {
         this.longitude = longitude;
     }
 
-    public BigDecimal getLongitude() 
+    public Double getLongitude()
     {
         return longitude;
     }
 
-    public void setLatitude(BigDecimal latitude) 
+    public void setLatitude(Double latitude)
     {
         this.latitude = latitude;
     }
 
-    public BigDecimal getLatitude() 
+    public Double getLatitude()
     {
         return latitude;
     }
 
-    public void setDistance(BigDecimal distance) 
+    public void setDistance(Double distance)
     {
         this.distance = distance;
     }
 
-    public BigDecimal getDistance() 
+    public Double getDistance()
     {
         return distance;
     }
 
-    public void setLayerId(String layerId) 
+    public void setLayerId(String layerId)
     {
         this.layerId = layerId;
     }
 
-    public String getLayerId() 
+    public String getLayerId()
     {
         return layerId;
     }
 
-    public void setLayerHeight(Long layerHeight) 
+    public void setLayerHeight(Integer layerHeight)
     {
         this.layerHeight = layerHeight;
     }
 
-    public Long getLayerHeight() 
+    public Integer getLayerHeight()
     {
         return layerHeight;
     }
 
-    public void setPressure(Long pressure) 
+    public void setPressure(Long pressure)
     {
         this.pressure = pressure;
     }
 
-    public Long getPressure() 
+    public Long getPressure()
     {
         return pressure;
     }
 
-    public void setPersonId(Long personId) 
+    public void setPersonId(Long personId)
     {
         this.personId = personId;
     }
 
-    public Long getPersonId() 
+    public Long getPersonId()
     {
         return personId;
     }
 
-    public void setPersonType(String personType) 
+    public void setPersonType(String personType)
     {
         this.personType = personType;
     }
 
-    public String getPersonType() 
+    public String getPersonType()
     {
         return personType;
     }
 
-    public void setPersonAttribute(String personAttribute) 
+    public void setPersonAttribute(String personAttribute)
     {
         this.personAttribute = personAttribute;
     }
 
-    public String getPersonAttribute() 
+    public String getPersonAttribute()
     {
         return personAttribute;
     }
 
-    public void setStaffType(String staffType) 
+    public void setStaffType(String staffType)
     {
         this.staffType = staffType;
     }
 
-    public String getStaffType() 
+    public String getStaffType()
     {
         return staffType;
     }
 
-    public void setRealName(String realName) 
+    public void setRealName(String realName)
     {
         this.realName = realName;
     }
 
-    public String getRealName() 
+    public String getRealName()
     {
         return realName;
     }
 
-    public void setPersonPhoto(String personPhoto) 
+    public void setPersonPhoto(String personPhoto)
     {
         this.personPhoto = personPhoto;
     }
 
-    public String getPersonPhoto() 
+    public String getPersonPhoto()
     {
         return personPhoto;
     }
 
-    public void setJobNumber(String jobNumber) 
+    public void setJobNumber(String jobNumber)
     {
         this.jobNumber = jobNumber;
     }
 
-    public String getJobNumber() 
+    public String getJobNumber()
     {
         return jobNumber;
     }
 
-    public void setDeptId(Long deptId) 
+    public void setDeptId(Long deptId)
     {
         this.deptId = deptId;
     }
 
-    public Long getDeptId() 
+    public Long getDeptId()
     {
         return deptId;
     }
 
-    public void setDeptName(String deptName) 
+    public void setDeptName(String deptName)
     {
         this.deptName = deptName;
     }
 
-    public String getDeptName() 
+    public String getDeptName()
     {
         return deptName;
     }
 
-    public void setPostId(Long postId) 
+    public void setPostId(Long postId)
     {
         this.postId = postId;
     }
 
-    public Long getPostId() 
+    public Long getPostId()
     {
         return postId;
     }
 
-    public void setPostName(String postName) 
+    public void setPostName(String postName)
     {
         this.postName = postName;
     }
 
-    public String getPostName() 
+    public String getPostName()
     {
         return postName;
     }
 
-    public void setContractorId(Long contractorId) 
+    public void setContractorId(Long contractorId)
     {
         this.contractorId = contractorId;
     }
 
-    public Long getContractorId() 
+    public Long getContractorId()
     {
         return contractorId;
     }
 
-    public void setContractorName(String contractorName) 
+    public void setContractorName(String contractorName)
     {
         this.contractorName = contractorName;
     }
 
-    public String getContractorName() 
+    public String getContractorName()
     {
         return contractorName;
     }
 
-    public void setStillStatus(Long stillStatus) 
+    public void setStillStatus(Long stillStatus)
     {
         this.stillStatus = stillStatus;
     }
 
-    public Long getStillStatus() 
+    public Long getStillStatus()
     {
         return stillStatus;
     }
 
-    public void setPositionType(String positionType) 
+    public void setPositionType(String positionType)
     {
         this.positionType = positionType;
     }
 
-    public String getPositionType() 
+    public String getPositionType()
     {
         return positionType;
     }
 
-    public void setAltitude(BigDecimal altitude) 
+    public void setAltitude(BigDecimal altitude)
     {
         this.altitude = altitude;
     }
 
-    public BigDecimal getAltitude() 
+    public BigDecimal getAltitude()
     {
         return altitude;
     }
 
-    public void setRtkPositionMode(String rtkPositionMode) 
+    public void setRtkPositionMode(String rtkPositionMode)
     {
         this.rtkPositionMode = rtkPositionMode;
     }
 
-    public String getRtkPositionMode() 
+    public String getRtkPositionMode()
     {
         return rtkPositionMode;
     }
 
-    public void setBuildingId(Long buildingId) 
+    public void setBuildingId(Long buildingId)
     {
         this.buildingId = buildingId;
     }
 
-    public Long getBuildingId() 
+    public Long getBuildingId()
     {
         return buildingId;
     }
 
-    public void setBuildingName(String buildingName) 
+    public void setBuildingName(String buildingName)
     {
         this.buildingName = buildingName;
     }
 
-    public String getBuildingName() 
+    public String getBuildingName()
     {
         return buildingName;
     }

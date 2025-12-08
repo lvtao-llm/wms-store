@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -66,6 +67,9 @@ public class LanyaDataSync {
      */
     @Autowired
     private IWmsTrajectoryService wmsTrajectoryService;
+
+    @Autowired
+    private ILanyaPositionCurrentService lanyaPositionCurrentService;
 
     /**
      * 定时同步Lanya定位数据开关
@@ -326,6 +330,78 @@ public class LanyaDataSync {
     private void completePosition(WmsDeviceCardWorkLog workLog) {
     }
 
+    @Scheduled(cron = "${wms.ws-data.vehicle-alarm:0/10 * * * * ?}")
+    private void PositionSyncTest() throws ParseException {
+        List<LanyaPositionCurrent> lanyaPositionCurrents = lanyaPositionCurrentService.selectLanyaPositionCurrentList(new LanyaPositionCurrent());
+        for (LanyaPositionCurrent position : lanyaPositionCurrents) {
+            if (position.getCardId() != 81085L) {
+                continue;
+            }
+            processPosition(position);
+        }
+    }
+
+    private void processPosition(LanyaPositionHistory position) {
+        WmsDeviceCardWorkLog workLog = workActivitiesByCardId.get(position.getCardId());
+        if (workLog == null) {
+            // 从wms_device_card_work_log表获取工作记录
+            WmsDeviceCardWorkLog query = new WmsDeviceCardWorkLog();
+            query.setCardId(position.getCardId());
+            // 根据定位卡ID查找没有还卡的工作记录
+            List<WmsDeviceCardWorkLog> wmsDeviceCardWorkLogs = wmsDeviceCardWorkLogService.selectWmsDeviceCardWorkLogListEnd(query);
+            if (wmsDeviceCardWorkLogs.isEmpty()) {
+                // 从lanya的device_card_sender_log表查询开进路
+                LanyaDeviceCardSenderLog deviceCardSenderLog = lanyaDeviceCardSenderLogService.selectLanyaDeviceCardSenderLogByLastCardId(position.getCardId());
+                if (deviceCardSenderLog != null && deviceCardSenderLog.getCardSenderType() != null && deviceCardSenderLog.getCardSenderType() == 1) {
+                    // 如果定位卡ID最后一条是开记录则重建工作记录
+                    workLog = parseWorkLog(deviceCardSenderLog);
+                    saveWorkLog(workLog);
+                } else {
+                    // 如果仍然没有则放弃此条数据
+                    return;
+                }
+            } else {
+                workLog = wmsDeviceCardWorkLogs.get(0);
+            }
+        }
+        // 检测是否触发告警规则
+        List<AlarmResult> alarmRules = alarmDetection.detect(position, "face".equals(workLog.getIdentifyType()) ? "内部员工" : "外部访客");
+
+
+        // 如果有告警规则触发则在workActivities查询匹配的wms_device_card_work_log记录ID
+        if (!alarmRules.isEmpty()) {
+            // wms_device_card_work_log记录ID
+            Long workId = position.getPersonId().equals(workLog.getPersonId()) ? workLog.getId() : null;
+
+            // 如果workActivities中没有匹配的wms_device_card_work_log记录ID则到数据库中查找
+            if (workId == null) {
+                workId = wmsDeviceCardWorkLogService.selectWmsDeviceCardWorkLogIdInTimeByCardAndName(position.getAcceptTime(), position.getCardId(), position.getRealName());
+            }
+
+            if (workId == null) {
+                log.error("未找到对应的设备卡记录");
+            }
+
+            // 插入告警日志
+            for (AlarmResult wmsAlarmRule : alarmRules) {
+                WmsAlarmLog log = new WmsAlarmLog();
+                log.setAlarmBehavior(wmsAlarmRule.rule.getAlarmRuleType() + "(" + wmsAlarmRule.rule.getAlarmRuleName() + ")");
+                log.setCardRecordId(workId);
+                log.setAlarmEnterTime(position.getAcceptTime());
+                log.setAreaCode(wmsAlarmRule.area.getAreaCode());
+                log.setAlarmLocation(position.getLatitude() + "," + position.getLongitude());
+                log.setPersonName(position.getRealName());
+                log.setWorkId(workId);
+                log.setAlarmType("人员");
+
+                wmsAlarmLogService.insertWmsAlarmLog(log);
+            }
+        }
+
+        // 添加轨迹给卡工作日志
+        workLog.getTrajectory().add(position);  //经度
+    }
+
     public void PositionSync(String tableName) throws ParseException {
         if (!enablePositionTableSync) {
             return;
@@ -354,66 +430,7 @@ public class LanyaDataSync {
 
             // 循环处理数据
             for (LanyaPositionHistory position : lanyaPositionHistories) {
-                WmsDeviceCardWorkLog workLog = workActivitiesByCardId.get(position.getCardId());
-                if (workLog == null) {
-                    // 从wms_device_card_work_log表获取工作记录
-                    WmsDeviceCardWorkLog query = new WmsDeviceCardWorkLog();
-                    query.setCardId(position.getCardId());
-                    query.setRealName(position.getRealName());
-                    // 根据定位卡ID查找没有还卡的工作记录
-                    List<WmsDeviceCardWorkLog> wmsDeviceCardWorkLogs = wmsDeviceCardWorkLogService.selectWmsDeviceCardWorkLogListEnd(query);
-                    if (wmsDeviceCardWorkLogs.isEmpty()) {
-                        // 从lanya的device_card_sender_log表查询开进路
-                        LanyaDeviceCardSenderLog deviceCardSenderLog = lanyaDeviceCardSenderLogService.selectLanyaDeviceCardSenderLogByLastCardId(position.getCardId());
-                        if (deviceCardSenderLog != null && deviceCardSenderLog.getCardSenderType()!=null && deviceCardSenderLog.getCardSenderType() == 1) {
-                            // 如果定位卡ID最后一条是开记录则重建工作记录
-                            workLog = parseWorkLog(deviceCardSenderLog);
-                            saveWorkLog(workLog);
-                        } else {
-                            // 如果仍然没有则放弃此条数据
-                            continue;
-                        }
-                    } else {
-                        workLog = wmsDeviceCardWorkLogs.get(0);
-                    }
-                }
-                // 检测是否触发告警规则
-                List<AlarmResult> alarmRules = alarmDetection.detect(position, workLog.getIdentifyType().equals("face") ? "内部员工" : "外部访客");
-
-
-                // 如果有告警规则触发则在workActivities查询匹配的wms_device_card_work_log记录ID
-                if (!alarmRules.isEmpty()) {
-                    // wms_device_card_work_log记录ID
-                    Long workId = position.getPersonId().equals(workLog.getPersonId()) ? workLog.getId() : null;
-
-                    // 如果workActivities中没有匹配的wms_device_card_work_log记录ID则到数据库中查找
-                    if (workId == null) {
-                        workId = wmsDeviceCardWorkLogService.selectWmsDeviceCardWorkLogIdInTimeByCardAndName(position.getAcceptTime(), position.getCardId(), position.getRealName());
-                    }
-
-                    if (workId == null) {
-                        log.error("未找到对应的设备卡记录");
-                    }
-
-                    // 插入告警日志
-                    for (AlarmResult wmsAlarmRule : alarmRules) {
-                        WmsAlarmLog log = new WmsAlarmLog();
-                        log.setAlarmBehavior(wmsAlarmRule.rule.getAlarmRuleType() + "(" + wmsAlarmRule.rule.getAlarmRuleName() + ")");
-                        log.setCardRecordId(workId);
-                        log.setAlarmEnterTime(position.getAcceptTime());
-                        log.setAreaCode(wmsAlarmRule.area.getAreaCode());
-                        log.setAlarmLocation(position.getLatitude() + "," + position.getLongitude());
-                        log.setPersonName(position.getRealName());
-                        log.setWorkId(workId);
-                        log.setAlarmType("人员");
-
-                        wmsAlarmLogService.insertWmsAlarmLog(log);
-                    }
-                }
-
-                // 添加轨迹给卡工作日志
-                workLog.getTrajectory().add(position);  //经度
-
+                processPosition(position);
                 // 更新本地position_history的offset
                 positionOffset = position.getAcceptTime();
 
