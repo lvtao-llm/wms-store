@@ -311,7 +311,7 @@ export default {
           raw: {...item, listClass: 'primary'}
         }));
       })
-      listArea().then(response => {
+      listArea({"pageNum": 1, "pageSize": 1000}).then(response => {
         this.areas = response.rows
         this.dict.type.wms_area_names = response.rows.map(item => ({
           label: item.areaName,
