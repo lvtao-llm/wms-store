@@ -65,7 +65,10 @@
 </template>
 
 <script>
-import { listWms_alarm_log } from "@/api/system/wms_alarm_log";
+import {
+  listWms_unread_log,
+  listWms_read_log,
+} from "@/api/system/wms_alarm_log";
 import { listArea } from "@/api/system/wms_area";
 export default {
   data() {
@@ -101,23 +104,14 @@ export default {
     },
     getList() {
       this.loading = true;
-      listArea().then((response) => {
-        this.areas = response.rows;
-        listWms_alarm_log(this.queryParams).then((response) => {
-          response.rows.forEach((row) => {
-            if (row.areaCode && typeof row.areaCode === "string") {
-              row.areaName = this.areas.find(
-                (area) => area.areaId === row.areaCode
-              );
-            } else if (!row.areaCode) {
-              row.areaName = [];
-            }
-          });
 
-          this.wms_alarm_logList = response.rows;
-          this.total = response.total;
-          this.loading = false;
-        });
+      listWms_unread_log(this.queryParams).then((response) => {
+        const ids = response.rows.map((i) => i.alarmId).toString();
+        listWms_read_log(ids);
+
+        this.wms_alarm_logList = response.rows;
+        this.total = response.total;
+        this.loading = false;
       });
     },
     close() {

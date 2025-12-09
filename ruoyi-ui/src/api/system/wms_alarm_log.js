@@ -8,6 +8,21 @@ export function listWms_alarm_log(query) {
     params: query
   })
 }
+// 查询报警信息记录列表
+export function listWms_unread_log(query) {
+  return request({
+    url: '/system/wms_alarm_log/unread',
+    method: 'get',
+    params: query
+  })
+}
+// 查询报警信息记录列表
+export function listWms_read_log(ids) {
+  return request({
+    url: '/system/wms_alarm_log/read/' + ids,
+    method: 'get',
+  })
+}
 
 // 查询报警信息记录详细
 export function getWms_alarm_log(alarmId) {
