@@ -49,9 +49,9 @@ public class WmsAlarmLogController extends BaseController {
     /**
      * 查询报警信息记录列表
      */
-    @PreAuthorize("@ss.hasPermi('system:wms_alarm_log:news')")
-    @GetMapping("/news")
-    public TableDataInfo news() {
+    @PreAuthorize("@ss.hasPermi('system:wms_alarm_log:unread')")
+    @GetMapping("/unread")
+    public TableDataInfo unread() {
         startPage();
         WmsAlarmLog wmsAlarmLog = new WmsAlarmLog();
         wmsAlarmLog.setReadFlag("0");
