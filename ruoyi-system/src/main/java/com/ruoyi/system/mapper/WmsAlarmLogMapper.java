@@ -58,4 +58,6 @@ public interface WmsAlarmLogMapper
      * @return 结果
      */
     public int deleteWmsAlarmLogByAlarmIds(Long[] alarmIds);
+
+    int readWmsAlarmLogByAlarmIds(Long[] alarmIds);
 }

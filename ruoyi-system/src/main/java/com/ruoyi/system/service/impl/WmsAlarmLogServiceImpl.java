@@ -93,4 +93,9 @@ public class WmsAlarmLogServiceImpl implements IWmsAlarmLogService
     {
         return wmsAlarmLogMapper.deleteWmsAlarmLogByAlarmId(alarmId);
     }
+
+    @Override
+    public int readWmsAlarmLogByAlarmIds(Long[] alarmIds) {
+        return wmsAlarmLogMapper.readWmsAlarmLogByAlarmIds(alarmIds);
+    }
 }

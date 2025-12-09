@@ -47,6 +47,25 @@ public class WmsAlarmLogController extends BaseController {
     }
 
     /**
+     * 查询报警信息记录列表
+     */
+    @PreAuthorize("@ss.hasPermi('system:wms_alarm_log:news')")
+    @GetMapping("/news")
+    public TableDataInfo news() {
+        startPage();
+        WmsAlarmLog wmsAlarmLog = new WmsAlarmLog();
+        wmsAlarmLog.setReadFlag("0");
+        List<WmsAlarmLog> list = wmsAlarmLogService.selectWmsAlarmLogList(wmsAlarmLog);
+        return getDataTable(list);
+    }
+
+    @PreAuthorize("@ss.hasPermi('system:wms_alarm_log:read')")
+    @GetMapping("/read/{alarmIds}")
+    public AjaxResult read(@PathVariable Long[] alarmIds) {
+        return toAjax(wmsAlarmLogService.readWmsAlarmLogByAlarmIds(alarmIds));
+    }
+
+    /**
      * 导出报警信息记录列表
      */
     @PreAuthorize("@ss.hasPermi('system:wms_alarm_log:export')")

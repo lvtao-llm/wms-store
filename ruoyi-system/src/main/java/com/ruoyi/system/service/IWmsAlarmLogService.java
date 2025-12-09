@@ -58,4 +58,6 @@ public interface IWmsAlarmLogService
      * @return 结果
      */
     public int deleteWmsAlarmLogByAlarmId(Long alarmId);
+
+    int readWmsAlarmLogByAlarmIds(Long[] alarmIds);
 }

@@ -330,18 +330,7 @@ public class LanyaDataSync {
     private void completePosition(WmsDeviceCardWorkLog workLog) {
     }
 
-    @Scheduled(cron = "${wms.ws-data.vehicle-alarm:0/10 * * * * ?}")
-    private void PositionSyncTest() throws ParseException {
-        List<LanyaPositionCurrent> lanyaPositionCurrents = lanyaPositionCurrentService.selectLanyaPositionCurrentList(new LanyaPositionCurrent());
-        for (LanyaPositionCurrent position : lanyaPositionCurrents) {
-            if (position.getCardId() != 81085L) {
-                continue;
-            }
-            processPosition(position);
-        }
-    }
-
-    private void processPosition(LanyaPositionHistory position) {
+    public void processPosition(LanyaPositionHistory position, String[] testAreaName) {
         WmsDeviceCardWorkLog workLog = workActivitiesByCardId.get(position.getCardId());
         if (workLog == null) {
             // 从wms_device_card_work_log表获取工作记录
@@ -365,7 +354,7 @@ public class LanyaDataSync {
             }
         }
         // 检测是否触发告警规则
-        List<AlarmResult> alarmRules = alarmDetection.detect(position, "face".equals(workLog.getIdentifyType()) ? "内部员工" : "外部访客");
+        List<AlarmResult> alarmRules = alarmDetection.detect(position, "face".equals(workLog.getIdentifyType()) ? "内部员工" : "外部访客", testAreaName);
 
 
         // 如果有告警规则触发则在workActivities查询匹配的wms_device_card_work_log记录ID
@@ -430,7 +419,7 @@ public class LanyaDataSync {
 
             // 循环处理数据
             for (LanyaPositionHistory position : lanyaPositionHistories) {
-                processPosition(position);
+                processPosition(position, null);
                 // 更新本地position_history的offset
                 positionOffset = position.getAcceptTime();
 

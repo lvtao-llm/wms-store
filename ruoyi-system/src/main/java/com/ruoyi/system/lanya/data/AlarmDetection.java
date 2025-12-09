@@ -146,7 +146,7 @@ public class AlarmDetection {
         }
     }
 
-    public List<AlarmResult> detect(LanyaPositionHistory position, String type) {
+    public List<AlarmResult> detect(LanyaPositionHistory position, String type, String[] testAreaName) {
         Point point = geometryFactory.createPoint(new Coordinate(position.getLongitude(), position.getLatitude()));
         // 发现的告警规则
         List<AlarmResult> detected = new ArrayList<>();
@@ -199,6 +199,10 @@ public class AlarmDetection {
         // 遍历所有告警规则
         for (RuleAreaWrap wrap : ruleAreaWraps) {
 
+            if (testAreaName != null && Arrays.stream(testAreaName).noneMatch(wrap.area.getAreaName()::equals)) {
+                // 跳出测试
+                continue;
+            }
             // 规则
             WmsAlarmRule rule = wrap.rule;
 
@@ -214,7 +218,8 @@ public class AlarmDetection {
             boolean inside = wrap.geometry.contains(point);
 
             // 计算点到多边形边界的距离(度单位)
-            double dist = point.distance(wrap.geometry) * 111320;
+//            double dist = point.distance(wrap.geometry) * 111320;
+            double dist = calculateDistanceToBoundary(point, wrap.geometry) * 0.8;
 
             // 根据规则类型使用不同的检测方法
             switch (rule.getAlarmRuleType()) {
@@ -345,6 +350,28 @@ public class AlarmDetection {
 
         return groups;
     }
+
+    /**
+     * 计算点到多边形边界的距离
+     * 如果点在多边形内部，返回到边界的最短距离
+     * 如果点在多边形外部，返回到边界的距离
+     */
+    private double calculateDistanceToBoundary(Point point, Geometry polygon) {
+        // 先检查点是否在多边形内部
+        boolean isInside = polygon.contains(point);
+
+        if (isInside) {
+            // 如果在内部，计算到边界的距离
+            // 获取多边形的边界（LineString）
+            Geometry boundary = polygon.getBoundary();
+            // 计算点到边界的距离
+            return point.distance(boundary) * 111320; // 转换为米
+        } else {
+            // 如果在外部，使用原始距离计算
+            return point.distance(polygon) * 111320; // 转换为米
+        }
+    }
+
 
     public List<Object> getLiveVehicleTotal() {
         return new ArrayList<>();

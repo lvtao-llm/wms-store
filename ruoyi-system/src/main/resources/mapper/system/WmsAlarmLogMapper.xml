@@ -23,10 +23,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_time"    />
         <result property="updateTime"    column="update_time"    />
         <result property="delFlag"    column="del_flag"    />
+        <result property="readFlag"    column="read_flag"    />
     </resultMap>
 
     <sql id="selectWmsAlarmLogVo">
-        select alarm_id, alarm_type, card_record_id, person_name, person_job_no, person_dept, vehicle_plate_no, vehicle_type, alarm_location, area_code, alarm_enter_time, alarm_behavior, alarm_result, alarm_handler, alarm_handle_time, create_time, update_time, del_flag from wms_alarm_log
+        select alarm_id, alarm_type, card_record_id, person_name, person_job_no, person_dept, vehicle_plate_no, vehicle_type, alarm_location, area_code, alarm_enter_time, alarm_behavior, alarm_result, alarm_handler, alarm_handle_time, create_time, update_time, del_flag, read_flag from wms_alarm_log
     </sql>
 
     <select id="selectWmsAlarmLogList" parameterType="WmsAlarmLog" resultMap="WmsAlarmLogResult">
@@ -46,6 +47,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="alarmResult != null  and alarmResult != ''"> and alarm_result = #{alarmResult}</if>
             <if test="alarmHandler != null  and alarmHandler != ''"> and alarm_handler = #{alarmHandler}</if>
             <if test="alarmHandleTime != null "> and alarm_handle_time = #{alarmHandleTime}</if>
+             <if test="readFlag != null and readFlag != ''">and read_flag = #{readFlag}</if>
         </where>
         order by alarm_id desc
     </select>
@@ -75,6 +77,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">create_time,</if>
             <if test="updateTime != null">update_time,</if>
             <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="readFlag != null">read_flag,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="alarmType != null and alarmType != ''">#{alarmType},</if>
@@ -94,6 +97,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">#{createTime},</if>
             <if test="updateTime != null">#{updateTime},</if>
             <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="readFlag != null">#{readFlag},</if>
          </trim>
     </insert>
 
@@ -117,6 +121,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
             <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="readFlag != null">read_flag = #{readFlag},</if>
         </trim>
         where alarm_id = #{alarmId}
     </update>
@@ -131,4 +136,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{alarmId}
         </foreach>
     </delete>
+
+    <update id="readWmsAlarmLogByAlarmIds" parameterType="String">
+        UPDATE wms_alarm_log
+        SET read_flag = '1'
+        WHERE alarm_id IN
+        <foreach item="alarmId" collection="array" open="(" separator="," close=")">
+            #{alarmId}
+        </foreach>
+    </update>
 </mapper>
