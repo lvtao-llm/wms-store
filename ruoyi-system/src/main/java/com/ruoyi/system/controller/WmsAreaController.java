@@ -32,7 +32,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-09-26
  */
-@Api(tags = "区域管理")
+@Api(value = "区域接口", tags = {"系统端", "区域管理"})
 @RestController
 @RequestMapping("/system/area")
 public class WmsAreaController extends BaseController {

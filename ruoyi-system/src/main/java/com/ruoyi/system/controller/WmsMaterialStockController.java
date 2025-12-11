@@ -36,7 +36,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-11-08
  */
-@Api(tags = "库存视图Controller")
+@Api(value = "库存视图", tags = {"系统端", "库存视图"})
 @RestController
 @RequestMapping("/system/wms_material_stock")
 public class WmsMaterialStockController extends BaseController {
@@ -90,7 +90,7 @@ public class WmsMaterialStockController extends BaseController {
                     wzbm.add(desc.getWzmc());
                 }
             }
-            if(wzbm.isEmpty()){
+            if (wzbm.isEmpty()) {
                 return getDataTable(list);
             }
             list = wmsMaterialStockService.selectWmsMaterialStockListByAreaNames(wmsMaterialStock, wzbm);

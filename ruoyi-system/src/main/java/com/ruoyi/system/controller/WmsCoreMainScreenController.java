@@ -27,7 +27,7 @@ import java.util.List;
  * @author ruoyi
  * @date 2025-09-26
  */
-@Api(tags = "报警信息管理")
+@Api(value = "报警信息", tags = {"系统端","报警信息管理"})
 @RestController
 @RequestMapping("/system/core/main/screen")
 public class WmsCoreMainScreenController extends BaseController {

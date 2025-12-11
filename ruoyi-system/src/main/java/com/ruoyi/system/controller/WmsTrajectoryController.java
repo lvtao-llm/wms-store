@@ -30,7 +30,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-09-26
  */
-@Api(tags = "轨迹管理")
+@Api(value = "轨迹管理", tags = {"系统端", "轨迹管理"})
 @RestController
 @RequestMapping("/system/trajectory")
 public class WmsTrajectoryController extends BaseController {
@@ -68,7 +68,7 @@ public class WmsTrajectoryController extends BaseController {
      */
     @ApiOperation("轨迹列表")
     @GetMapping("/vehicleFuzzyList")
-    public TableDataInfo vehicleFuzzyList(String  key) {
+    public TableDataInfo vehicleFuzzyList(String key) {
         startPage();
         WmsTrajectory wmsTrajectory = new WmsTrajectory();
         wmsTrajectory.setTrajectoryType("车辆");

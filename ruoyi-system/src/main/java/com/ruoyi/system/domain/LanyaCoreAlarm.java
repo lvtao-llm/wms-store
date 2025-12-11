@@ -24,6 +24,7 @@ public class LanyaCoreAlarm extends BaseEntity {
     /**
      * 报警id
      */
+    @ApiModelProperty("报警id")
     private Long alarmId;
 
     /**

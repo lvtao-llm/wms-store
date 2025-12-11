@@ -26,15 +26,14 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 实时定位Controller
- * 
+ *
  * @author ruoyi
  * @date 2025-12-05
  */
-@Api(tags = "实时定位管理")
+@Api(value = "实时定位管理", tags = {"卡机端", "实时定位管理"})
 @RestController
 @RequestMapping("/system/position_current")
-public class PositionCurrentController extends BaseController
-{
+public class PositionCurrentController extends BaseController {
     @Autowired
     private IPositionCurrentService positionCurrentService;
 
@@ -44,8 +43,7 @@ public class PositionCurrentController extends BaseController
     @ApiOperation("查询实时定位列表")
     @PreAuthorize("@ss.hasPermi('system:position_current:list')")
     @GetMapping("/list")
-    public TableDataInfo list(PositionCurrent positionCurrent)
-    {
+    public TableDataInfo list(PositionCurrent positionCurrent) {
         startPage();
         List<PositionCurrent> list = positionCurrentService.selectPositionCurrentList(positionCurrent);
         return getDataTable(list);
@@ -58,8 +56,7 @@ public class PositionCurrentController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:position_current:export')")
     @Log(title = "实时定位", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, PositionCurrent positionCurrent)
-    {
+    public void export(HttpServletResponse response, PositionCurrent positionCurrent) {
         List<PositionCurrent> list = positionCurrentService.selectPositionCurrentList(positionCurrent);
         ExcelUtil<PositionCurrent> util = new ExcelUtil<PositionCurrent>(PositionCurrent.class);
         util.exportExcel(response, list, "实时定位数据");
@@ -71,8 +68,7 @@ public class PositionCurrentController extends BaseController
     @ApiOperation("获取实时定位详细信息")
     @PreAuthorize("@ss.hasPermi('system:position_current:query')")
     @GetMapping(value = "/{id}")
-    public AjaxResult getInfo(@PathVariable("id") Long id)
-    {
+    public AjaxResult getInfo(@PathVariable("id") Long id) {
         return success(positionCurrentService.selectPositionCurrentById(id));
     }
 
@@ -83,8 +79,7 @@ public class PositionCurrentController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:position_current:add')")
     @Log(title = "实时定位", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody PositionCurrent positionCurrent)
-    {
+    public AjaxResult add(@RequestBody PositionCurrent positionCurrent) {
         return toAjax(positionCurrentService.insertPositionCurrent(positionCurrent));
     }
 
@@ -95,8 +90,7 @@ public class PositionCurrentController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:position_current:edit')")
     @Log(title = "实时定位", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody PositionCurrent positionCurrent)
-    {
+    public AjaxResult edit(@RequestBody PositionCurrent positionCurrent) {
         return toAjax(positionCurrentService.updatePositionCurrent(positionCurrent));
     }
 
@@ -106,9 +100,8 @@ public class PositionCurrentController extends BaseController
     @ApiOperation("删除实时定位")
     @PreAuthorize("@ss.hasPermi('system:position_current:remove')")
     @Log(title = "实时定位", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
-    public AjaxResult remove(@PathVariable Long[] ids)
-    {
+    @DeleteMapping("/{ids}")
+    public AjaxResult remove(@PathVariable Long[] ids) {
         return toAjax(positionCurrentService.deletePositionCurrentByIds(ids));
     }
 }

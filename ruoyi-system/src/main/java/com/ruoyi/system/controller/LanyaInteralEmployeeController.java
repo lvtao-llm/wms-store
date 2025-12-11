@@ -32,7 +32,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author 吕涛
  * @date 2025-10-12
  */
-@Api(tags = "内部员工管理")
+@Api(value = "内部员工管理", tags = {"卡机端", "内部员工管理"})
 @RestController
 @RequestMapping("/system/lanya_internal_employee")
 @DataSource(value = DataSourceType.SLAVE)

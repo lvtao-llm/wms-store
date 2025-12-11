@@ -26,15 +26,14 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 车辆预约Controller
- * 
+ *
  * @author ruoyi
  * @date 2025-10-30
  */
-@Api(tags = "车辆预约管理")
+@Api(value = "车辆预约", tags = {"系统端", "车辆预约管理"})
 @RestController
 @RequestMapping("/system/gatepass")
-public class WmsVehicleGatepassController extends BaseController
-{
+public class WmsVehicleGatepassController extends BaseController {
     @Autowired
     private IWmsVehicleGatepassService wmsVehicleGatepassService;
 
@@ -44,8 +43,7 @@ public class WmsVehicleGatepassController extends BaseController
     @ApiOperation("车辆预约列表")
     @PreAuthorize("@ss.hasPermi('system:gatepass:list')")
     @GetMapping("/list")
-    public TableDataInfo list(WmsVehicleGatepass wmsVehicleGatepass)
-    {
+    public TableDataInfo list(WmsVehicleGatepass wmsVehicleGatepass) {
         startPage();
         List<WmsVehicleGatepass> list = wmsVehicleGatepassService.selectWmsVehicleGatepassList(wmsVehicleGatepass);
         return getDataTable(list);
@@ -58,8 +56,7 @@ public class WmsVehicleGatepassController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:gatepass:export')")
     @Log(title = "车辆预约", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, WmsVehicleGatepass wmsVehicleGatepass)
-    {
+    public void export(HttpServletResponse response, WmsVehicleGatepass wmsVehicleGatepass) {
         List<WmsVehicleGatepass> list = wmsVehicleGatepassService.selectWmsVehicleGatepassList(wmsVehicleGatepass);
         ExcelUtil<WmsVehicleGatepass> util = new ExcelUtil<WmsVehicleGatepass>(WmsVehicleGatepass.class);
         util.exportExcel(response, list, "车辆预约数据");
@@ -71,8 +68,7 @@ public class WmsVehicleGatepassController extends BaseController
     @ApiOperation("获取车辆预约详细信息")
     @PreAuthorize("@ss.hasPermi('system:gatepass:query')")
     @GetMapping(value = "/{gatepassId}")
-    public AjaxResult getInfo(@PathVariable("gatepassId") Long gatepassId)
-    {
+    public AjaxResult getInfo(@PathVariable("gatepassId") Long gatepassId) {
         return success(wmsVehicleGatepassService.selectWmsVehicleGatepassByGatepassId(gatepassId));
     }
 
@@ -83,8 +79,7 @@ public class WmsVehicleGatepassController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:gatepass:add')")
     @Log(title = "车辆预约", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody WmsVehicleGatepass wmsVehicleGatepass)
-    {
+    public AjaxResult add(@RequestBody WmsVehicleGatepass wmsVehicleGatepass) {
         return toAjax(wmsVehicleGatepassService.insertWmsVehicleGatepass(wmsVehicleGatepass));
     }
 
@@ -95,8 +90,7 @@ public class WmsVehicleGatepassController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:gatepass:edit')")
     @Log(title = "车辆预约", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody WmsVehicleGatepass wmsVehicleGatepass)
-    {
+    public AjaxResult edit(@RequestBody WmsVehicleGatepass wmsVehicleGatepass) {
         return toAjax(wmsVehicleGatepassService.updateWmsVehicleGatepass(wmsVehicleGatepass));
     }
 
@@ -106,9 +100,8 @@ public class WmsVehicleGatepassController extends BaseController
     @ApiOperation("删除车辆预约")
     @PreAuthorize("@ss.hasPermi('system:gatepass:remove')")
     @Log(title = "车辆预约", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{gatepassIds}")
-    public AjaxResult remove(@PathVariable Long[] gatepassIds)
-    {
+    @DeleteMapping("/{gatepassIds}")
+    public AjaxResult remove(@PathVariable Long[] gatepassIds) {
         return toAjax(wmsVehicleGatepassService.deleteWmsVehicleGatepassByGatepassIds(gatepassIds));
     }
 }

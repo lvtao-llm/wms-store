@@ -26,15 +26,14 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 巡检规则Controller
- * 
+ *
  * @author ruoyi
  * @date 2025-10-25
  */
-@Api(tags = "巡检规则管理")
+@Api(value = "巡检规则管理", tags = {"系统端", "巡检规则管理"})
 @RestController
 @RequestMapping("/system/wms_inspection_rule")
-public class WmsInspectionRuleController extends BaseController
-{
+public class WmsInspectionRuleController extends BaseController {
     @Autowired
     private IWmsInspectionRuleService wmsInspectionRuleService;
 
@@ -44,8 +43,7 @@ public class WmsInspectionRuleController extends BaseController
     @ApiOperation("查询巡检规则列表")
 //    @PreAuthorize("@ss.hasPermi('system:wms_inspection_rule:list')")
     @GetMapping("/list")
-    public TableDataInfo list(WmsInspectionRule wmsInspectionRule)
-    {
+    public TableDataInfo list(WmsInspectionRule wmsInspectionRule) {
         startPage();
         List<WmsInspectionRule> list = wmsInspectionRuleService.selectWmsInspectionRuleList(wmsInspectionRule);
         return getDataTable(list);
@@ -58,8 +56,7 @@ public class WmsInspectionRuleController extends BaseController
 //    @PreAuthorize("@ss.hasPermi('system:wms_inspection_rule:export')")
     @Log(title = "巡检规则", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, WmsInspectionRule wmsInspectionRule)
-    {
+    public void export(HttpServletResponse response, WmsInspectionRule wmsInspectionRule) {
         List<WmsInspectionRule> list = wmsInspectionRuleService.selectWmsInspectionRuleList(wmsInspectionRule);
         ExcelUtil<WmsInspectionRule> util = new ExcelUtil<WmsInspectionRule>(WmsInspectionRule.class);
         util.exportExcel(response, list, "巡检规则数据");
@@ -71,8 +68,7 @@ public class WmsInspectionRuleController extends BaseController
     @ApiOperation("获取巡检规则详细信息")
 //    @PreAuthorize("@ss.hasPermi('system:wms_inspection_rule:query')")
     @GetMapping(value = "/{id}")
-    public AjaxResult getInfo(@PathVariable("id") Long id)
-    {
+    public AjaxResult getInfo(@PathVariable("id") Long id) {
         return success(wmsInspectionRuleService.selectWmsInspectionRuleById(id));
     }
 
@@ -83,8 +79,7 @@ public class WmsInspectionRuleController extends BaseController
 //    @PreAuthorize("@ss.hasPermi('system:wms_inspection_rule:add')")
     @Log(title = "巡检规则", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody WmsInspectionRule wmsInspectionRule)
-    {
+    public AjaxResult add(@RequestBody WmsInspectionRule wmsInspectionRule) {
         return toAjax(wmsInspectionRuleService.insertWmsInspectionRule(wmsInspectionRule));
     }
 
@@ -95,8 +90,7 @@ public class WmsInspectionRuleController extends BaseController
 //    @PreAuthorize("@ss.hasPermi('system:wms_inspection_rule:edit')")
     @Log(title = "巡检规则", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody WmsInspectionRule wmsInspectionRule)
-    {
+    public AjaxResult edit(@RequestBody WmsInspectionRule wmsInspectionRule) {
         return toAjax(wmsInspectionRuleService.updateWmsInspectionRule(wmsInspectionRule));
     }
 
@@ -106,9 +100,8 @@ public class WmsInspectionRuleController extends BaseController
     @ApiOperation("删除巡检规则")
 //    @PreAuthorize("@ss.hasPermi('system:wms_inspection_rule:remove')")
     @Log(title = "巡检规则", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
-    public AjaxResult remove(@PathVariable Long[] ids)
-    {
+    @DeleteMapping("/{ids}")
+    public AjaxResult remove(@PathVariable Long[] ids) {
         return toAjax(wmsInspectionRuleService.deleteWmsInspectionRuleByIds(ids));
     }
 }

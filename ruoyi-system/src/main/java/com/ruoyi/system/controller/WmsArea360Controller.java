@@ -26,15 +26,14 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 区域点位全景Controller
- * 
+ *
  * @author ruoyi
  * @date 2025-11-21
  */
-@Api("区域点位全景接口")
+@Api(value = "区域点位全景接口", tags = {"系统端", "区域点位全景接口"})
 @RestController
 @RequestMapping("/system/wms_area_360")
-public class WmsArea360Controller extends BaseController
-{
+public class WmsArea360Controller extends BaseController {
     @Autowired
     private IWmsArea360Service wmsArea360Service;
 
@@ -44,8 +43,7 @@ public class WmsArea360Controller extends BaseController
     @ApiOperation("查询区域点位全景列表")
     @PreAuthorize("@ss.hasPermi('system:wms_area_360:list')")
     @GetMapping("/list")
-    public TableDataInfo list(WmsArea360 wmsArea360)
-    {
+    public TableDataInfo list(WmsArea360 wmsArea360) {
         startPage();
         List<WmsArea360> list = wmsArea360Service.selectWmsArea360List(wmsArea360);
         return getDataTable(list);
@@ -58,8 +56,7 @@ public class WmsArea360Controller extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_area_360:export')")
     @Log(title = "区域点位全景", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, WmsArea360 wmsArea360)
-    {
+    public void export(HttpServletResponse response, WmsArea360 wmsArea360) {
         List<WmsArea360> list = wmsArea360Service.selectWmsArea360List(wmsArea360);
         ExcelUtil<WmsArea360> util = new ExcelUtil<WmsArea360>(WmsArea360.class);
         util.exportExcel(response, list, "区域点位全景数据");
@@ -71,8 +68,7 @@ public class WmsArea360Controller extends BaseController
     @ApiOperation("获取区域点位全景详细信息")
     @PreAuthorize("@ss.hasPermi('system:wms_area_360:query')")
     @GetMapping(value = "/{id}")
-    public AjaxResult getInfo(@PathVariable("id") Long id)
-    {
+    public AjaxResult getInfo(@PathVariable("id") Long id) {
         return success(wmsArea360Service.selectWmsArea360ById(id));
     }
 
@@ -83,8 +79,7 @@ public class WmsArea360Controller extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_area_360:add')")
     @Log(title = "区域点位全景", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody WmsArea360 wmsArea360)
-    {
+    public AjaxResult add(@RequestBody WmsArea360 wmsArea360) {
         return toAjax(wmsArea360Service.insertWmsArea360(wmsArea360));
     }
 
@@ -95,8 +90,7 @@ public class WmsArea360Controller extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_area_360:edit')")
     @Log(title = "区域点位全景", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody WmsArea360 wmsArea360)
-    {
+    public AjaxResult edit(@RequestBody WmsArea360 wmsArea360) {
         return toAjax(wmsArea360Service.updateWmsArea360(wmsArea360));
     }
 
@@ -106,9 +100,8 @@ public class WmsArea360Controller extends BaseController
     @ApiOperation("删除区域点位全景")
     @PreAuthorize("@ss.hasPermi('system:wms_area_360:remove')")
     @Log(title = "区域点位全景", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
-    public AjaxResult remove(@PathVariable Long[] ids)
-    {
+    @DeleteMapping("/{ids}")
+    public AjaxResult remove(@PathVariable Long[] ids) {
         return toAjax(wmsArea360Service.deleteWmsArea360ByIds(ids));
     }
 }

@@ -1,5 +1,8 @@
 package com.ruoyi.common.core.domain;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,23 +11,29 @@ import java.util.List;
  * 
  * @author ruoyi
  */
+@ApiModel(value = "TreeEntity", description = "树结构实体类")
 public class TreeEntity extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
     /** 父菜单名称 */
+    @ApiModelProperty(value = "父名称")
     private String parentName;
 
     /** 父菜单ID */
+    @ApiModelProperty(value = "父ID")
     private Long parentId;
 
     /** 显示顺序 */
+    @ApiModelProperty(value = "显示顺序")
     private Integer orderNum;
 
     /** 祖级列表 */
+    @ApiModelProperty(value = "祖级列表")
     private String ancestors;
 
     /** 子部门 */
+    @ApiModelProperty(value = "子部门")
     private List<?> children = new ArrayList<>();
 
     public String getParentName()

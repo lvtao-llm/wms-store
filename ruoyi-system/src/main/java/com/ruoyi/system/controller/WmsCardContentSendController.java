@@ -36,7 +36,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-11-10
  */
-@Api(tags = "发送内容给卡播报Controller")
+@Api(value = "发送内容给卡播报", tags = {"系统端", "发送内容给卡播报"})
 @RestController
 @RequestMapping("/system/wms_card_content_send")
 public class WmsCardContentSendController extends BaseController {

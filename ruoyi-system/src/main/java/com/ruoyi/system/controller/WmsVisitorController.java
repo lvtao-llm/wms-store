@@ -26,15 +26,14 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 访客信息Controller
- * 
+ *
  * @author ruoyi
  * @date 2025-09-26
  */
-@Api(tags = "访客信息Controller")
+@Api(value = "访客信息", tags = {"系统端", "访客信息"})
 @RestController
 @RequestMapping("/system/visitor")
-public class WmsVisitorController extends BaseController
-{
+public class WmsVisitorController extends BaseController {
     @Autowired
     private IWmsVisitorService wmsVisitorService;
 
@@ -44,8 +43,7 @@ public class WmsVisitorController extends BaseController
     @ApiOperation("查询访客信息列表")
     @PreAuthorize("@ss.hasPermi('system:visitor:list')")
     @GetMapping("/list")
-    public TableDataInfo list(WmsVisitor wmsVisitor)
-    {
+    public TableDataInfo list(WmsVisitor wmsVisitor) {
         startPage();
         List<WmsVisitor> list = wmsVisitorService.selectWmsVisitorList(wmsVisitor);
         return getDataTable(list);
@@ -58,8 +56,7 @@ public class WmsVisitorController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:visitor:export')")
     @Log(title = "访客信息", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, WmsVisitor wmsVisitor)
-    {
+    public void export(HttpServletResponse response, WmsVisitor wmsVisitor) {
         List<WmsVisitor> list = wmsVisitorService.selectWmsVisitorList(wmsVisitor);
         ExcelUtil<WmsVisitor> util = new ExcelUtil<WmsVisitor>(WmsVisitor.class);
         util.exportExcel(response, list, "访客信息数据");
@@ -71,8 +68,7 @@ public class WmsVisitorController extends BaseController
     @ApiOperation("获取访客信息详细信息")
     @PreAuthorize("@ss.hasPermi('system:visitor:query')")
     @GetMapping(value = "/{visitorId}")
-    public AjaxResult getInfo(@PathVariable("visitorId") Long visitorId)
-    {
+    public AjaxResult getInfo(@PathVariable("visitorId") Long visitorId) {
         return success(wmsVisitorService.selectWmsVisitorByVisitorId(visitorId));
     }
 
@@ -83,8 +79,7 @@ public class WmsVisitorController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:visitor:add')")
     @Log(title = "访客信息", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody WmsVisitor wmsVisitor)
-    {
+    public AjaxResult add(@RequestBody WmsVisitor wmsVisitor) {
         return toAjax(wmsVisitorService.insertWmsVisitor(wmsVisitor));
     }
 
@@ -95,8 +90,7 @@ public class WmsVisitorController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:visitor:edit')")
     @Log(title = "访客信息", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody WmsVisitor wmsVisitor)
-    {
+    public AjaxResult edit(@RequestBody WmsVisitor wmsVisitor) {
         return toAjax(wmsVisitorService.updateWmsVisitor(wmsVisitor));
     }
 
@@ -106,9 +100,8 @@ public class WmsVisitorController extends BaseController
     @ApiOperation("删除访客信息")
     @PreAuthorize("@ss.hasPermi('system:visitor:remove')")
     @Log(title = "访客信息", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{visitorIds}")
-    public AjaxResult remove(@PathVariable Long[] visitorIds)
-    {
+    @DeleteMapping("/{visitorIds}")
+    public AjaxResult remove(@PathVariable Long[] visitorIds) {
         return toAjax(wmsVisitorService.deleteWmsVisitorByVisitorIds(visitorIds));
     }
 }

@@ -32,15 +32,14 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 调拨视图Controller
- * 
+ *
  * @author ruoyi
  * @date 2025-11-08
  */
-@Api("调拨视图")
+@Api(value = "调拨视图", tags = {"系统端", "调拨视图"})
 @RestController
 @RequestMapping("/system/wms_material_out")
-public class WmsMaterialOutController extends BaseController
-{
+public class WmsMaterialOutController extends BaseController {
     @Autowired
     private IWmsMaterialOutService wmsMaterialOutService;
 
@@ -56,8 +55,7 @@ public class WmsMaterialOutController extends BaseController
     @ApiOperation("查询调拨视图列表")
     @PreAuthorize("@ss.hasPermi('system:wms_material_out:list')")
     @GetMapping("/list")
-    public TableDataInfo list(WmsMaterialOut wmsMaterialOut)
-    {
+    public TableDataInfo list(WmsMaterialOut wmsMaterialOut) {
         startPage();
         List<WmsMaterialOut> list = wmsMaterialOutService.selectWmsMaterialOutList(wmsMaterialOut);
         return getDataTable(list);
@@ -91,7 +89,7 @@ public class WmsMaterialOutController extends BaseController
                     wzbm.add(desc.getWzmc());
                 }
             }
-            if(wzbm.isEmpty()){
+            if (wzbm.isEmpty()) {
                 return getDataTable(list);
             }
             list = wmsMaterialOutService.selectWmsMaterialOutListByAreaNames(wmsMaterialIn, wzbm);
@@ -109,8 +107,7 @@ public class WmsMaterialOutController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_material_out:export')")
     @Log(title = "调拨视图", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, WmsMaterialOut wmsMaterialOut)
-    {
+    public void export(HttpServletResponse response, WmsMaterialOut wmsMaterialOut) {
         List<WmsMaterialOut> list = wmsMaterialOutService.selectWmsMaterialOutList(wmsMaterialOut);
         ExcelUtil<WmsMaterialOut> util = new ExcelUtil<WmsMaterialOut>(WmsMaterialOut.class);
         util.exportExcel(response, list, "调拨视图数据");
@@ -122,8 +119,7 @@ public class WmsMaterialOutController extends BaseController
     @ApiOperation("获取调拨视图详细信息")
     @PreAuthorize("@ss.hasPermi('system:wms_material_out:query')")
     @GetMapping(value = "/{allotDetailId}")
-    public AjaxResult getInfo(@PathVariable("allotDetailId") String allotDetailId)
-    {
+    public AjaxResult getInfo(@PathVariable("allotDetailId") String allotDetailId) {
         return success(wmsMaterialOutService.selectWmsMaterialOutByAllotDetailId(allotDetailId));
     }
 
@@ -134,8 +130,7 @@ public class WmsMaterialOutController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_material_out:add')")
     @Log(title = "调拨视图", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody WmsMaterialOut wmsMaterialOut)
-    {
+    public AjaxResult add(@RequestBody WmsMaterialOut wmsMaterialOut) {
         return toAjax(wmsMaterialOutService.insertWmsMaterialOut(wmsMaterialOut));
     }
 
@@ -146,8 +141,7 @@ public class WmsMaterialOutController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_material_out:edit')")
     @Log(title = "调拨视图", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody WmsMaterialOut wmsMaterialOut)
-    {
+    public AjaxResult edit(@RequestBody WmsMaterialOut wmsMaterialOut) {
         return toAjax(wmsMaterialOutService.updateWmsMaterialOut(wmsMaterialOut));
     }
 
@@ -157,9 +151,8 @@ public class WmsMaterialOutController extends BaseController
     @ApiOperation("删除调拨视图")
     @PreAuthorize("@ss.hasPermi('system:wms_material_out:remove')")
     @Log(title = "调拨视图", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{allotDetailIds}")
-    public AjaxResult remove(@PathVariable String[] allotDetailIds)
-    {
+    @DeleteMapping("/{allotDetailIds}")
+    public AjaxResult remove(@PathVariable String[] allotDetailIds) {
         return toAjax(wmsMaterialOutService.deleteWmsMaterialOutByAllotDetailIds(allotDetailIds));
     }
 }

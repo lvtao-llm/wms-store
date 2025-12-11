@@ -76,6 +76,7 @@ public class LanyaVehicleInfoVisitor extends BaseEntity
 
     /** 单位名称 */
     @Excel(name = "单位名称")
+    @ApiModelProperty(value = "单位名称")
     private String companyName;
 
     /** 预约进入开始时间 */

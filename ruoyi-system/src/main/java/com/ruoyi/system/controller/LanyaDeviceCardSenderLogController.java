@@ -28,16 +28,15 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 人脸发卡记录Controller
- * 
+ *
  * @author ruoyi
  * @date 2025-10-10
  */
-@Api(tags = "人脸发卡记录管理")
+@Api(value = "人脸发卡记录管理", tags = {"卡机端", "人脸发卡记录管理"})
 @RestController
 @RequestMapping("/system/lanya_device_card_sender_log")
 @DataSource(value = DataSourceType.SLAVE)
-public class LanyaDeviceCardSenderLogController extends BaseController
-{
+public class LanyaDeviceCardSenderLogController extends BaseController {
     @Autowired
     private ILanyaDeviceCardSenderLogService lanyaDeviceCardSenderLogService;
 
@@ -47,8 +46,7 @@ public class LanyaDeviceCardSenderLogController extends BaseController
     @ApiOperation("查询人脸发卡记录列表")
     @PreAuthorize("@ss.hasPermi('system:lanya_device_card_sender_log:list')")
     @GetMapping("/list")
-    public TableDataInfo list(LanyaDeviceCardSenderLog lanyaDeviceCardSenderLog)
-    {
+    public TableDataInfo list(LanyaDeviceCardSenderLog lanyaDeviceCardSenderLog) {
         startPage();
         List<LanyaDeviceCardSenderLog> list = lanyaDeviceCardSenderLogService.selectLanyaDeviceCardSenderLogList(lanyaDeviceCardSenderLog);
         return getDataTable(list);
@@ -60,8 +58,7 @@ public class LanyaDeviceCardSenderLogController extends BaseController
     @ApiOperation("查询人脸发卡记录列表")
     @PreAuthorize("@ss.hasPermi('system:lanya_device_card_sender_log:list')")
     @GetMapping("/list-by-name-card-type")
-    public TableDataInfo listByNameCardType(String param)
-    {
+    public TableDataInfo listByNameCardType(String param) {
         startPage();
         List<LanyaDeviceCardSenderLog> list = lanyaDeviceCardSenderLogService.selectLanyaDeviceCardSenderLogListByNameCardType(param);
         return getDataTable(list);
@@ -74,8 +71,7 @@ public class LanyaDeviceCardSenderLogController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:lanya_device_card_sender_log:export')")
     @Log(title = "人脸发卡记录", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, LanyaDeviceCardSenderLog lanyaDeviceCardSenderLog)
-    {
+    public void export(HttpServletResponse response, LanyaDeviceCardSenderLog lanyaDeviceCardSenderLog) {
         List<LanyaDeviceCardSenderLog> list = lanyaDeviceCardSenderLogService.selectLanyaDeviceCardSenderLogList(lanyaDeviceCardSenderLog);
         ExcelUtil<LanyaDeviceCardSenderLog> util = new ExcelUtil<LanyaDeviceCardSenderLog>(LanyaDeviceCardSenderLog.class);
         util.exportExcel(response, list, "人脸发卡记录数据");
@@ -87,8 +83,7 @@ public class LanyaDeviceCardSenderLogController extends BaseController
     @ApiOperation("获取人脸发卡记录详细信息")
     @PreAuthorize("@ss.hasPermi('system:lanya_device_card_sender_log:query')")
     @GetMapping(value = "/{id}")
-    public AjaxResult getInfo(@PathVariable("id") Long id)
-    {
+    public AjaxResult getInfo(@PathVariable("id") Long id) {
         return success(lanyaDeviceCardSenderLogService.selectLanyaDeviceCardSenderLogById(id));
     }
 
@@ -99,8 +94,7 @@ public class LanyaDeviceCardSenderLogController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:lanya_device_card_sender_log:add')")
     @Log(title = "人脸发卡记录", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody LanyaDeviceCardSenderLog lanyaDeviceCardSenderLog)
-    {
+    public AjaxResult add(@RequestBody LanyaDeviceCardSenderLog lanyaDeviceCardSenderLog) {
         return toAjax(lanyaDeviceCardSenderLogService.insertLanyaDeviceCardSenderLog(lanyaDeviceCardSenderLog));
     }
 
@@ -111,8 +105,7 @@ public class LanyaDeviceCardSenderLogController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:lanya_device_card_sender_log:edit')")
     @Log(title = "人脸发卡记录", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody LanyaDeviceCardSenderLog lanyaDeviceCardSenderLog)
-    {
+    public AjaxResult edit(@RequestBody LanyaDeviceCardSenderLog lanyaDeviceCardSenderLog) {
         return toAjax(lanyaDeviceCardSenderLogService.updateLanyaDeviceCardSenderLog(lanyaDeviceCardSenderLog));
     }
 
@@ -122,9 +115,8 @@ public class LanyaDeviceCardSenderLogController extends BaseController
     @ApiOperation("删除人脸发卡记录")
     @PreAuthorize("@ss.hasPermi('system:lanya_device_card_sender_log:remove')")
     @Log(title = "人脸发卡记录", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
-    public AjaxResult remove(@PathVariable Long[] ids)
-    {
+    @DeleteMapping("/{ids}")
+    public AjaxResult remove(@PathVariable Long[] ids) {
         return toAjax(lanyaDeviceCardSenderLogService.deleteLanyaDeviceCardSenderLogByIds(ids));
     }
 }

@@ -26,15 +26,14 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 物料日统计Controller
- * 
+ *
  * @author ruoyi
  * @date 2025-11-09
  */
-@Api(tags = "物料日统计管理")
+@Api(value = "物料日统计", tags = {"系统端", "物料日统计管理"})
 @RestController
 @RequestMapping("/system/wms_material_statics_day")
-public class WmsMaterialStaticsDayController extends BaseController
-{
+public class WmsMaterialStaticsDayController extends BaseController {
     @Autowired
     private IWmsMaterialStaticsDayService wmsMaterialStaticsDayService;
 
@@ -44,8 +43,7 @@ public class WmsMaterialStaticsDayController extends BaseController
     @ApiOperation("物料日统计列表")
     @PreAuthorize("@ss.hasPermi('system:wms_material_statics_day:list')")
     @GetMapping("/list")
-    public TableDataInfo list(WmsMaterialStaticsDay wmsMaterialStaticsDay)
-    {
+    public TableDataInfo list(WmsMaterialStaticsDay wmsMaterialStaticsDay) {
         startPage();
         List<WmsMaterialStaticsDay> list = wmsMaterialStaticsDayService.selectWmsMaterialStaticsDayList(wmsMaterialStaticsDay);
         return getDataTable(list);
@@ -58,8 +56,7 @@ public class WmsMaterialStaticsDayController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_material_statics_day:export')")
     @Log(title = "物料日统计", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, WmsMaterialStaticsDay wmsMaterialStaticsDay)
-    {
+    public void export(HttpServletResponse response, WmsMaterialStaticsDay wmsMaterialStaticsDay) {
         List<WmsMaterialStaticsDay> list = wmsMaterialStaticsDayService.selectWmsMaterialStaticsDayList(wmsMaterialStaticsDay);
         ExcelUtil<WmsMaterialStaticsDay> util = new ExcelUtil<WmsMaterialStaticsDay>(WmsMaterialStaticsDay.class);
         util.exportExcel(response, list, "物料日统计数据");
@@ -71,8 +68,7 @@ public class WmsMaterialStaticsDayController extends BaseController
     @ApiOperation("物料日统计列表")
     @PreAuthorize("@ss.hasPermi('system:wms_material_statics_day:query')")
     @GetMapping(value = "/{day}")
-    public AjaxResult getInfo(@PathVariable("day") String day)
-    {
+    public AjaxResult getInfo(@PathVariable("day") String day) {
         return success(wmsMaterialStaticsDayService.selectWmsMaterialStaticsDayByDay(day));
     }
 
@@ -83,8 +79,7 @@ public class WmsMaterialStaticsDayController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_material_statics_day:add')")
     @Log(title = "物料日统计", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody WmsMaterialStaticsDay wmsMaterialStaticsDay)
-    {
+    public AjaxResult add(@RequestBody WmsMaterialStaticsDay wmsMaterialStaticsDay) {
         return toAjax(wmsMaterialStaticsDayService.insertWmsMaterialStaticsDay(wmsMaterialStaticsDay));
     }
 
@@ -95,8 +90,7 @@ public class WmsMaterialStaticsDayController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_material_statics_day:edit')")
     @Log(title = "物料日统计", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody WmsMaterialStaticsDay wmsMaterialStaticsDay)
-    {
+    public AjaxResult edit(@RequestBody WmsMaterialStaticsDay wmsMaterialStaticsDay) {
         return toAjax(wmsMaterialStaticsDayService.updateWmsMaterialStaticsDay(wmsMaterialStaticsDay));
     }
 
@@ -106,9 +100,8 @@ public class WmsMaterialStaticsDayController extends BaseController
     @ApiOperation("物料日统计列表")
     @PreAuthorize("@ss.hasPermi('system:wms_material_statics_day:remove')")
     @Log(title = "物料日统计", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{days}")
-    public AjaxResult remove(@PathVariable String[] days)
-    {
+    @DeleteMapping("/{days}")
+    public AjaxResult remove(@PathVariable String[] days) {
         return toAjax(wmsMaterialStaticsDayService.deleteWmsMaterialStaticsDayByDays(days));
     }
 }

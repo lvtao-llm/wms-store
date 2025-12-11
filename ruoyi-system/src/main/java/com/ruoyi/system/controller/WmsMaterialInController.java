@@ -30,7 +30,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-11-08
  */
-@Api("接料视图")
+@Api(value = "接料视图", tags = {"系统端", "接料视图"})
 @RestController
 @RequestMapping("/system/wms_material_in")
 public class WmsMaterialInController extends BaseController {
@@ -85,7 +85,7 @@ public class WmsMaterialInController extends BaseController {
                     wzbm.add(desc.getWzmc());
                 }
             }
-            if(wzbm.isEmpty()){
+            if (wzbm.isEmpty()) {
                 return getDataTable(list);
             }
             list = wmsMaterialInService.selectWmsMaterialInListByAreaNames(wmsMaterialIn, wzbm);

@@ -26,15 +26,14 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 报警信息规则Controller
- * 
+ *
  * @author ruoyi
  * @date 2025-10-20
  */
-@Api(tags = "报警信息规则管理")
+@Api(value = "报警信息规则", tags = {"系统端", "报警信息规则管理"})
 @RestController
 @RequestMapping("/system/wms_alarm_rule")
-public class WmsAlarmRuleController extends BaseController
-{
+public class WmsAlarmRuleController extends BaseController {
     @Autowired
     private IWmsAlarmRuleService wmsAlarmRuleService;
 
@@ -44,8 +43,7 @@ public class WmsAlarmRuleController extends BaseController
     @ApiOperation("查询报警信息规则列表")
     @PreAuthorize("@ss.hasPermi('system:wms_alarm_rule:list')")
     @GetMapping("/list")
-    public TableDataInfo list(WmsAlarmRule wmsAlarmRule)
-    {
+    public TableDataInfo list(WmsAlarmRule wmsAlarmRule) {
         startPage();
         List<WmsAlarmRule> list = wmsAlarmRuleService.selectWmsAlarmRuleList(wmsAlarmRule);
         return getDataTable(list);
@@ -58,8 +56,7 @@ public class WmsAlarmRuleController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_alarm_rule:export')")
     @Log(title = "报警信息规则", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, WmsAlarmRule wmsAlarmRule)
-    {
+    public void export(HttpServletResponse response, WmsAlarmRule wmsAlarmRule) {
         List<WmsAlarmRule> list = wmsAlarmRuleService.selectWmsAlarmRuleList(wmsAlarmRule);
         ExcelUtil<WmsAlarmRule> util = new ExcelUtil<WmsAlarmRule>(WmsAlarmRule.class);
         util.exportExcel(response, list, "报警信息规则数据");
@@ -71,8 +68,7 @@ public class WmsAlarmRuleController extends BaseController
     @ApiOperation("获取报警信息规则详细信息")
     @PreAuthorize("@ss.hasPermi('system:wms_alarm_rule:query')")
     @GetMapping(value = "/{alarmRuleId}")
-    public AjaxResult getInfo(@PathVariable("alarmRuleId") Long alarmRuleId)
-    {
+    public AjaxResult getInfo(@PathVariable("alarmRuleId") Long alarmRuleId) {
         return success(wmsAlarmRuleService.selectWmsAlarmRuleByAlarmRuleId(alarmRuleId));
     }
 
@@ -83,8 +79,7 @@ public class WmsAlarmRuleController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_alarm_rule:add')")
     @Log(title = "报警信息规则", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody WmsAlarmRule wmsAlarmRule)
-    {
+    public AjaxResult add(@RequestBody WmsAlarmRule wmsAlarmRule) {
         return toAjax(wmsAlarmRuleService.insertWmsAlarmRule(wmsAlarmRule));
     }
 
@@ -95,8 +90,7 @@ public class WmsAlarmRuleController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_alarm_rule:edit')")
     @Log(title = "报警信息规则", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody WmsAlarmRule wmsAlarmRule)
-    {
+    public AjaxResult edit(@RequestBody WmsAlarmRule wmsAlarmRule) {
         return toAjax(wmsAlarmRuleService.updateWmsAlarmRule(wmsAlarmRule));
     }
 
@@ -106,9 +100,8 @@ public class WmsAlarmRuleController extends BaseController
     @ApiOperation("删除报警信息规则")
     @PreAuthorize("@ss.hasPermi('system:wms_alarm_rule:remove')")
     @Log(title = "报警信息规则", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{alarmRuleIds}")
-    public AjaxResult remove(@PathVariable Long[] alarmRuleIds)
-    {
+    @DeleteMapping("/{alarmRuleIds}")
+    public AjaxResult remove(@PathVariable Long[] alarmRuleIds) {
         return toAjax(wmsAlarmRuleService.deleteWmsAlarmRuleByAlarmRuleIds(alarmRuleIds));
     }
 }

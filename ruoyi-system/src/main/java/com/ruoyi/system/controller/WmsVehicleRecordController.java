@@ -26,26 +26,24 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 车辆黑名单wms_vehicle_blacklistController
- * 
+ *
  * @author ruoyi
  * @date 2025-10-30
  */
-@Api(tags = "车辆黑名单wms_vehicle_blacklist管理")
+@Api(value = "车辆黑名单", tags = {"系统端", "车辆黑名单管理"})
 @RestController
 @RequestMapping("/system/wms_vehicle_record")
-public class WmsVehicleRecordController extends BaseController
-{
+public class WmsVehicleRecordController extends BaseController {
     @Autowired
     private IWmsVehicleRecordService wmsVehicleRecordService;
 
     /**
      * 查询车辆黑名单wms_vehicle_blacklist列表
      */
-    @ApiOperation("查询车辆黑名单wms_vehicle_blacklist列表")
+    @ApiOperation("查询车辆黑名单列表")
     @PreAuthorize("@ss.hasPermi('system:wms_vehicle_record:list')")
     @GetMapping("/list")
-    public TableDataInfo list(WmsVehicleRecord wmsVehicleRecord)
-    {
+    public TableDataInfo list(WmsVehicleRecord wmsVehicleRecord) {
         startPage();
         List<WmsVehicleRecord> list = wmsVehicleRecordService.selectWmsVehicleRecordList(wmsVehicleRecord);
         return getDataTable(list);
@@ -54,12 +52,11 @@ public class WmsVehicleRecordController extends BaseController
     /**
      * 导出车辆黑名单wms_vehicle_blacklist列表
      */
-    @ApiOperation("导出车辆黑名单wms_vehicle_blacklist列表")
+    @ApiOperation("导出车辆黑名单列表")
     @PreAuthorize("@ss.hasPermi('system:wms_vehicle_record:export')")
     @Log(title = "车辆黑名单wms_vehicle_blacklist", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, WmsVehicleRecord wmsVehicleRecord)
-    {
+    public void export(HttpServletResponse response, WmsVehicleRecord wmsVehicleRecord) {
         List<WmsVehicleRecord> list = wmsVehicleRecordService.selectWmsVehicleRecordList(wmsVehicleRecord);
         ExcelUtil<WmsVehicleRecord> util = new ExcelUtil<WmsVehicleRecord>(WmsVehicleRecord.class);
         util.exportExcel(response, list, "车辆黑名单wms_vehicle_blacklist数据");
@@ -68,47 +65,43 @@ public class WmsVehicleRecordController extends BaseController
     /**
      * 获取车辆黑名单wms_vehicle_blacklist详细信息
      */
-    @ApiOperation("获取车辆黑名单wms_vehicle_blacklist详细信息")
+    @ApiOperation("获取车辆黑名单详细信息")
     @PreAuthorize("@ss.hasPermi('system:wms_vehicle_record:query')")
     @GetMapping(value = "/{id}")
-    public AjaxResult getInfo(@PathVariable("id") Long id)
-    {
+    public AjaxResult getInfo(@PathVariable("id") Long id) {
         return success(wmsVehicleRecordService.selectWmsVehicleRecordById(id));
     }
 
     /**
      * 新增车辆黑名单wms_vehicle_blacklist
      */
-    @ApiOperation("新增车辆黑名单wms_vehicle_blacklist")
+    @ApiOperation("新增车辆黑名单")
     @PreAuthorize("@ss.hasPermi('system:wms_vehicle_record:add')")
     @Log(title = "车辆黑名单wms_vehicle_blacklist", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody WmsVehicleRecord wmsVehicleRecord)
-    {
+    public AjaxResult add(@RequestBody WmsVehicleRecord wmsVehicleRecord) {
         return toAjax(wmsVehicleRecordService.insertWmsVehicleRecord(wmsVehicleRecord));
     }
 
     /**
      * 修改车辆黑名单wms_vehicle_blacklist
      */
-    @ApiOperation("修改车辆黑名单wms_vehicle_blacklist")
+    @ApiOperation("修改车辆黑名单")
     @PreAuthorize("@ss.hasPermi('system:wms_vehicle_record:edit')")
     @Log(title = "车辆黑名单wms_vehicle_blacklist", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody WmsVehicleRecord wmsVehicleRecord)
-    {
+    public AjaxResult edit(@RequestBody WmsVehicleRecord wmsVehicleRecord) {
         return toAjax(wmsVehicleRecordService.updateWmsVehicleRecord(wmsVehicleRecord));
     }
 
     /**
      * 删除车辆黑名单wms_vehicle_blacklist
      */
-    @ApiOperation("删除车辆黑名单wms_vehicle_blacklist")
+    @ApiOperation("删除车辆黑名单")
     @PreAuthorize("@ss.hasPermi('system:wms_vehicle_record:remove')")
     @Log(title = "车辆黑名单wms_vehicle_blacklist", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
-    public AjaxResult remove(@PathVariable Long[] ids)
-    {
+    @DeleteMapping("/{ids}")
+    public AjaxResult remove(@PathVariable Long[] ids) {
         return toAjax(wmsVehicleRecordService.deleteWmsVehicleRecordByIds(ids));
     }
 }

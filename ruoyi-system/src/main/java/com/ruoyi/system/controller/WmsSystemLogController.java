@@ -26,15 +26,14 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 定时任务调度日志Controller
- * 
+ *
  * @author ruoyi
  * @date 2025-11-24
  */
-@Api(tags = "定时任务调度日志Controller")
+@Api(value = "定时任务调度日志", tags = {"系统端", "定时任务调度日志"})
 @RestController
 @RequestMapping("/system/wms_system_log")
-public class WmsSystemLogController extends BaseController
-{
+public class WmsSystemLogController extends BaseController {
     @Autowired
     private IWmsSystemLogService wmsSystemLogService;
 
@@ -44,8 +43,7 @@ public class WmsSystemLogController extends BaseController
     @ApiOperation("查询定时任务调度日志列表")
     @PreAuthorize("@ss.hasPermi('system:wms_system_log:list')")
     @GetMapping("/list")
-    public TableDataInfo list(WmsSystemLog wmsSystemLog)
-    {
+    public TableDataInfo list(WmsSystemLog wmsSystemLog) {
         startPage();
         List<WmsSystemLog> list = wmsSystemLogService.selectWmsSystemLogList(wmsSystemLog);
         return getDataTable(list);
@@ -58,8 +56,7 @@ public class WmsSystemLogController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_system_log:export')")
     @Log(title = "定时任务调度日志", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, WmsSystemLog wmsSystemLog)
-    {
+    public void export(HttpServletResponse response, WmsSystemLog wmsSystemLog) {
         List<WmsSystemLog> list = wmsSystemLogService.selectWmsSystemLogList(wmsSystemLog);
         ExcelUtil<WmsSystemLog> util = new ExcelUtil<WmsSystemLog>(WmsSystemLog.class);
         util.exportExcel(response, list, "定时任务调度日志数据");
@@ -71,8 +68,7 @@ public class WmsSystemLogController extends BaseController
     @ApiOperation("获取定时任务调度日志详细信息")
     @PreAuthorize("@ss.hasPermi('system:wms_system_log:query')")
     @GetMapping(value = "/{jobLogId}")
-    public AjaxResult getInfo(@PathVariable("jobLogId") Long jobLogId)
-    {
+    public AjaxResult getInfo(@PathVariable("jobLogId") Long jobLogId) {
         return success(wmsSystemLogService.selectWmsSystemLogByJobLogId(jobLogId));
     }
 
@@ -83,8 +79,7 @@ public class WmsSystemLogController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_system_log:add')")
     @Log(title = "定时任务调度日志", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody WmsSystemLog wmsSystemLog)
-    {
+    public AjaxResult add(@RequestBody WmsSystemLog wmsSystemLog) {
         return toAjax(wmsSystemLogService.insertWmsSystemLog(wmsSystemLog));
     }
 
@@ -95,8 +90,7 @@ public class WmsSystemLogController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_system_log:edit')")
     @Log(title = "定时任务调度日志", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody WmsSystemLog wmsSystemLog)
-    {
+    public AjaxResult edit(@RequestBody WmsSystemLog wmsSystemLog) {
         return toAjax(wmsSystemLogService.updateWmsSystemLog(wmsSystemLog));
     }
 
@@ -106,9 +100,8 @@ public class WmsSystemLogController extends BaseController
     @ApiOperation("删除定时任务调度日志")
     @PreAuthorize("@ss.hasPermi('system:wms_system_log:remove')")
     @Log(title = "定时任务调度日志", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{jobLogIds}")
-    public AjaxResult remove(@PathVariable Long[] jobLogIds)
-    {
+    @DeleteMapping("/{jobLogIds}")
+    public AjaxResult remove(@PathVariable Long[] jobLogIds) {
         return toAjax(wmsSystemLogService.deleteWmsSystemLogByJobLogIds(jobLogIds));
     }
 }

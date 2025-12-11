@@ -26,15 +26,14 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 车辆档案Controller
- * 
+ *
  * @author ruoyi
  * @date 2025-10-30
  */
-@Api(tags = "车辆档案Controller")
+@Api(value = "车辆档案管理", tags = {"系统端", "车辆档案"})
 @RestController
 @RequestMapping("/system/wms_vehicle")
-public class WmsVehicleController extends BaseController
-{
+public class WmsVehicleController extends BaseController {
     @Autowired
     private IWmsVehicleService wmsVehicleService;
 
@@ -44,8 +43,7 @@ public class WmsVehicleController extends BaseController
     @ApiOperation("查询车辆档案列表")
     @PreAuthorize("@ss.hasPermi('system:wms_vehicle:list')")
     @GetMapping("/list")
-    public TableDataInfo list(WmsVehicle wmsVehicle)
-    {
+    public TableDataInfo list(WmsVehicle wmsVehicle) {
         startPage();
         List<WmsVehicle> list = wmsVehicleService.selectWmsVehicleList(wmsVehicle);
         return getDataTable(list);
@@ -58,8 +56,7 @@ public class WmsVehicleController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_vehicle:export')")
     @Log(title = "车辆档案", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, WmsVehicle wmsVehicle)
-    {
+    public void export(HttpServletResponse response, WmsVehicle wmsVehicle) {
         List<WmsVehicle> list = wmsVehicleService.selectWmsVehicleList(wmsVehicle);
         ExcelUtil<WmsVehicle> util = new ExcelUtil<WmsVehicle>(WmsVehicle.class);
         util.exportExcel(response, list, "车辆档案数据");
@@ -71,8 +68,7 @@ public class WmsVehicleController extends BaseController
     @ApiOperation("获取车辆档案详细信息")
     @PreAuthorize("@ss.hasPermi('system:wms_vehicle:query')")
     @GetMapping(value = "/{vehicleId}")
-    public AjaxResult getInfo(@PathVariable("vehicleId") Long vehicleId)
-    {
+    public AjaxResult getInfo(@PathVariable("vehicleId") Long vehicleId) {
         return success(wmsVehicleService.selectWmsVehicleByVehicleId(vehicleId));
     }
 
@@ -83,8 +79,7 @@ public class WmsVehicleController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_vehicle:add')")
     @Log(title = "车辆档案", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody WmsVehicle wmsVehicle)
-    {
+    public AjaxResult add(@RequestBody WmsVehicle wmsVehicle) {
         return toAjax(wmsVehicleService.insertWmsVehicle(wmsVehicle));
     }
 
@@ -95,8 +90,7 @@ public class WmsVehicleController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_vehicle:edit')")
     @Log(title = "车辆档案", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody WmsVehicle wmsVehicle)
-    {
+    public AjaxResult edit(@RequestBody WmsVehicle wmsVehicle) {
         return toAjax(wmsVehicleService.updateWmsVehicle(wmsVehicle));
     }
 
@@ -106,9 +100,8 @@ public class WmsVehicleController extends BaseController
     @ApiOperation("删除车辆档案")
     @PreAuthorize("@ss.hasPermi('system:wms_vehicle:remove')")
     @Log(title = "车辆档案", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{vehicleIds}")
-    public AjaxResult remove(@PathVariable Long[] vehicleIds)
-    {
+    @DeleteMapping("/{vehicleIds}")
+    public AjaxResult remove(@PathVariable Long[] vehicleIds) {
         return toAjax(wmsVehicleService.deleteWmsVehicleByVehicleIds(vehicleIds));
     }
 }

@@ -32,7 +32,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author 吕涛
  * @date 2025-10-10
  */
-@Api(tags = "车辆报警记录管理")
+@Api(value = "车辆报警记录", tags = {"卡机端", "车辆报警记录管理"})
 @RestController
 @RequestMapping("/system/lanya_vehicle_alarm")
 @DataSource(DataSourceType.SLAVE)

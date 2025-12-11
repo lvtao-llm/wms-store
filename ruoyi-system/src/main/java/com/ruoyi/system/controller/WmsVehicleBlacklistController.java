@@ -26,15 +26,14 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 车辆黑名单Controller
- * 
+ *
  * @author ruoyi
  * @date 2025-10-30
  */
-@Api(tags = "车辆黑名单管理")
+@Api(value = "车辆黑名单管理", tags = {"系统端", "车辆黑名单管理"})
 @RestController
 @RequestMapping("/system/wms_vehicle_blacklist")
-public class WmsVehicleBlacklistController extends BaseController
-{
+public class WmsVehicleBlacklistController extends BaseController {
     @Autowired
     private IWmsVehicleBlacklistService wmsVehicleBlacklistService;
 
@@ -44,8 +43,7 @@ public class WmsVehicleBlacklistController extends BaseController
     @ApiOperation("车辆黑名单列表")
     @PreAuthorize("@ss.hasPermi('system:wms_vehicle_blacklist:list')")
     @GetMapping("/list")
-    public TableDataInfo list(WmsVehicleBlacklist wmsVehicleBlacklist)
-    {
+    public TableDataInfo list(WmsVehicleBlacklist wmsVehicleBlacklist) {
         startPage();
         List<WmsVehicleBlacklist> list = wmsVehicleBlacklistService.selectWmsVehicleBlacklistList(wmsVehicleBlacklist);
         return getDataTable(list);
@@ -58,8 +56,7 @@ public class WmsVehicleBlacklistController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_vehicle_blacklist:export')")
     @Log(title = "车辆黑名单", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, WmsVehicleBlacklist wmsVehicleBlacklist)
-    {
+    public void export(HttpServletResponse response, WmsVehicleBlacklist wmsVehicleBlacklist) {
         List<WmsVehicleBlacklist> list = wmsVehicleBlacklistService.selectWmsVehicleBlacklistList(wmsVehicleBlacklist);
         ExcelUtil<WmsVehicleBlacklist> util = new ExcelUtil<WmsVehicleBlacklist>(WmsVehicleBlacklist.class);
         util.exportExcel(response, list, "车辆黑名单数据");
@@ -71,8 +68,7 @@ public class WmsVehicleBlacklistController extends BaseController
     @ApiOperation("车辆黑名单列表")
     @PreAuthorize("@ss.hasPermi('system:wms_vehicle_blacklist:query')")
     @GetMapping(value = "/{id}")
-    public AjaxResult getInfo(@PathVariable("id") Long id)
-    {
+    public AjaxResult getInfo(@PathVariable("id") Long id) {
         return success(wmsVehicleBlacklistService.selectWmsVehicleBlacklistById(id));
     }
 
@@ -83,8 +79,7 @@ public class WmsVehicleBlacklistController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_vehicle_blacklist:add')")
     @Log(title = "车辆黑名单", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody WmsVehicleBlacklist wmsVehicleBlacklist)
-    {
+    public AjaxResult add(@RequestBody WmsVehicleBlacklist wmsVehicleBlacklist) {
         return toAjax(wmsVehicleBlacklistService.insertWmsVehicleBlacklist(wmsVehicleBlacklist));
     }
 
@@ -95,8 +90,7 @@ public class WmsVehicleBlacklistController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_vehicle_blacklist:edit')")
     @Log(title = "车辆黑名单", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody WmsVehicleBlacklist wmsVehicleBlacklist)
-    {
+    public AjaxResult edit(@RequestBody WmsVehicleBlacklist wmsVehicleBlacklist) {
         return toAjax(wmsVehicleBlacklistService.updateWmsVehicleBlacklist(wmsVehicleBlacklist));
     }
 
@@ -106,9 +100,8 @@ public class WmsVehicleBlacklistController extends BaseController
     @ApiOperation("车辆黑名单列表")
     @PreAuthorize("@ss.hasPermi('system:wms_vehicle_blacklist:remove')")
     @Log(title = "车辆黑名单", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
-    public AjaxResult remove(@PathVariable Long[] ids)
-    {
+    @DeleteMapping("/{ids}")
+    public AjaxResult remove(@PathVariable Long[] ids) {
         return toAjax(wmsVehicleBlacklistService.deleteWmsVehicleBlacklistByIds(ids));
     }
 }

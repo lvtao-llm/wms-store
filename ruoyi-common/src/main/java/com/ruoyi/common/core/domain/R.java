@@ -2,26 +2,34 @@ package com.ruoyi.common.core.domain;
 
 import java.io.Serializable;
 import com.ruoyi.common.constant.HttpStatus;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * 响应信息主体
  *
  * @author ruoyi
  */
+@ApiModel("统一返回结果")
 public class R<T> implements Serializable
 {
     private static final long serialVersionUID = 1L;
 
     /** 成功 */
+    @ApiModelProperty("状态码")
     public static final int SUCCESS = HttpStatus.SUCCESS;
 
     /** 失败 */
+    @ApiModelProperty("状态码")
     public static final int FAIL = HttpStatus.ERROR;
 
+    @ApiModelProperty("状态码")
     private int code;
 
+    @ApiModelProperty("返回结果")
     private String msg;
 
+    @ApiModelProperty("返回数据")
     private T data;
 
     public static <T> R<T> ok()

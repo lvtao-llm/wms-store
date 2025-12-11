@@ -19,7 +19,7 @@ import java.util.List;
  * @author ruoyi
  * @date 2025-09-26
  */
-@Api(tags = "权限管理")
+@Api(value = "权限管理", tags = {"系统端", "权限管理"})
 @RestController
 @RequestMapping("/auth")
 public class WmsAuthController extends BaseController {

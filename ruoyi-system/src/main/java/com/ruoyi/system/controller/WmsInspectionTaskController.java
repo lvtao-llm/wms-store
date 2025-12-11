@@ -26,15 +26,14 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 巡检任务Controller
- * 
+ *
  * @author ruoyi
  * @date 2025-10-25
  */
-@Api(tags = "巡检任务管理")
+@Api(value = "巡检任务管理", tags = {"系统端", "巡检任务管理"})
 @RestController
 @RequestMapping("/system/wms_inspection_task")
-public class WmsInspectionTaskController extends BaseController
-{
+public class WmsInspectionTaskController extends BaseController {
     @Autowired
     private IWmsInspectionTaskService wmsInspectionTaskService;
 
@@ -44,8 +43,7 @@ public class WmsInspectionTaskController extends BaseController
     @ApiOperation("查询巡检任务列表")
     @PreAuthorize("@ss.hasPermi('system:wms_inspection_task:list')")
     @GetMapping("/list")
-    public TableDataInfo list(WmsInspectionTask wmsInspectionTask)
-    {
+    public TableDataInfo list(WmsInspectionTask wmsInspectionTask) {
         startPage();
         List<WmsInspectionTask> list = wmsInspectionTaskService.selectWmsInspectionTaskList(wmsInspectionTask);
         return getDataTable(list);
@@ -58,8 +56,7 @@ public class WmsInspectionTaskController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_inspection_task:export')")
     @Log(title = "巡检任务", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, WmsInspectionTask wmsInspectionTask)
-    {
+    public void export(HttpServletResponse response, WmsInspectionTask wmsInspectionTask) {
         List<WmsInspectionTask> list = wmsInspectionTaskService.selectWmsInspectionTaskList(wmsInspectionTask);
         ExcelUtil<WmsInspectionTask> util = new ExcelUtil<WmsInspectionTask>(WmsInspectionTask.class);
         util.exportExcel(response, list, "巡检任务数据");
@@ -71,8 +68,7 @@ public class WmsInspectionTaskController extends BaseController
     @ApiOperation("获取巡检任务详细信息")
     @PreAuthorize("@ss.hasPermi('system:wms_inspection_task:query')")
     @GetMapping(value = "/{id}")
-    public AjaxResult getInfo(@PathVariable("id") Long id)
-    {
+    public AjaxResult getInfo(@PathVariable("id") Long id) {
         return success(wmsInspectionTaskService.selectWmsInspectionTaskById(id));
     }
 
@@ -83,8 +79,7 @@ public class WmsInspectionTaskController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_inspection_task:add')")
     @Log(title = "巡检任务", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody WmsInspectionTask wmsInspectionTask)
-    {
+    public AjaxResult add(@RequestBody WmsInspectionTask wmsInspectionTask) {
         return toAjax(wmsInspectionTaskService.insertWmsInspectionTask(wmsInspectionTask));
     }
 
@@ -95,8 +90,7 @@ public class WmsInspectionTaskController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_inspection_task:edit')")
     @Log(title = "巡检任务", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody WmsInspectionTask wmsInspectionTask)
-    {
+    public AjaxResult edit(@RequestBody WmsInspectionTask wmsInspectionTask) {
         return toAjax(wmsInspectionTaskService.updateWmsInspectionTask(wmsInspectionTask));
     }
 
@@ -106,9 +100,8 @@ public class WmsInspectionTaskController extends BaseController
     @ApiOperation("删除巡检任务")
     @PreAuthorize("@ss.hasPermi('system:wms_inspection_task:remove')")
     @Log(title = "巡检任务", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
-    public AjaxResult remove(@PathVariable Long[] ids)
-    {
+    @DeleteMapping("/{ids}")
+    public AjaxResult remove(@PathVariable Long[] ids) {
         return toAjax(wmsInspectionTaskService.deleteWmsInspectionTaskByIds(ids));
     }
 }

@@ -32,7 +32,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-10-10
  */
-@Api(tags = "车辆发卡记录Controller")
+@Api(value = "车辆发卡记录", tags = {"卡机端", "车辆发卡记录"})
 @RestController
 @RequestMapping("/system/lanya_device_card_sender_vehicle_log")
 @DataSource(DataSourceType.SLAVE)

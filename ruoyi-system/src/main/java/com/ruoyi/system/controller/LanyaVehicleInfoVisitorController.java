@@ -28,16 +28,15 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 访客车辆Controller
- * 
+ *
  * @author 吕涛
  * @date 2025-10-10
  */
-@Api(tags = "访客车辆管理")
+@Api(value = "访客车辆管理", tags = {"卡机端", "访客车辆管理"})
 @RestController
 @RequestMapping("/system/lanya-vehicleInfo-visitor")
 @DataSource(value = DataSourceType.SLAVE)
-public class LanyaVehicleInfoVisitorController extends BaseController
-{
+public class LanyaVehicleInfoVisitorController extends BaseController {
     @Autowired
     private ILanyaVehicleInfoVisitorService lanyaVehicleInfoVisitorService;
 
@@ -47,8 +46,7 @@ public class LanyaVehicleInfoVisitorController extends BaseController
     @ApiOperation("查询访客车辆列表")
     @PreAuthorize("@ss.hasPermi('system:lanya-vehicleInfo-visitor:list')")
     @GetMapping("/list")
-    public TableDataInfo list(LanyaVehicleInfoVisitor lanyaVehicleInfoVisitor)
-    {
+    public TableDataInfo list(LanyaVehicleInfoVisitor lanyaVehicleInfoVisitor) {
         startPage();
         List<LanyaVehicleInfoVisitor> list = lanyaVehicleInfoVisitorService.selectLanyaVehicleInfoVisitorList(lanyaVehicleInfoVisitor);
         return getDataTable(list);
@@ -61,8 +59,7 @@ public class LanyaVehicleInfoVisitorController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:lanya-vehicleInfo-visitor:export')")
     @Log(title = "访客车辆", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, LanyaVehicleInfoVisitor lanyaVehicleInfoVisitor)
-    {
+    public void export(HttpServletResponse response, LanyaVehicleInfoVisitor lanyaVehicleInfoVisitor) {
         List<LanyaVehicleInfoVisitor> list = lanyaVehicleInfoVisitorService.selectLanyaVehicleInfoVisitorList(lanyaVehicleInfoVisitor);
         ExcelUtil<LanyaVehicleInfoVisitor> util = new ExcelUtil<LanyaVehicleInfoVisitor>(LanyaVehicleInfoVisitor.class);
         util.exportExcel(response, list, "访客车辆数据");
@@ -74,8 +71,7 @@ public class LanyaVehicleInfoVisitorController extends BaseController
     @ApiOperation("获取访客车辆详细信息")
     @PreAuthorize("@ss.hasPermi('system:lanya-vehicleInfo-visitor:query')")
     @GetMapping(value = "/{id}")
-    public AjaxResult getInfo(@PathVariable("id") Long id)
-    {
+    public AjaxResult getInfo(@PathVariable("id") Long id) {
         return success(lanyaVehicleInfoVisitorService.selectLanyaVehicleInfoVisitorById(id));
     }
 
@@ -86,8 +82,7 @@ public class LanyaVehicleInfoVisitorController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:lanya-vehicleInfo-visitor:add')")
     @Log(title = "访客车辆", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody LanyaVehicleInfoVisitor lanyaVehicleInfoVisitor)
-    {
+    public AjaxResult add(@RequestBody LanyaVehicleInfoVisitor lanyaVehicleInfoVisitor) {
         return toAjax(lanyaVehicleInfoVisitorService.insertLanyaVehicleInfoVisitor(lanyaVehicleInfoVisitor));
     }
 
@@ -98,8 +93,7 @@ public class LanyaVehicleInfoVisitorController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:lanya-vehicleInfo-visitor:edit')")
     @Log(title = "访客车辆", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody LanyaVehicleInfoVisitor lanyaVehicleInfoVisitor)
-    {
+    public AjaxResult edit(@RequestBody LanyaVehicleInfoVisitor lanyaVehicleInfoVisitor) {
         return toAjax(lanyaVehicleInfoVisitorService.updateLanyaVehicleInfoVisitor(lanyaVehicleInfoVisitor));
     }
 
@@ -109,9 +103,8 @@ public class LanyaVehicleInfoVisitorController extends BaseController
     @ApiOperation("删除访客车辆")
     @PreAuthorize("@ss.hasPermi('system:lanya-vehicleInfo-visitor:remove')")
     @Log(title = "访客车辆", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
-    public AjaxResult remove(@PathVariable Long[] ids)
-    {
+    @DeleteMapping("/{ids}")
+    public AjaxResult remove(@PathVariable Long[] ids) {
         return toAjax(lanyaVehicleInfoVisitorService.deleteLanyaVehicleInfoVisitorByIds(ids));
     }
 }

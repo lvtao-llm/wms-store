@@ -26,15 +26,14 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 设备Controller
- * 
+ *
  * @author ruoyi
  * @date 2025-10-27
  */
-@Api(tags = "设备管理")
+@Api(value = "设备管理", tags = {"系统端", "设备管理"})
 @RestController
 @RequestMapping("/system/wms_device")
-public class WmsDeviceController extends BaseController
-{
+public class WmsDeviceController extends BaseController {
     @Autowired
     private IWmsDeviceService wmsDeviceService;
 
@@ -43,8 +42,7 @@ public class WmsDeviceController extends BaseController
      */
     @ApiOperation("设备列表")
     @GetMapping("/list")
-    public TableDataInfo list(WmsDevice wmsDevice)
-    {
+    public TableDataInfo list(WmsDevice wmsDevice) {
         startPage();
         List<WmsDevice> list = wmsDeviceService.selectWmsDeviceList(wmsDevice);
         return getDataTable(list);
@@ -56,8 +54,7 @@ public class WmsDeviceController extends BaseController
     @ApiOperation("设备列表")
     @Log(title = "设备", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, WmsDevice wmsDevice)
-    {
+    public void export(HttpServletResponse response, WmsDevice wmsDevice) {
         List<WmsDevice> list = wmsDeviceService.selectWmsDeviceList(wmsDevice);
         ExcelUtil<WmsDevice> util = new ExcelUtil<WmsDevice>(WmsDevice.class);
         util.exportExcel(response, list, "设备数据");
@@ -68,8 +65,7 @@ public class WmsDeviceController extends BaseController
      */
     @ApiOperation("设备列表")
     @GetMapping(value = "/{id}")
-    public AjaxResult getInfo(@PathVariable("id") Long id)
-    {
+    public AjaxResult getInfo(@PathVariable("id") Long id) {
         return success(wmsDeviceService.selectWmsDeviceById(id));
     }
 
@@ -79,8 +75,7 @@ public class WmsDeviceController extends BaseController
     @ApiOperation("设备列表")
     @Log(title = "设备", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody WmsDevice wmsDevice)
-    {
+    public AjaxResult add(@RequestBody WmsDevice wmsDevice) {
         return toAjax(wmsDeviceService.insertWmsDevice(wmsDevice));
     }
 
@@ -90,8 +85,7 @@ public class WmsDeviceController extends BaseController
     @ApiOperation("设备列表")
     @Log(title = "设备", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody WmsDevice wmsDevice)
-    {
+    public AjaxResult edit(@RequestBody WmsDevice wmsDevice) {
         return toAjax(wmsDeviceService.updateWmsDevice(wmsDevice));
     }
 
@@ -100,9 +94,8 @@ public class WmsDeviceController extends BaseController
      */
     @ApiOperation("设备列表")
     @Log(title = "设备", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
-    public AjaxResult remove(@PathVariable Long[] ids)
-    {
+    @DeleteMapping("/{ids}")
+    public AjaxResult remove(@PathVariable Long[] ids) {
         return toAjax(wmsDeviceService.deleteWmsDeviceByIds(ids));
     }
 }

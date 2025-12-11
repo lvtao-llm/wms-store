@@ -366,8 +366,16 @@ public class WmsMaterialIn extends WmsMaterialDesc {
     @ApiModelProperty("现场员姓名")
     private String xcyxm;
 
+    /**
+     * 区域名称
+     */
+    @ApiModelProperty("区域名称")
     private String areaName;
 
+    /**
+     * 物资描述ID
+     */
+    @ApiModelProperty("物资描述ID")
     private Long materialDescId;
 
     public void setMaterialDescId(Long id) {

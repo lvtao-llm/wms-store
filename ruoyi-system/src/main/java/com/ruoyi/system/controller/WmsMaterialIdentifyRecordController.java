@@ -40,7 +40,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-11-21
  */
-@Api("物料识别记录")
+@Api(value = "物料识别记录", tags = {"系统端", "物料识别记录"})
 @RestController
 @RequestMapping("/system/wms_material_identify_record")
 public class WmsMaterialIdentifyRecordController extends BaseController {

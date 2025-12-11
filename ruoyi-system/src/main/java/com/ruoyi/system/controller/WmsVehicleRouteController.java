@@ -26,15 +26,14 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 车辆路线规划Controller
- * 
+ *
  * @author ruoyi
  * @date 2025-09-26
  */
-@Api(tags = "车辆路线规划Controller")
+@Api(value = "车辆路线规划", tags = {"系统端", "车辆路线规划"})
 @RestController
 @RequestMapping("/system/route")
-public class WmsVehicleRouteController extends BaseController
-{
+public class WmsVehicleRouteController extends BaseController {
     @Autowired
     private IWmsVehicleRouteService wmsVehicleRouteService;
 
@@ -44,8 +43,7 @@ public class WmsVehicleRouteController extends BaseController
     @ApiOperation("查询车辆路线规划列表")
     @PreAuthorize("@ss.hasPermi('system:route:list')")
     @GetMapping("/list")
-    public TableDataInfo list(WmsVehicleRoute wmsVehicleRoute)
-    {
+    public TableDataInfo list(WmsVehicleRoute wmsVehicleRoute) {
         startPage();
         List<WmsVehicleRoute> list = wmsVehicleRouteService.selectWmsVehicleRouteList(wmsVehicleRoute);
         return getDataTable(list);
@@ -58,8 +56,7 @@ public class WmsVehicleRouteController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:route:export')")
     @Log(title = "车辆路线规划", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, WmsVehicleRoute wmsVehicleRoute)
-    {
+    public void export(HttpServletResponse response, WmsVehicleRoute wmsVehicleRoute) {
         List<WmsVehicleRoute> list = wmsVehicleRouteService.selectWmsVehicleRouteList(wmsVehicleRoute);
         ExcelUtil<WmsVehicleRoute> util = new ExcelUtil<WmsVehicleRoute>(WmsVehicleRoute.class);
         util.exportExcel(response, list, "车辆路线规划数据");
@@ -71,8 +68,7 @@ public class WmsVehicleRouteController extends BaseController
     @ApiOperation("获取车辆路线规划详细信息")
     @PreAuthorize("@ss.hasPermi('system:route:query')")
     @GetMapping(value = "/{routeId}")
-    public AjaxResult getInfo(@PathVariable("routeId") Long routeId)
-    {
+    public AjaxResult getInfo(@PathVariable("routeId") Long routeId) {
         return success(wmsVehicleRouteService.selectWmsVehicleRouteByRouteId(routeId));
     }
 
@@ -83,8 +79,7 @@ public class WmsVehicleRouteController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:route:add')")
     @Log(title = "车辆路线规划", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody WmsVehicleRoute wmsVehicleRoute)
-    {
+    public AjaxResult add(@RequestBody WmsVehicleRoute wmsVehicleRoute) {
         return toAjax(wmsVehicleRouteService.insertWmsVehicleRoute(wmsVehicleRoute));
     }
 
@@ -95,8 +90,7 @@ public class WmsVehicleRouteController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:route:edit')")
     @Log(title = "车辆路线规划", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody WmsVehicleRoute wmsVehicleRoute)
-    {
+    public AjaxResult edit(@RequestBody WmsVehicleRoute wmsVehicleRoute) {
         return toAjax(wmsVehicleRouteService.updateWmsVehicleRoute(wmsVehicleRoute));
     }
 
@@ -106,9 +100,8 @@ public class WmsVehicleRouteController extends BaseController
     @ApiOperation("删除车辆路线规划")
     @PreAuthorize("@ss.hasPermi('system:route:remove')")
     @Log(title = "车辆路线规划", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{routeIds}")
-    public AjaxResult remove(@PathVariable Long[] routeIds)
-    {
+    @DeleteMapping("/{routeIds}")
+    public AjaxResult remove(@PathVariable Long[] routeIds) {
         return toAjax(wmsVehicleRouteService.deleteWmsVehicleRouteByRouteIds(routeIds));
     }
 }

@@ -26,15 +26,14 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 实时定位Controller
- * 
+ *
  * @author ruoyi
  * @date 2025-12-05
  */
-@Api(tags = "实时定位管理")
+@Api(value = "实时定位管理", tags = {"卡机端", "实时定位管理"})
 @RestController
 @RequestMapping("/system/lanya_position_current")
-public class LanyaPositionCurrentController extends BaseController
-{
+public class LanyaPositionCurrentController extends BaseController {
     @Autowired
     private ILanyaPositionCurrentService lanyaPositionCurrentService;
 
@@ -44,8 +43,7 @@ public class LanyaPositionCurrentController extends BaseController
     @ApiOperation("查询实时定位列表")
     @PreAuthorize("@ss.hasPermi('system:lanya_position_current:list')")
     @GetMapping("/list")
-    public TableDataInfo list(LanyaPositionCurrent lanyaPositionCurrent)
-    {
+    public TableDataInfo list(LanyaPositionCurrent lanyaPositionCurrent) {
         startPage();
         List<LanyaPositionCurrent> list = lanyaPositionCurrentService.selectLanyaPositionCurrentList(lanyaPositionCurrent);
         return getDataTable(list);
@@ -58,8 +56,7 @@ public class LanyaPositionCurrentController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:lanya_position_current:export')")
     @Log(title = "实时定位", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, LanyaPositionCurrent lanyaPositionCurrent)
-    {
+    public void export(HttpServletResponse response, LanyaPositionCurrent lanyaPositionCurrent) {
         List<LanyaPositionCurrent> list = lanyaPositionCurrentService.selectLanyaPositionCurrentList(lanyaPositionCurrent);
         ExcelUtil<LanyaPositionCurrent> util = new ExcelUtil<LanyaPositionCurrent>(LanyaPositionCurrent.class);
         util.exportExcel(response, list, "实时定位数据");
@@ -71,8 +68,7 @@ public class LanyaPositionCurrentController extends BaseController
     @ApiOperation("获取实时定位详细信息")
     @PreAuthorize("@ss.hasPermi('system:lanya_position_current:query')")
     @GetMapping(value = "/{id}")
-    public AjaxResult getInfo(@PathVariable("id") Long id)
-    {
+    public AjaxResult getInfo(@PathVariable("id") Long id) {
         return success(lanyaPositionCurrentService.selectLanyaPositionCurrentById(id));
     }
 
@@ -83,8 +79,7 @@ public class LanyaPositionCurrentController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:lanya_position_current:add')")
     @Log(title = "实时定位", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody LanyaPositionCurrent lanyaPositionCurrent)
-    {
+    public AjaxResult add(@RequestBody LanyaPositionCurrent lanyaPositionCurrent) {
         return toAjax(lanyaPositionCurrentService.insertLanyaPositionCurrent(lanyaPositionCurrent));
     }
 
@@ -95,8 +90,7 @@ public class LanyaPositionCurrentController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:lanya_position_current:edit')")
     @Log(title = "实时定位", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody LanyaPositionCurrent lanyaPositionCurrent)
-    {
+    public AjaxResult edit(@RequestBody LanyaPositionCurrent lanyaPositionCurrent) {
         return toAjax(lanyaPositionCurrentService.updateLanyaPositionCurrent(lanyaPositionCurrent));
     }
 
@@ -106,9 +100,8 @@ public class LanyaPositionCurrentController extends BaseController
     @ApiOperation("删除实时定位")
     @PreAuthorize("@ss.hasPermi('system:lanya_position_current:remove')")
     @Log(title = "实时定位", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
-    public AjaxResult remove(@PathVariable Long[] ids)
-    {
+    @DeleteMapping("/{ids}")
+    public AjaxResult remove(@PathVariable Long[] ids) {
         return toAjax(lanyaPositionCurrentService.deleteLanyaPositionCurrentByIds(ids));
     }
 }

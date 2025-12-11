@@ -26,15 +26,14 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 物料出入库相关文件同步队列Controller
- * 
+ *
  * @author ruoyi
  * @date 2025-11-20
  */
-@Api(tags = "物料出入库相关文件同步队列管理")
+@Api(value = "物料出入库相关文件同步队列", tags = {"系统端", "物料出入库相关文件同步队列管理"})
 @RestController
 @RequestMapping("/system/wms_material_out_file_sync_queue")
-public class WmsMaterialOutFileSyncQueueController extends BaseController
-{
+public class WmsMaterialOutFileSyncQueueController extends BaseController {
     @Autowired
     private IWmsMaterialOutFileSyncQueueService wmsMaterialOutFileSyncQueueService;
 
@@ -44,8 +43,7 @@ public class WmsMaterialOutFileSyncQueueController extends BaseController
     @ApiOperation("物料出入库相关文件同步队列列表")
     @PreAuthorize("@ss.hasPermi('system:wms_material_out_file_sync_queue:list')")
     @GetMapping("/list")
-    public TableDataInfo list(WmsMaterialOutFileSyncQueue wmsMaterialOutFileSyncQueue)
-    {
+    public TableDataInfo list(WmsMaterialOutFileSyncQueue wmsMaterialOutFileSyncQueue) {
         startPage();
         List<WmsMaterialOutFileSyncQueue> list = wmsMaterialOutFileSyncQueueService.selectWmsMaterialOutFileSyncQueueList(wmsMaterialOutFileSyncQueue);
         return getDataTable(list);
@@ -58,8 +56,7 @@ public class WmsMaterialOutFileSyncQueueController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_material_out_file_sync_queue:export')")
     @Log(title = "物料出入库相关文件同步队列", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, WmsMaterialOutFileSyncQueue wmsMaterialOutFileSyncQueue)
-    {
+    public void export(HttpServletResponse response, WmsMaterialOutFileSyncQueue wmsMaterialOutFileSyncQueue) {
         List<WmsMaterialOutFileSyncQueue> list = wmsMaterialOutFileSyncQueueService.selectWmsMaterialOutFileSyncQueueList(wmsMaterialOutFileSyncQueue);
         ExcelUtil<WmsMaterialOutFileSyncQueue> util = new ExcelUtil<WmsMaterialOutFileSyncQueue>(WmsMaterialOutFileSyncQueue.class);
         util.exportExcel(response, list, "物料出入库相关文件同步队列数据");
@@ -71,8 +68,7 @@ public class WmsMaterialOutFileSyncQueueController extends BaseController
     @ApiOperation("物料出入库相关文件同步队列列表")
     @PreAuthorize("@ss.hasPermi('system:wms_material_out_file_sync_queue:query')")
     @GetMapping(value = "/{调拨明细编号}")
-    public AjaxResult getInfo(@PathVariable("调拨明细编号") String 调拨明细编号)
-    {
+    public AjaxResult getInfo(@PathVariable("调拨明细编号") String 调拨明细编号) {
         return success(wmsMaterialOutFileSyncQueueService.selectWmsMaterialOutFileSyncQueueBy调拨明细编号(调拨明细编号));
     }
 
@@ -83,8 +79,7 @@ public class WmsMaterialOutFileSyncQueueController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_material_out_file_sync_queue:add')")
     @Log(title = "物料出入库相关文件同步队列", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody WmsMaterialOutFileSyncQueue wmsMaterialOutFileSyncQueue)
-    {
+    public AjaxResult add(@RequestBody WmsMaterialOutFileSyncQueue wmsMaterialOutFileSyncQueue) {
         return toAjax(wmsMaterialOutFileSyncQueueService.insertWmsMaterialOutFileSyncQueue(wmsMaterialOutFileSyncQueue));
     }
 
@@ -95,8 +90,7 @@ public class WmsMaterialOutFileSyncQueueController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_material_out_file_sync_queue:edit')")
     @Log(title = "物料出入库相关文件同步队列", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody WmsMaterialOutFileSyncQueue wmsMaterialOutFileSyncQueue)
-    {
+    public AjaxResult edit(@RequestBody WmsMaterialOutFileSyncQueue wmsMaterialOutFileSyncQueue) {
         return toAjax(wmsMaterialOutFileSyncQueueService.updateWmsMaterialOutFileSyncQueue(wmsMaterialOutFileSyncQueue));
     }
 
@@ -106,9 +100,8 @@ public class WmsMaterialOutFileSyncQueueController extends BaseController
     @ApiOperation("物料出入库相关文件同步队列列表")
     @PreAuthorize("@ss.hasPermi('system:wms_material_out_file_sync_queue:remove')")
     @Log(title = "物料出入库相关文件同步队列", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{调拨明细编号s}")
-    public AjaxResult remove(@PathVariable String[] 调拨明细编号s)
-    {
+    @DeleteMapping("/{调拨明细编号s}")
+    public AjaxResult remove(@PathVariable String[] 调拨明细编号s) {
         return toAjax(wmsMaterialOutFileSyncQueueService.deleteWmsMaterialOutFileSyncQueueBy调拨明细编号s(调拨明细编号s));
     }
 }

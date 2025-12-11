@@ -26,15 +26,14 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 人员档案Controller
- * 
+ *
  * @author ruoyi
  * @date 2025-09-26
  */
-@Api("人员档案")
+@Api(value = "人员档案", tags = {"系统端", "人员档案管理"})
 @RestController
 @RequestMapping("/system/person")
-public class WmsPersonController extends BaseController
-{
+public class WmsPersonController extends BaseController {
     @Autowired
     private IWmsPersonService wmsPersonService;
 
@@ -44,8 +43,7 @@ public class WmsPersonController extends BaseController
     @ApiOperation("查询人员档案列表")
     @PreAuthorize("@ss.hasPermi('system:person:list')")
     @GetMapping("/list")
-    public TableDataInfo list(WmsPerson wmsPerson)
-    {
+    public TableDataInfo list(WmsPerson wmsPerson) {
         startPage();
         List<WmsPerson> list = wmsPersonService.selectWmsPersonList(wmsPerson);
         return getDataTable(list);
@@ -58,8 +56,7 @@ public class WmsPersonController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:person:export')")
     @Log(title = "人员档案", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, WmsPerson wmsPerson)
-    {
+    public void export(HttpServletResponse response, WmsPerson wmsPerson) {
         List<WmsPerson> list = wmsPersonService.selectWmsPersonList(wmsPerson);
         ExcelUtil<WmsPerson> util = new ExcelUtil<WmsPerson>(WmsPerson.class);
         util.exportExcel(response, list, "人员档案数据");
@@ -71,8 +68,7 @@ public class WmsPersonController extends BaseController
     @ApiOperation("获取人员档案详细信息")
     @PreAuthorize("@ss.hasPermi('system:person:query')")
     @GetMapping(value = "/{personId}")
-    public AjaxResult getInfo(@PathVariable("personId") Long personId)
-    {
+    public AjaxResult getInfo(@PathVariable("personId") Long personId) {
         return success(wmsPersonService.selectWmsPersonByPersonId(personId));
     }
 
@@ -83,8 +79,7 @@ public class WmsPersonController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:person:add')")
     @Log(title = "人员档案", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody WmsPerson wmsPerson)
-    {
+    public AjaxResult add(@RequestBody WmsPerson wmsPerson) {
         return toAjax(wmsPersonService.insertWmsPerson(wmsPerson));
     }
 
@@ -95,8 +90,7 @@ public class WmsPersonController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:person:edit')")
     @Log(title = "人员档案", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody WmsPerson wmsPerson)
-    {
+    public AjaxResult edit(@RequestBody WmsPerson wmsPerson) {
         return toAjax(wmsPersonService.updateWmsPerson(wmsPerson));
     }
 
@@ -106,9 +100,8 @@ public class WmsPersonController extends BaseController
     @ApiOperation("删除人员档案")
     @PreAuthorize("@ss.hasPermi('system:person:remove')")
     @Log(title = "人员档案", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{personIds}")
-    public AjaxResult remove(@PathVariable Long[] personIds)
-    {
+    @DeleteMapping("/{personIds}")
+    public AjaxResult remove(@PathVariable Long[] personIds) {
         return toAjax(wmsPersonService.deleteWmsPersonByPersonIds(personIds));
     }
 }

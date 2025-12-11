@@ -26,15 +26,14 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 物料描述档案Controller
- * 
+ *
  * @author ruoyi
  * @date 2025-11-07
  */
-@Api("物料描述档案")
+@Api(value = "物料描述档案", tags = {"系统端", "物料描述档案管理"})
 @RestController
 @RequestMapping("/system/wms_material_desc")
-public class WmsMaterialDescController extends BaseController
-{
+public class WmsMaterialDescController extends BaseController {
     @Autowired
     private IWmsMaterialDescService wmsMaterialDescService;
 
@@ -44,8 +43,7 @@ public class WmsMaterialDescController extends BaseController
     @ApiOperation("查询物料描述档案列表")
     @PreAuthorize("@ss.hasPermi('system:wms_material_desc:list')")
     @GetMapping("/list")
-    public TableDataInfo list(WmsMaterialDesc wmsMaterialDesc)
-    {
+    public TableDataInfo list(WmsMaterialDesc wmsMaterialDesc) {
         startPage();
         List<WmsMaterialDesc> list = wmsMaterialDescService.selectWmsMaterialDescList(wmsMaterialDesc);
         return getDataTable(list);
@@ -58,8 +56,7 @@ public class WmsMaterialDescController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_material_desc:export')")
     @Log(title = "物料描述档案", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, WmsMaterialDesc wmsMaterialDesc)
-    {
+    public void export(HttpServletResponse response, WmsMaterialDesc wmsMaterialDesc) {
         List<WmsMaterialDesc> list = wmsMaterialDescService.selectWmsMaterialDescList(wmsMaterialDesc);
         ExcelUtil<WmsMaterialDesc> util = new ExcelUtil<WmsMaterialDesc>(WmsMaterialDesc.class);
         util.exportExcel(response, list, "物料描述档案数据");
@@ -71,8 +68,7 @@ public class WmsMaterialDescController extends BaseController
     @ApiOperation("获取物料描述档案详细信息")
     @PreAuthorize("@ss.hasPermi('system:wms_material_desc:query')")
     @GetMapping(value = "/{materialDescId}")
-    public AjaxResult getInfo(@PathVariable("materialDescId") Long materialDescId)
-    {
+    public AjaxResult getInfo(@PathVariable("materialDescId") Long materialDescId) {
         return success(wmsMaterialDescService.selectWmsMaterialDescByMaterialDescId(materialDescId));
     }
 
@@ -83,8 +79,7 @@ public class WmsMaterialDescController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_material_desc:add')")
     @Log(title = "物料描述档案", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody WmsMaterialDesc wmsMaterialDesc)
-    {
+    public AjaxResult add(@RequestBody WmsMaterialDesc wmsMaterialDesc) {
         return toAjax(wmsMaterialDescService.insertWmsMaterialDesc(wmsMaterialDesc));
     }
 
@@ -95,8 +90,7 @@ public class WmsMaterialDescController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_material_desc:edit')")
     @Log(title = "物料描述档案", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody WmsMaterialDesc wmsMaterialDesc)
-    {
+    public AjaxResult edit(@RequestBody WmsMaterialDesc wmsMaterialDesc) {
         return toAjax(wmsMaterialDescService.updateWmsMaterialDesc(wmsMaterialDesc));
     }
 
@@ -106,9 +100,8 @@ public class WmsMaterialDescController extends BaseController
     @ApiOperation("删除物料描述档案")
     @PreAuthorize("@ss.hasPermi('system:wms_material_desc:remove')")
     @Log(title = "物料描述档案", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{materialDescIds}")
-    public AjaxResult remove(@PathVariable Long[] materialDescIds)
-    {
+    @DeleteMapping("/{materialDescIds}")
+    public AjaxResult remove(@PathVariable Long[] materialDescIds) {
         return toAjax(wmsMaterialDescService.deleteWmsMaterialDescByMaterialDescIds(materialDescIds));
     }
 }

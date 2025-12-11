@@ -42,7 +42,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-10-10
  */
-@Api("历史轨迹接口")
+@Api(value = "历史轨迹接口", tags = {"卡机端", "历史轨迹接口"})
 @RestController
 @RequestMapping("/system/lanya_position_history")
 public class LanyaPositionHistoryController extends BaseController {

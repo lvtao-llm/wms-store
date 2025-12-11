@@ -31,7 +31,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-10-17
  */
-@Api(tags = "报警信息记录管理")
+@Api(value = "报警信息记录", tags = {"系统端", "报警信息记录管理"})
 @RestController
 @RequestMapping("/system/wms_alarm_log")
 public class WmsAlarmLogController extends BaseController {

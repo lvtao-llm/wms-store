@@ -26,15 +26,14 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 发卡记录Controller
- * 
+ *
  * @author ruoyi
  * @date 2025-09-26
  */
-@Api(tags = "发卡记录Controller")
+@Api(value = "发卡记录", tags = {"系统端", "发卡记录"})
 @RestController
 @RequestMapping("/system/record")
-public class WmsCardRecordController extends BaseController
-{
+public class WmsCardRecordController extends BaseController {
     @Autowired
     private IWmsCardRecordService wmsCardRecordService;
 
@@ -44,8 +43,7 @@ public class WmsCardRecordController extends BaseController
     @ApiOperation("查询发卡记录列表")
     @PreAuthorize("@ss.hasPermi('system:record:list')")
     @GetMapping("/list")
-    public TableDataInfo list(WmsCardRecord wmsCardRecord)
-    {
+    public TableDataInfo list(WmsCardRecord wmsCardRecord) {
         startPage();
         List<WmsCardRecord> list = wmsCardRecordService.selectWmsCardRecordList(wmsCardRecord);
         return getDataTable(list);
@@ -58,8 +56,7 @@ public class WmsCardRecordController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:record:export')")
     @Log(title = "发卡记录", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, WmsCardRecord wmsCardRecord)
-    {
+    public void export(HttpServletResponse response, WmsCardRecord wmsCardRecord) {
         List<WmsCardRecord> list = wmsCardRecordService.selectWmsCardRecordList(wmsCardRecord);
         ExcelUtil<WmsCardRecord> util = new ExcelUtil<WmsCardRecord>(WmsCardRecord.class);
         util.exportExcel(response, list, "发卡记录数据");
@@ -71,8 +68,7 @@ public class WmsCardRecordController extends BaseController
     @ApiOperation("获取发卡记录详细信息")
     @PreAuthorize("@ss.hasPermi('system:record:query')")
     @GetMapping(value = "/{cardRecordId}")
-    public AjaxResult getInfo(@PathVariable("cardRecordId") Long cardRecordId)
-    {
+    public AjaxResult getInfo(@PathVariable("cardRecordId") Long cardRecordId) {
         return success(wmsCardRecordService.selectWmsCardRecordByCardRecordId(cardRecordId));
     }
 
@@ -83,8 +79,7 @@ public class WmsCardRecordController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:record:add')")
     @Log(title = "发卡记录", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody WmsCardRecord wmsCardRecord)
-    {
+    public AjaxResult add(@RequestBody WmsCardRecord wmsCardRecord) {
         return toAjax(wmsCardRecordService.insertWmsCardRecord(wmsCardRecord));
     }
 
@@ -95,8 +90,7 @@ public class WmsCardRecordController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:record:edit')")
     @Log(title = "发卡记录", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody WmsCardRecord wmsCardRecord)
-    {
+    public AjaxResult edit(@RequestBody WmsCardRecord wmsCardRecord) {
         return toAjax(wmsCardRecordService.updateWmsCardRecord(wmsCardRecord));
     }
 
@@ -106,9 +100,8 @@ public class WmsCardRecordController extends BaseController
     @ApiOperation("删除发卡记录")
     @PreAuthorize("@ss.hasPermi('system:record:remove')")
     @Log(title = "发卡记录", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{cardRecordIds}")
-    public AjaxResult remove(@PathVariable Long[] cardRecordIds)
-    {
+    @DeleteMapping("/{cardRecordIds}")
+    public AjaxResult remove(@PathVariable Long[] cardRecordIds) {
         return toAjax(wmsCardRecordService.deleteWmsCardRecordByCardRecordIds(cardRecordIds));
     }
 }

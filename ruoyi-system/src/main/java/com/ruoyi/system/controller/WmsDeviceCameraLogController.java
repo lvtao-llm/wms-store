@@ -34,7 +34,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-11-11
  */
-@Api(tags = "摄像头识别日志管理")
+@Api(value = "摄像头识别日志管理", tags = {"系统端", "摄像头识别日志管理"})
 @RestController
 @RequestMapping("/system/wms_device_camera_log")
 public class WmsDeviceCameraLogController extends BaseController {
@@ -63,6 +63,7 @@ public class WmsDeviceCameraLogController extends BaseController {
         }
         logger.info("摄像头设备名称：{}", ipMapDeviceName);
     }
+
     /**
      * 查询摄像头识别日志列表
      */

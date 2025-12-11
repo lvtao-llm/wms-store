@@ -26,15 +26,14 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 巡检问题Controller
- * 
+ *
  * @author ruoyi
  * @date 2025-10-25
  */
-@Api(tags = "巡检问题管理")
+@Api(value = "巡检问题管理", tags = {"系统端", "巡检问题管理"})
 @RestController
 @RequestMapping("/system/wms_inspection_issue")
-public class WmsInspectionIssueController extends BaseController
-{
+public class WmsInspectionIssueController extends BaseController {
     @Autowired
     private IWmsInspectionIssueService wmsInspectionIssueService;
 
@@ -44,8 +43,7 @@ public class WmsInspectionIssueController extends BaseController
     @ApiOperation("查询巡检问题列表")
     @PreAuthorize("@ss.hasPermi('system:wms_inspection_issue:list')")
     @GetMapping("/list")
-    public TableDataInfo list(WmsInspectionIssue wmsInspectionIssue)
-    {
+    public TableDataInfo list(WmsInspectionIssue wmsInspectionIssue) {
         startPage();
         List<WmsInspectionIssue> list = wmsInspectionIssueService.selectWmsInspectionIssueList(wmsInspectionIssue);
         return getDataTable(list);
@@ -58,8 +56,7 @@ public class WmsInspectionIssueController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_inspection_issue:export')")
     @Log(title = "巡检问题", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, WmsInspectionIssue wmsInspectionIssue)
-    {
+    public void export(HttpServletResponse response, WmsInspectionIssue wmsInspectionIssue) {
         List<WmsInspectionIssue> list = wmsInspectionIssueService.selectWmsInspectionIssueList(wmsInspectionIssue);
         ExcelUtil<WmsInspectionIssue> util = new ExcelUtil<WmsInspectionIssue>(WmsInspectionIssue.class);
         util.exportExcel(response, list, "巡检问题数据");
@@ -71,8 +68,7 @@ public class WmsInspectionIssueController extends BaseController
     @ApiOperation("获取巡检问题详细信息")
     @PreAuthorize("@ss.hasPermi('system:wms_inspection_issue:query')")
     @GetMapping(value = "/{id}")
-    public AjaxResult getInfo(@PathVariable("id") Long id)
-    {
+    public AjaxResult getInfo(@PathVariable("id") Long id) {
         return success(wmsInspectionIssueService.selectWmsInspectionIssueById(id));
     }
 
@@ -83,8 +79,7 @@ public class WmsInspectionIssueController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_inspection_issue:add')")
     @Log(title = "巡检问题", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody WmsInspectionIssue wmsInspectionIssue)
-    {
+    public AjaxResult add(@RequestBody WmsInspectionIssue wmsInspectionIssue) {
         return toAjax(wmsInspectionIssueService.insertWmsInspectionIssue(wmsInspectionIssue));
     }
 
@@ -95,8 +90,7 @@ public class WmsInspectionIssueController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:wms_inspection_issue:edit')")
     @Log(title = "巡检问题", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody WmsInspectionIssue wmsInspectionIssue)
-    {
+    public AjaxResult edit(@RequestBody WmsInspectionIssue wmsInspectionIssue) {
         return toAjax(wmsInspectionIssueService.updateWmsInspectionIssue(wmsInspectionIssue));
     }
 
@@ -106,9 +100,8 @@ public class WmsInspectionIssueController extends BaseController
     @ApiOperation("删除巡检问题")
     @PreAuthorize("@ss.hasPermi('system:wms_inspection_issue:remove')")
     @Log(title = "巡检问题", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
-    public AjaxResult remove(@PathVariable Long[] ids)
-    {
+    @DeleteMapping("/{ids}")
+    public AjaxResult remove(@PathVariable Long[] ids) {
         return toAjax(wmsInspectionIssueService.deleteWmsInspectionIssueByIds(ids));
     }
 }

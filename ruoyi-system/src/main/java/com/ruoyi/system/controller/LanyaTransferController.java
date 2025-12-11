@@ -42,7 +42,7 @@ import java.util.Map;
  * @author ruoyi
  * @date 2025-10-10
  */
-@Api("人员报警")
+@Api(value = "卡机端接口集合", tags = {"卡机端", "卡机端接口集合"})
 @RestController
 @RequestMapping("/system/lanya-transfer")
 @DataSource(DataSourceType.SLAVE)
