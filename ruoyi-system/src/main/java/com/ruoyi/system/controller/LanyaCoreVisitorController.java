@@ -5,6 +5,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.common.annotation.DataSource;
 import com.ruoyi.common.enums.DataSourceType;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +32,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-10-10
  */
+@Api(value = "访客记录", tags = {"卡机端", "访客记录"})
 @RestController
 @RequestMapping("/system/lanya_core_visitor")
 @DataSource(value = DataSourceType.SLAVE)
@@ -40,6 +43,7 @@ public class LanyaCoreVisitorController extends BaseController {
     /**
      * 查询访客记录列表
      */
+    @ApiOperation("查询访客记录列表")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_visitor:list')")
     @GetMapping("/list")
     public TableDataInfo list(LanyaCoreVisitor lanyaCoreVisitor) {
@@ -51,6 +55,7 @@ public class LanyaCoreVisitorController extends BaseController {
     /**
      * 导出访客记录列表
      */
+    @ApiOperation("导出访客记录列表")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_visitor:export')")
     @Log(title = "访客记录", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -63,6 +68,7 @@ public class LanyaCoreVisitorController extends BaseController {
     /**
      * 获取访客记录详细信息
      */
+    @ApiOperation("获取访客记录详细信息")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_visitor:query')")
     @GetMapping(value = "/{visitorId}")
     public AjaxResult getInfo(@PathVariable("visitorId") Long visitorId) {
@@ -72,6 +78,7 @@ public class LanyaCoreVisitorController extends BaseController {
     /**
      * 新增访客记录
      */
+    @ApiOperation("新增访客记录")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_visitor:add')")
     @Log(title = "访客记录", businessType = BusinessType.INSERT)
     @PostMapping
@@ -82,6 +89,7 @@ public class LanyaCoreVisitorController extends BaseController {
     /**
      * 修改访客记录
      */
+    @ApiOperation("修改访客记录")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_visitor:edit')")
     @Log(title = "访客记录", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -92,6 +100,7 @@ public class LanyaCoreVisitorController extends BaseController {
     /**
      * 删除访客记录
      */
+    @ApiOperation("删除访客记录")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_visitor:remove')")
     @Log(title = "访客记录", businessType = BusinessType.DELETE)
     @DeleteMapping("/{visitorIds}")

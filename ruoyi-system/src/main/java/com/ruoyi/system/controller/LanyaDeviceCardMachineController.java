@@ -5,6 +5,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.common.annotation.DataSource;
 import com.ruoyi.common.enums.DataSourceType;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +32,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-10-12
  */
+@Api(value = "发卡机管理", tags = {"卡机端", "发卡机管理", "设备管理"})
 @RestController
 @RequestMapping("/system/lanya_device_machine")
 @DataSource(value = DataSourceType.SLAVE)
@@ -40,6 +43,7 @@ public class LanyaDeviceCardMachineController extends BaseController {
     /**
      * 查询发卡机列表
      */
+    @ApiOperation("查询发卡机列表")
     @PreAuthorize("@ss.hasPermi('system:lanya_device_machine:list')")
     @GetMapping("/list")
     public TableDataInfo list(LanyaDeviceCardMachine lanyaDeviceCardMachine) {
@@ -51,6 +55,7 @@ public class LanyaDeviceCardMachineController extends BaseController {
     /**
      * 导出发卡机列表
      */
+    @ApiOperation("导出发卡机列表")
     @PreAuthorize("@ss.hasPermi('system:lanya_device_machine:export')")
     @Log(title = "发卡机", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -63,6 +68,7 @@ public class LanyaDeviceCardMachineController extends BaseController {
     /**
      * 获取发卡机详细信息
      */
+    @ApiOperation("获取发卡机详细信息")
     @PreAuthorize("@ss.hasPermi('system:lanya_device_machine:query')")
     @GetMapping(value = "/{cardSenderId}")
     public AjaxResult getInfo(@PathVariable("cardSenderId") Long cardSenderId) {
@@ -72,6 +78,7 @@ public class LanyaDeviceCardMachineController extends BaseController {
     /**
      * 新增发卡机
      */
+    @ApiOperation("新增发卡机")
     @PreAuthorize("@ss.hasPermi('system:lanya_device_machine:add')")
     @Log(title = "发卡机", businessType = BusinessType.INSERT)
     @PostMapping
@@ -82,6 +89,7 @@ public class LanyaDeviceCardMachineController extends BaseController {
     /**
      * 修改发卡机
      */
+    @ApiOperation("修改发卡机")
     @PreAuthorize("@ss.hasPermi('system:lanya_device_machine:edit')")
     @Log(title = "发卡机", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -92,6 +100,7 @@ public class LanyaDeviceCardMachineController extends BaseController {
     /**
      * 删除发卡机
      */
+    @ApiOperation("删除发卡机")
     @PreAuthorize("@ss.hasPermi('system:lanya_device_machine:remove')")
     @Log(title = "发卡机", businessType = BusinessType.DELETE)
     @DeleteMapping("/{cardSenderIds}")

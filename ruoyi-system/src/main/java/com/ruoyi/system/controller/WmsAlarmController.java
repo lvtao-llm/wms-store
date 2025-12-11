@@ -2,6 +2,9 @@ package com.ruoyi.system.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +30,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-09-26
  */
+@Api(value = "报警信息")
 @RestController
 @RequestMapping("/system/alarm")
 public class WmsAlarmController extends BaseController
@@ -37,6 +41,7 @@ public class WmsAlarmController extends BaseController
     /**
      * 查询报警信息列表
      */
+    @ApiOperation(value = "查询报警信息列表")
     @PreAuthorize("@ss.hasPermi('system:alarm:list')")
     @GetMapping("/list")
     public TableDataInfo list(WmsAlarm wmsAlarm)
@@ -49,6 +54,7 @@ public class WmsAlarmController extends BaseController
     /**
      * 导出报警信息列表
      */
+    @ApiOperation(value = "导出报警信息列表")
     @PreAuthorize("@ss.hasPermi('system:alarm:export')")
     @Log(title = "报警信息", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -62,6 +68,7 @@ public class WmsAlarmController extends BaseController
     /**
      * 获取报警信息详细信息
      */
+    @ApiOperation(value = "获取报警信息详细信息")
     @PreAuthorize("@ss.hasPermi('system:alarm:query')")
     @GetMapping(value = "/{alarmId}")
     public AjaxResult getInfo(@PathVariable("alarmId") Long alarmId)
@@ -72,6 +79,7 @@ public class WmsAlarmController extends BaseController
     /**
      * 新增报警信息
      */
+    @ApiOperation(value = "新增报警信息")
     @PreAuthorize("@ss.hasPermi('system:alarm:add')")
     @Log(title = "报警信息", businessType = BusinessType.INSERT)
     @PostMapping
@@ -83,6 +91,7 @@ public class WmsAlarmController extends BaseController
     /**
      * 修改报警信息
      */
+    @ApiOperation(value = "修改报警信息")
     @PreAuthorize("@ss.hasPermi('system:alarm:edit')")
     @Log(title = "报警信息", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -94,6 +103,7 @@ public class WmsAlarmController extends BaseController
     /**
      * 删除报警信息
      */
+    @ApiOperation(value = "删除报警信息")
     @PreAuthorize("@ss.hasPermi('system:alarm:remove')")
     @Log(title = "报警信息", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{alarmIds}")

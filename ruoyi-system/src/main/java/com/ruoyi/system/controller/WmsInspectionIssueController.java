@@ -2,6 +2,9 @@ package com.ruoyi.system.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +30,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-10-25
  */
+@Api(tags = "巡检问题管理")
 @RestController
 @RequestMapping("/system/wms_inspection_issue")
 public class WmsInspectionIssueController extends BaseController
@@ -37,6 +41,7 @@ public class WmsInspectionIssueController extends BaseController
     /**
      * 查询巡检问题列表
      */
+    @ApiOperation("查询巡检问题列表")
     @PreAuthorize("@ss.hasPermi('system:wms_inspection_issue:list')")
     @GetMapping("/list")
     public TableDataInfo list(WmsInspectionIssue wmsInspectionIssue)
@@ -49,6 +54,7 @@ public class WmsInspectionIssueController extends BaseController
     /**
      * 导出巡检问题列表
      */
+    @ApiOperation("导出巡检问题列表")
     @PreAuthorize("@ss.hasPermi('system:wms_inspection_issue:export')")
     @Log(title = "巡检问题", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -62,6 +68,7 @@ public class WmsInspectionIssueController extends BaseController
     /**
      * 获取巡检问题详细信息
      */
+    @ApiOperation("获取巡检问题详细信息")
     @PreAuthorize("@ss.hasPermi('system:wms_inspection_issue:query')")
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id)
@@ -72,6 +79,7 @@ public class WmsInspectionIssueController extends BaseController
     /**
      * 新增巡检问题
      */
+    @ApiOperation("新增巡检问题")
     @PreAuthorize("@ss.hasPermi('system:wms_inspection_issue:add')")
     @Log(title = "巡检问题", businessType = BusinessType.INSERT)
     @PostMapping
@@ -83,6 +91,7 @@ public class WmsInspectionIssueController extends BaseController
     /**
      * 修改巡检问题
      */
+    @ApiOperation("修改巡检问题")
     @PreAuthorize("@ss.hasPermi('system:wms_inspection_issue:edit')")
     @Log(title = "巡检问题", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -94,6 +103,7 @@ public class WmsInspectionIssueController extends BaseController
     /**
      * 删除巡检问题
      */
+    @ApiOperation("删除巡检问题")
     @PreAuthorize("@ss.hasPermi('system:wms_inspection_issue:remove')")
     @Log(title = "巡检问题", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{ids}")

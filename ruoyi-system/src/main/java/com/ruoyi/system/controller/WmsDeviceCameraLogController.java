@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServletResponse;
 import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.system.domain.WmsDevice;
 import com.ruoyi.system.service.IWmsDeviceService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,6 +34,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-11-11
  */
+@Api(tags = "摄像头识别日志管理")
 @RestController
 @RequestMapping("/system/wms_device_camera_log")
 public class WmsDeviceCameraLogController extends BaseController {
@@ -63,6 +66,7 @@ public class WmsDeviceCameraLogController extends BaseController {
     /**
      * 查询摄像头识别日志列表
      */
+    @ApiOperation("查询摄像头识别日志列表")
     @PreAuthorize("@ss.hasPermi('system:wms_device_camera_log:list')")
     @GetMapping("/list")
     public TableDataInfo list(WmsDeviceCameraLog wmsDeviceCameraLog) {
@@ -79,6 +83,7 @@ public class WmsDeviceCameraLogController extends BaseController {
     /**
      * 导出摄像头识别日志列表
      */
+    @ApiOperation("导出摄像头识别日志列表")
     @PreAuthorize("@ss.hasPermi('system:wms_device_camera_log:export')")
     @Log(title = "摄像头识别日志", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -91,6 +96,7 @@ public class WmsDeviceCameraLogController extends BaseController {
     /**
      * 获取摄像头识别日志详细信息
      */
+    @ApiOperation("获取摄像头识别日志详细信息")
     @PreAuthorize("@ss.hasPermi('system:wms_device_camera_log:query')")
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id) {
@@ -100,6 +106,7 @@ public class WmsDeviceCameraLogController extends BaseController {
     /**
      * 新增摄像头识别日志
      */
+    @ApiOperation("新增摄像头识别日志")
     @Log(title = "摄像头识别日志", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody WmsDeviceCameraLog wmsDeviceCameraLog) {
@@ -109,6 +116,7 @@ public class WmsDeviceCameraLogController extends BaseController {
     /**
      * 修改摄像头识别日志
      */
+    @ApiOperation("修改摄像头识别日志")
     @PreAuthorize("@ss.hasPermi('system:wms_device_camera_log:edit')")
     @Log(title = "摄像头识别日志", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -119,6 +127,7 @@ public class WmsDeviceCameraLogController extends BaseController {
     /**
      * 删除摄像头识别日志
      */
+    @ApiOperation("删除摄像头识别日志")
     @PreAuthorize("@ss.hasPermi('system:wms_device_camera_log:remove')")
     @Log(title = "摄像头识别日志", businessType = BusinessType.DELETE)
     @DeleteMapping("/{ids}")

@@ -2,6 +2,9 @@ package com.ruoyi.system.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +30,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-09-26
  */
+@Api("人员档案")
 @RestController
 @RequestMapping("/system/person")
 public class WmsPersonController extends BaseController
@@ -37,6 +41,7 @@ public class WmsPersonController extends BaseController
     /**
      * 查询人员档案列表
      */
+    @ApiOperation("查询人员档案列表")
     @PreAuthorize("@ss.hasPermi('system:person:list')")
     @GetMapping("/list")
     public TableDataInfo list(WmsPerson wmsPerson)
@@ -49,6 +54,7 @@ public class WmsPersonController extends BaseController
     /**
      * 导出人员档案列表
      */
+    @ApiOperation("导出人员档案列表")
     @PreAuthorize("@ss.hasPermi('system:person:export')")
     @Log(title = "人员档案", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -62,6 +68,7 @@ public class WmsPersonController extends BaseController
     /**
      * 获取人员档案详细信息
      */
+    @ApiOperation("获取人员档案详细信息")
     @PreAuthorize("@ss.hasPermi('system:person:query')")
     @GetMapping(value = "/{personId}")
     public AjaxResult getInfo(@PathVariable("personId") Long personId)
@@ -72,6 +79,7 @@ public class WmsPersonController extends BaseController
     /**
      * 新增人员档案
      */
+    @ApiOperation("新增人员档案")
     @PreAuthorize("@ss.hasPermi('system:person:add')")
     @Log(title = "人员档案", businessType = BusinessType.INSERT)
     @PostMapping
@@ -83,6 +91,7 @@ public class WmsPersonController extends BaseController
     /**
      * 修改人员档案
      */
+    @ApiOperation("修改人员档案")
     @PreAuthorize("@ss.hasPermi('system:person:edit')")
     @Log(title = "人员档案", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -94,6 +103,7 @@ public class WmsPersonController extends BaseController
     /**
      * 删除人员档案
      */
+    @ApiOperation("删除人员档案")
     @PreAuthorize("@ss.hasPermi('system:person:remove')")
     @Log(title = "人员档案", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{personIds}")

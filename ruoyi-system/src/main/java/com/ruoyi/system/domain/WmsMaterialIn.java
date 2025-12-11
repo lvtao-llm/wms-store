@@ -3,6 +3,8 @@ package com.ruoyi.system.domain;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -14,6 +16,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * @author ruoyi
  * @date 2025-11-08
  */
+@ApiModel("接料视图对象")
 public class WmsMaterialIn extends WmsMaterialDesc {
     private static final long serialVersionUID = 1L;
 
@@ -21,298 +24,346 @@ public class WmsMaterialIn extends WmsMaterialDesc {
      * 接料编号
      */
     @Excel(name = "接料编号")
+    @ApiModelProperty("接料编号")
     private String jlBh;
 
     /**
      * 到货编号
      */
     @Excel(name = "到货编号")
+    @ApiModelProperty("到货编号")
     private String dhBh;
 
     /**
      * 货票编号
      */
     @Excel(name = "货票编号")
+    @ApiModelProperty("货票编号")
     private String hpBh;
 
     /**
      * 到货类型
      */
     @Excel(name = "到货类型")
+    @ApiModelProperty("到货类型")
     private String dhLx;
 
     /**
      * 库房
      */
     @Excel(name = "库房")
+    @ApiModelProperty("库房")
     private String kf;
 
     /**
      * 单据类型
      */
     @Excel(name = "单据类型")
+    @ApiModelProperty("单据类型")
     private String djLx;
 
     /**
      * 车号
      */
     @Excel(name = "车号")
+    @ApiModelProperty("车号")
     private String ch;
 
     /**
      * 车数
      */
     @Excel(name = "车数")
+    @ApiModelProperty("车数")
     private Double cs;
 
     /**
      * AS运单号
      */
     @Excel(name = "AS运单号")
+    @ApiModelProperty("AS运单号")
     private String asYdh;
 
     /**
      * 发运数量
      */
     @Excel(name = "发运数量")
+    @ApiModelProperty("发运数量")
     private Double fysl;
 
     /**
      * 到货数量
      */
     @Excel(name = "到货数量")
+    @ApiModelProperty("到货数量")
     private Double dhsl;
 
     /**
      * 计量员
      */
     @Excel(name = "计量员")
+    @ApiModelProperty("计量员")
     private String jly;
 
     /**
      * 计量时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+//    @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "计量时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @ApiModelProperty("计量时间")
     private Date jlsj;
 
     /**
      * 厂商名称
      */
     @Excel(name = "厂商名称")
+    @ApiModelProperty("厂商名称")
     private String csMc;
 
     /**
      * 物资编码
      */
     @Excel(name = "物资编码")
+    @ApiModelProperty("物资编码")
     private String wzbm;
 
     /**
      * 计量类型
      */
     @Excel(name = "计量类型")
+    @ApiModelProperty("计量类型")
     private String jllx;
 
     /**
      * 交料人
      */
     @Excel(name = "交料人")
+    @ApiModelProperty("交料人")
     private String jlr;
 
     /**
      * 交料时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+//    @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "交料时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @ApiModelProperty("交料时间")
     private Date jlsjR;
 
     /**
      * 保管员
      */
     @Excel(name = "保管员")
+    @ApiModelProperty("保管员")
     private String bgy;
 
     /**
      * 中队
      */
     @Excel(name = "中队")
+    @ApiModelProperty("中队")
     private String zd;
 
     /**
      * 料组
      */
     @Excel(name = "料组")
+    @ApiModelProperty("料组")
     private String lz;
 
     /**
      * 接料时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+//    @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "接料时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @ApiModelProperty("接料时间")
     private Date jlsjT;
 
     /**
      * 验收人
      */
     @Excel(name = "验收人")
+    @ApiModelProperty("验收人")
     private String ysr;
 
     /**
      * 验收时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+//    @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "验收时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @ApiModelProperty("验收时间")
     private Date yssj;
 
     /**
      * 稽核人
      */
     @Excel(name = "稽核人")
+    @ApiModelProperty("稽核人")
     private String jhr;
 
     /**
      * 稽核时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+//    @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "稽核时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @ApiModelProperty("稽核时间")
     private Date jhsj;
 
     /**
      * 到库时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+//    @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "到库时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @ApiModelProperty("到库时间")
     private Date dksj;
 
     /**
      * 发运时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+//    @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "发运时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @ApiModelProperty("发运时间")
     private Date fysj;
 
     /**
      * 发运方式
      */
     @Excel(name = "发运方式")
+    @ApiModelProperty("发运方式")
     private String fyfs;
 
     /**
      * 发站
      */
     @Excel(name = "发站")
+    @ApiModelProperty("发站")
     private String fz;
 
     /**
      * 到站
      */
     @Excel(name = "到站")
+    @ApiModelProperty("到站")
     private String dz;
 
     /**
      * 业务年月
      */
     @Excel(name = "业务年月")
+    @ApiModelProperty("业务年月")
     private String yynY;
 
     /**
      * 状态
      */
     @Excel(name = "状态")
+    @ApiModelProperty("状态")
     private String zt;
 
     /**
      * 卸车编号
      */
     @Excel(name = "卸车编号")
+    @ApiModelProperty("卸车编号")
     private String xcbh;
 
     /**
      * 品种编码
      */
     @Excel(name = "品种编码")
+    @ApiModelProperty("品种编码")
     private String pzbm;
 
     /**
      * 物资名称
      */
     @Excel(name = "物资名称")
+    @ApiModelProperty("物资名称")
     private String wzmc;
 
     /**
      * 计量单位
      */
     @Excel(name = "计量单位")
+    @ApiModelProperty("计量单位")
     private String jldw;
 
     /**
      * 物资类别
      */
     @Excel(name = "物资类别")
+    @ApiModelProperty("物资类别")
     private String wzlb;
 
     /**
      * 验收人编码
      */
     @Excel(name = "验收人编码")
+    @ApiModelProperty("验收人编码")
     private String ysrBm;
 
     /**
      * 接料人编码
      */
     @Excel(name = "接料人编码")
+    @ApiModelProperty("接料人编码")
     private String jlrBm;
 
     /**
      * 品种名称
      */
     @Excel(name = "品种名称")
+    @ApiModelProperty("品种名称")
     private String pzmc;
 
     /**
      * 业务分公司
      */
     @Excel(name = "业务分公司")
+    @ApiModelProperty("业务分公司")
     private String ywfgs;
 
     /**
      * 装卸队名称
      */
     @Excel(name = "装卸队名称")
+    @ApiModelProperty("装卸队名称")
     private String zxzdMc;
 
     /**
      * 卸车方式
      */
     @Excel(name = "卸车方式")
+    @ApiModelProperty("卸车方式")
     private String xcfs;
 
     /**
      * 卸车作业起始时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+//    @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "卸车作业起始时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @ApiModelProperty("卸车作业起始时间")
     private Date xczysjQ;
 
     /**
      * 卸车作业截止时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+//    @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "卸车作业截止时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @ApiModelProperty("卸车作业截止时间")
     private Date xczysjZ;
 
     /**
      * 出库时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+//    @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "出库时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @ApiModelProperty("出库时间")
     private Date cksj;
 
     /**
      * 现场员姓名
      */
     @Excel(name = "现场员姓名")
+    @ApiModelProperty("现场员姓名")
     private String xcyxm;
 
     private String areaName;

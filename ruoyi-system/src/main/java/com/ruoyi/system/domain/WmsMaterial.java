@@ -1,5 +1,7 @@
 package com.ruoyi.system.domain;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -11,79 +13,98 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * @author ruoyi
  * @date 2025-09-26
  */
+@ApiModel("物料档案对象")
 public class WmsMaterial extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
     /** 主键 */
+    @ApiModelProperty("主键")
     private Long materialId;
 
     /** 物料编码 */
     @Excel(name = "物料编码")
+    @ApiModelProperty("物料编码")
     private String materialCode;
 
     /** 物料名称 */
     @Excel(name = "物料名称")
+    @ApiModelProperty("物料名称")
     private String materialName;
 
     /** 规格 */
     @Excel(name = "规格")
+    @ApiModelProperty("规格")
     private String materialSpec;
 
     /** 型号 */
     @Excel(name = "型号")
+    @ApiModelProperty("型号")
     private String materialModel;
 
     /** 批次 */
     @Excel(name = "批次")
+    @ApiModelProperty("批次")
     private String materialBatchNo;
 
     /** 存放区域 */
     @Excel(name = "存放区域")
+    @ApiModelProperty("存放区域")
     private String areaCode;
 
     /** 库存件数 */
     @Excel(name = "库存件数")
+    @ApiModelProperty("库存件数")
     private Long materialStockQty;
 
     /** 变更的上一记录 */
     @Excel(name = "变更的上一记录")
+    @ApiModelProperty("变更的上一记录")
     private Long materialChangePrevId;
 
     /** 变更的下一记录 */
     @Excel(name = "变更的下一记录")
+    @ApiModelProperty("变更的下一记录")
     private Long materialChangeNextId;
 
     /** 是否是变更记录：0初始入库，1变更记录 */
     @Excel(name = "是否是变更记录：0初始入库，1变更记录")
+    @ApiModelProperty("是否是变更记录")
     private String materialIsChange;
 
     /** 变更类型：0入库，1出库，2：借入更正，3：贷出更正 */
     @Excel(name = "变更类型：0入库，1出库，2：借入更正，3：贷出更正")
+    @ApiModelProperty("变更类型")
     private String materialChangeType;
 
     /** 变更原因 */
     @Excel(name = "变更原因")
+    @ApiModelProperty("变更原因")
     private String materialChangeCause;
 
     /** 单位 */
     @Excel(name = "单位")
+    @ApiModelProperty("单位")
     private String materialUnit;
 
     /** 存放位置：json{x,y} */
     @Excel(name = "存放位置：json{x,y}")
+    @ApiModelProperty("存放位置")
     private String materialPos;
 
     /** 存放条件 */
     @Excel(name = "存放条件")
+    @ApiModelProperty("存放条件")
     private String materialRequirements;
 
     /** 安全注意事项 */
     @Excel(name = "安全注意事项")
+    @ApiModelProperty("安全注意事项")
     private String materialSafetyNotice;
 
     /** 物料照片 */
     @Excel(name = "物料照片")
+    @ApiModelProperty("物料照片")
     private String materialPhoto;
 
     public void setMaterialId(Long materialId) 

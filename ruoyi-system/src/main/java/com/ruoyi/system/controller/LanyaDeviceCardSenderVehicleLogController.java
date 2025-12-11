@@ -5,6 +5,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.common.annotation.DataSource;
 import com.ruoyi.common.enums.DataSourceType;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +32,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-10-10
  */
+@Api(tags = "车辆发卡记录Controller")
 @RestController
 @RequestMapping("/system/lanya_device_card_sender_vehicle_log")
 @DataSource(DataSourceType.SLAVE)
@@ -40,6 +43,7 @@ public class LanyaDeviceCardSenderVehicleLogController extends BaseController {
     /**
      * 查询车辆发卡记录列表
      */
+    @ApiOperation("查询车辆发卡记录列表")
     @PreAuthorize("@ss.hasPermi('system:lanya_device_card_sender_vehicle_log:list')")
     @GetMapping("/list")
     public TableDataInfo list(LanyaDeviceCardSenderVehicleLog lanyaDeviceCardSenderVehicleLog) {
@@ -51,6 +55,7 @@ public class LanyaDeviceCardSenderVehicleLogController extends BaseController {
     /**
      * 导出车辆发卡记录列表
      */
+    @ApiOperation("导出车辆发卡记录列表")
     @PreAuthorize("@ss.hasPermi('system:lanya_device_card_sender_vehicle_log:export')")
     @Log(title = "车辆发卡记录", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -63,6 +68,7 @@ public class LanyaDeviceCardSenderVehicleLogController extends BaseController {
     /**
      * 获取车辆发卡记录详细信息
      */
+    @ApiOperation("获取车辆发卡记录详细信息")
     @PreAuthorize("@ss.hasPermi('system:lanya_device_card_sender_vehicle_log:query')")
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id) {
@@ -72,6 +78,7 @@ public class LanyaDeviceCardSenderVehicleLogController extends BaseController {
     /**
      * 新增车辆发卡记录
      */
+    @ApiOperation("新增车辆发卡记录")
     @PreAuthorize("@ss.hasPermi('system:lanya_device_card_sender_vehicle_log:add')")
     @Log(title = "车辆发卡记录", businessType = BusinessType.INSERT)
     @PostMapping
@@ -82,6 +89,7 @@ public class LanyaDeviceCardSenderVehicleLogController extends BaseController {
     /**
      * 修改车辆发卡记录
      */
+    @ApiOperation("修改车辆发卡记录")
     @PreAuthorize("@ss.hasPermi('system:lanya_device_card_sender_vehicle_log:edit')")
     @Log(title = "车辆发卡记录", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -92,6 +100,7 @@ public class LanyaDeviceCardSenderVehicleLogController extends BaseController {
     /**
      * 删除车辆发卡记录
      */
+    @ApiOperation("删除车辆发卡记录")
     @PreAuthorize("@ss.hasPermi('system:lanya_device_card_sender_vehicle_log:remove')")
     @Log(title = "车辆发卡记录", businessType = BusinessType.DELETE)
     @DeleteMapping("/{ids}")

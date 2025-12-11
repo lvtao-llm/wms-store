@@ -1,5 +1,7 @@
 package com.ruoyi.system.domain;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -11,6 +13,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * @author ruoyi
  * @date 2025-11-21
  */
+@ApiModel("物料识别记录对象")
 public class WmsMaterialIdentifyRecord extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
@@ -18,54 +21,63 @@ public class WmsMaterialIdentifyRecord extends BaseEntity {
      * 年月日
      */
     @Excel(name = "年月日")
+    @ApiModelProperty("年月日")
     private String ymd;
 
     /**
      * 时分秒
      */
     @Excel(name = "时分秒")
+    @ApiModelProperty("时分秒")
     private String hms;
 
     /**
      * 物资编码
      */
     @Excel(name = "物资编码")
+    @ApiModelProperty("物资编码")
     private String wzbm;
 
     /**
      * 物料识别结果
      */
     @Excel(name = "物料识别结果")
+    @ApiModelProperty("物料识别结果")
     private String wlsbjg;
 
     /**
      * 车牌号
      */
     @Excel(name = "车牌号")
+    @ApiModelProperty("车牌号")
     private String cph;
 
     /**
      * 车轴数
      */
     @Excel(name = "车轴数")
+    @ApiModelProperty("车轴数")
     private String czs;
 
     /**
      * 图片1
      */
     @Excel(name = "图片1")
+    @ApiModelProperty("图片1")
     private String img1;
 
     /**
      * 图片2
      */
     @Excel(name = "图片2")
+    @ApiModelProperty("图片2")
     private String mg2;
 
     /**
      * 图片路径
      */
     @Excel(name = "图片路径")
+    @ApiModelProperty("图片路径")
     private String imagePath;
 
     public String getImagePath() {

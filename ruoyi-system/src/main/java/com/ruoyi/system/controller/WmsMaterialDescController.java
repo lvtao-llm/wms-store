@@ -2,6 +2,9 @@ package com.ruoyi.system.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +30,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-11-07
  */
+@Api("物料描述档案")
 @RestController
 @RequestMapping("/system/wms_material_desc")
 public class WmsMaterialDescController extends BaseController
@@ -37,6 +41,7 @@ public class WmsMaterialDescController extends BaseController
     /**
      * 查询物料描述档案列表
      */
+    @ApiOperation("查询物料描述档案列表")
     @PreAuthorize("@ss.hasPermi('system:wms_material_desc:list')")
     @GetMapping("/list")
     public TableDataInfo list(WmsMaterialDesc wmsMaterialDesc)
@@ -49,6 +54,7 @@ public class WmsMaterialDescController extends BaseController
     /**
      * 导出物料描述档案列表
      */
+    @ApiOperation("导出物料描述档案列表")
     @PreAuthorize("@ss.hasPermi('system:wms_material_desc:export')")
     @Log(title = "物料描述档案", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -62,6 +68,7 @@ public class WmsMaterialDescController extends BaseController
     /**
      * 获取物料描述档案详细信息
      */
+    @ApiOperation("获取物料描述档案详细信息")
     @PreAuthorize("@ss.hasPermi('system:wms_material_desc:query')")
     @GetMapping(value = "/{materialDescId}")
     public AjaxResult getInfo(@PathVariable("materialDescId") Long materialDescId)
@@ -72,6 +79,7 @@ public class WmsMaterialDescController extends BaseController
     /**
      * 新增物料描述档案
      */
+    @ApiOperation("新增物料描述档案")
     @PreAuthorize("@ss.hasPermi('system:wms_material_desc:add')")
     @Log(title = "物料描述档案", businessType = BusinessType.INSERT)
     @PostMapping
@@ -83,6 +91,7 @@ public class WmsMaterialDescController extends BaseController
     /**
      * 修改物料描述档案
      */
+    @ApiOperation("修改物料描述档案")
     @PreAuthorize("@ss.hasPermi('system:wms_material_desc:edit')")
     @Log(title = "物料描述档案", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -94,6 +103,7 @@ public class WmsMaterialDescController extends BaseController
     /**
      * 删除物料描述档案
      */
+    @ApiOperation("删除物料描述档案")
     @PreAuthorize("@ss.hasPermi('system:wms_material_desc:remove')")
     @Log(title = "物料描述档案", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{materialDescIds}")

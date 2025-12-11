@@ -1,5 +1,7 @@
 package com.ruoyi.system.domain;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -11,47 +13,58 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * @author ruoyi
  * @date 2025-09-26
  */
+@ApiModel("访客信息")
 public class WmsVisitor extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
     /** 主键 */
+    @ApiModelProperty("主键")
     private Long visitorId;
 
     /** 身份证号 */
     @Excel(name = "身份证号")
+    @ApiModelProperty("身份证号")
     private String visitorIdentityNo;
 
     /** 姓名 */
     @Excel(name = "姓名")
+    @ApiModelProperty("姓名")
     private String visitorName;
 
     /** 手机号 */
     @Excel(name = "手机号")
+    @ApiModelProperty("手机号")
     private String visitorPhone;
 
     /** 来访事由 */
     @Excel(name = "来访事由")
+    @ApiModelProperty("来访事由")
     private String visitorPurpose;
 
     /** 预计停留时间 */
     @Excel(name = "预计停留时间")
+    @ApiModelProperty("预计停留时间")
     private String estimatedTime;
 
     /** 被访人 */
     @Excel(name = "被访人")
+    @ApiModelProperty("被访人")
     private String visitee;
 
     /** 人脸照片Base64 */
     @Excel(name = "人脸照片Base64")
+    @ApiModelProperty("人脸照片Base64")
     private String img;
 
     /** 发卡记录ID */
     @Excel(name = "发卡记录ID")
+    @ApiModelProperty("发卡记录ID")
     private Long cardRecordId;
 
     /** 到访区域:json数组 */
     @Excel(name = "到访区域:json数组")
+    @ApiModelProperty("到访区域:json数组")
     private String areaCode;
 
     public void setVisitorId(Long visitorId) 

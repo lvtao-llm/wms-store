@@ -3,6 +3,8 @@ package com.ruoyi.system.domain;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -18,113 +20,132 @@ import java.util.List;
  * @author ruoyi
  * @date 2025-09-26
  */
+@ApiModel( "区域对象")
 public class WmsArea extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     /**
      * 区域ID
      */
+    @ApiModelProperty("区域ID")
     private Long areaId;
 
     /**
      * 区域编码
      */
     @Excel(name = "区域编码")
+    @ApiModelProperty("区域编码")
     private String areaCode;
 
     /**
      * 区域名称
      */
     @Excel(name = "区域名称")
+    @ApiModelProperty("区域名称")
     private String areaName;
 
     /**
      * 1库区 2料场 3办公 4作业 5高风险
      */
     @Excel(name = "1库区 2料场 3办公 4作业 5高风险")
+    @ApiModelProperty("1库区 2料场 3办公 4作业 5高风险")
     private String areaType;
 
     /**
      * 区域颜色
      */
     @Excel(name = "区域颜色")
+    @ApiModelProperty("区域颜色")
     private String areaColor;
 
     /**
      * 区域功能
      */
     @Excel(name = "区域功能")
+    @ApiModelProperty("区域功能")
     private String areaFunction;
 
     /**
      * 安全提示
      */
     @Excel(name = "安全提示")
+    @ApiModelProperty("安全提示")
     private String areaSafetyNotice;
 
     /**
      * 多边形边界JSON
      */
     @Excel(name = "多边形边界JSON")
+    @ApiModelProperty("多边形边界JSON")
     private String areaPolygon;
 
     /**
      * 风险等级 0低 1中 2高
      */
     @Excel(name = "风险等级 0低 1中 2高")
+    @ApiModelProperty("风险等级 0低 1中 2高")
     private String areaRiskLevel;
 
     /**
      * 启用状态
      */
     @Excel(name = "启用状态")
+    @ApiModelProperty("启用状态")
     private String enabled;
 
     /**
      * geometry
      */
     @JsonIgnore
+    @ApiModelProperty("geometry")
     private Geometry geometry;
 
     /**
      * 区域图片
      */
     @Excel(name = "区域图片")
+    @ApiModelProperty("区域图片")
     private String photos;
 
     /**
      * 全景图片
      */
     @Excel(name = "全景图片")
+    @ApiModelProperty("全景图片")
     private String photo360;
 
     /**
      * 删除标志
      */
+    @ApiModelProperty("删除标志")
     private String delFlag;
 
     /**
      * 相机
      */
     @Excel(name = "相机")
+    @ApiModelProperty("相机")
     private String cameras;
 
     /**
      * 内部员工人数
      */
     @JsonIgnore
+    @ApiModelProperty("内部员工人数")
     private int staffCount = 0;
 
     /**
      * 外部 visitor人数
      */
     @JsonIgnore
+    @ApiModelProperty("外部 visitor人数")
     private int visitorCount = 0;
 
     /**
      * 车辆数
      */
     @JsonIgnore
+    @ApiModelProperty("车辆数")
     private int vehicleCount = 0;
 
     public void setAreaId(Long areaId) {

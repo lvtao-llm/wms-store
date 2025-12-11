@@ -5,6 +5,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.common.annotation.DataSource;
 import com.ruoyi.common.enums.DataSourceType;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +32,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author 吕涛
  * @date 2025-10-10
  */
+@Api(tags = "访客车辆管理")
 @RestController
 @RequestMapping("/system/lanya-vehicleInfo-visitor")
 @DataSource(value = DataSourceType.SLAVE)
@@ -41,6 +44,7 @@ public class LanyaVehicleInfoVisitorController extends BaseController
     /**
      * 查询访客车辆列表
      */
+    @ApiOperation("查询访客车辆列表")
     @PreAuthorize("@ss.hasPermi('system:lanya-vehicleInfo-visitor:list')")
     @GetMapping("/list")
     public TableDataInfo list(LanyaVehicleInfoVisitor lanyaVehicleInfoVisitor)
@@ -53,6 +57,7 @@ public class LanyaVehicleInfoVisitorController extends BaseController
     /**
      * 导出访客车辆列表
      */
+    @ApiOperation("导出访客车辆列表")
     @PreAuthorize("@ss.hasPermi('system:lanya-vehicleInfo-visitor:export')")
     @Log(title = "访客车辆", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -66,6 +71,7 @@ public class LanyaVehicleInfoVisitorController extends BaseController
     /**
      * 获取访客车辆详细信息
      */
+    @ApiOperation("获取访客车辆详细信息")
     @PreAuthorize("@ss.hasPermi('system:lanya-vehicleInfo-visitor:query')")
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id)
@@ -76,6 +82,7 @@ public class LanyaVehicleInfoVisitorController extends BaseController
     /**
      * 新增访客车辆
      */
+    @ApiOperation("新增访客车辆")
     @PreAuthorize("@ss.hasPermi('system:lanya-vehicleInfo-visitor:add')")
     @Log(title = "访客车辆", businessType = BusinessType.INSERT)
     @PostMapping
@@ -87,6 +94,7 @@ public class LanyaVehicleInfoVisitorController extends BaseController
     /**
      * 修改访客车辆
      */
+    @ApiOperation("修改访客车辆")
     @PreAuthorize("@ss.hasPermi('system:lanya-vehicleInfo-visitor:edit')")
     @Log(title = "访客车辆", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -98,6 +106,7 @@ public class LanyaVehicleInfoVisitorController extends BaseController
     /**
      * 删除访客车辆
      */
+    @ApiOperation("删除访客车辆")
     @PreAuthorize("@ss.hasPermi('system:lanya-vehicleInfo-visitor:remove')")
     @Log(title = "访客车辆", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{ids}")

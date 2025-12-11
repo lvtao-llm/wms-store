@@ -1,6 +1,8 @@
 package com.ruoyi.system.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -12,6 +14,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * @author ruoyi
  * @date 2025-10-20
  */
+@ApiModel("报警信息规则对象")
 public class WmsAlarmRule extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
@@ -19,93 +22,109 @@ public class WmsAlarmRule extends BaseEntity {
      * ID
      */
     @Excel(name = "ID")
+    @ApiModelProperty("主键")
     private Long alarmRuleId;
 
     /**
      * 规则名
      */
     @Excel(name = "规则名")
+    @ApiModelProperty("规则名")
     private String alarmRuleName;
 
     /**
      * 时间阈值
      */
     @Excel(name = "时间阈值")
+    @ApiModelProperty("时间阈值")
     private Double alarmRuleTimeThreshold;
 
     /**
      * 距离阈值
      */
     @Excel(name = "距离阈值")
+    @ApiModelProperty("距离阈值")
     private Double alarmRuleDistThreshold;
 
     /**
      * 目标区域
      */
     @Excel(name = "目标区域")
+    @ApiModelProperty("目标区域")
     private String alarmRuleTargetAreaCode;
 
     /**
      * 报警类型
      */
     @Excel(name = "报警类型")
+    @ApiModelProperty("报警类型")
     private String alarmRuleType;
 
     /**
      * 生效周期开始时间cron
      */
     @Excel(name = "生效周期开始时间cron")
+    @ApiModelProperty("生效周期开始时间cron")
     private String alarmRuleEffectivePeriodS;
 
     /**
      * 生效周期结束时间cron
      */
     @Excel(name = "生效周期结束时间cron")
+    @ApiModelProperty("生效周期结束时间cron")
     private String alarmRuleEffectivePeriodE;
 
     /**
      * 是否启用
      */
     @Excel(name = "是否启用")
+    @ApiModelProperty("是否启用")
     private String alarmRuleEnabled;
 
     /**
      * 关联人员
      */
     @Excel(name = "关联人员")
+    @ApiModelProperty("关联人员")
     private String alarmRuleRelatedPeople;
 
     /**
      * 关联岗位
      */
     @Excel(name = "关联岗位")
+    @ApiModelProperty("关联岗位")
     private String alarmRuleRelatedDept;
 
     /**
      * 通知方式
      */
     @Excel(name = "通知方式")
+    @ApiModelProperty("通知方式")
     private String alarmRuleNoticeType;
 
     /**
      * 报警类型
      */
     @Excel(name = "报警类型")
+    @ApiModelProperty("报警类型")
     private String alarmType;
 
     /**
      * 最大人数
      */
+    @ApiModelProperty("最大人数")
     private Integer maxPeopleCount;
 
     /**
      * 百分比
      */
+    @ApiModelProperty("百分比")
     private double percentage = 0;
 
     /**
      * 统计数量
      */
+    @ApiModelProperty("统计数量")
     private int count = 0;
 
     public void setAlarmRuleId(Long alarmRuleId) {

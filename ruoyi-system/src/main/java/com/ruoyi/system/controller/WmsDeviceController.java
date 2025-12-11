@@ -2,6 +2,9 @@ package com.ruoyi.system.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +30,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-10-27
  */
+@Api(tags = "设备管理")
 @RestController
 @RequestMapping("/system/wms_device")
 public class WmsDeviceController extends BaseController
@@ -37,6 +41,7 @@ public class WmsDeviceController extends BaseController
     /**
      * 查询设备列表
      */
+    @ApiOperation("设备列表")
     @GetMapping("/list")
     public TableDataInfo list(WmsDevice wmsDevice)
     {
@@ -48,6 +53,7 @@ public class WmsDeviceController extends BaseController
     /**
      * 导出设备列表
      */
+    @ApiOperation("设备列表")
     @Log(title = "设备", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, WmsDevice wmsDevice)
@@ -60,6 +66,7 @@ public class WmsDeviceController extends BaseController
     /**
      * 获取设备详细信息
      */
+    @ApiOperation("设备列表")
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id)
     {
@@ -69,6 +76,7 @@ public class WmsDeviceController extends BaseController
     /**
      * 新增设备
      */
+    @ApiOperation("设备列表")
     @Log(title = "设备", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody WmsDevice wmsDevice)
@@ -79,6 +87,7 @@ public class WmsDeviceController extends BaseController
     /**
      * 修改设备
      */
+    @ApiOperation("设备列表")
     @Log(title = "设备", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody WmsDevice wmsDevice)
@@ -89,6 +98,7 @@ public class WmsDeviceController extends BaseController
     /**
      * 删除设备
      */
+    @ApiOperation("设备列表")
     @Log(title = "设备", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable Long[] ids)

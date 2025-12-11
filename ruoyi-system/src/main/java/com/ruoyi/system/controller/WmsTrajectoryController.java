@@ -3,6 +3,8 @@ package com.ruoyi.system.controller;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +30,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-09-26
  */
+@Api(tags = "轨迹管理")
 @RestController
 @RequestMapping("/system/trajectory")
 public class WmsTrajectoryController extends BaseController {
@@ -37,6 +40,7 @@ public class WmsTrajectoryController extends BaseController {
     /**
      * 查询轨迹列表
      */
+    @ApiOperation("轨迹列表")
     @PreAuthorize("@ss.hasPermi('system:trajectory:list')")
     @GetMapping("/list")
     public TableDataInfo list(WmsTrajectory wmsTrajectory) {
@@ -48,6 +52,7 @@ public class WmsTrajectoryController extends BaseController {
     /**
      * 查询轨迹列表
      */
+    @ApiOperation("轨迹列表")
     @GetMapping("/personFuzzyList")
     public TableDataInfo personFuzzyList(String key) {
         startPage();
@@ -61,6 +66,7 @@ public class WmsTrajectoryController extends BaseController {
     /**
      * 查询轨迹列表
      */
+    @ApiOperation("轨迹列表")
     @GetMapping("/vehicleFuzzyList")
     public TableDataInfo vehicleFuzzyList(String  key) {
         startPage();
@@ -74,6 +80,7 @@ public class WmsTrajectoryController extends BaseController {
     /**
      * 导出轨迹列表
      */
+    @ApiOperation("轨迹列表")
     @PreAuthorize("@ss.hasPermi('system:trajectory:export')")
     @Log(title = "轨迹", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -86,6 +93,7 @@ public class WmsTrajectoryController extends BaseController {
     /**
      * 获取轨迹详细信息
      */
+    @ApiOperation("获取轨迹详细信息")
     @PreAuthorize("@ss.hasPermi('system:trajectory:query')")
     @GetMapping(value = "/{trajectoryId}")
     public AjaxResult getInfo(@PathVariable("trajectoryId") Long trajectoryId) {
@@ -95,6 +103,7 @@ public class WmsTrajectoryController extends BaseController {
     /**
      * 新增轨迹
      */
+    @ApiOperation("新增轨迹")
     @PreAuthorize("@ss.hasPermi('system:trajectory:add')")
     @Log(title = "轨迹", businessType = BusinessType.INSERT)
     @PostMapping
@@ -105,6 +114,7 @@ public class WmsTrajectoryController extends BaseController {
     /**
      * 修改轨迹
      */
+    @ApiOperation("修改轨迹")
     @PreAuthorize("@ss.hasPermi('system:trajectory:edit')")
     @Log(title = "轨迹", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -115,6 +125,7 @@ public class WmsTrajectoryController extends BaseController {
     /**
      * 删除轨迹
      */
+    @ApiOperation("删除轨迹")
     @PreAuthorize("@ss.hasPermi('system:trajectory:remove')")
     @Log(title = "轨迹", businessType = BusinessType.DELETE)
     @DeleteMapping("/{trajectoryIds}")

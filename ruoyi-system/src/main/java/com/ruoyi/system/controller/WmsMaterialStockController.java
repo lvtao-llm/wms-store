@@ -9,6 +9,8 @@ import com.ruoyi.system.domain.WmsArea;
 import com.ruoyi.system.domain.WmsMaterialDesc;
 import com.ruoyi.system.service.IWmsAreaService;
 import com.ruoyi.system.service.IWmsMaterialDescService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,6 +36,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-11-08
  */
+@Api(tags = "库存视图Controller")
 @RestController
 @RequestMapping("/system/wms_material_stock")
 public class WmsMaterialStockController extends BaseController {
@@ -49,6 +52,7 @@ public class WmsMaterialStockController extends BaseController {
     /**
      * 查询库存视图列表
      */
+    @ApiOperation("查询库存视图列表")
     @PreAuthorize("@ss.hasPermi('system:wms_material_stock:list')")
     @GetMapping("/list")
     public TableDataInfo list(WmsMaterialStock wmsMaterialStock) {
@@ -58,6 +62,10 @@ public class WmsMaterialStockController extends BaseController {
         return getDataTable(list);
     }
 
+    /**
+     * 获取库存视图列表
+     */
+    @ApiOperation("获取库存视图列表")
     @GetMapping("/list/{areaName}")
     public TableDataInfo list(WmsMaterialStock wmsMaterialStock, @PathVariable(value = "areaName", required = false) String areaName) {
         startPage();
@@ -96,6 +104,7 @@ public class WmsMaterialStockController extends BaseController {
     /**
      * 导出库存视图列表
      */
+    @ApiOperation("导出库存视图列表")
     @PreAuthorize("@ss.hasPermi('system:wms_material_stock:export')")
     @Log(title = "库存视图", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -108,6 +117,7 @@ public class WmsMaterialStockController extends BaseController {
     /**
      * 获取库存视图详细信息
      */
+    @ApiOperation("获取库存视图详细信息")
     @PreAuthorize("@ss.hasPermi('system:wms_material_stock:query')")
     @GetMapping(value = "/{inventoryId}")
     public AjaxResult getInfo(@PathVariable("inventoryId") String inventoryId) {
@@ -117,6 +127,7 @@ public class WmsMaterialStockController extends BaseController {
     /**
      * 新增库存视图
      */
+    @ApiOperation("新增库存视图")
     @PreAuthorize("@ss.hasPermi('system:wms_material_stock:add')")
     @Log(title = "库存视图", businessType = BusinessType.INSERT)
     @PostMapping
@@ -127,6 +138,7 @@ public class WmsMaterialStockController extends BaseController {
     /**
      * 修改库存视图
      */
+    @ApiOperation("修改库存视图")
     @PreAuthorize("@ss.hasPermi('system:wms_material_stock:edit')")
     @Log(title = "库存视图", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -137,6 +149,7 @@ public class WmsMaterialStockController extends BaseController {
     /**
      * 删除库存视图
      */
+    @ApiOperation("删除库存视图")
     @PreAuthorize("@ss.hasPermi('system:wms_material_stock:remove')")
     @Log(title = "库存视图", businessType = BusinessType.DELETE)
     @DeleteMapping("/{inventoryIds}")

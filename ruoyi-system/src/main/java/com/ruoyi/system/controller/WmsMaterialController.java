@@ -2,6 +2,9 @@ package com.ruoyi.system.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +30,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-09-26
  */
+@Api(tags = "物料档案管理")
 @RestController
 @RequestMapping("/system/material")
 public class WmsMaterialController extends BaseController
@@ -37,6 +41,7 @@ public class WmsMaterialController extends BaseController
     /**
      * 查询物料档案列表
      */
+    @ApiOperation("物料档案列表")
     @PreAuthorize("@ss.hasPermi('system:material:list')")
     @GetMapping("/list")
     public TableDataInfo list(WmsMaterial wmsMaterial)
@@ -49,6 +54,7 @@ public class WmsMaterialController extends BaseController
     /**
      * 导出物料档案列表
      */
+    @ApiOperation("物料档案列表")
     @PreAuthorize("@ss.hasPermi('system:material:export')")
     @Log(title = "物料档案", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -62,6 +68,7 @@ public class WmsMaterialController extends BaseController
     /**
      * 获取物料档案详细信息
      */
+    @ApiOperation("物料档案列表")
     @PreAuthorize("@ss.hasPermi('system:material:query')")
     @GetMapping(value = "/{materialId}")
     public AjaxResult getInfo(@PathVariable("materialId") Long materialId)
@@ -72,6 +79,7 @@ public class WmsMaterialController extends BaseController
     /**
      * 新增物料档案
      */
+    @ApiOperation("物料档案列表")
     @PreAuthorize("@ss.hasPermi('system:material:add')")
     @Log(title = "物料档案", businessType = BusinessType.INSERT)
     @PostMapping
@@ -83,6 +91,7 @@ public class WmsMaterialController extends BaseController
     /**
      * 修改物料档案
      */
+    @ApiOperation("物料档案列表")
     @PreAuthorize("@ss.hasPermi('system:material:edit')")
     @Log(title = "物料档案", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -94,6 +103,7 @@ public class WmsMaterialController extends BaseController
     /**
      * 删除物料档案
      */
+    @ApiOperation("物料档案列表")
     @PreAuthorize("@ss.hasPermi('system:material:remove')")
     @Log(title = "物料档案", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{materialIds}")

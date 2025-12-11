@@ -2,6 +2,8 @@ package com.ruoyi.system.domain;
 
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -13,296 +15,368 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * @author ruoyi
  * @date 2025-11-08
  */
+@ApiModel(description = "调拨视图对象")
 public class WmsMaterialOut extends WmsMaterialDesc
 {
     private static final long serialVersionUID = 1L;
 
     /** 调拨明细编号 */
     @Excel(name = "调拨明细编号")
+    @ApiModelProperty("调拨明细编号")
     private String allotDetailId;
 
     /** 库房编号 */
     @Excel(name = "库房编号")
+    @ApiModelProperty("库房编号")
     private String storehouseId;
 
     /** 单据类型 */
     @Excel(name = "单据类型")
+    @ApiModelProperty("单据类型")
     private String documentType;
 
     /** 车号 */
     @Excel(name = "车号")
+    @ApiModelProperty("车号")
     private String carNumber;
 
     /** 车型 */
     @Excel(name = "车型")
+    @ApiModelProperty("车型")
     private String carModel;
 
     /** 毛重 */
     @Excel(name = "毛重")
+    @ApiModelProperty("毛重")
     private Double grossWeight;
 
     /** 皮重 */
     @Excel(name = "皮重")
+    @ApiModelProperty("皮重")
     private Double tareWeight;
 
     /** 净重 */
     @Excel(name = "净重")
+    @ApiModelProperty("净重")
     private Double netWeight;
 
     /** 仪表编号 */
     @Excel(name = "仪表编号")
+    @ApiModelProperty("仪表编号")
     private String meterId;
 
     /** 部门 */
     @Excel(name = "部门")
+    @ApiModelProperty("部门")
     private String department;
 
     /** 计量图片文件 */
     @Excel(name = "计量图片文件")
+    @ApiModelProperty("计量图片文件")
     private String measureImageFile;
 
     /** 计量录像文件 */
     @Excel(name = "计量录像文件")
+    @ApiModelProperty("计量录像文件")
     private String measureVideoFile;
 
     /** 门卫 */
     @Excel(name = "门卫")
+    @ApiModelProperty("门卫")
     private String guard;
 
     /** 出库时间 */
 //    @JsonFormat(pattern = "yyyy-MM-dd")
 //    @Excel(name = "出库时间", width = 30, dateFormat = "yyyy-MM-dd")
     @Excel(name = "出库时间")
+    @ApiModelProperty("出库时间")
     private Date outboundTime;
 
     /** 计量员 */
     @Excel(name = "计量员")
+    @ApiModelProperty("计量员")
     private String measurer;
 
     /** 计量时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+//    @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "计量时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @ApiModelProperty("计量时间")
     private Date measureTime;
 
     /** 皮重图片文件 */
     @Excel(name = "皮重图片文件")
+    @ApiModelProperty("皮重图片文件")
     private String tareImageFile;
 
     /** 皮重录像文件 */
     @Excel(name = "皮重录像文件")
+    @ApiModelProperty("皮重录像文件")
     private String tareVideoFile;
 
     /** 单据状态 */
     @Excel(name = "单据状态")
+    @ApiModelProperty("单据状态")
     private String documentStatus;
 
     /** 保管员 */
     @Excel(name = "保管员")
+    @ApiModelProperty("保管员")
     private String custodian;
 
     /** 操作时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+//    @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "操作时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @ApiModelProperty("操作时间")
     private Date operateTime;
 
     /** 调整数量 */
     @Excel(name = "调整数量")
+    @ApiModelProperty("调整数量")
     private Double adjustQuantity;
 
     /** 计量曲率 */
     @Excel(name = "计量曲率")
+    @ApiModelProperty("计量曲率")
     private String measureCurvature;
 
     /** 出库编号 */
     @Excel(name = "出库编号")
+    @ApiModelProperty("出库编号")
     private String outboundId;
 
     /** 计量类型 */
     @Excel(name = "计量类型")
+    @ApiModelProperty("计量类型")
     private String measureType;
 
     /** 件数 */
     @Excel(name = "件数")
+    @ApiModelProperty("件数")
     private String pieceCount;
 
     /** 原单编号 */
     @Excel(name = "原单编号")
+    @ApiModelProperty("原单编号")
     private String originalDocumentId;
 
     /** 卡号 */
     @Excel(name = "卡号")
+    @ApiModelProperty("卡号")
     private String cardId;
 
     /** 调拨编号 */
     @Excel(name = "调拨编号")
+    @ApiModelProperty("调拨编号")
     private String allotId;
 
     /** 调拨编码 */
     @Excel(name = "调拨编码")
+    @ApiModelProperty("调拨编码")
     private String allotCode;
 
     /** 调拨类型 */
     @Excel(name = "调拨类型")
+    @ApiModelProperty("调拨类型")
     private String allotType;
 
     /** 客户编码 */
     @Excel(name = "客户编码")
+    @ApiModelProperty("客户编码")
     private String customerCode;
 
     /** 客户名称 */
     @Excel(name = "客户名称")
+    @ApiModelProperty("客户名称")
     private String customerName;
 
     /** 物料组 */
     @Excel(name = "物料组")
+    @ApiModelProperty("物料组")
     private String materialGroup;
 
     /** 物资编码 */
     @Excel(name = "物资编码")
+    @ApiModelProperty("物资编码")
     private String wzbm;
 
     /** 物资名称 */
     @Excel(name = "物资名称")
+    @ApiModelProperty("物资名称")
     private String wzmc;
 
     /** 计量单位 */
     @Excel(name = "计量单位")
+    @ApiModelProperty("计量单位")
     private String jldw;
 
     /** 销售公司 */
     @Excel(name = "销售公司")
+    @ApiModelProperty("销售公司")
     private String salesCompany;
 
     /** 库房 */
     @Excel(name = "库房")
+    @ApiModelProperty("库房")
     private String storehouse;
 
     /** 料场 */
     @Excel(name = "料场")
+    @ApiModelProperty("料场")
     private String materialYard;
 
     /** 调拨数量 */
     @Excel(name = "调拨数量")
+    @ApiModelProperty("调拨数量")
     private Double allotQuantity;
 
     /** 实发数量 */
     @Excel(name = "实发数量")
+    @ApiModelProperty("实发数量")
     private Double actualQuantity;
 
     /** 车数 */
     @Excel(name = "车数")
+    @ApiModelProperty("车数")
     private Double carCount;
 
     /** 计划单价 */
     @Excel(name = "计划单价")
+    @ApiModelProperty("计划单价")
     private Double plannedPrice;
 
     /** 销售单价 */
     @Excel(name = "销售单价")
+    @ApiModelProperty("销售单价")
     private Double salesPrice;
 
     /** 税率 */
     @Excel(name = "税率")
+    @ApiModelProperty("税率")
     private Double taxRate;
 
     /** 调拨员 */
     @Excel(name = "调拨员")
+    @ApiModelProperty("调拨员")
     private String allotOperator;
 
     /** 调拨时间 */
     @Excel(name = "调拨时间", width = 30)
+    @ApiModelProperty("调拨时间")
     private Date allotTime;
 
     /** 余额 */
     @Excel(name = "余额")
+    @ApiModelProperty("余额")
     private Double balance;
 
     /** 尾料 */
     @Excel(name = "尾料")
+    @ApiModelProperty("尾料")
     private Double tailMaterial;
 
     /** 余料 */
     @Excel(name = "余料")
+    @ApiModelProperty("余料")
     private Double surplusMaterial;
 
     /** 车数1 */
     @Excel(name = "车数1")
+    @ApiModelProperty("车数1")
     private Double carCount1;
 
     /** 是否多车 */
     @Excel(name = "是否多车")
+    @ApiModelProperty("是否多车")
     private String isMultiCar;
 
     /** 报号备注 */
     @Excel(name = "报号备注")
+    @ApiModelProperty("报号备注")
     private String reportRemark;
 
     /** 首次皮重 */
     @Excel(name = "首次皮重")
+    @ApiModelProperty("首次皮重")
     private Double firstTareWeight;
 
     /** 部门1 */
     @Excel(name = "部门1")
+    @ApiModelProperty("部门1")
     private String department1;
 
     /** 料场编码 */
     @Excel(name = "料场编码")
+    @ApiModelProperty("料场编码")
     private String yardCode;
 
     /** 报号人 */
     @Excel(name = "报号人")
+    @ApiModelProperty("报号人")
     private String reporter;
 
     /** 调整备注 */
     @Excel(name = "调整备注")
+    @ApiModelProperty("调整备注")
     private String adjustRemark;
 
     /** 库房图片 */
     @Excel(name = "库房图片")
+    @ApiModelProperty("库房图片")
     private String storehouseImage;
 
     /** 图片路径 */
     @Excel(name = "图片路径")
+    @ApiModelProperty("图片路径")
     private String imagePath;
 
     /** 多调拨单明细 */
     @Excel(name = "多调拨单明细")
+    @ApiModelProperty("多调拨单明细")
     private String multiAllotDetail;
 
     /** 净重1 */
     @Excel(name = "净重1")
+    @ApiModelProperty("净重1")
     private Double netWeight1;
 
     /** 业务年月 */
     @Excel(name = "业务年月")
+    @ApiModelProperty("业务年月")
     private String businessYearMonth;
 
     /** 中队 */
     @Excel(name = "中队")
+    @ApiModelProperty("中队")
     private String squad;
 
     /** 物料组1 */
     @Excel(name = "物料组1")
+    @ApiModelProperty("物料组1")
     private String materialGroup1;
 
     /** 保管员id */
     @Excel(name = "保管员id")
+    @ApiModelProperty("保管员id")
     private String custodianId;
 
     /** 简码 */
     @Excel(name = "简码")
+    @ApiModelProperty("简码")
     private String shortCode;
 
     /** 自合并分类 */
     @Excel(name = "自合并分类")
+    @ApiModelProperty("自合并分类")
     private String selfMergeCategory;
 
     /** 保管员姓名 */
     @Excel(name = "保管员姓名")
+    @ApiModelProperty("保管员姓名")
     private String custodianName;
 
     /** 状态 */
     @Excel(name = "状态")
+    @ApiModelProperty("状态")
     private String status;
 
     public String getAllotDetailId() {

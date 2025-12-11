@@ -5,6 +5,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.common.annotation.DataSource;
 import com.ruoyi.common.enums.DataSourceType;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,25 +28,25 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 人员（员工/访客/承包商人员）Controller
- * 
+ *
  * @author 吕涛
  * @date 2025-10-10
  */
+@Api(value = "人员管理", tags = {"卡机端", "人员管理"})
 @RestController
 @RequestMapping("/system/lanya_core_person")
 @DataSource(value = DataSourceType.SLAVE)
-public class LanyaCorePersonController extends BaseController
-{
+public class LanyaCorePersonController extends BaseController {
     @Autowired
     private ILanyaCorePersonService lanyaCorePersonService;
 
     /**
      * 查询人员（员工/访客/承包商人员）列表
      */
+    @ApiOperation("查询人员列表")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_person:list')")
     @GetMapping("/list")
-    public TableDataInfo list(LanyaCorePerson lanyaCorePerson)
-    {
+    public TableDataInfo list(LanyaCorePerson lanyaCorePerson) {
         startPage();
         List<LanyaCorePerson> list = lanyaCorePersonService.selectLanyaCorePersonList(lanyaCorePerson);
         return getDataTable(list);
@@ -53,11 +55,11 @@ public class LanyaCorePersonController extends BaseController
     /**
      * 导出人员（员工/访客/承包商人员）列表
      */
+    @ApiOperation("导出人员列表")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_person:export')")
     @Log(title = "人员（员工/访客/承包商人员）", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, LanyaCorePerson lanyaCorePerson)
-    {
+    public void export(HttpServletResponse response, LanyaCorePerson lanyaCorePerson) {
         List<LanyaCorePerson> list = lanyaCorePersonService.selectLanyaCorePersonList(lanyaCorePerson);
         ExcelUtil<LanyaCorePerson> util = new ExcelUtil<LanyaCorePerson>(LanyaCorePerson.class);
         util.exportExcel(response, list, "人员（员工/访客/承包商人员）数据");
@@ -66,43 +68,43 @@ public class LanyaCorePersonController extends BaseController
     /**
      * 获取人员（员工/访客/承包商人员）详细信息
      */
+    @ApiOperation("获取人员列表")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_person:query')")
     @GetMapping(value = "/{personId}")
-    public AjaxResult getInfo(@PathVariable("personId") Long personId)
-    {
+    public AjaxResult getInfo(@PathVariable("personId") Long personId) {
         return success(lanyaCorePersonService.selectLanyaCorePersonByPersonId(personId));
     }
 
     /**
      * 新增人员（员工/访客/承包商人员）
      */
+    @ApiOperation("新增人员列表")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_person:add')")
     @Log(title = "人员（员工/访客/承包商人员）", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody LanyaCorePerson lanyaCorePerson)
-    {
+    public AjaxResult add(@RequestBody LanyaCorePerson lanyaCorePerson) {
         return toAjax(lanyaCorePersonService.insertLanyaCorePerson(lanyaCorePerson));
     }
 
     /**
      * 修改人员（员工/访客/承包商人员）
      */
+    @ApiOperation("修改人员列表")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_person:edit')")
     @Log(title = "人员（员工/访客/承包商人员）", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody LanyaCorePerson lanyaCorePerson)
-    {
+    public AjaxResult edit(@RequestBody LanyaCorePerson lanyaCorePerson) {
         return toAjax(lanyaCorePersonService.updateLanyaCorePerson(lanyaCorePerson));
     }
 
     /**
      * 删除人员（员工/访客/承包商人员）
      */
+    @ApiOperation("删除人员列表")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_person:remove')")
     @Log(title = "人员（员工/访客/承包商人员）", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{personIds}")
-    public AjaxResult remove(@PathVariable Long[] personIds)
-    {
+    @DeleteMapping("/{personIds}")
+    public AjaxResult remove(@PathVariable Long[] personIds) {
         return toAjax(lanyaCorePersonService.deleteLanyaCorePersonByPersonIds(personIds));
     }
 }

@@ -1,5 +1,7 @@
 package com.ruoyi.system.domain;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -11,21 +13,26 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * @author ruoyi
  * @date 2025-09-26
  */
+@ApiModel("车辆路线规划对象")
 public class WmsVehicleRoute extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
     /** 主键ID */
+    @ApiModelProperty("主键ID")
     private Long routeId;
 
     /** 路线编号 业务唯一 */
     @Excel(name = "路线编号")
+    @ApiModelProperty("路线编号 业务唯一")
     private String routeNo;
 
     @Excel(name = "途经点")
+    @ApiModelProperty("途经点")
     private String routeWaypoints;
 
     /** $column.columnComment */
+    @ApiModelProperty("删除标志")
     private String delFlag;
 
     public void setRouteId(Long routeId) 

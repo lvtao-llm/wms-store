@@ -12,6 +12,8 @@ import com.ruoyi.system.domain.WmsAlarm;
 import com.ruoyi.system.lanya.data.AlarmDetection;
 import com.ruoyi.system.service.IWmsAlarmService;
 import com.ruoyi.system.service.IWmsPersonService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +27,7 @@ import java.util.List;
  * @author ruoyi
  * @date 2025-09-26
  */
+@Api(tags = "报警信息管理")
 @RestController
 @RequestMapping("/system/core/main/screen")
 public class WmsCoreMainScreenController extends BaseController {
@@ -40,6 +43,7 @@ public class WmsCoreMainScreenController extends BaseController {
     /**
      * 获取报警信息详细信息
      */
+    @ApiOperation("获取报警信息详细信息")
     @GetMapping(value = "/data")
     public AjaxResult getInfo() {
         JSONObject jsonObject = new JSONObject();

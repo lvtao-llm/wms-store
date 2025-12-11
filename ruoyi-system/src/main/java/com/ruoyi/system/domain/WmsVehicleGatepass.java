@@ -3,6 +3,8 @@ package com.ruoyi.system.domain;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -14,60 +16,70 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * @author ruoyi
  * @date 2025-10-30
  */
+@ApiModel("车辆预约对象")
 public class WmsVehicleGatepass extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     /**
      * 主键
      */
+    @ApiModelProperty("主键")
     private Long gatepassId;
 
     /**
      * 车牌号
      */
     @Excel(name = "车牌号")
+    @ApiModelProperty("车牌号")
     private String vehicleId;
 
     /**
      * 车辆轴数
      */
     @Excel(name = "车辆轴数")
+    @ApiModelProperty("车辆轴数")
     private String vehicleAxleNum;
 
     /**
      * 预约时间
      */
     @Excel(name = "预约时间")
+    @ApiModelProperty("预约时间")
     private String gatepassAppointmentTime;
 
     /**
      * 预约区域编码的json数组[]
      */
     @Excel(name = "预约区域编码的json数组[]")
+    @ApiModelProperty("预约区域编码的json数组[]")
     private String areaCodes;
 
     /**
      * 发卡记录ID
      */
     @Excel(name = "发卡记录ID")
+    @ApiModelProperty("发卡记录ID")
     private Long cardRecordId;
 
     /**
      * 定位卡ID
      */
     @Excel(name = "定位卡ID")
+    @ApiModelProperty("定位卡ID")
     private Long cardId;
 
     /**
      * 驾驶员姓名
      */
     @Excel(name = "驾驶员姓名")
+    @ApiModelProperty("驾驶员姓名")
     private String vehicleDriverName;
 
     /**
      * 驾驶员手机
      */
     @Excel(name = "驾驶员手机")
+    @ApiModelProperty("驾驶员手机")
     private String vehicleDriverPhone;
 
     /**
@@ -80,6 +92,7 @@ public class WmsVehicleGatepass extends BaseEntity {
      * }
      */
     @Excel(name = "实际物资")
+    @ApiModelProperty("实际物资")
     private String actuals;
 
     /**
@@ -90,45 +103,52 @@ public class WmsVehicleGatepass extends BaseEntity {
      * }
      */
     @Excel(name = "预约物资")
+    @ApiModelProperty("预约物资")
     private String plans;
 
     /**
      * 物资信息
      */
     @Excel(name = "物资信息")
+    @ApiModelProperty("物资信息")
     private String material;
 
     /**
      * 进入时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+//    @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "进入时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @ApiModelProperty("进入时间")
     private Date gatepassGateInTime;
 
     /**
      * 进入时料场门口照片
      */
     @Excel(name = "进入时料场门口照片")
+    @ApiModelProperty("进入时料场门口照片")
     private String gatepassGateInPhoto;
 
     /**
      * 离开时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+//    @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "离开时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @ApiModelProperty("离开时间")
     private Date gatepassGateOutTime;
 
     /**
      * 离开时料场门口照片
      */
     @Excel(name = "离开时料场门口照片")
+    @ApiModelProperty("离开时料场门口照片")
     private String gatepassGateOutPhoto;
 
     /**
      * 停留时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+//    @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "停留时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @ApiModelProperty("停留时间")
     private Date gatepassDwellTime;
 
     public void setGatepassId(Long gatepassId) {

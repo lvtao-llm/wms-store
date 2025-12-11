@@ -1,5 +1,7 @@
 package com.ruoyi.system.domain;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -11,23 +13,28 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * @author ruoyi
  * @date 2025-10-30
  */
+@ApiModel("车辆黑名单")
 public class WmsVehicleRecord extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
     /** 主键 */
+    @ApiModelProperty("主键")
     private Long id;
 
     /** 车牌号 */
     @Excel(name = "车牌号")
+    @ApiModelProperty("车牌号")
     private String vehiclePlateNo;
 
     /** 进入或出去 */
     @Excel(name = "进入或出去")
+    @ApiModelProperty("进入或出去")
     private String type;
 
     /** 照片 */
     @Excel(name = "照片")
+    @ApiModelProperty("照片")
     private String photos;
 
     public void setId(Long id) 

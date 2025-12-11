@@ -1,5 +1,7 @@
 package com.ruoyi.system.domain;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -11,27 +13,33 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * @author ruoyi
  * @date 2025-11-21
  */
+@ApiModel("区域点位全景对象")
 public class WmsArea360 extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
     /** 主键 */
+    @ApiModelProperty("主键")
     private Long id;
 
     /** 点位名称 */
     @Excel(name = "点位名称")
+    @ApiModelProperty("点位名称")
     private String name;
 
     /** 经度 */
     @Excel(name = "经度")
+    @ApiModelProperty("经度")
     private String longitude;
 
     /** 纬度 */
     @Excel(name = "纬度")
+    @ApiModelProperty("纬度")
     private String latitude;
 
     /** 全景照片 */
     @Excel(name = "全景照片")
+    @ApiModelProperty("全景照片")
     private String image;
 
     private String type = "watch";

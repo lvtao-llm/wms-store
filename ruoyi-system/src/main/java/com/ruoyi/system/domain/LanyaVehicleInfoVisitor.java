@@ -2,6 +2,8 @@ package com.ruoyi.system.domain;
 
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -13,51 +15,63 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * @author 吕涛
  * @date 2025-10-10
  */
+@ApiModel(description = "访客车辆对象")
 public class LanyaVehicleInfoVisitor extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
     /** ID */
+    @ApiModelProperty(value = "主键")
     private Long id;
 
     /** 关联车辆id */
     @Excel(name = "关联车辆id")
+    @ApiModelProperty(value = "关联车辆id")
     private Long vehicleId;
 
     /** 车辆名称 */
     @Excel(name = "车辆名称")
+    @ApiModelProperty(value = "车辆名称")
     private String vehicleName;
 
     /** 车辆类型 */
     @Excel(name = "车辆类型")
+    @ApiModelProperty(value = "车辆类型")
     private String vehicleType;
 
     /** 车载卡号 */
     @Excel(name = "车载卡号")
+    @ApiModelProperty(value = "车载卡号")
     private Long cardId;
 
     /** 车牌号 */
     @Excel(name = "车牌号")
+    @ApiModelProperty(value = "车牌号")
     private String licensePlateNumber;
 
     /** 司机姓名 */
     @Excel(name = "司机姓名")
+    @ApiModelProperty(value = "司机姓名")
     private String driverName;
 
     /** 司机手机号 */
     @Excel(name = "司机手机号")
+    @ApiModelProperty(value = "司机手机号")
     private String driverTel;
 
     /** 照片 */
     @Excel(name = "照片")
+    @ApiModelProperty(value = "照片")
     private String driverPhoto;
 
     /** 司机身份证号码 */
     @Excel(name = "司机身份证号码")
+    @ApiModelProperty(value = "司机身份证号码")
     private String idNumber;
 
     /** 人员IC号 */
     @Excel(name = "人员IC号")
+    @ApiModelProperty(value = "人员IC号")
     private String personIc;
 
     /** 单位名称 */
@@ -65,39 +79,47 @@ public class LanyaVehicleInfoVisitor extends BaseEntity
     private String companyName;
 
     /** 预约进入开始时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+//    @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "预约进入开始时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @ApiModelProperty(value = "预约进入开始时间")
     private Date reservationEntryStartTime;
 
     /** 预约进入结束时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+//    @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "预约进入结束时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @ApiModelProperty(value = "预约进入结束时间")
     private Date reservationEntryEndTime;
 
     /** 来访时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+//    @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "来访时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @ApiModelProperty(value = "来访时间")
     private Date visitingTime;
 
     /** 离开时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+//    @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "离开时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @ApiModelProperty(value = "离开时间")
     private Date leaveTime;
 
     /** 来访状态（0为已离开，1为未离开） */
     @Excel(name = "来访状态", readConverterExp = "0=为已离开，1为未离开")
+    @ApiModelProperty(value = "来访状态（0为已离开，1为未离开）")
     private Integer visitingStatus;
 
     /** 来访事由 */
     @Excel(name = "来访事由")
+    @ApiModelProperty(value = "来访事由")
     private String visitingReason;
 
     /** 接待人 */
     @Excel(name = "接待人")
+    @ApiModelProperty(value = "接待人")
     private String receiver;
 
     /** 接待人联系方式 */
     @Excel(name = "接待人联系方式")
+    @ApiModelProperty(value = "接待人联系方式")
     private String receiverTel;
 
     public void setId(Long id) 

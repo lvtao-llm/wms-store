@@ -2,6 +2,9 @@ package com.ruoyi.system.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +30,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-10-20
  */
+@Api(tags = "报警信息规则管理")
 @RestController
 @RequestMapping("/system/wms_alarm_rule")
 public class WmsAlarmRuleController extends BaseController
@@ -37,6 +41,7 @@ public class WmsAlarmRuleController extends BaseController
     /**
      * 查询报警信息规则列表
      */
+    @ApiOperation("查询报警信息规则列表")
     @PreAuthorize("@ss.hasPermi('system:wms_alarm_rule:list')")
     @GetMapping("/list")
     public TableDataInfo list(WmsAlarmRule wmsAlarmRule)
@@ -49,6 +54,7 @@ public class WmsAlarmRuleController extends BaseController
     /**
      * 导出报警信息规则列表
      */
+    @ApiOperation("导出报警信息规则列表")
     @PreAuthorize("@ss.hasPermi('system:wms_alarm_rule:export')")
     @Log(title = "报警信息规则", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -62,6 +68,7 @@ public class WmsAlarmRuleController extends BaseController
     /**
      * 获取报警信息规则详细信息
      */
+    @ApiOperation("获取报警信息规则详细信息")
     @PreAuthorize("@ss.hasPermi('system:wms_alarm_rule:query')")
     @GetMapping(value = "/{alarmRuleId}")
     public AjaxResult getInfo(@PathVariable("alarmRuleId") Long alarmRuleId)
@@ -72,6 +79,7 @@ public class WmsAlarmRuleController extends BaseController
     /**
      * 新增报警信息规则
      */
+    @ApiOperation("新增报警信息规则")
     @PreAuthorize("@ss.hasPermi('system:wms_alarm_rule:add')")
     @Log(title = "报警信息规则", businessType = BusinessType.INSERT)
     @PostMapping
@@ -83,6 +91,7 @@ public class WmsAlarmRuleController extends BaseController
     /**
      * 修改报警信息规则
      */
+    @ApiOperation("修改报警信息规则")
     @PreAuthorize("@ss.hasPermi('system:wms_alarm_rule:edit')")
     @Log(title = "报警信息规则", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -94,6 +103,7 @@ public class WmsAlarmRuleController extends BaseController
     /**
      * 删除报警信息规则
      */
+    @ApiOperation("删除报警信息规则")
     @PreAuthorize("@ss.hasPermi('system:wms_alarm_rule:remove')")
     @Log(title = "报警信息规则", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{alarmRuleIds}")

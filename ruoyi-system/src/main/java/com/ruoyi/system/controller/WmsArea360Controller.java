@@ -2,6 +2,9 @@ package com.ruoyi.system.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +30,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-11-21
  */
+@Api("区域点位全景接口")
 @RestController
 @RequestMapping("/system/wms_area_360")
 public class WmsArea360Controller extends BaseController
@@ -37,6 +41,7 @@ public class WmsArea360Controller extends BaseController
     /**
      * 查询区域点位全景列表
      */
+    @ApiOperation("查询区域点位全景列表")
     @PreAuthorize("@ss.hasPermi('system:wms_area_360:list')")
     @GetMapping("/list")
     public TableDataInfo list(WmsArea360 wmsArea360)
@@ -49,6 +54,7 @@ public class WmsArea360Controller extends BaseController
     /**
      * 导出区域点位全景列表
      */
+    @ApiOperation("导出区域点位全景列表")
     @PreAuthorize("@ss.hasPermi('system:wms_area_360:export')")
     @Log(title = "区域点位全景", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -62,6 +68,7 @@ public class WmsArea360Controller extends BaseController
     /**
      * 获取区域点位全景详细信息
      */
+    @ApiOperation("获取区域点位全景详细信息")
     @PreAuthorize("@ss.hasPermi('system:wms_area_360:query')")
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id)
@@ -72,6 +79,7 @@ public class WmsArea360Controller extends BaseController
     /**
      * 新增区域点位全景
      */
+    @ApiOperation("新增区域点位全景")
     @PreAuthorize("@ss.hasPermi('system:wms_area_360:add')")
     @Log(title = "区域点位全景", businessType = BusinessType.INSERT)
     @PostMapping
@@ -83,6 +91,7 @@ public class WmsArea360Controller extends BaseController
     /**
      * 修改区域点位全景
      */
+    @ApiOperation("修改区域点位全景")
     @PreAuthorize("@ss.hasPermi('system:wms_area_360:edit')")
     @Log(title = "区域点位全景", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -94,6 +103,7 @@ public class WmsArea360Controller extends BaseController
     /**
      * 删除区域点位全景
      */
+    @ApiOperation("删除区域点位全景")
     @PreAuthorize("@ss.hasPermi('system:wms_area_360:remove')")
     @Log(title = "区域点位全景", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{ids}")

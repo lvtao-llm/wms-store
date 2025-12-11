@@ -2,6 +2,8 @@ package com.ruoyi.system.domain;
 
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -13,216 +15,268 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * @author 吕涛
  * @date 2025-10-12
  */
+@ApiModel(description = "内部员工对象")
 public class LanyaInteralEmployee extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
     /** 人员id */
+    @ApiModelProperty("人员id")
     private Long personId;
 
     /** 人员类型（见字典） */
     @Excel(name = "人员类型", readConverterExp = "见=字典")
+    @ApiModelProperty("人员类型（见字典）")
     private String personType;
 
     /** 员工类型（见字典） */
     @Excel(name = "员工类型", readConverterExp = "见=字典")
+    @ApiModelProperty("员工类型（见字典）")
     private String staffType;
 
     /** 定位图标类型（见字典） */
     @Excel(name = "定位图标类型", readConverterExp = "见=字典")
+    @ApiModelProperty("定位图标类型（见字典）")
     private String positionIconType;
 
     /** 卡号 */
     @Excel(name = "卡号")
+    @ApiModelProperty("卡号")
     private Long cardId;
 
     /** 卡类型 */
     @Excel(name = "卡类型")
+    @ApiModelProperty("卡类型")
     private String cardType;
 
     /** 姓名 */
     @Excel(name = "姓名")
+    @ApiModelProperty("姓名")
     private String realName;
 
     /** 手机号 */
     @Excel(name = "手机号")
+    @ApiModelProperty("手机号")
     private String phone;
 
     /** 性别：男/女 */
     @Excel(name = "性别：男/女")
+    @ApiModelProperty("性别：男/女")
     private String sex;
 
     /** 照片 */
     @Excel(name = "照片")
+    @ApiModelProperty("照片")
     private String personPhoto;
 
     /** 生日 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+//    @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "生日", width = 30, dateFormat = "yyyy-MM-dd")
+    @ApiModelProperty("生日")
     private Date birth;
 
     /** 邮箱 */
     @Excel(name = "邮箱")
+    @ApiModelProperty("邮箱")
     private String email;
 
     /** 籍贯 */
     @Excel(name = "籍贯")
+    @ApiModelProperty("籍贯")
     private String nativePlace;
 
     /** 民族 */
     @Excel(name = "民族")
+    @ApiModelProperty("民族")
     private String nation;
 
     /** 婚姻状况 */
     @Excel(name = "婚姻状况")
+    @ApiModelProperty("婚姻状况")
     private String maritalStatus;
 
     /** 政治面貌 */
     @Excel(name = "政治面貌")
+    @ApiModelProperty("政治面貌")
     private String politicsStatus;
 
     /** 健康状况 */
     @Excel(name = "健康状况")
+    @ApiModelProperty("健康状况")
     private String healthStatus;
 
     /** 证件类型（见字典） */
     @Excel(name = "证件类型", readConverterExp = "见=字典")
+    @ApiModelProperty("证件类型（见字典）")
     private String idType;
 
     /** 证件号码 */
     @Excel(name = "证件号码")
+    @ApiModelProperty("证件号码")
     private String idNumber;
 
     /** 人员IC号 */
     @Excel(name = "人员IC号")
+    @ApiModelProperty("人员IC号")
     private String personIc;
 
     /** 管理人员姓名 */
     @Excel(name = "管理人员姓名")
+    @ApiModelProperty("管理人员姓名")
     private String administratorName;
 
     /** 管理人员号码 */
     @Excel(name = "管理人员号码")
+    @ApiModelProperty("管理人员号码")
     private String administratorPhone;
 
     /** 部门id */
     @Excel(name = "部门id")
+    @ApiModelProperty("部门id")
     private Long deptId;
 
     /** 岗位id */
     @Excel(name = "岗位id")
+    @ApiModelProperty("岗位id")
     private Long postId;
 
     /** 职责 */
     @Excel(name = "职责")
+    @ApiModelProperty("职责")
     private String duty;
 
     /** 入职时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+//    @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "入职时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @ApiModelProperty("入职时间")
     private Date hireDate;
 
     /** 工号 */
     @Excel(name = "工号")
+    @ApiModelProperty("工号")
     private String jobNumber;
 
     /** 工作状态：在职/离职 */
     @Excel(name = "工作状态：在职/离职")
+    @ApiModelProperty("工作状态：在职/离职")
     private String jobStatus;
 
     /** 办公电话 */
     @Excel(name = "办公电话")
+    @ApiModelProperty("办公电话")
     private String officePhone;
 
     /** 职称 */
     @Excel(name = "职称")
+    @ApiModelProperty("职称")
     private String professionalTitle;
 
     /** 职称证书编号 */
     @Excel(name = "职称证书编号")
+    @ApiModelProperty("职称证书编号")
     private String professionalTitleNumber;
 
     /** 工龄 */
     @Excel(name = "工龄")
+    @ApiModelProperty("工龄")
     private String seniority;
 
     /** 三年以上化工行业经验（是/否） */
     @Excel(name = "三年以上化工行业经验", readConverterExp = "是=/否")
+    @ApiModelProperty("三年以上化工行业经验（是/否）")
     private String yearPlusExperience;
 
     /** 工作经历 */
     @Excel(name = "工作经历")
+    @ApiModelProperty("工作经历")
     private String experience;
 
     /** 最高学历（见字典） */
     @Excel(name = "最高学历", readConverterExp = "见=字典")
+    @ApiModelProperty("最高学历（见字典）")
     private String highestEducation;
 
     /** 最高学位（见字典） */
     @Excel(name = "最高学位", readConverterExp = "见=字典")
+    @ApiModelProperty("最高学位（见字典）")
     private String highestDegree;
 
     /** 专业 */
     @Excel(name = "专业")
+    @ApiModelProperty("专业")
     private String profession;
 
     /** 毕业院校 */
     @Excel(name = "毕业院校")
+    @ApiModelProperty("毕业院校")
     private String school;
 
     /** 毕业证书编号 */
     @Excel(name = "毕业证书编号")
+    @ApiModelProperty("毕业证书编号")
     private String diplomaNumber;
 
     /** 注册工程师证书编号 */
     @Excel(name = "注册工程师证书编号")
+    @ApiModelProperty("注册工程师证书编号")
     private String cengNumber;
 
     /** 附件 */
     @Excel(name = "附件")
+    @ApiModelProperty("附件")
     private String accessory;
 
     /** 员工离职日期/承包商人员入场到期日期 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+//    @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "员工离职日期/承包商人员入场到期日期", width = 30, dateFormat = "yyyy-MM-dd")
+    @ApiModelProperty("员工离职日期/承包商人员入场到期日期")
     private Date dimissionDate;
 
     /** 所属承包商 */
     @Excel(name = "所属承包商")
+    @ApiModelProperty("所属承包商")
     private Long contractorId;
 
     /** 人员编码 */
     @Excel(name = "人员编码")
+    @ApiModelProperty("人员编码")
     private String personCode;
 
     /** 二道门状态(98进入;99离开) */
     @Excel(name = "二道门状态(98进入;99离开)")
+    @ApiModelProperty("二道门状态(98进入;99离开)")
     private String gateStatus;
 
     /** 二道门进入时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+//    @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "二道门进入时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @ApiModelProperty("二道门进入时间")
     private Date gateInTime;
 
     /** 二道门出去时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+//    @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "二道门出去时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @ApiModelProperty("二道门出去时间")
     private Date gateOutTime;
 
     /** 人员来源 */
     @Excel(name = "人员来源")
+    @ApiModelProperty("人员来源")
     private String personSource;
 
     /** 闸机通行 Y：允许 N：禁止 */
     @Excel(name = "闸机通行 Y：允许 N：禁止")
+    @ApiModelProperty("闸机通行 Y：允许 N：禁止")
     private String gateThrough;
 
     /** 同步第三方人员是否成功 1 成功 2 失败 */
     @Excel(name = "同步第三方人员是否成功 1 成功 2 失败")
+    @ApiModelProperty("同步第三方人员是否成功 1 成功 2 失败")
     private String updateFail;
 
     /** 人脸照片唯一标识 */
     @Excel(name = "人脸照片唯一标识")
+    @ApiModelProperty("人脸照片唯一标识")
     private String photoSign;
 
     public void setPersonId(Long personId) 

@@ -15,6 +15,8 @@ import com.ruoyi.common.annotation.DataSource;
 import com.ruoyi.common.enums.DataSourceType;
 import com.ruoyi.system.domain.SysConfig;
 import com.ruoyi.system.service.ISysConfigService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,6 +42,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-10-10
  */
+@Api("历史轨迹接口")
 @RestController
 @RequestMapping("/system/lanya_position_history")
 public class LanyaPositionHistoryController extends BaseController {
@@ -67,6 +70,7 @@ public class LanyaPositionHistoryController extends BaseController {
     /**
      * 查询历史轨迹列表
      */
+    @ApiOperation("查询历史轨迹列表")
     @PreAuthorize("@ss.hasPermi('system:lanya_position_history:list')")
     @GetMapping("/list")
     public TableDataInfo list(LanyaPositionHistory lanyaPositionHistory) {
@@ -78,6 +82,7 @@ public class LanyaPositionHistoryController extends BaseController {
     /**
      * 导出历史轨迹列表
      */
+    @ApiOperation("导出历史轨迹列表")
     @PreAuthorize("@ss.hasPermi('system:lanya_position_history:export')")
     @Log(title = "历史轨迹", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -90,18 +95,17 @@ public class LanyaPositionHistoryController extends BaseController {
     /**
      * 获取历史轨迹详细信息
      */
+    @ApiOperation("获取历史轨迹详细信息")
     @PreAuthorize("@ss.hasPermi('system:lanya_position_history:query')")
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id) {
         return success(lanyaPositionHistoryService.selectLanyaPositionHistoryById(id));
     }
-    /**
-     * admin
-     * Ll112233
-     */
+
     /**
      * 新增历史轨迹
      */
+    @ApiOperation("新增历史轨迹")
     @PreAuthorize("@ss.hasPermi('system:lanya_position_history:add')")
     @Log(title = "历史轨迹", businessType = BusinessType.INSERT)
     @PostMapping
@@ -112,6 +116,7 @@ public class LanyaPositionHistoryController extends BaseController {
     /**
      * 修改历史轨迹
      */
+    @ApiOperation("修改历史轨迹")
     @PreAuthorize("@ss.hasPermi('system:lanya_position_history:edit')")
     @Log(title = "历史轨迹", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -122,6 +127,7 @@ public class LanyaPositionHistoryController extends BaseController {
     /**
      * 删除历史轨迹
      */
+    @ApiOperation("删除历史轨迹")
     @PreAuthorize("@ss.hasPermi('system:lanya_position_history:remove')")
     @Log(title = "历史轨迹", businessType = BusinessType.DELETE)
     @DeleteMapping("/{ids}")
@@ -129,6 +135,7 @@ public class LanyaPositionHistoryController extends BaseController {
         return toAjax(lanyaPositionHistoryService.deleteLanyaPositionHistoryByIds(ids));
     }
 
+    @ApiOperation("获取最新数据")
     @GetMapping("/new")
     public TableDataInfo newData() throws ParseException {
         SysConfig sysConfig = null;

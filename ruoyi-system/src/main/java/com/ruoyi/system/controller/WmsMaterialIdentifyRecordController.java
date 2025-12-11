@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.config.RuoYiConfig;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -38,6 +40,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-11-21
  */
+@Api("物料识别记录")
 @RestController
 @RequestMapping("/system/wms_material_identify_record")
 public class WmsMaterialIdentifyRecordController extends BaseController {
@@ -62,6 +65,7 @@ public class WmsMaterialIdentifyRecordController extends BaseController {
     /**
      * 查询物料识别记录列表
      */
+    @ApiOperation("查询物料识别记录列表")
     @PreAuthorize("@ss.hasPermi('system:wms_material_identify_record:list')")
     @GetMapping("/list")
     public TableDataInfo list(WmsMaterialIdentifyRecord wmsMaterialIdentifyRecord) {
@@ -108,6 +112,7 @@ public class WmsMaterialIdentifyRecordController extends BaseController {
     /**
      * 导出物料识别记录列表
      */
+    @ApiOperation("导出物料识别记录列表")
     @PreAuthorize("@ss.hasPermi('system:wms_material_identify_record:export')")
     @Log(title = "物料识别记录", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -120,6 +125,7 @@ public class WmsMaterialIdentifyRecordController extends BaseController {
     /**
      * 获取物料识别记录详细信息
      */
+    @ApiOperation("获取物料识别记录详细信息")
     @PreAuthorize("@ss.hasPermi('system:wms_material_identify_record:query')")
     @GetMapping(value = "/{ymd}")
     public AjaxResult getInfo(@PathVariable("ymd") String ymd) {
@@ -129,6 +135,7 @@ public class WmsMaterialIdentifyRecordController extends BaseController {
     /**
      * 新增物料识别记录
      */
+    @ApiOperation("新增物料识别记录")
     @PreAuthorize("@ss.hasPermi('system:wms_material_identify_record:add')")
     @Log(title = "物料识别记录", businessType = BusinessType.INSERT)
     @PostMapping
@@ -139,6 +146,7 @@ public class WmsMaterialIdentifyRecordController extends BaseController {
     /**
      * 修改物料识别记录
      */
+    @ApiOperation("修改物料识别记录")
     @PreAuthorize("@ss.hasPermi('system:wms_material_identify_record:edit')")
     @Log(title = "物料识别记录", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -149,6 +157,7 @@ public class WmsMaterialIdentifyRecordController extends BaseController {
     /**
      * 删除物料识别记录
      */
+    @ApiOperation("删除物料识别记录")
     @PreAuthorize("@ss.hasPermi('system:wms_material_identify_record:remove')")
     @Log(title = "物料识别记录", businessType = BusinessType.DELETE)
     @DeleteMapping("/{ymds}")

@@ -2,6 +2,8 @@ package com.ruoyi.system.domain;
 
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -13,71 +15,87 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * @author ruoyi
  * @date 2025-10-25
  */
+@ApiModel( "巡检问题对象")
 public class WmsInspectionIssue extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
     /** 主键ID */
+    @ApiModelProperty("主键ID")
     private Long id;
 
     /** 任务ID */
     @Excel(name = "任务ID")
+    @ApiModelProperty("任务ID")
     private Long taskId;
 
     /** 规则ID */
     @Excel(name = "规则ID")
+    @ApiModelProperty("规则ID")
     private Long ruleId;
 
     /** 规则名称 */
     @Excel(name = "规则名称")
+    @ApiModelProperty("规则名称")
     private String ruleName;
 
     /** 上报人ID */
     @Excel(name = "上报人ID")
     @JsonFormat(shape = JsonFormat.Shape.STRING)
+    @ApiModelProperty("上报人ID")
     private Long reporterId;
 
     /** 定位卡ID */
     @Excel(name = "定位卡ID")
+    @ApiModelProperty("定位卡ID")
     private Long cardId;
 
     /** 问题时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @Excel(name = "问题时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty("问题时间")
     private Date issueTime;
 
     /** 问题描述 */
     @Excel(name = "问题描述")
+    @ApiModelProperty("问题描述")
     private String description;
 
     /** 问题照片 */
     @Excel(name = "问题照片")
+    @ApiModelProperty("问题照片")
     private String issuePhotos;
 
     /** 解决人ID */
     @Excel(name = "解决人ID")
     @JsonFormat(shape = JsonFormat.Shape.STRING)
+    @ApiModelProperty("解决人ID")
     private Long resolverId;
 
     /** 解决人姓名 */
     @Excel(name = "解决人姓名")
+    @ApiModelProperty("解决人姓名")
     private String resolverName;
 
     /** 解决时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @Excel(name = "解决时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty("解决时间")
     private Date resolveTime;
 
     /** 解决描述 */
     @Excel(name = "解决描述")
+    @ApiModelProperty("解决描述")
     private String resolveDescription;
 
     /** 解决照片 */
     @Excel(name = "解决照片")
+    @ApiModelProperty("解决照片")
     private String resolvePhotos;
 
     /** 是否已解决 */
     @Excel(name = "是否已解决")
+    @ApiModelProperty("是否已解决")
     private Integer isResolved;
 
     public void setId(Long id) 

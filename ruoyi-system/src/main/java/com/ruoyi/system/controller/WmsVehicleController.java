@@ -2,6 +2,9 @@ package com.ruoyi.system.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +30,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-10-30
  */
+@Api(tags = "车辆档案Controller")
 @RestController
 @RequestMapping("/system/wms_vehicle")
 public class WmsVehicleController extends BaseController
@@ -37,6 +41,7 @@ public class WmsVehicleController extends BaseController
     /**
      * 查询车辆档案列表
      */
+    @ApiOperation("查询车辆档案列表")
     @PreAuthorize("@ss.hasPermi('system:wms_vehicle:list')")
     @GetMapping("/list")
     public TableDataInfo list(WmsVehicle wmsVehicle)
@@ -49,6 +54,7 @@ public class WmsVehicleController extends BaseController
     /**
      * 导出车辆档案列表
      */
+    @ApiOperation("导出车辆档案列表")
     @PreAuthorize("@ss.hasPermi('system:wms_vehicle:export')")
     @Log(title = "车辆档案", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -62,6 +68,7 @@ public class WmsVehicleController extends BaseController
     /**
      * 获取车辆档案详细信息
      */
+    @ApiOperation("获取车辆档案详细信息")
     @PreAuthorize("@ss.hasPermi('system:wms_vehicle:query')")
     @GetMapping(value = "/{vehicleId}")
     public AjaxResult getInfo(@PathVariable("vehicleId") Long vehicleId)
@@ -72,6 +79,7 @@ public class WmsVehicleController extends BaseController
     /**
      * 新增车辆档案
      */
+    @ApiOperation("新增车辆档案")
     @PreAuthorize("@ss.hasPermi('system:wms_vehicle:add')")
     @Log(title = "车辆档案", businessType = BusinessType.INSERT)
     @PostMapping
@@ -83,6 +91,7 @@ public class WmsVehicleController extends BaseController
     /**
      * 修改车辆档案
      */
+    @ApiOperation("修改车辆档案")
     @PreAuthorize("@ss.hasPermi('system:wms_vehicle:edit')")
     @Log(title = "车辆档案", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -94,6 +103,7 @@ public class WmsVehicleController extends BaseController
     /**
      * 删除车辆档案
      */
+    @ApiOperation("删除车辆档案")
     @PreAuthorize("@ss.hasPermi('system:wms_vehicle:remove')")
     @Log(title = "车辆档案", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{vehicleIds}")

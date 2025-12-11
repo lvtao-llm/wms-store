@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +31,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-10-17
  */
+@Api(tags = "报警信息记录管理")
 @RestController
 @RequestMapping("/system/wms_alarm_log")
 public class WmsAlarmLogController extends BaseController {
@@ -38,6 +41,7 @@ public class WmsAlarmLogController extends BaseController {
     /**
      * 查询报警信息记录列表
      */
+    @ApiOperation("查询报警信息记录列表")
     @PreAuthorize("@ss.hasPermi('system:wms_alarm_log:list')")
     @GetMapping("/list")
     public TableDataInfo list(WmsAlarmLog wmsAlarmLog) {
@@ -49,6 +53,7 @@ public class WmsAlarmLogController extends BaseController {
     /**
      * 查询报警信息记录列表
      */
+    @ApiOperation("查询未读报警信息记录列表")
     @PreAuthorize("@ss.hasPermi('system:wms_alarm_log:unread')")
     @GetMapping("/unread")
     public TableDataInfo unread() {
@@ -59,6 +64,10 @@ public class WmsAlarmLogController extends BaseController {
         return getDataTable(list);
     }
 
+    /**
+     * 批量已读报警信息
+     */
+    @ApiOperation("批量已读报警信息")
     @PreAuthorize("@ss.hasPermi('system:wms_alarm_log:read')")
     @GetMapping("/read/{alarmIds}")
     public AjaxResult read(@PathVariable Long[] alarmIds) {
@@ -68,6 +77,7 @@ public class WmsAlarmLogController extends BaseController {
     /**
      * 导出报警信息记录列表
      */
+    @ApiOperation("导出报警信息记录列表")
     @PreAuthorize("@ss.hasPermi('system:wms_alarm_log:export')")
     @Log(title = "报警信息记录", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -80,6 +90,7 @@ public class WmsAlarmLogController extends BaseController {
     /**
      * 获取报警信息记录详细信息
      */
+    @ApiOperation("获取报警信息记录详细信息")
     @PreAuthorize("@ss.hasPermi('system:wms_alarm_log:query')")
     @GetMapping(value = "/{alarmId}")
     public AjaxResult getInfo(@PathVariable("alarmId") Long alarmId) {
@@ -89,6 +100,7 @@ public class WmsAlarmLogController extends BaseController {
     /**
      * 新增报警信息记录
      */
+    @ApiOperation("新增报警信息记录")
     @PreAuthorize("@ss.hasPermi('system:wms_alarm_log:add')")
     @Log(title = "报警信息记录", businessType = BusinessType.INSERT)
     @PostMapping
@@ -99,6 +111,7 @@ public class WmsAlarmLogController extends BaseController {
     /**
      * 修改报警信息记录
      */
+    @ApiOperation("修改报警信息记录")
     @PreAuthorize("@ss.hasPermi('system:wms_alarm_log:edit')")
     @Log(title = "报警信息记录", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -110,6 +123,7 @@ public class WmsAlarmLogController extends BaseController {
     /**
      * 删除报警信息记录
      */
+    @ApiOperation("删除报警信息记录")
     @PreAuthorize("@ss.hasPermi('system:wms_alarm_log:remove')")
     @Log(title = "报警信息记录", businessType = BusinessType.DELETE)
     @DeleteMapping("/{alarmIds}")

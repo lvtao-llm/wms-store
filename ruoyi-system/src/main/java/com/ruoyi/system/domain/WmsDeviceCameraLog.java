@@ -2,6 +2,8 @@ package com.ruoyi.system.domain;
 
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -13,56 +15,69 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * @author ruoyi
  * @date 2025-11-11
  */
+@ApiModel("摄像头识别日志对象")
 public class WmsDeviceCameraLog extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
     /** 主键 */
+    @ApiModelProperty("主键")
     private Long id;
 
     /** 类别 */
     @Excel(name = "类别")
+    @ApiModelProperty("类别")
     private String type;
 
     /** 点位名称 */
     @Excel(name = "点位名称")
+    @ApiModelProperty("点位名称")
     private String dwmc;
 
     /** 时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Excel(name = "时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty("时间")
     private Date sj;
 
     /** 是否有车 */
     @Excel(name = "是否有车")
+    @ApiModelProperty("是否有车")
     private String yc;
 
     /** 是否有人 */
     @Excel(name = "是否有人")
+    @ApiModelProperty("是否有人")
     private String yr;
 
     /** 车牌号 */
     @Excel(name = "车牌号")
+    @ApiModelProperty("车牌号")
     private String cph;
 
     /** 车轴 */
     @Excel(name = "车轴")
+    @ApiModelProperty("车轴")
     private String cz;
 
     /** 车型 */
     @Excel(name = "车型")
+    @ApiModelProperty("车型")
     private String cx;
 
     /** 颜色 */
     @Excel(name = "颜色")
+    @ApiModelProperty("颜色")
     private String ys;
 
     /** 是否穿戴工服 */
     @Excel(name = "是否穿戴工服")
+    @ApiModelProperty("是否穿戴工服")
     private String sfcdgf;
 
     /** 颜色 */
     @Excel(name = "颜色")
+    @ApiModelProperty("颜色")
     private String base64;
 
     public void setId(Long id) 

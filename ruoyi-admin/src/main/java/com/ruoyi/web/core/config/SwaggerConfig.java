@@ -113,11 +113,11 @@ public class SwaggerConfig
         // 用ApiInfoBuilder进行定制
         return new ApiInfoBuilder()
                 // 设置标题
-                .title("标题：生产作业智能管控系统_接口文档")
+                .title("生产作业智能管控系统·接口文档")
                 // 描述
-                .description("描述：用于管理集团旗下公司的人员信息,具体包括XXX,XXX模块...")
+                .description("本项目旨在利用先进的信息技术，构建一套全面、智能的仓储库区生产作业管控系统。通过实现仓储库区的虚拟全景展示，让管理人员能够直观、全面地了解库区的实时状态；借助人员和车辆的精准识别技术，确保对进出库区的人员和车辆进行精确管理；利用行动轨迹精确定位功能，实时掌握人员和车辆在库区内的活动路径；建立高危区域闯入监控和报警机制，有效防范安全事故的发生；实现出库物料的精准识别，提高物料管理的准确性和效率。最终实现仓储库区的数字化、网格化和智能化管理，大幅提高运营效率，降低管理成本，显著提升安全指数，为物资公司的仓储业务提供强有力的技术支持和保障。")
                 // 作者信息
-                .contact(new Contact(ruoyiConfig.getName(), null, null))
+                .contact(new Contact(ruoyiConfig.getName(), "http://10.63.228.93", null))
                 // 版本
                 .version("版本号:" + ruoyiConfig.getVersion())
                 .build();

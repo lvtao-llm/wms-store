@@ -6,6 +6,8 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -18,78 +20,91 @@ import org.springframework.data.annotation.Transient;
  * @author ruoyi
  * @date 2025-10-19
  */
+@ApiModel("发卡记录对象")
 public class WmsDeviceCardWorkLog extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     /**
      * 主键
      */
+    @ApiModelProperty("主键")
     private Long id;
 
     /**
      * 定位卡号
      */
     @Excel(name = "定位卡号")
+    @ApiModelProperty("定位卡号")
     private Long cardId;
 
     /**
      * 人脸识别照片
      */
     @Excel(name = "人脸识别照片")
+    @ApiModelProperty("人脸识别照片")
     private String personPhoto;
 
     /**
      * 人员id
      */
     @Excel(name = "人员id")
+    @ApiModelProperty("人员id")
     private Long personId;
 
     /**
      * 部门id
      */
     @Excel(name = "部门id")
+    @ApiModelProperty("部门id")
     private Long deptId;
 
     /**
      * 姓名
      */
     @Excel(name = "姓名")
+    @ApiModelProperty("姓名")
     private String realName;
 
     /**
      * 部门名称
      */
     @Excel(name = "部门名称")
+    @ApiModelProperty("部门名称")
     private String deptName;
 
     /**
      * 证件号码
      */
     @Excel(name = "证件号码")
+    @ApiModelProperty("证件号码")
     private String idNumber;
 
     /**
      * 认证方式(人脸/扫码/身份证/刷卡)
      */
     @Excel(name = "认证方式(人脸/扫码/身份证/刷卡)")
+    @ApiModelProperty("认证方式(人脸/扫码/身份证/刷卡)")
     private String identifyType;
 
     /**
      * 发卡设备SN
      */
     @Excel(name = "发卡设备SN")
+    @ApiModelProperty("发卡设备SN")
     private String senderDeviceSn;
 
     /**
      * 发卡设备名称
      */
     @Excel(name = "发卡设备名称")
+    @ApiModelProperty("发卡设备名称")
     private String senderDeviceName;
 
     /**
      * 发卡充电口号
      */
     @Excel(name = "发卡充电口号")
+    @ApiModelProperty("发卡充电口号")
     private Integer senderDeviceNum;
 
     /**
@@ -97,12 +112,14 @@ public class WmsDeviceCardWorkLog extends BaseEntity {
      */
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "发卡命令下发时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @ApiModelProperty("发卡命令下发时间")
     private Date senderCommandTime;
 
     /**
      * 发卡方式(固定/随机)
      */
     @Excel(name = "发卡方式(固定/随机)")
+    @ApiModelProperty("发卡方式(固定/随机)")
     private String senderRentType;
 
     /**
@@ -110,30 +127,35 @@ public class WmsDeviceCardWorkLog extends BaseEntity {
      */
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "认证时间(人脸机)", width = 30, dateFormat = "yyyy-MM-dd")
+    @ApiModelProperty("认证时间(人脸机)")
     private Date senderIdentifyTime;
 
     /**
      * 发卡日志ID
      */
     @Excel(name = "发卡日志ID")
+    @ApiModelProperty("发卡日志ID")
     private Long senderLanyaLogId;
 
     /**
      * 还卡设备SN
      */
     @Excel(name = "还卡设备SN")
+    @ApiModelProperty("还卡设备SN")
     private String returnDeviceSn;
 
     /**
      * 还卡设备名称
      */
     @Excel(name = "还卡设备名称")
+    @ApiModelProperty("还卡设备名称")
     private String returnDeviceName;
 
     /**
      * 还卡充电口号
      */
     @Excel(name = "还卡充电口号")
+    @ApiModelProperty("还卡充电口号")
     private Integer returnDeviceNum;
 
     /**
@@ -141,24 +163,28 @@ public class WmsDeviceCardWorkLog extends BaseEntity {
      */
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "还卡命令下发时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @ApiModelProperty("还卡命令下发时间")
     private Date returnCommandTime;
 
     /**
      * 还卡日志ID
      */
     @Excel(name = "还卡日志ID")
+    @ApiModelProperty("还卡日志ID")
     private Long returnLanyaLogId;
 
     /**
      * 日志开始ID
      */
     @Excel(name = "日志开始ID")
+    @ApiModelProperty("日志开始ID")
     private Long positionHistoryBeginId;
 
     /**
      * 日志结束ID
      */
     @Excel(name = "日志结束ID")
+    @ApiModelProperty("日志结束ID")
     private Long positionHistoryEndId;
 
     @Transient

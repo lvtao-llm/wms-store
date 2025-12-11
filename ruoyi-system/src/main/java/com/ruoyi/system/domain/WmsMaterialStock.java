@@ -3,6 +3,8 @@ package com.ruoyi.system.domain;
 import java.lang.Double;
 import java.util.List;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -14,6 +16,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * @author ruoyi
  * @date 2025-11-08
  */
+@ApiModel("库存视图对象")
 public class WmsMaterialStock extends WmsMaterialDesc {
     private static final long serialVersionUID = 1L;
 
@@ -21,94 +24,118 @@ public class WmsMaterialStock extends WmsMaterialDesc {
      * 库存编号
      */
     @Excel(name = "库存编号")
+    @ApiModelProperty("库存编号")
     private String inventoryId;
 
     /**
      * 物资编码
      */
     @Excel(name = "物资编码")
+    @ApiModelProperty("物资编码")
     private String wzbm;
 
     /**
      * 状态
      */
     @Excel(name = "状态")
+    @ApiModelProperty("状态")
     private String status;
 
     /**
      * 物资名称
      */
     @Excel(name = "物资名称")
+    @ApiModelProperty("物资名称")
     private String wzmc;
 
     /**
      * 计量单位
      */
     @Excel(name = "计量单位")
+    @ApiModelProperty("计量单位")
     private String jldw;
 
     /**
      * 库房
      */
     @Excel(name = "库房")
+    @ApiModelProperty("库房")
     private String warehouse;
 
     /**
      * 账存重量
      */
     @Excel(name = "账存重量")
+    @ApiModelProperty("账存重量")
     private Double bookWeight;
 
     /**
      * 品种编码
      */
     @Excel(name = "品种编码")
+    @ApiModelProperty("品种编码")
     private String varietyCode;
 
     /**
      * 品种名称
      */
     @Excel(name = "品种名称")
+    @ApiModelProperty("品种名称")
     private String pzmc;
 
     /**
      * 物资类别
      */
     @Excel(name = "物资类别")
+    @ApiModelProperty("物资类别")
     private String wzlb;
 
     /**
      * 预拨重量
      */
     @Excel(name = "预拨重量")
+    @ApiModelProperty("预拨重量")
     private Double reservedWeight;
 
     /**
      * 可拨重量
      */
     @Excel(name = "可拨重量")
+    @ApiModelProperty("可拨重量")
     private Double availableWeight;
 
     /**
      * 中队
      */
     @Excel(name = "中队")
+    @ApiModelProperty("中队")
     private String squadron;
 
     /**
      * 班组
      */
     @Excel(name = "班组")
+    @ApiModelProperty("班组")
     private String team;
 
     /**
      * 所属公司
      */
     @Excel(name = "所属公司")
+    @ApiModelProperty("所属公司")
     private String company;
 
+    /**
+     * 区域
+     */
     @Excel(name = "区域")
+    @ApiModelProperty("区域")
     private String areaCodes;
+
+    /**
+     * 区域名称
+     */
+    @ApiModelProperty("区域名称")
     private List<String> areaNames;
 
     public String getInventoryId() {

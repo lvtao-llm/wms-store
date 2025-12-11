@@ -1,5 +1,6 @@
 package com.ruoyi;
 
+import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
 import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.system.websocket.WebSocketServer;
 import org.springframework.boot.SpringApplication;
@@ -12,6 +13,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  *
  * @author ruoyi
  */
+@EnableKnife4j
 @EnableScheduling
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 public class RuoYiApplication {

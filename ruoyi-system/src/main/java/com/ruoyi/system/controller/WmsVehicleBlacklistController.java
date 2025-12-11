@@ -2,6 +2,9 @@ package com.ruoyi.system.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +30,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-10-30
  */
+@Api(tags = "车辆黑名单管理")
 @RestController
 @RequestMapping("/system/wms_vehicle_blacklist")
 public class WmsVehicleBlacklistController extends BaseController
@@ -37,6 +41,7 @@ public class WmsVehicleBlacklistController extends BaseController
     /**
      * 查询车辆黑名单列表
      */
+    @ApiOperation("车辆黑名单列表")
     @PreAuthorize("@ss.hasPermi('system:wms_vehicle_blacklist:list')")
     @GetMapping("/list")
     public TableDataInfo list(WmsVehicleBlacklist wmsVehicleBlacklist)
@@ -49,6 +54,7 @@ public class WmsVehicleBlacklistController extends BaseController
     /**
      * 导出车辆黑名单列表
      */
+    @ApiOperation("车辆黑名单列表")
     @PreAuthorize("@ss.hasPermi('system:wms_vehicle_blacklist:export')")
     @Log(title = "车辆黑名单", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -62,6 +68,7 @@ public class WmsVehicleBlacklistController extends BaseController
     /**
      * 获取车辆黑名单详细信息
      */
+    @ApiOperation("车辆黑名单列表")
     @PreAuthorize("@ss.hasPermi('system:wms_vehicle_blacklist:query')")
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id)
@@ -72,6 +79,7 @@ public class WmsVehicleBlacklistController extends BaseController
     /**
      * 新增车辆黑名单
      */
+    @ApiOperation("车辆黑名单列表")
     @PreAuthorize("@ss.hasPermi('system:wms_vehicle_blacklist:add')")
     @Log(title = "车辆黑名单", businessType = BusinessType.INSERT)
     @PostMapping
@@ -83,6 +91,7 @@ public class WmsVehicleBlacklistController extends BaseController
     /**
      * 修改车辆黑名单
      */
+    @ApiOperation("车辆黑名单列表")
     @PreAuthorize("@ss.hasPermi('system:wms_vehicle_blacklist:edit')")
     @Log(title = "车辆黑名单", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -94,6 +103,7 @@ public class WmsVehicleBlacklistController extends BaseController
     /**
      * 删除车辆黑名单
      */
+    @ApiOperation("车辆黑名单列表")
     @PreAuthorize("@ss.hasPermi('system:wms_vehicle_blacklist:remove')")
     @Log(title = "车辆黑名单", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{ids}")

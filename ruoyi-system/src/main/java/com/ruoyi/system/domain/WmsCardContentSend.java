@@ -1,5 +1,7 @@
 package com.ruoyi.system.domain;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -11,22 +13,27 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * @author ruoyi
  * @date 2025-11-10
  */
+@ApiModel("发送内容给卡播报对象")
 public class WmsCardContentSend extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
     /** 主键 */
+    @ApiModelProperty("主键")
     private Long id;
 
     /** 卡号 */
     @Excel(name = "卡号")
+    @ApiModelProperty("卡号")
     private Long cardCode;
 
     /** 内容 */
     @Excel(name = "内容")
+    @ApiModelProperty("内容")
     private String content;
 
     /** 是否已同步到物资公司 */
+    @ApiModelProperty("是否已同步到物资公司")
     private String goPublic;
 
     public void setId(Long id) 

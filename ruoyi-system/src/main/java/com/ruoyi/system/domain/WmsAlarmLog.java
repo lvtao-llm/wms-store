@@ -3,6 +3,8 @@ package com.ruoyi.system.domain;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -14,66 +16,77 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * @author ruoyi
  * @date 2025-10-17
  */
+@ApiModel("报警信息记录对象 wms_alarm_log")
 public class WmsAlarmLog extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     /**
      * 主键ID
      */
+    @ApiModelProperty("主键ID")
     private Long alarmId;
 
     /**
      * 报警类型：0人员，1车辆
      */
     @Excel(name = "报警类型：0人员，1车辆")
+    @ApiModelProperty("报警类型：0人员，1车辆")
     private String alarmType;
 
     /**
      * 发卡记录ID
      */
     @Excel(name = "发卡记录ID")
+    @ApiModelProperty("发卡记录ID")
     private Long cardRecordId;
 
     /**
      * 姓名
      */
     @Excel(name = "姓名")
+    @ApiModelProperty("姓名")
     private String personName;
 
     /**
      * 工号
      */
     @Excel(name = "工号")
+    @ApiModelProperty("工号")
     private String personJobNo;
 
     /**
      * 所属部门
      */
     @Excel(name = "所属部门")
+    @ApiModelProperty("所属部门")
     private String personDept;
 
     /**
      * 车牌号
      */
     @Excel(name = "车牌号")
+    @ApiModelProperty("车牌号")
     private String vehiclePlateNo;
 
     /**
      * 车型
      */
     @Excel(name = "车型")
+    @ApiModelProperty("车型")
     private String vehicleType;
 
     /**
      * 所在位置{x,y}
      */
     @Excel(name = "所在位置{x,y}")
+    @ApiModelProperty("所在位置{x,y}")
     private String alarmLocation;
 
     /**
      * 所在区域CODE
      */
     @Excel(name = "所在区域CODE")
+    @ApiModelProperty("所在区域CODE")
     private String areaCode;
 
     /**
@@ -81,24 +94,28 @@ public class WmsAlarmLog extends BaseEntity {
      */
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "进入时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @ApiModelProperty("进入时间")
     private Date alarmEnterTime;
 
     /**
      * 异常行为
      */
     @Excel(name = "异常行为")
+    @ApiModelProperty("异常行为")
     private String alarmBehavior;
 
     /**
      * 处理结果
      */
     @Excel(name = "处理结果")
+    @ApiModelProperty("处理结果")
     private String alarmResult;
 
     /**
      * 处理人员
      */
     @Excel(name = "处理人员")
+    @ApiModelProperty("处理人员")
     private String alarmHandler;
 
     /**
@@ -107,24 +124,28 @@ public class WmsAlarmLog extends BaseEntity {
 //    @JsonFormat(pattern = "yyyy-MM-dd")
 //    @Excel(name = "处理时间", width = 30, dateFormat = "yyyy-MM-dd")
     @Excel(name = "处理时间")
+    @ApiModelProperty("处理时间")
     private Date alarmHandleTime;
 
     /**
      * 删除标志
      */
     @Excel(name = "删除标志")
+    @ApiModelProperty("删除标志")
     private String delFlag;
 
     /**
      * 工单ID
      */
     @Excel(name = "工单ID")
+    @ApiModelProperty("工单ID")
     private Long workId;
 
     /**
      * 已读标志
      */
     @Excel(name = "已读标志")
+    @ApiModelProperty("已读标志")
     private String readFlag;
 
     public void setAlarmId(Long alarmId) {

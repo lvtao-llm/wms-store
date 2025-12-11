@@ -9,6 +9,8 @@ import com.ruoyi.system.domain.WmsArea;
 import com.ruoyi.system.domain.WmsMaterialDesc;
 import com.ruoyi.system.service.IWmsAreaService;
 import com.ruoyi.system.service.IWmsMaterialDescService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,6 +36,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-11-08
  */
+@Api("调拨视图")
 @RestController
 @RequestMapping("/system/wms_material_out")
 public class WmsMaterialOutController extends BaseController
@@ -50,6 +53,7 @@ public class WmsMaterialOutController extends BaseController
     /**
      * 查询调拨视图列表
      */
+    @ApiOperation("查询调拨视图列表")
     @PreAuthorize("@ss.hasPermi('system:wms_material_out:list')")
     @GetMapping("/list")
     public TableDataInfo list(WmsMaterialOut wmsMaterialOut)
@@ -59,6 +63,10 @@ public class WmsMaterialOutController extends BaseController
         return getDataTable(list);
     }
 
+    /**
+     * 获取调拨视图列表
+     */
+    @ApiOperation("获取调拨视图列表")
     @GetMapping("/list/{areaName}")
     public TableDataInfo list(WmsMaterialOut wmsMaterialIn, @PathVariable(value = "areaName", required = false) String areaName) {
         startPage();
@@ -97,6 +105,7 @@ public class WmsMaterialOutController extends BaseController
     /**
      * 导出调拨视图列表
      */
+    @ApiOperation("导出调拨视图列表")
     @PreAuthorize("@ss.hasPermi('system:wms_material_out:export')")
     @Log(title = "调拨视图", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -110,6 +119,7 @@ public class WmsMaterialOutController extends BaseController
     /**
      * 获取调拨视图详细信息
      */
+    @ApiOperation("获取调拨视图详细信息")
     @PreAuthorize("@ss.hasPermi('system:wms_material_out:query')")
     @GetMapping(value = "/{allotDetailId}")
     public AjaxResult getInfo(@PathVariable("allotDetailId") String allotDetailId)
@@ -120,6 +130,7 @@ public class WmsMaterialOutController extends BaseController
     /**
      * 新增调拨视图
      */
+    @ApiOperation("新增调拨视图")
     @PreAuthorize("@ss.hasPermi('system:wms_material_out:add')")
     @Log(title = "调拨视图", businessType = BusinessType.INSERT)
     @PostMapping
@@ -131,6 +142,7 @@ public class WmsMaterialOutController extends BaseController
     /**
      * 修改调拨视图
      */
+    @ApiOperation("修改调拨视图")
     @PreAuthorize("@ss.hasPermi('system:wms_material_out:edit')")
     @Log(title = "调拨视图", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -142,6 +154,7 @@ public class WmsMaterialOutController extends BaseController
     /**
      * 删除调拨视图
      */
+    @ApiOperation("删除调拨视图")
     @PreAuthorize("@ss.hasPermi('system:wms_material_out:remove')")
     @Log(title = "调拨视图", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{allotDetailIds}")

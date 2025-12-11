@@ -5,6 +5,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.common.annotation.DataSource;
 import com.ruoyi.common.enums.DataSourceType;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +32,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-10-10
  */
+@Api(value="人员报警", tags = {"卡机端", "报警管理"})
 @RestController
 @RequestMapping("/system/lanya_core_alarm_people")
 @DataSource(DataSourceType.SLAVE)
@@ -41,6 +44,7 @@ public class LanyaCoreAlarmPeopleController extends BaseController
     /**
      * 查询人员报警列表
      */
+    @ApiOperation("查询人员报警列表")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm_people:list')")
     @GetMapping("/list")
     public TableDataInfo list(LanyaCoreAlarmPeople lanyaCoreAlarmPeople)
@@ -53,6 +57,7 @@ public class LanyaCoreAlarmPeopleController extends BaseController
     /**
      * 导出人员报警列表
      */
+    @ApiOperation("导出人员报警列表")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm_people:export')")
     @Log(title = "人员报警", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -66,6 +71,7 @@ public class LanyaCoreAlarmPeopleController extends BaseController
     /**
      * 获取人员报警详细信息
      */
+    @ApiOperation("获取人员报警详细信息")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm_people:query')")
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id)
@@ -76,6 +82,7 @@ public class LanyaCoreAlarmPeopleController extends BaseController
     /**
      * 新增人员报警
      */
+    @ApiOperation("新增人员报警")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm_people:add')")
     @Log(title = "人员报警", businessType = BusinessType.INSERT)
     @PostMapping
@@ -87,6 +94,7 @@ public class LanyaCoreAlarmPeopleController extends BaseController
     /**
      * 修改人员报警
      */
+    @ApiOperation("修改人员报警")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm_people:edit')")
     @Log(title = "人员报警", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -98,6 +106,7 @@ public class LanyaCoreAlarmPeopleController extends BaseController
     /**
      * 删除人员报警
      */
+    @ApiOperation("删除人员报警")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm_people:remove')")
     @Log(title = "人员报警", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{ids}")

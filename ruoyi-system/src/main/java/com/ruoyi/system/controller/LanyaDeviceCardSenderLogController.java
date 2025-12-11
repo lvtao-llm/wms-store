@@ -5,6 +5,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.common.annotation.DataSource;
 import com.ruoyi.common.enums.DataSourceType;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +32,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-10-10
  */
+@Api(tags = "人脸发卡记录管理")
 @RestController
 @RequestMapping("/system/lanya_device_card_sender_log")
 @DataSource(value = DataSourceType.SLAVE)
@@ -41,6 +44,7 @@ public class LanyaDeviceCardSenderLogController extends BaseController
     /**
      * 查询人脸发卡记录列表
      */
+    @ApiOperation("查询人脸发卡记录列表")
     @PreAuthorize("@ss.hasPermi('system:lanya_device_card_sender_log:list')")
     @GetMapping("/list")
     public TableDataInfo list(LanyaDeviceCardSenderLog lanyaDeviceCardSenderLog)
@@ -53,6 +57,7 @@ public class LanyaDeviceCardSenderLogController extends BaseController
     /**
      * 查询人脸发卡记录列表
      */
+    @ApiOperation("查询人脸发卡记录列表")
     @PreAuthorize("@ss.hasPermi('system:lanya_device_card_sender_log:list')")
     @GetMapping("/list-by-name-card-type")
     public TableDataInfo listByNameCardType(String param)
@@ -65,6 +70,7 @@ public class LanyaDeviceCardSenderLogController extends BaseController
     /**
      * 导出人脸发卡记录列表
      */
+    @ApiOperation("导出人脸发卡记录列表")
     @PreAuthorize("@ss.hasPermi('system:lanya_device_card_sender_log:export')")
     @Log(title = "人脸发卡记录", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -78,6 +84,7 @@ public class LanyaDeviceCardSenderLogController extends BaseController
     /**
      * 获取人脸发卡记录详细信息
      */
+    @ApiOperation("获取人脸发卡记录详细信息")
     @PreAuthorize("@ss.hasPermi('system:lanya_device_card_sender_log:query')")
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id)
@@ -88,6 +95,7 @@ public class LanyaDeviceCardSenderLogController extends BaseController
     /**
      * 新增人脸发卡记录
      */
+    @ApiOperation("新增人脸发卡记录")
     @PreAuthorize("@ss.hasPermi('system:lanya_device_card_sender_log:add')")
     @Log(title = "人脸发卡记录", businessType = BusinessType.INSERT)
     @PostMapping
@@ -99,6 +107,7 @@ public class LanyaDeviceCardSenderLogController extends BaseController
     /**
      * 修改人脸发卡记录
      */
+    @ApiOperation("修改人脸发卡记录")
     @PreAuthorize("@ss.hasPermi('system:lanya_device_card_sender_log:edit')")
     @Log(title = "人脸发卡记录", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -110,6 +119,7 @@ public class LanyaDeviceCardSenderLogController extends BaseController
     /**
      * 删除人脸发卡记录
      */
+    @ApiOperation("删除人脸发卡记录")
     @PreAuthorize("@ss.hasPermi('system:lanya_device_card_sender_log:remove')")
     @Log(title = "人脸发卡记录", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{ids}")

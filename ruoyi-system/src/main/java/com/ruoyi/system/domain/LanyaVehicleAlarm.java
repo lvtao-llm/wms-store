@@ -3,6 +3,8 @@ package com.ruoyi.system.domain;
 import java.math.BigDecimal;
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -14,146 +16,181 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * @author 吕涛
  * @date 2025-10-10
  */
+@ApiModel(description = "车辆报警记录对象")
 public class LanyaVehicleAlarm extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
     /** ID */
+    @ApiModelProperty("ID")
     private Long id;
 
     /** 报警时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+//    @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "报警时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @ApiModelProperty("报警时间")
     private Date alarmTime;
 
     /** 车辆id */
     @Excel(name = "车辆id")
+    @ApiModelProperty("车辆id")
     private Long vehicleId;
 
     /** 车辆类别(见字典) */
     @Excel(name = "车辆类别(见字典)")
+    @ApiModelProperty("车辆类别(见字典)")
     private String vehicleCategory;
 
     /** 车载卡号 */
     @Excel(name = "车载卡号")
+    @ApiModelProperty("车载卡号")
     private Long cardId;
 
     /** 车辆名称 */
     @Excel(name = "车辆名称")
+    @ApiModelProperty("车辆名称")
     private String vehicleName;
 
     /** 车牌号 */
     @Excel(name = "车牌号")
+    @ApiModelProperty("车牌号")
     private String licensePlateNumber;
 
     /** 司机名称 */
     @Excel(name = "司机名称")
+    @ApiModelProperty("司机名称")
     private String driverName;
 
     /** 司机手机号 */
     @Excel(name = "司机手机号")
+    @ApiModelProperty("司机手机号")
     private String driverTel;
 
     /** 单位名称 */
     @Excel(name = "单位名称")
+    @ApiModelProperty("单位名称")
     private String companyName;
 
     /** 报警类型 */
     @Excel(name = "报警类型")
+    @ApiModelProperty("报警类型")
     private String alarmType;
 
     /** 报警类型名称 */
     @Excel(name = "报警类型名称")
+    @ApiModelProperty("报警类型名称")
     private String alarmTypeName;
 
     /** 报警名称 */
     @Excel(name = "报警名称")
+    @ApiModelProperty("报警名称")
     private String alarmName;
 
     /** 报警描述 */
     @Excel(name = "报警描述")
+    @ApiModelProperty("报警描述")
     private String alarmDesc;
 
     /** 报警状态（未处理15;已处理20；25无效） */
     @Excel(name = "报警状态", readConverterExp = "未=处理15;已处理20；25无效")
+    @ApiModelProperty("报警状态（未处理15;已处理20；25无效）")
     private String alarmStatus;
 
     /** 报警设置id */
     @Excel(name = "报警设置id")
+    @ApiModelProperty("报警设置id")
     private Long settingId;
 
     /** 报警设置名称 */
     @Excel(name = "报警设置名称")
+    @ApiModelProperty("报警设置名称")
     private String settingName;
 
     /** 围栏id */
     @Excel(name = "围栏id")
+    @ApiModelProperty("围栏id")
     private Long railId;
 
     /** 围栏名称 */
     @Excel(name = "围栏名称")
+    @ApiModelProperty("围栏名称")
     private String railName;
 
     /** 绘制类型(0圆;1线;2多边形) */
     @Excel(name = "绘制类型(0圆;1线;2多边形)")
+    @ApiModelProperty("绘制类型(0圆;1线;2多边形)")
     private Integer drawType;
 
     /** 围栏坐标 */
     @Excel(name = "围栏坐标")
+    @ApiModelProperty("围栏坐标")
     private String railScope;
 
     /** 围栏高度 */
     @Excel(name = "围栏高度")
+    @ApiModelProperty("围栏高度")
     private Integer railHeight;
 
     /** 楼层 */
     @Excel(name = "楼层")
+    @ApiModelProperty("楼层")
     private String layerId;
 
     /** 楼高 */
     @Excel(name = "楼高")
+    @ApiModelProperty("楼高")
     private Integer layerHeight;
 
     /** 经度 */
     @Excel(name = "经度")
+    @ApiModelProperty("经度")
     private BigDecimal longitude;
 
     /** 纬度 */
     @Excel(name = "纬度")
+    @ApiModelProperty("纬度")
     private BigDecimal latitude;
 
     /** 速度 */
     @Excel(name = "速度")
+    @ApiModelProperty("速度")
     private Integer speed;
 
     /** 方向 */
     @Excel(name = "方向")
+    @ApiModelProperty("方向")
     private Integer direction;
 
     /** 电量 */
     @Excel(name = "电量")
+    @ApiModelProperty("电量")
     private Integer electricity;
 
     /** 信标编码 */
     @Excel(name = "信标编码")
+    @ApiModelProperty("信标编码")
     private Long beaconId;
 
     /** 信号接收时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+//    @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "信号接收时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @ApiModelProperty("信号接收时间")
     private Date acceptTime;
 
     /** 处理人 */
     @Excel(name = "处理人")
+    @ApiModelProperty("处理人")
     private String disposeBy;
 
     /** 处理时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+//    @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "处理时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @ApiModelProperty("处理时间")
     private Date disposeTime;
 
     /** 处理反馈 */
     @Excel(name = "处理反馈")
+    @ApiModelProperty("处理反馈")
     private String disposeFeedback;
 
     public void setId(Long id) 

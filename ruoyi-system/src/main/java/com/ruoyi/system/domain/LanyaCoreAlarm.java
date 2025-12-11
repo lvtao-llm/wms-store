@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -15,6 +17,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * @author ruoyi
  * @date 2025-10-10
  */
+@ApiModel(description = "报警记录对象 core_alarm")
 public class LanyaCoreAlarm extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
@@ -29,242 +32,284 @@ public class LanyaCoreAlarm extends BaseEntity {
 //    @JsonFormat(pattern = "yyyy-MM-dd")
 //    @Excel(name = "信号接收时间", width = 30, dateFormat = "yyyy-MM-dd")
     @Excel(name = "信号接收时间")
+    @ApiModelProperty("信号接收时间")
     private Date acceptTime;
 
     /**
      * 报警类型
      */
     @Excel(name = "报警类型")
+    @ApiModelProperty("报警类型")
     private String alarmType;
 
     /**
      * 报警类型名称
      */
     @Excel(name = "报警类型名称")
+    @ApiModelProperty("报警类型名称")
     private String alarmTypeName;
 
     /**
      * 报警名称
      */
     @Excel(name = "报警名称")
+    @ApiModelProperty("报警名称")
     private String alarmName;
 
     /**
      * 报警描述
      */
     @Excel(name = "报警描述")
+    @ApiModelProperty("报警描述")
     private String alarmDesc;
 
     /**
      * 报警状态（未处理15;已处理20；25无效）
      */
     @Excel(name = "报警状态", readConverterExp = "未=处理15;已处理20；25无效")
+    @ApiModelProperty("报警状态")
     private String alarmStatus;
 
     /**
      * 报警区域ID
      */
     @Excel(name = "报警区域ID")
+    @ApiModelProperty("报警区域ID")
     private Long areaId;
 
     /**
      * 报警区域名称
      */
     @Excel(name = "报警区域名称")
+    @ApiModelProperty("报警区域名称")
     private String areaName;
 
     /**
      * 围栏id
      */
     @Excel(name = "围栏id")
+    @ApiModelProperty("围栏id")
     private Long railId;
 
     /**
      * 围栏名称
      */
     @Excel(name = "围栏名称")
+    @ApiModelProperty("围栏名称")
     private String railName;
 
     /**
      * 楼层
      */
     @Excel(name = "楼层")
+    @ApiModelProperty("楼层")
     private String layerId;
 
     /**
      * 楼高
      */
     @Excel(name = "楼高")
+    @ApiModelProperty("楼高")
     private Integer layerHeight;
 
     /**
      * 围栏坐标
      */
     @Excel(name = "围栏坐标")
+    @ApiModelProperty("围栏坐标")
     private String railScope;
 
     /**
      * 围栏高度
      */
     @Excel(name = "围栏高度")
+    @ApiModelProperty("围栏高度")
     private Long railHeight;
 
     /**
      * 绘制类型:0圆;1线;2多边形
      */
     @Excel(name = "绘制类型:0圆;1线;2多边形")
+    @ApiModelProperty("绘制类型:0圆;1线;2多边形")
     private Integer drawType;
 
     /**
      * 经度
      */
     @Excel(name = "经度")
+    @ApiModelProperty("经度")
     private BigDecimal longitude;
 
     /**
      * 纬度
      */
     @Excel(name = "纬度")
+    @ApiModelProperty("纬度")
     private BigDecimal latitude;
 
     /**
      * 信标id
      */
     @Excel(name = "信标id")
+    @ApiModelProperty("信标id")
     private String beaconId;
 
     /**
      * 定位卡号
      */
     @Excel(name = "定位卡号")
+    @ApiModelProperty("定位卡号")
     private Long cardId;
 
     /**
      * 人员id
      */
     @Excel(name = "人员id")
+    @ApiModelProperty("人员id")
     private Long personId;
 
     /**
      * 人员类型
      */
     @Excel(name = "人员类型")
+    @ApiModelProperty("人员类型")
     private String personType;
 
     /**
      * 员工类型
      */
     @Excel(name = "员工类型")
+    @ApiModelProperty("员工类型")
     private String staffType;
 
     /**
      * 报警人
      */
     @Excel(name = "报警人")
+    @ApiModelProperty("报警人")
     private String realName;
 
     /**
      * 工号
      */
     @Excel(name = "工号")
+    @ApiModelProperty("工号")
     private String jobNumber;
 
     /**
      * 管理人员姓名
      */
     @Excel(name = "管理人员姓名")
+    @ApiModelProperty("管理人员姓名")
     private String administratorName;
 
     /**
      * 管理人员号码
      */
     @Excel(name = "管理人员号码")
+    @ApiModelProperty("管理人员号码")
     private String administratorPhone;
 
     /**
      * 部门ID
      */
     @Excel(name = "部门ID")
+    @ApiModelProperty("部门ID")
     private Long deptId;
 
     /**
      * 部门名称
      */
     @Excel(name = "部门名称")
+    @ApiModelProperty("部门名称")
     private String deptName;
 
     /**
      * 岗位id
      */
     @Excel(name = "岗位id")
+    @ApiModelProperty("岗位id")
     private Long postId;
 
     /**
      * 岗位名称
      */
     @Excel(name = "岗位名称")
+    @ApiModelProperty("岗位名称")
     private String postName;
 
     /**
      * 所属承包商
      */
     @Excel(name = "所属承包商")
+    @ApiModelProperty("所属承包商")
     private Long contractorId;
 
     /**
      * 承包商名称
      */
     @Excel(name = "承包商名称")
+    @ApiModelProperty("承包商名称")
     private String contractorName;
 
     /**
      * 处理人
      */
     @Excel(name = "处理人")
+    @ApiModelProperty("处理人")
     private String disposeBy;
 
     /**
      * 处理时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "处理时间", width = 30, dateFormat = "yyyy-MM-dd")
+//    @JsonFormat(pattern = "yyyy-MM-dd")
+//    @Excel(name = "处理时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @Excel(name = "处理时间")
+    @ApiModelProperty("处理时间")
     private Date disposeTime;
 
     /**
      * 处理反馈
      */
     @Excel(name = "处理反馈")
+    @ApiModelProperty("处理反馈")
     private String disposeFeedback;
 
     /**
      * 结束时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "结束时间", width = 30, dateFormat = "yyyy-MM-dd")
+//    @JsonFormat(pattern = "yyyy-MM-dd")
+//    @Excel(name = "结束时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @Excel(name = "结束时间")
+    @ApiModelProperty("结束时间")
     private Date endTime;
 
     /**
      * 报警级别: 1/2/3级报警
      */
     @Excel(name = "报警级别: 1/2/3级报警")
+    @ApiModelProperty("报警级别: 1/2/3级报警")
     private Integer alarmLevel;
 
     /**
      * 最高报警级别
      */
     @Excel(name = "最高报警级别")
+    @ApiModelProperty("最高报警级别")
     private Integer highestAlarmLevel;
 
     /**
      * 所属楼宇id
      */
     @Excel(name = "所属楼宇id")
+    @ApiModelProperty("所属楼宇id")
     private Long buildingId;
 
     /**
      * 所属楼宇名称
      */
     @Excel(name = "所属楼宇名称")
+    @ApiModelProperty("所属楼宇名称")
     private String buildingName;
 
     public void setAlarmId(Long alarmId) {

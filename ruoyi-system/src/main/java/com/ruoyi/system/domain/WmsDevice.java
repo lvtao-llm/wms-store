@@ -1,5 +1,7 @@
 package com.ruoyi.system.domain;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -11,58 +13,72 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * @author ruoyi
  * @date 2025-10-27
  */
+@ApiModel("设备对象")
 public class WmsDevice extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
     /** 主键ID */
+    @ApiModelProperty("主键ID")
     private Long id;
 
     /** 设备类型 */
     @Excel(name = "设备类型")
+    @ApiModelProperty("设备类型")
     private String deviceType;
 
     /** 设备描述 */
     @Excel(name = "设备描述")
+    @ApiModelProperty("设备描述")
     private String deviceDescription;
 
     /** 经度 */
     @Excel(name = "经度")
+    @ApiModelProperty("经度")
     private String longitude;
 
     /** 纬度 */
     @Excel(name = "纬度")
+    @ApiModelProperty("纬度")
     private String latitude;
 
     /** 高度 */
     @Excel(name = "高度")
+    @ApiModelProperty("高度")
     private Long altitude;
 
     /** 设备名称 */
     @Excel(name = "设备名称")
+    @ApiModelProperty("设备名称")
     private String deviceName;
 
     /** 型号 */
     @Excel(name = "型号")
+    @ApiModelProperty("型号")
     private String model;
 
     /** 规格 */
     @Excel(name = "规格")
+    @ApiModelProperty("规格")
     private String specification;
 
     /** 序号SN */
     @Excel(name = "序号SN")
+    @ApiModelProperty("序号SN")
     private String serialNumber;
 
     /** 表名 */
     @Excel(name = "表名")
+    @ApiModelProperty("表名")
     private String tableName;
 
     /** 表ID */
     @Excel(name = "表ID")
+    @ApiModelProperty("表ID")
     private Long tableId;
 
     @Excel(name = "数据")
+    @ApiModelProperty("数据")
     private String data;
 
     public String getData() {

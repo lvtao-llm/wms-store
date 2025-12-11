@@ -2,6 +2,8 @@ package com.ruoyi.system.domain;
 
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -13,65 +15,80 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * @author ruoyi
  * @date 2025-10-12
  */
+@ApiModel(description = "定位卡管理对象")
 public class LanyaDeviceCard extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
     /** 主键id */
+    @ApiModelProperty("主键id")
     private Long id;
 
     /** 卡号 */
     @Excel(name = "卡号")
+    @ApiModelProperty("卡号")
     private Long cardId;
 
     /** 卡类型 */
     @Excel(name = "卡类型")
+    @ApiModelProperty("卡类型")
     private String cardType;
 
     /** 定位卡型号 */
     @Excel(name = "定位卡型号")
+    @ApiModelProperty("定位卡型号")
     private String cardModel;
 
     /** IC卡号 */
     @Excel(name = "IC卡号")
+    @ApiModelProperty("IC卡号")
     private String icCardId;
 
     /** 电量百分比 */
     @Excel(name = "电量百分比")
+    @ApiModelProperty("电量百分比")
     private Integer cardPower;
 
     /** 卡状态（出厂默认-1） */
     @Excel(name = "卡状态", readConverterExp = "出=厂默认-1")
+    @ApiModelProperty("卡状态（出厂默认-1）")
     private Integer cardStatus;
 
     /** 版本 */
     @Excel(name = "版本")
+    @ApiModelProperty("版本")
     private Integer cardVersion;
 
     /** 频点 */
     @Excel(name = "频点")
+    @ApiModelProperty("频点")
     private Integer cardFreq;
 
     /** 更新状态时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+//    @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "更新状态时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @ApiModelProperty("更新状态时间")
     private Date statusTime;
 
     /** （Y启用；N禁用） */
     @Excel(name = "", readConverterExp = "Y=启用；N禁用")
+    @ApiModelProperty("（Y启用；N禁用）")
     private String cardEnable;
 
     /** 是否使用（Y使用中；N未使用） */
     @Excel(name = "是否使用", readConverterExp = "Y=使用中；N未使用")
+    @ApiModelProperty("是否使用（Y使用中；N未使用）")
     private String useStatus;
 
     /** 卡片传输状态 */
     @Excel(name = "卡片传输状态")
+    @ApiModelProperty("卡片传输状态")
     private Integer cardTransfer;
 
     /** 心跳时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+//    @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "心跳时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @ApiModelProperty("心跳时间")
     private Date heartTime;
 
     public void setId(Long id) 

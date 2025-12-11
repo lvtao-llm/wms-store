@@ -2,6 +2,9 @@ package com.ruoyi.system.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +30,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-09-26
  */
+@Api(tags = "发卡记录Controller")
 @RestController
 @RequestMapping("/system/record")
 public class WmsCardRecordController extends BaseController
@@ -37,6 +41,7 @@ public class WmsCardRecordController extends BaseController
     /**
      * 查询发卡记录列表
      */
+    @ApiOperation("查询发卡记录列表")
     @PreAuthorize("@ss.hasPermi('system:record:list')")
     @GetMapping("/list")
     public TableDataInfo list(WmsCardRecord wmsCardRecord)
@@ -49,6 +54,7 @@ public class WmsCardRecordController extends BaseController
     /**
      * 导出发卡记录列表
      */
+    @ApiOperation("导出发卡记录列表")
     @PreAuthorize("@ss.hasPermi('system:record:export')")
     @Log(title = "发卡记录", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -62,6 +68,7 @@ public class WmsCardRecordController extends BaseController
     /**
      * 获取发卡记录详细信息
      */
+    @ApiOperation("获取发卡记录详细信息")
     @PreAuthorize("@ss.hasPermi('system:record:query')")
     @GetMapping(value = "/{cardRecordId}")
     public AjaxResult getInfo(@PathVariable("cardRecordId") Long cardRecordId)
@@ -72,6 +79,7 @@ public class WmsCardRecordController extends BaseController
     /**
      * 新增发卡记录
      */
+    @ApiOperation("新增发卡记录")
     @PreAuthorize("@ss.hasPermi('system:record:add')")
     @Log(title = "发卡记录", businessType = BusinessType.INSERT)
     @PostMapping
@@ -83,6 +91,7 @@ public class WmsCardRecordController extends BaseController
     /**
      * 修改发卡记录
      */
+    @ApiOperation("修改发卡记录")
     @PreAuthorize("@ss.hasPermi('system:record:edit')")
     @Log(title = "发卡记录", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -94,6 +103,7 @@ public class WmsCardRecordController extends BaseController
     /**
      * 删除发卡记录
      */
+    @ApiOperation("删除发卡记录")
     @PreAuthorize("@ss.hasPermi('system:record:remove')")
     @Log(title = "发卡记录", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{cardRecordIds}")

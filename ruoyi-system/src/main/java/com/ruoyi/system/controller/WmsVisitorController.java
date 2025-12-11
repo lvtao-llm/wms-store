@@ -2,6 +2,9 @@ package com.ruoyi.system.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +30,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-09-26
  */
+@Api(tags = "访客信息Controller")
 @RestController
 @RequestMapping("/system/visitor")
 public class WmsVisitorController extends BaseController
@@ -37,6 +41,7 @@ public class WmsVisitorController extends BaseController
     /**
      * 查询访客信息列表
      */
+    @ApiOperation("查询访客信息列表")
     @PreAuthorize("@ss.hasPermi('system:visitor:list')")
     @GetMapping("/list")
     public TableDataInfo list(WmsVisitor wmsVisitor)
@@ -49,6 +54,7 @@ public class WmsVisitorController extends BaseController
     /**
      * 导出访客信息列表
      */
+    @ApiOperation("导出访客信息列表")
     @PreAuthorize("@ss.hasPermi('system:visitor:export')")
     @Log(title = "访客信息", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -62,6 +68,7 @@ public class WmsVisitorController extends BaseController
     /**
      * 获取访客信息详细信息
      */
+    @ApiOperation("获取访客信息详细信息")
     @PreAuthorize("@ss.hasPermi('system:visitor:query')")
     @GetMapping(value = "/{visitorId}")
     public AjaxResult getInfo(@PathVariable("visitorId") Long visitorId)
@@ -72,6 +79,7 @@ public class WmsVisitorController extends BaseController
     /**
      * 新增访客信息
      */
+    @ApiOperation("新增访客信息")
     @PreAuthorize("@ss.hasPermi('system:visitor:add')")
     @Log(title = "访客信息", businessType = BusinessType.INSERT)
     @PostMapping
@@ -83,6 +91,7 @@ public class WmsVisitorController extends BaseController
     /**
      * 修改访客信息
      */
+    @ApiOperation("修改访客信息")
     @PreAuthorize("@ss.hasPermi('system:visitor:edit')")
     @Log(title = "访客信息", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -94,6 +103,7 @@ public class WmsVisitorController extends BaseController
     /**
      * 删除访客信息
      */
+    @ApiOperation("删除访客信息")
     @PreAuthorize("@ss.hasPermi('system:visitor:remove')")
     @Log(title = "访客信息", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{visitorIds}")

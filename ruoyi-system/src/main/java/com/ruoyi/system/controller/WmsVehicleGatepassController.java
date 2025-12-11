@@ -2,6 +2,9 @@ package com.ruoyi.system.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +30,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-10-30
  */
+@Api(tags = "车辆预约管理")
 @RestController
 @RequestMapping("/system/gatepass")
 public class WmsVehicleGatepassController extends BaseController
@@ -37,6 +41,7 @@ public class WmsVehicleGatepassController extends BaseController
     /**
      * 查询车辆预约列表
      */
+    @ApiOperation("车辆预约列表")
     @PreAuthorize("@ss.hasPermi('system:gatepass:list')")
     @GetMapping("/list")
     public TableDataInfo list(WmsVehicleGatepass wmsVehicleGatepass)
@@ -49,6 +54,7 @@ public class WmsVehicleGatepassController extends BaseController
     /**
      * 导出车辆预约列表
      */
+    @ApiOperation("车辆预约列表")
     @PreAuthorize("@ss.hasPermi('system:gatepass:export')")
     @Log(title = "车辆预约", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -62,6 +68,7 @@ public class WmsVehicleGatepassController extends BaseController
     /**
      * 获取车辆预约详细信息
      */
+    @ApiOperation("获取车辆预约详细信息")
     @PreAuthorize("@ss.hasPermi('system:gatepass:query')")
     @GetMapping(value = "/{gatepassId}")
     public AjaxResult getInfo(@PathVariable("gatepassId") Long gatepassId)
@@ -72,6 +79,7 @@ public class WmsVehicleGatepassController extends BaseController
     /**
      * 新增车辆预约
      */
+    @ApiOperation("新增车辆预约")
     @PreAuthorize("@ss.hasPermi('system:gatepass:add')")
     @Log(title = "车辆预约", businessType = BusinessType.INSERT)
     @PostMapping
@@ -83,6 +91,7 @@ public class WmsVehicleGatepassController extends BaseController
     /**
      * 修改车辆预约
      */
+    @ApiOperation("修改车辆预约")
     @PreAuthorize("@ss.hasPermi('system:gatepass:edit')")
     @Log(title = "车辆预约", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -94,6 +103,7 @@ public class WmsVehicleGatepassController extends BaseController
     /**
      * 删除车辆预约
      */
+    @ApiOperation("删除车辆预约")
     @PreAuthorize("@ss.hasPermi('system:gatepass:remove')")
     @Log(title = "车辆预约", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{gatepassIds}")

@@ -3,6 +3,8 @@ package com.ruoyi.system.domain;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -14,6 +16,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
  *
  * @author ruoyi
  */
+@ApiModel("参数配置")
 public class SysConfig extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
@@ -21,30 +24,35 @@ public class SysConfig extends BaseEntity {
      * 参数主键
      */
     @Excel(name = "参数主键", cellType = ColumnType.NUMERIC)
+    @ApiModelProperty("参数主键")
     private Long configId;
 
     /**
      * 参数名称
      */
     @Excel(name = "参数名称")
+    @ApiModelProperty("参数名称")
     private String configName;
 
     /**
      * 参数键名
      */
     @Excel(name = "参数键名")
+    @ApiModelProperty("参数键名")
     private String configKey;
 
     /**
      * 参数键值
      */
     @Excel(name = "参数键值")
+    @ApiModelProperty("参数键值")
     private String configValue;
 
     /**
      * 系统内置（Y是 N否）
      */
     @Excel(name = "系统内置", readConverterExp = "Y=是,N=否")
+    @ApiModelProperty("系统内置（Y是 N否）")
     private String configType;
 
     public SysConfig() {

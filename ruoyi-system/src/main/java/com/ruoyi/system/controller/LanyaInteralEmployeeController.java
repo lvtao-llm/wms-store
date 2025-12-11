@@ -5,6 +5,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.common.annotation.DataSource;
 import com.ruoyi.common.enums.DataSourceType;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +32,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author 吕涛
  * @date 2025-10-12
  */
+@Api(tags = "内部员工管理")
 @RestController
 @RequestMapping("/system/lanya_internal_employee")
 @DataSource(value = DataSourceType.SLAVE)
@@ -40,6 +43,7 @@ public class LanyaInteralEmployeeController extends BaseController {
     /**
      * 查询内部员工列表
      */
+    @ApiOperation("内部员工列表")
     @PreAuthorize("@ss.hasPermi('system:lanya_internal_employee:list')")
     @GetMapping("/list")
     public TableDataInfo list(LanyaInteralEmployee lanyaInteralEmployee) {
@@ -51,6 +55,7 @@ public class LanyaInteralEmployeeController extends BaseController {
     /**
      * 导出内部员工列表
      */
+    @ApiOperation("内部员工列表")
     @PreAuthorize("@ss.hasPermi('system:lanya_internal_employee:export')")
     @Log(title = "内部员工", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -63,6 +68,7 @@ public class LanyaInteralEmployeeController extends BaseController {
     /**
      * 获取内部员工详细信息
      */
+    @ApiOperation("内部员工列表")
     @PreAuthorize("@ss.hasPermi('system:lanya_internal_employee:query')")
     @GetMapping(value = "/{personId}")
     public AjaxResult getInfo(@PathVariable("personId") Long personId) {
@@ -72,6 +78,7 @@ public class LanyaInteralEmployeeController extends BaseController {
     /**
      * 新增内部员工
      */
+    @ApiOperation("内部员工列表")
     @PreAuthorize("@ss.hasPermi('system:lanya_internal_employee:add')")
     @Log(title = "内部员工", businessType = BusinessType.INSERT)
     @PostMapping
@@ -82,6 +89,7 @@ public class LanyaInteralEmployeeController extends BaseController {
     /**
      * 修改内部员工
      */
+    @ApiOperation("内部员工列表")
     @PreAuthorize("@ss.hasPermi('system:lanya_internal_employee:edit')")
     @Log(title = "内部员工", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -92,6 +100,7 @@ public class LanyaInteralEmployeeController extends BaseController {
     /**
      * 删除内部员工
      */
+    @ApiOperation("内部员工列表")
     @PreAuthorize("@ss.hasPermi('system:lanya_internal_employee:remove')")
     @Log(title = "内部员工", businessType = BusinessType.DELETE)
     @DeleteMapping("/{personIds}")

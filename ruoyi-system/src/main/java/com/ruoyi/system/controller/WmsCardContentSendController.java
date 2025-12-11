@@ -8,6 +8,8 @@ import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ruoyi.common.utils.ThirdPartyAuth;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-11-10
  */
+@Api(tags = "发送内容给卡播报Controller")
 @RestController
 @RequestMapping("/system/wms_card_content_send")
 public class WmsCardContentSendController extends BaseController {
@@ -49,6 +52,7 @@ public class WmsCardContentSendController extends BaseController {
     /**
      * 查询发送内容给卡播报列表
      */
+    @ApiOperation("获取发送内容给卡播报列表")
     @PreAuthorize("@ss.hasPermi('system:wms_card_content_send:list')")
     @GetMapping("/list")
     public TableDataInfo list(WmsCardContentSend wmsCardContentSend) {
@@ -60,6 +64,7 @@ public class WmsCardContentSendController extends BaseController {
     /**
      * 导出发送内容给卡播报列表
      */
+    @ApiOperation("导出发送内容给卡播报列表")
     @PreAuthorize("@ss.hasPermi('system:wms_card_content_send:export')")
     @Log(title = "发送内容给卡播报", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -72,6 +77,7 @@ public class WmsCardContentSendController extends BaseController {
     /**
      * 获取发送内容给卡播报详细信息
      */
+    @ApiOperation("获取发送内容给卡播报详细信息")
     @PreAuthorize("@ss.hasPermi('system:wms_card_content_send:query')")
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id) {
@@ -81,6 +87,7 @@ public class WmsCardContentSendController extends BaseController {
     /**
      * 新增发送内容给卡播报
      */
+    @ApiOperation("新增发送内容给卡播报")
     @PreAuthorize("@ss.hasPermi('system:wms_card_content_send:add')")
     @Log(title = "发送内容给卡播报", businessType = BusinessType.INSERT)
     @PostMapping
@@ -104,6 +111,7 @@ public class WmsCardContentSendController extends BaseController {
     /**
      * 修改发送内容给卡播报
      */
+    @ApiOperation("修改发送内容给卡播报")
     @PreAuthorize("@ss.hasPermi('system:wms_card_content_send:edit')")
     @Log(title = "发送内容给卡播报", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -114,6 +122,7 @@ public class WmsCardContentSendController extends BaseController {
     /**
      * 删除发送内容给卡播报
      */
+    @ApiOperation("删除发送内容给卡播报")
     @PreAuthorize("@ss.hasPermi('system:wms_card_content_send:remove')")
     @Log(title = "发送内容给卡播报", businessType = BusinessType.DELETE)
     @DeleteMapping("/{ids}")

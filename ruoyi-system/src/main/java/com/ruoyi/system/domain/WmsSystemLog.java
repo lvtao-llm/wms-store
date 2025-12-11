@@ -1,5 +1,7 @@
 package com.ruoyi.system.domain;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -7,122 +9,129 @@ import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
  * 定时任务调度日志对象 sys_job_log
- * 
+ *
  * @author ruoyi
  * @date 2025-11-24
  */
-public class WmsSystemLog extends BaseEntity
-{
+@ApiModel("后台任务调度日志对象")
+public class WmsSystemLog extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
-    /** 日志ID */
+    /**
+     * 日志ID
+     */
+    @ApiModelProperty("日志ID")
     private Long jobLogId;
 
-    /** 后台任务名称 */
+    /**
+     * 后台任务名称
+     */
     @Excel(name = "后台任务名称")
+    @ApiModelProperty("后台任务名称")
     private String jobName;
 
-    /** 后台任务类别 */
+    /**
+     * 后台任务类别
+     */
     @Excel(name = "后台任务类别")
+    @ApiModelProperty("后台任务类别")
     private String jobGroup;
 
-    /** 调用目标字符串 */
+    /**
+     * 调用目标字符串
+     */
     @Excel(name = "调用目标字符串")
+    @ApiModelProperty("调用目标字符串")
     private String invokeTarget;
 
-    /** 日志信息 */
+    /**
+     * 日志信息
+     */
     @Excel(name = "日志信息")
+    @ApiModelProperty("日志信息")
     private String jobMessage;
 
-    /** 执行状态（0正常 1失败） */
+    /**
+     * 执行状态（0正常 1失败）
+     */
     @Excel(name = "执行状态", readConverterExp = "0=正常,1=失败")
+    @ApiModelProperty("执行状态（0正常 1失败）")
     private String status;
 
-    /** 异常信息 */
+    /**
+     * 异常信息
+     */
     @Excel(name = "异常信息")
+    @ApiModelProperty("异常信息")
     private String exceptionInfo;
 
-    public void setJobLogId(Long jobLogId) 
-    {
+    public void setJobLogId(Long jobLogId) {
         this.jobLogId = jobLogId;
     }
 
-    public Long getJobLogId() 
-    {
+    public Long getJobLogId() {
         return jobLogId;
     }
 
-    public void setJobName(String jobName) 
-    {
+    public void setJobName(String jobName) {
         this.jobName = jobName;
     }
 
-    public String getJobName() 
-    {
+    public String getJobName() {
         return jobName;
     }
 
-    public void setJobGroup(String jobGroup) 
-    {
+    public void setJobGroup(String jobGroup) {
         this.jobGroup = jobGroup;
     }
 
-    public String getJobGroup() 
-    {
+    public String getJobGroup() {
         return jobGroup;
     }
 
-    public void setInvokeTarget(String invokeTarget) 
-    {
+    public void setInvokeTarget(String invokeTarget) {
         this.invokeTarget = invokeTarget;
     }
 
-    public String getInvokeTarget() 
-    {
+    public String getInvokeTarget() {
         return invokeTarget;
     }
 
-    public void setJobMessage(String jobMessage) 
-    {
+    public void setJobMessage(String jobMessage) {
         this.jobMessage = jobMessage;
     }
 
-    public String getJobMessage() 
-    {
+    public String getJobMessage() {
         return jobMessage;
     }
 
-    public void setStatus(String status) 
-    {
+    public void setStatus(String status) {
         this.status = status;
     }
 
-    public String getStatus() 
-    {
+    public String getStatus() {
         return status;
     }
 
-    public void setExceptionInfo(String exceptionInfo) 
-    {
+    public void setExceptionInfo(String exceptionInfo) {
         this.exceptionInfo = exceptionInfo;
     }
 
-    public String getExceptionInfo() 
-    {
+    public String getExceptionInfo() {
         return exceptionInfo;
     }
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("jobLogId", getJobLogId())
-            .append("jobName", getJobName())
-            .append("jobGroup", getJobGroup())
-            .append("invokeTarget", getInvokeTarget())
-            .append("jobMessage", getJobMessage())
-            .append("status", getStatus())
-            .append("exceptionInfo", getExceptionInfo())
-            .append("createTime", getCreateTime())
-            .toString();
+        return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+                .append("jobLogId", getJobLogId())
+                .append("jobName", getJobName())
+                .append("jobGroup", getJobGroup())
+                .append("invokeTarget", getInvokeTarget())
+                .append("jobMessage", getJobMessage())
+                .append("status", getStatus())
+                .append("exceptionInfo", getExceptionInfo())
+                .append("createTime", getCreateTime())
+                .toString();
     }
 }

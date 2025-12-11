@@ -2,6 +2,9 @@ package com.ruoyi.system.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +30,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-10-25
  */
+@Api(tags = "巡检任务管理")
 @RestController
 @RequestMapping("/system/wms_inspection_task")
 public class WmsInspectionTaskController extends BaseController
@@ -37,6 +41,7 @@ public class WmsInspectionTaskController extends BaseController
     /**
      * 查询巡检任务列表
      */
+    @ApiOperation("查询巡检任务列表")
     @PreAuthorize("@ss.hasPermi('system:wms_inspection_task:list')")
     @GetMapping("/list")
     public TableDataInfo list(WmsInspectionTask wmsInspectionTask)
@@ -49,6 +54,7 @@ public class WmsInspectionTaskController extends BaseController
     /**
      * 导出巡检任务列表
      */
+    @ApiOperation("导出巡检任务列表")
     @PreAuthorize("@ss.hasPermi('system:wms_inspection_task:export')")
     @Log(title = "巡检任务", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -62,6 +68,7 @@ public class WmsInspectionTaskController extends BaseController
     /**
      * 获取巡检任务详细信息
      */
+    @ApiOperation("获取巡检任务详细信息")
     @PreAuthorize("@ss.hasPermi('system:wms_inspection_task:query')")
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id)
@@ -72,6 +79,7 @@ public class WmsInspectionTaskController extends BaseController
     /**
      * 新增巡检任务
      */
+    @ApiOperation("新增巡检任务")
     @PreAuthorize("@ss.hasPermi('system:wms_inspection_task:add')")
     @Log(title = "巡检任务", businessType = BusinessType.INSERT)
     @PostMapping
@@ -83,6 +91,7 @@ public class WmsInspectionTaskController extends BaseController
     /**
      * 修改巡检任务
      */
+    @ApiOperation("修改巡检任务")
     @PreAuthorize("@ss.hasPermi('system:wms_inspection_task:edit')")
     @Log(title = "巡检任务", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -94,6 +103,7 @@ public class WmsInspectionTaskController extends BaseController
     /**
      * 删除巡检任务
      */
+    @ApiOperation("删除巡检任务")
     @PreAuthorize("@ss.hasPermi('system:wms_inspection_task:remove')")
     @Log(title = "巡检任务", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{ids}")

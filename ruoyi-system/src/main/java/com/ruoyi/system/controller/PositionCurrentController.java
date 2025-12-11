@@ -2,6 +2,9 @@ package com.ruoyi.system.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +30,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-12-05
  */
+@Api(tags = "实时定位管理")
 @RestController
 @RequestMapping("/system/position_current")
 public class PositionCurrentController extends BaseController
@@ -37,6 +41,7 @@ public class PositionCurrentController extends BaseController
     /**
      * 查询实时定位列表
      */
+    @ApiOperation("查询实时定位列表")
     @PreAuthorize("@ss.hasPermi('system:position_current:list')")
     @GetMapping("/list")
     public TableDataInfo list(PositionCurrent positionCurrent)
@@ -49,6 +54,7 @@ public class PositionCurrentController extends BaseController
     /**
      * 导出实时定位列表
      */
+    @ApiOperation("导出实时定位列表")
     @PreAuthorize("@ss.hasPermi('system:position_current:export')")
     @Log(title = "实时定位", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -62,6 +68,7 @@ public class PositionCurrentController extends BaseController
     /**
      * 获取实时定位详细信息
      */
+    @ApiOperation("获取实时定位详细信息")
     @PreAuthorize("@ss.hasPermi('system:position_current:query')")
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id)
@@ -72,6 +79,7 @@ public class PositionCurrentController extends BaseController
     /**
      * 新增实时定位
      */
+    @ApiOperation("新增实时定位")
     @PreAuthorize("@ss.hasPermi('system:position_current:add')")
     @Log(title = "实时定位", businessType = BusinessType.INSERT)
     @PostMapping
@@ -83,6 +91,7 @@ public class PositionCurrentController extends BaseController
     /**
      * 修改实时定位
      */
+    @ApiOperation("修改实时定位")
     @PreAuthorize("@ss.hasPermi('system:position_current:edit')")
     @Log(title = "实时定位", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -94,6 +103,7 @@ public class PositionCurrentController extends BaseController
     /**
      * 删除实时定位
      */
+    @ApiOperation("删除实时定位")
     @PreAuthorize("@ss.hasPermi('system:position_current:remove')")
     @Log(title = "实时定位", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{ids}")

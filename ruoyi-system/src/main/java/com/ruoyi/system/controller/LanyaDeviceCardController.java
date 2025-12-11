@@ -5,6 +5,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.common.annotation.DataSource;
 import com.ruoyi.common.enums.DataSourceType;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +32,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-10-12
  */
+@Api(value = "定位卡管理", tags = {"卡机端", "定位卡管理", "设备管理"})
 @RestController
 @RequestMapping("/system/lanya_device_card")
 @DataSource(value = DataSourceType.SLAVE)
@@ -40,6 +43,7 @@ public class LanyaDeviceCardController extends BaseController {
     /**
      * 查询定位卡管理列表
      */
+    @ApiOperation(value = "查询定位卡管理列表")
     @PreAuthorize("@ss.hasPermi('system:lanya_device_card:list')")
     @GetMapping("/list")
     public TableDataInfo list(LanyaDeviceCard lanyaDeviceCard) {
@@ -51,6 +55,7 @@ public class LanyaDeviceCardController extends BaseController {
     /**
      * 导出定位卡管理列表
      */
+    @ApiOperation(value = "导出定位卡管理列表")
     @PreAuthorize("@ss.hasPermi('system:lanya_device_card:export')")
     @Log(title = "定位卡管理", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -63,6 +68,7 @@ public class LanyaDeviceCardController extends BaseController {
     /**
      * 获取定位卡管理详细信息
      */
+    @ApiOperation(value = "获取定位卡管理详细信息")
     @PreAuthorize("@ss.hasPermi('system:lanya_device_card:query')")
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id) {
@@ -72,6 +78,7 @@ public class LanyaDeviceCardController extends BaseController {
     /**
      * 新增定位卡管理
      */
+    @ApiOperation(value = "新增定位卡管理")
     @PreAuthorize("@ss.hasPermi('system:lanya_device_card:add')")
     @Log(title = "定位卡管理", businessType = BusinessType.INSERT)
     @PostMapping
@@ -82,6 +89,7 @@ public class LanyaDeviceCardController extends BaseController {
     /**
      * 修改定位卡管理
      */
+    @ApiOperation(value = "修改定位卡管理")
     @PreAuthorize("@ss.hasPermi('system:lanya_device_card:edit')")
     @Log(title = "定位卡管理", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -92,6 +100,7 @@ public class LanyaDeviceCardController extends BaseController {
     /**
      * 删除定位卡管理
      */
+    @ApiOperation(value = "删除定位卡管理")
     @PreAuthorize("@ss.hasPermi('system:lanya_device_card:remove')")
     @Log(title = "定位卡管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{ids}")

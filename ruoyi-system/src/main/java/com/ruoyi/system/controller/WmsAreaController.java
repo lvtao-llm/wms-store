@@ -5,6 +5,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.common.core.domain.entity.SysDictData;
 import com.ruoyi.system.service.ISysDictDataService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +32,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-09-26
  */
+@Api(tags = "区域管理")
 @RestController
 @RequestMapping("/system/area")
 public class WmsAreaController extends BaseController {
@@ -44,6 +47,7 @@ public class WmsAreaController extends BaseController {
     /**
      * 查询区域列表
      */
+    @ApiOperation("区域列表")
     @GetMapping("/list")
     public TableDataInfo list(WmsArea wmsArea) {
         startPage();
@@ -54,6 +58,7 @@ public class WmsAreaController extends BaseController {
     /**
      * 导出区域列表
      */
+    @ApiOperation("区域列表")
     @Log(title = "区域", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, WmsArea wmsArea) {
@@ -65,6 +70,7 @@ public class WmsAreaController extends BaseController {
     /**
      * 获取区域详细信息
      */
+    @ApiOperation("区域列表")
     @GetMapping(value = "/{areaId}")
     public AjaxResult getInfo(@PathVariable("areaId") Long areaId) {
         return success(wmsAreaService.selectWmsAreaByAreaId(areaId));
@@ -73,6 +79,7 @@ public class WmsAreaController extends BaseController {
     /**
      * 新增区域
      */
+    @ApiOperation("区域列表")
     @Log(title = "区域", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody WmsArea wmsArea) {
@@ -82,6 +89,7 @@ public class WmsAreaController extends BaseController {
     /**
      * 修改区域
      */
+    @ApiOperation("区域列表")
     @Log(title = "区域", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody WmsArea wmsArea) {
@@ -91,6 +99,7 @@ public class WmsAreaController extends BaseController {
     /**
      * 删除区域
      */
+    @ApiOperation("区域列表")
     @Log(title = "区域", businessType = BusinessType.DELETE)
     @DeleteMapping("/{areaIds}")
     public AjaxResult remove(@PathVariable Long[] areaIds) {

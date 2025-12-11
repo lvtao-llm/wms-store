@@ -2,6 +2,9 @@ package com.ruoyi.system.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +30,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-11-09
  */
+@Api(tags = "物料日统计管理")
 @RestController
 @RequestMapping("/system/wms_material_statics_day")
 public class WmsMaterialStaticsDayController extends BaseController
@@ -37,6 +41,7 @@ public class WmsMaterialStaticsDayController extends BaseController
     /**
      * 查询物料日统计列表
      */
+    @ApiOperation("物料日统计列表")
     @PreAuthorize("@ss.hasPermi('system:wms_material_statics_day:list')")
     @GetMapping("/list")
     public TableDataInfo list(WmsMaterialStaticsDay wmsMaterialStaticsDay)
@@ -49,6 +54,7 @@ public class WmsMaterialStaticsDayController extends BaseController
     /**
      * 导出物料日统计列表
      */
+    @ApiOperation("物料日统计列表")
     @PreAuthorize("@ss.hasPermi('system:wms_material_statics_day:export')")
     @Log(title = "物料日统计", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -62,6 +68,7 @@ public class WmsMaterialStaticsDayController extends BaseController
     /**
      * 获取物料日统计详细信息
      */
+    @ApiOperation("物料日统计列表")
     @PreAuthorize("@ss.hasPermi('system:wms_material_statics_day:query')")
     @GetMapping(value = "/{day}")
     public AjaxResult getInfo(@PathVariable("day") String day)
@@ -72,6 +79,7 @@ public class WmsMaterialStaticsDayController extends BaseController
     /**
      * 新增物料日统计
      */
+    @ApiOperation("物料日统计列表")
     @PreAuthorize("@ss.hasPermi('system:wms_material_statics_day:add')")
     @Log(title = "物料日统计", businessType = BusinessType.INSERT)
     @PostMapping
@@ -83,6 +91,7 @@ public class WmsMaterialStaticsDayController extends BaseController
     /**
      * 修改物料日统计
      */
+    @ApiOperation("物料日统计列表")
     @PreAuthorize("@ss.hasPermi('system:wms_material_statics_day:edit')")
     @Log(title = "物料日统计", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -94,6 +103,7 @@ public class WmsMaterialStaticsDayController extends BaseController
     /**
      * 删除物料日统计
      */
+    @ApiOperation("物料日统计列表")
     @PreAuthorize("@ss.hasPermi('system:wms_material_statics_day:remove')")
     @Log(title = "物料日统计", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{days}")

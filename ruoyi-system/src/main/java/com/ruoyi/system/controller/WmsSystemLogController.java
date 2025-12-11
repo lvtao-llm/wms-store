@@ -2,6 +2,9 @@ package com.ruoyi.system.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +30,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-11-24
  */
+@Api(tags = "定时任务调度日志Controller")
 @RestController
 @RequestMapping("/system/wms_system_log")
 public class WmsSystemLogController extends BaseController
@@ -37,6 +41,7 @@ public class WmsSystemLogController extends BaseController
     /**
      * 查询定时任务调度日志列表
      */
+    @ApiOperation("查询定时任务调度日志列表")
     @PreAuthorize("@ss.hasPermi('system:wms_system_log:list')")
     @GetMapping("/list")
     public TableDataInfo list(WmsSystemLog wmsSystemLog)
@@ -49,6 +54,7 @@ public class WmsSystemLogController extends BaseController
     /**
      * 导出定时任务调度日志列表
      */
+    @ApiOperation("导出定时任务调度日志列表")
     @PreAuthorize("@ss.hasPermi('system:wms_system_log:export')")
     @Log(title = "定时任务调度日志", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -62,6 +68,7 @@ public class WmsSystemLogController extends BaseController
     /**
      * 获取定时任务调度日志详细信息
      */
+    @ApiOperation("获取定时任务调度日志详细信息")
     @PreAuthorize("@ss.hasPermi('system:wms_system_log:query')")
     @GetMapping(value = "/{jobLogId}")
     public AjaxResult getInfo(@PathVariable("jobLogId") Long jobLogId)
@@ -72,6 +79,7 @@ public class WmsSystemLogController extends BaseController
     /**
      * 新增定时任务调度日志
      */
+    @ApiOperation("新增定时任务调度日志")
     @PreAuthorize("@ss.hasPermi('system:wms_system_log:add')")
     @Log(title = "定时任务调度日志", businessType = BusinessType.INSERT)
     @PostMapping
@@ -83,6 +91,7 @@ public class WmsSystemLogController extends BaseController
     /**
      * 修改定时任务调度日志
      */
+    @ApiOperation("修改定时任务调度日志")
     @PreAuthorize("@ss.hasPermi('system:wms_system_log:edit')")
     @Log(title = "定时任务调度日志", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -94,6 +103,7 @@ public class WmsSystemLogController extends BaseController
     /**
      * 删除定时任务调度日志
      */
+    @ApiOperation("删除定时任务调度日志")
     @PreAuthorize("@ss.hasPermi('system:wms_system_log:remove')")
     @Log(title = "定时任务调度日志", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{jobLogIds}")

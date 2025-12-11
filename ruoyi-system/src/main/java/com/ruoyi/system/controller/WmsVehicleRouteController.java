@@ -2,6 +2,9 @@ package com.ruoyi.system.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +30,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-09-26
  */
+@Api(tags = "车辆路线规划Controller")
 @RestController
 @RequestMapping("/system/route")
 public class WmsVehicleRouteController extends BaseController
@@ -37,6 +41,7 @@ public class WmsVehicleRouteController extends BaseController
     /**
      * 查询车辆路线规划列表
      */
+    @ApiOperation("查询车辆路线规划列表")
     @PreAuthorize("@ss.hasPermi('system:route:list')")
     @GetMapping("/list")
     public TableDataInfo list(WmsVehicleRoute wmsVehicleRoute)
@@ -49,6 +54,7 @@ public class WmsVehicleRouteController extends BaseController
     /**
      * 导出车辆路线规划列表
      */
+    @ApiOperation("导出车辆路线规划列表")
     @PreAuthorize("@ss.hasPermi('system:route:export')")
     @Log(title = "车辆路线规划", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -62,6 +68,7 @@ public class WmsVehicleRouteController extends BaseController
     /**
      * 获取车辆路线规划详细信息
      */
+    @ApiOperation("获取车辆路线规划详细信息")
     @PreAuthorize("@ss.hasPermi('system:route:query')")
     @GetMapping(value = "/{routeId}")
     public AjaxResult getInfo(@PathVariable("routeId") Long routeId)
@@ -72,6 +79,7 @@ public class WmsVehicleRouteController extends BaseController
     /**
      * 新增车辆路线规划
      */
+    @ApiOperation("新增车辆路线规划")
     @PreAuthorize("@ss.hasPermi('system:route:add')")
     @Log(title = "车辆路线规划", businessType = BusinessType.INSERT)
     @PostMapping
@@ -83,6 +91,7 @@ public class WmsVehicleRouteController extends BaseController
     /**
      * 修改车辆路线规划
      */
+    @ApiOperation("修改车辆路线规划")
     @PreAuthorize("@ss.hasPermi('system:route:edit')")
     @Log(title = "车辆路线规划", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -94,6 +103,7 @@ public class WmsVehicleRouteController extends BaseController
     /**
      * 删除车辆路线规划
      */
+    @ApiOperation("删除车辆路线规划")
     @PreAuthorize("@ss.hasPermi('system:route:remove')")
     @Log(title = "车辆路线规划", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{routeIds}")

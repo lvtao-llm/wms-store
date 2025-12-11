@@ -10,6 +10,8 @@ import com.ruoyi.common.annotation.DataSource;
 import com.ruoyi.common.enums.DataSourceType;
 import com.ruoyi.system.domain.SysConfig;
 import com.ruoyi.system.service.ISysConfigService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,6 +37,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-10-10
  */
+@Api(value = "报警记录管理", tags = {"卡机端", "报警管理"})
 @RestController
 @RequestMapping("/system/lanya_core_alarm")
 public class LanyaCoreAlarmController extends BaseController {
@@ -49,6 +52,7 @@ public class LanyaCoreAlarmController extends BaseController {
     /**
      * 查询报警记录列表
      */
+    @ApiOperation("查询报警记录列表")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
     @GetMapping("/list")
     public TableDataInfo list(LanyaCoreAlarm lanyaCoreAlarm) {
@@ -60,6 +64,7 @@ public class LanyaCoreAlarmController extends BaseController {
     /**
      * 查询报警记录列表
      */
+    @ApiOperation("查询报警记录列表")
     @GetMapping("/new-sos")
     public TableDataInfo newSos() throws ParseException {
         SysConfig sysConfig = null;
@@ -81,6 +86,7 @@ public class LanyaCoreAlarmController extends BaseController {
     /**
      * 导出报警记录列表
      */
+    @ApiOperation("导出报警记录列表")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:export')")
     @Log(title = "报警记录", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -93,6 +99,7 @@ public class LanyaCoreAlarmController extends BaseController {
     /**
      * 获取报警记录详细信息
      */
+    @ApiOperation("获取报警记录详细信息")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:query')")
     @GetMapping(value = "/{alarmId}")
     public AjaxResult getInfo(@PathVariable("alarmId") Long alarmId) {
@@ -102,6 +109,7 @@ public class LanyaCoreAlarmController extends BaseController {
     /**
      * 新增报警记录
      */
+    @ApiOperation("新增报警记录")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:add')")
     @Log(title = "报警记录", businessType = BusinessType.INSERT)
     @PostMapping
@@ -112,6 +120,7 @@ public class LanyaCoreAlarmController extends BaseController {
     /**
      * 修改报警记录
      */
+    @ApiOperation("修改报警记录")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:edit')")
     @Log(title = "报警记录", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -122,6 +131,7 @@ public class LanyaCoreAlarmController extends BaseController {
     /**
      * 删除报警记录
      */
+    @ApiOperation("删除报警记录")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:remove')")
     @Log(title = "报警记录", businessType = BusinessType.DELETE)
     @DeleteMapping("/{alarmIds}")

@@ -10,6 +10,8 @@ import com.ruoyi.system.domain.WmsArea;
 import com.ruoyi.system.domain.WmsMaterialDesc;
 import com.ruoyi.system.service.IWmsAreaService;
 import com.ruoyi.system.service.IWmsMaterialDescService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +30,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-11-08
  */
+@Api("接料视图")
 @RestController
 @RequestMapping("/system/wms_material_in")
 public class WmsMaterialInController extends BaseController {
@@ -43,6 +46,7 @@ public class WmsMaterialInController extends BaseController {
     /**
      * 查询接料视图列表
      */
+    @ApiOperation("查询接料视图列表")
     @PreAuthorize("@ss.hasPermi('system:wms_material_in:list')")
     @GetMapping("/list")
     public TableDataInfo list(WmsMaterialIn wmsMaterialIn) {
@@ -56,6 +60,7 @@ public class WmsMaterialInController extends BaseController {
     /**
      * 查询接料视图列表
      */
+    @ApiOperation("查询接料视图列表")
     @GetMapping("/list/{areaName}")
     public TableDataInfo list(WmsMaterialIn wmsMaterialIn, @PathVariable(value = "areaName", required = false) String areaName) {
         startPage();
@@ -94,6 +99,7 @@ public class WmsMaterialInController extends BaseController {
     /**
      * 导出接料视图列表
      */
+    @ApiOperation("导出接料视图列表")
     @PreAuthorize("@ss.hasPermi('system:wms_material_in:export')")
     @Log(title = "接料视图", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -106,6 +112,7 @@ public class WmsMaterialInController extends BaseController {
     /**
      * 获取接料视图详细信息
      */
+    @ApiOperation("获取接料视图详细信息")
     @PreAuthorize("@ss.hasPermi('system:wms_material_in:query')")
     @GetMapping(value = "/{jlBh}")
     public AjaxResult getInfo(@PathVariable("jlBh") String jlBh) {
@@ -115,6 +122,7 @@ public class WmsMaterialInController extends BaseController {
     /**
      * 新增接料视图
      */
+    @ApiOperation("新增接料视图")
     @PreAuthorize("@ss.hasPermi('system:wms_material_in:add')")
     @Log(title = "接料视图", businessType = BusinessType.INSERT)
     @PostMapping
@@ -125,6 +133,7 @@ public class WmsMaterialInController extends BaseController {
     /**
      * 修改接料视图
      */
+    @ApiOperation("修改接料视图")
     @PreAuthorize("@ss.hasPermi('system:wms_material_in:edit')")
     @Log(title = "接料视图", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -135,6 +144,7 @@ public class WmsMaterialInController extends BaseController {
     /**
      * 删除接料视图
      */
+    @ApiOperation("删除接料视图")
     @PreAuthorize("@ss.hasPermi('system:wms_material_in:remove')")
     @Log(title = "接料视图", businessType = BusinessType.DELETE)
     @DeleteMapping("/{jlBhs}")

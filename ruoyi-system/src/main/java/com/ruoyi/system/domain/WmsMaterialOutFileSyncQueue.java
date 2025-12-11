@@ -1,5 +1,7 @@
 package com.ruoyi.system.domain;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -11,20 +13,24 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * @author ruoyi
  * @date 2025-11-20
  */
+@ApiModel("物料出入库相关文件同步队列对象")
 public class WmsMaterialOutFileSyncQueue extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
     /** 调拨明细编号 */
     @Excel(name = "调拨明细编号")
+    @ApiModelProperty("调拨明细编号")
     private String 调拨明细编号;
 
     /** 字段名称 */
     @Excel(name = "字段名称")
+    @ApiModelProperty("字段名称")
     private String 字段名称;
 
     /** 文件路径 */
     @Excel(name = "文件路径")
+    @ApiModelProperty("文件路径")
     private String 文件路径;
 
     public void set调拨明细编号(String 调拨明细编号) 

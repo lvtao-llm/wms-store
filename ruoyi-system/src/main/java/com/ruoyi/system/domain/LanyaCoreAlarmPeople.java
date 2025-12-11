@@ -3,6 +3,8 @@ package com.ruoyi.system.domain;
 import java.math.BigDecimal;
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -14,69 +16,87 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * @author ruoyi
  * @date 2025-10-10
  */
+@ApiModel(description = "人员报警对象")
 public class LanyaCoreAlarmPeople extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
     /** 主键 */
+    @ApiModelProperty(value = "主键")
     private Long id;
 
     /** 报警记录id */
     @Excel(name = "报警记录id")
+    @ApiModelProperty(value = "报警记录id")
     private Long coreAlarmId;
 
     /** 姓名 */
     @Excel(name = "姓名")
+    @ApiModelProperty(value = "姓名")
     private String realName;
 
     /** 人员id */
     @Excel(name = "人员id")
+    @ApiModelProperty(value = "人员id")
     private Long personId;
 
     /** 卡号 */
     @Excel(name = "卡号")
+    @ApiModelProperty(value = "卡号")
     private Long cardId;
 
     /** 工号 */
     @Excel(name = "工号")
+    @ApiModelProperty(value = "工号")
     private String jobNumber;
 
     /** 岗位 */
     @Excel(name = "岗位")
+    @ApiModelProperty(value = "岗位")
     private String postName;
 
     /** 联系方式 */
     @Excel(name = "联系方式")
+    @ApiModelProperty(value = "联系方式")
     private String phone;
 
     /** 部门id */
     @Excel(name = "部门id")
+    @ApiModelProperty(value = "部门id")
     private Long deptId;
 
     /** 部门名称 */
     @Excel(name = "部门名称")
+    @ApiModelProperty(value = "部门名称")
     private String deptName;
 
     /** 经度 */
     @Excel(name = "经度")
+    @ApiModelProperty(value = "经度")
     private BigDecimal longitude;
 
     /** 纬度 */
     @Excel(name = "纬度")
+    @ApiModelProperty(value = "纬度")
     private BigDecimal latitude;
 
     /** 楼层 */
     @Excel(name = "楼层")
+    @ApiModelProperty(value = "楼层")
     private String layerId;
 
     /** 开始时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "开始时间", width = 30, dateFormat = "yyyy-MM-dd")
+//    @JsonFormat(pattern = "yyyy-MM-dd")
+//    @Excel(name = "开始时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @Excel(name = "开始时间")
+    @ApiModelProperty(value = "开始时间")
     private Date acceptTime;
 
     /** 结束时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "结束时间", width = 30, dateFormat = "yyyy-MM-dd")
+//    @JsonFormat(pattern = "yyyy-MM-dd")
+//    @Excel(name = "结束时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @Excel(name = "结束时间")
+    @ApiModelProperty(value = "结束时间")
     private Date endTime;
 
     public void setId(Long id) 

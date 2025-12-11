@@ -2,6 +2,9 @@ package com.ruoyi.system.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +30,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-11-20
  */
+@Api(tags = "物料出入库相关文件同步队列管理")
 @RestController
 @RequestMapping("/system/wms_material_out_file_sync_queue")
 public class WmsMaterialOutFileSyncQueueController extends BaseController
@@ -37,6 +41,7 @@ public class WmsMaterialOutFileSyncQueueController extends BaseController
     /**
      * 查询物料出入库相关文件同步队列列表
      */
+    @ApiOperation("物料出入库相关文件同步队列列表")
     @PreAuthorize("@ss.hasPermi('system:wms_material_out_file_sync_queue:list')")
     @GetMapping("/list")
     public TableDataInfo list(WmsMaterialOutFileSyncQueue wmsMaterialOutFileSyncQueue)
@@ -49,6 +54,7 @@ public class WmsMaterialOutFileSyncQueueController extends BaseController
     /**
      * 导出物料出入库相关文件同步队列列表
      */
+    @ApiOperation("物料出入库相关文件同步队列列表")
     @PreAuthorize("@ss.hasPermi('system:wms_material_out_file_sync_queue:export')")
     @Log(title = "物料出入库相关文件同步队列", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -62,6 +68,7 @@ public class WmsMaterialOutFileSyncQueueController extends BaseController
     /**
      * 获取物料出入库相关文件同步队列详细信息
      */
+    @ApiOperation("物料出入库相关文件同步队列列表")
     @PreAuthorize("@ss.hasPermi('system:wms_material_out_file_sync_queue:query')")
     @GetMapping(value = "/{调拨明细编号}")
     public AjaxResult getInfo(@PathVariable("调拨明细编号") String 调拨明细编号)
@@ -72,6 +79,7 @@ public class WmsMaterialOutFileSyncQueueController extends BaseController
     /**
      * 新增物料出入库相关文件同步队列
      */
+    @ApiOperation("物料出入库相关文件同步队列列表")
     @PreAuthorize("@ss.hasPermi('system:wms_material_out_file_sync_queue:add')")
     @Log(title = "物料出入库相关文件同步队列", businessType = BusinessType.INSERT)
     @PostMapping
@@ -83,6 +91,7 @@ public class WmsMaterialOutFileSyncQueueController extends BaseController
     /**
      * 修改物料出入库相关文件同步队列
      */
+    @ApiOperation("物料出入库相关文件同步队列列表")
     @PreAuthorize("@ss.hasPermi('system:wms_material_out_file_sync_queue:edit')")
     @Log(title = "物料出入库相关文件同步队列", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -94,6 +103,7 @@ public class WmsMaterialOutFileSyncQueueController extends BaseController
     /**
      * 删除物料出入库相关文件同步队列
      */
+    @ApiOperation("物料出入库相关文件同步队列列表")
     @PreAuthorize("@ss.hasPermi('system:wms_material_out_file_sync_queue:remove')")
     @Log(title = "物料出入库相关文件同步队列", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{调拨明细编号s}")

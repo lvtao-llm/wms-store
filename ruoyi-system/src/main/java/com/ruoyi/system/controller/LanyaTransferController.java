@@ -12,6 +12,8 @@ import com.ruoyi.common.enums.DataSourceType;
 import com.ruoyi.common.utils.ThirdPartyAuth;
 import com.ruoyi.system.domain.LanyaCoreAlarm;
 import com.ruoyi.system.service.ILanyaCoreAlarmService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -40,6 +42,7 @@ import java.util.Map;
  * @author ruoyi
  * @date 2025-10-10
  */
+@Api("人员报警")
 @RestController
 @RequestMapping("/system/lanya-transfer")
 @DataSource(DataSourceType.SLAVE)
@@ -56,6 +59,7 @@ public class LanyaTransferController extends BaseController {
     /**
      * 获取人员实时定位
      */
+    @ApiOperation("获取人员实时定位")
     @Log(title = "人员实时定位", businessType = BusinessType.OTHER)
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
     @GetMapping("/position-person-realtime")
@@ -67,6 +71,7 @@ public class LanyaTransferController extends BaseController {
     /**
      * 获取人员历史定位
      */
+    @ApiOperation("获取人员历史定位")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
     @GetMapping("/position-person-history")
     public Object positionPersonHistory(LanyaCoreAlarm lanyaCoreAlarm) throws JsonProcessingException {
@@ -77,6 +82,7 @@ public class LanyaTransferController extends BaseController {
     /**
      * 获取人员最终位置
      */
+    @ApiOperation("获取人员最终位置")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
     @GetMapping("/position-person-finally")
     public Object positionPersonFinally(LanyaCoreAlarm lanyaCoreAlarm) throws JsonProcessingException {
@@ -87,6 +93,7 @@ public class LanyaTransferController extends BaseController {
     /**
      * 获取字典数据
      */
+    @ApiOperation("获取字典数据")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
     @GetMapping("/dict/findData")
     public Object dictFindData() throws JsonProcessingException {
@@ -97,6 +104,7 @@ public class LanyaTransferController extends BaseController {
     /**
      * 获取设备列表
      */
+    @ApiOperation("获取设备列表")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
     @GetMapping("/machine/listPage")
     public Object machineListPage() throws JsonProcessingException {
@@ -111,6 +119,7 @@ public class LanyaTransferController extends BaseController {
      * @return
      * @throws JsonProcessingException
      */
+    @ApiOperation("获取设备详情")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
     @GetMapping("/machine/detailPage")
     public Object machineListDetail(@Param("deviceSn") String deviceSn) throws JsonProcessingException {
@@ -133,6 +142,7 @@ public class LanyaTransferController extends BaseController {
     /**
      * 内部员工与机器绑定
      */
+    @ApiOperation("内部员工与机器绑定")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
     @PostMapping("/machine/config-relation/detail-by-person")
     public Object machineConfigRelationDetailByPerson(@RequestBody JSONObject body) throws JsonProcessingException {
@@ -142,6 +152,7 @@ public class LanyaTransferController extends BaseController {
     /**
      * 添加员工与设备绑定关系
      */
+    @ApiOperation("添加员工与设备绑定关系")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
     @PostMapping("/machine/config-relation/edit-by-person")
     public Object machineConfigRelationEditByPerson(@RequestBody JSONObject body) throws JsonProcessingException {
@@ -152,6 +163,7 @@ public class LanyaTransferController extends BaseController {
     /**
      * 获取内部员工列表
      */
+    @ApiOperation("获取内部员工列表")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
     @PostMapping("/person/staff/listPage")
     public Object personStaffListPage(@RequestBody JSONObject body) throws JsonProcessingException {
@@ -161,6 +173,7 @@ public class LanyaTransferController extends BaseController {
     /**
      * 添加内部员工
      */
+    @ApiOperation("添加内部员工")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
     @PostMapping("/person/staff/addStaff")
     public Object personStaffAddStaff(@RequestBody JSONObject body) throws JsonProcessingException {
@@ -170,6 +183,7 @@ public class LanyaTransferController extends BaseController {
     /**
      * 修改内部员工
      */
+    @ApiOperation("修改内部员工")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
     @PostMapping("/person/staff/updateStaff")
     public Object personStaffUpdateStaff(@RequestBody JSONObject body) throws JsonProcessingException {
@@ -179,6 +193,7 @@ public class LanyaTransferController extends BaseController {
     /**
      * 删除内部员工
      */
+    @ApiOperation("删除内部员工")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
     @PostMapping("/person/staff/delStaff")
     public Object personStaffDelStaff(@RequestBody JSONObject body) throws JsonProcessingException {
@@ -188,6 +203,7 @@ public class LanyaTransferController extends BaseController {
     /**
      * 获取设备卡列表
      */
+    @ApiOperation("获取设备卡列表")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
     @PostMapping("/device/card/listPage")
     public Object deviceCardListPage(@RequestBody JSONObject body) throws JsonProcessingException {
@@ -197,6 +213,7 @@ public class LanyaTransferController extends BaseController {
     /**
      * 添加设备卡
      */
+    @ApiOperation("添加设备卡")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
     @PostMapping("/device/card/addCard")
     public Object deviceCardAddCard(@RequestBody JSONObject body) throws JsonProcessingException {
@@ -206,6 +223,7 @@ public class LanyaTransferController extends BaseController {
     /**
      * 修改设备卡
      */
+    @ApiOperation("修改设备卡")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
     @PostMapping("/device/card/updateCard")
     public Object deviceCardUpdateCard(@RequestBody JSONObject body) throws JsonProcessingException {
@@ -215,6 +233,7 @@ public class LanyaTransferController extends BaseController {
     /**
      * 删除设备卡
      */
+    @ApiOperation("删除设备卡")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
     @PostMapping("/device/card/delCard")
     public Object deviceCardDelCard(@RequestBody JSONObject body) throws JsonProcessingException {
@@ -228,6 +247,7 @@ public class LanyaTransferController extends BaseController {
      * @return
      * @throws JsonProcessingException
      */
+    @ApiOperation("人员发卡记录")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
     @PostMapping("/cardSender/cardSenderLog")
     public Object cardSenderLog(@RequestBody JSONObject body) throws JsonProcessingException {
@@ -295,6 +315,7 @@ public class LanyaTransferController extends BaseController {
     /**
      * 获取图片
      */
+    @ApiOperation("获取图片")
     @GetMapping("/files/image")
     public void filesStatic(String path, HttpServletResponse response) throws IOException {
         String target = "http://" + thirdPartyAuth.baseUrl + "/fileStatic/" + path;
@@ -313,6 +334,7 @@ public class LanyaTransferController extends BaseController {
     /**
      * 文件上传
      */
+    @ApiOperation("文件上传")
     @PostMapping("/files/upload")
     public Object filesUpload(String module, Boolean compress, @RequestParam("files") MultipartFile[] files) throws IOException {
 
@@ -338,12 +360,16 @@ public class LanyaTransferController extends BaseController {
         return thirdPartyAuth.callThirdParty("/file/files/upload", HttpMethod.POST, entity);
     }
 
-
+    @ApiOperation("人员历史轨迹")
     @PostMapping("/position/historyPosition/findPersonHistoryList")
     public Object positionHistoryPositionFindPersonHistoryList(@RequestBody JSONObject body) throws JsonProcessingException {
         return thirdPartyAuth.callThirdParty("/position/historyPosition/findPersonHistoryList", HttpMethod.POST, body);
     }
 
+    /**
+     * 风险信息列表
+     */
+    @ApiOperation("风险信息列表")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
     @PostMapping("/system/risk/listPage")
     public Object systemRiskListPage(@RequestBody JSONObject body) throws JsonProcessingException {
@@ -353,36 +379,57 @@ public class LanyaTransferController extends BaseController {
     /**
      * 获取风险信息
      */
+    @ApiOperation("获取风险信息")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
     @PostMapping("/system/risk/findRisk")
     public Object systemRiskFindRisk(@RequestBody JSONObject body) throws JsonProcessingException {
         return thirdPartyAuth.callThirdParty("/system/risk/findRisk", HttpMethod.POST, body);
     }
 
+    /**
+     * 新增风险信息
+     */
+    @ApiOperation("新增风险信息")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
     @PostMapping("/system/risk/addRisk")
     public Object systemRiskAddRisk(@RequestBody JSONObject body) throws JsonProcessingException {
         return thirdPartyAuth.callThirdParty("/system/risk/addRisk", HttpMethod.POST, body);
     }
 
+    /**
+     * 修改风险信息
+     */
+    @ApiOperation("修改风险信息")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
     @PostMapping("/system/risk/updateRisk")
     public Object systemRiskUpdateRisk(@RequestBody JSONObject body) throws JsonProcessingException {
         return thirdPartyAuth.callThirdParty("/system/risk/updateRisk", HttpMethod.POST, body);
     }
 
+    /**
+     * 删除风险信息
+     */
+    @ApiOperation("删除风险信息")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
     @PostMapping("/system/risk/delRisk")
     public Object systemRiskDelRisk(@RequestBody JSONObject body) throws JsonProcessingException {
         return thirdPartyAuth.callThirdParty("/system/risk/delRisk", HttpMethod.POST, body);
     }
 
+    /**
+     * 获取楼层列表
+     */
+    @ApiOperation("获取楼层列表")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
     @PostMapping("/device/layer/listLayer")
     public Object deviceLayerListLayer(@RequestBody JSONObject body) throws JsonProcessingException {
         return thirdPartyAuth.callThirdParty("/device/layer/listLayer", HttpMethod.POST, body);
     }
 
+    /**
+     * 获取信标信息
+     */
+    @ApiOperation("获取信标信息")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
     @PostMapping("/device/beacon/preview")
     public Object deviceBeaconPreview(@RequestBody JSONObject body) throws JsonProcessingException {
@@ -392,6 +439,7 @@ public class LanyaTransferController extends BaseController {
     /**
      * 获取今日位置统计
      */
+    @ApiOperation("获取今日位置统计")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
     @PostMapping("/statistics/personStatistics/todayPerson")
     public Object statisticsPersonStatisticsTodayPerson(@RequestBody JSONObject body) throws JsonProcessingException {
@@ -401,6 +449,7 @@ public class LanyaTransferController extends BaseController {
     /**
      * 获取当前月位置统计
      */
+    @ApiOperation("获取当前月位置统计")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
     @PostMapping("/statistics/personStatistics/monthPerson")
     public Object statisticsPersonStatisticsMonthPerson(@RequestBody JSONObject body) throws JsonProcessingException {
@@ -412,6 +461,7 @@ public class LanyaTransferController extends BaseController {
      * @return
      * @throws JsonProcessingException
      */
+    @ApiOperation("获取当前月位置统计")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
     @PostMapping("/statistics/personStatistics/staffStatistics")
     public Object statisticsPersonStatisticsStaffStatistics(@RequestBody JSONObject body) throws JsonProcessingException {
@@ -421,6 +471,7 @@ public class LanyaTransferController extends BaseController {
     /**
      * 获取当前位置统计
      */
+    @ApiOperation("获取当前位置统计")
     @PreAuthorize("@ss.hasPermi('system:lanya_core_alarm:list')")
     @PostMapping("/statistics/positionStatistics/currentStatistics")
     public Object statisticsPositionStatisticsCurrentStatistics(@RequestBody JSONObject body) throws JsonProcessingException {
@@ -435,6 +486,7 @@ public class LanyaTransferController extends BaseController {
      * @return
      * @throws JsonProcessingException
      */
+    @ApiOperation("下发内容")
     @PostMapping("/card/sendContent")
     public Object cardSendContent(@RequestBody JSONObject body) throws JsonProcessingException {
         return thirdPartyAuth.callThirdParty("/api-service/card/sendContent", HttpMethod.POST, body);

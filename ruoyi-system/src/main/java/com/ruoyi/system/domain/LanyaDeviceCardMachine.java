@@ -3,6 +3,8 @@ package com.ruoyi.system.domain;
 import java.math.BigDecimal;
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -14,117 +16,145 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * @author ruoyi
  * @date 2025-10-12
  */
+@ApiModel(description = "发卡机对象 device_card_sender")
 public class LanyaDeviceCardMachine extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
     /** 发卡id */
+    @ApiModelProperty("发卡id")
     private Long cardSenderId;
 
     /** 设备sn编码 */
     @Excel(name = "设备sn编码")
+    @ApiModelProperty("设备sn编码")
     private String deviceSn;
 
     /** 设备版本号 */
     @Excel(name = "设备版本号")
+    @ApiModelProperty("设备版本号")
     private String deviceVersion;
 
     /** 设备名称 */
     @Excel(name = "设备名称")
+    @ApiModelProperty("设备名称")
     private String deviceName;
 
     /** 发卡机按钮租借(默认0否；1是) */
     @Excel(name = "发卡机按钮租借(默认0否；1是)")
+    @ApiModelProperty("发卡机按钮租借(默认0否；1是)")
     private Integer deviceBtnRent;
 
     /** 发卡机心跳时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+//    @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "发卡机心跳时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @ApiModelProperty("发卡机心跳时间")
     private Date deviceHeartTime;
 
     /** 设备配置 */
     @Excel(name = "设备配置")
+    @ApiModelProperty("设备配置")
     private String deviceConfig;
 
     /** 经度 */
     @Excel(name = "经度")
+    @ApiModelProperty("经度")
     private BigDecimal longitude;
 
     /** 纬度 */
     @Excel(name = "纬度")
+    @ApiModelProperty("纬度")
     private BigDecimal latitude;
 
     /** 楼层id */
     @Excel(name = "楼层id")
+    @ApiModelProperty("楼层id")
     private String layerId;
 
     /** 楼层高度 */
     @Excel(name = "楼层高度")
+    @ApiModelProperty("楼层高度")
     private Integer layerHeight;
 
     /** 人脸机用户名 */
     @Excel(name = "人脸机用户名")
+    @ApiModelProperty("人脸机用户名")
     private String userName;
 
     /** 人脸机密码 */
     @Excel(name = "人脸机密码")
+    @ApiModelProperty("人脸机密码")
     private String password;
 
     /** 人脸机访问地址 */
     @Excel(name = "人脸机访问地址")
+    @ApiModelProperty("人脸机访问地址")
     private String faceUrl;
 
     /** 人脸相机标识 */
     @Excel(name = "人脸相机标识")
+    @ApiModelProperty("人脸相机标识")
     private String faceFlag;
 
     /** 人脸机mac地址（程序获取） */
     @Excel(name = "人脸机mac地址", readConverterExp = "程=序获取")
+    @ApiModelProperty("人脸机mac地址（程序获取）")
     private String faceMacAddr;
 
     /** 人脸机SN码 */
     @Excel(name = "人脸机SN码")
+    @ApiModelProperty("人脸机SN码")
     private String faceSn;
 
     /** 人脸机心跳时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+//    @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "人脸机心跳时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @ApiModelProperty("人脸机心跳时间")
     private Date faceHeartTime;
 
     /** 发卡机：是否启用 Y：启用 N：禁用 */
     @Excel(name = "发卡机：是否启用 Y：启用 N：禁用")
+    @ApiModelProperty("发卡机：是否启用 Y：启用 N：禁用")
     private String deviceEnable;
 
     /** 定位卡型号 */
     @Excel(name = "定位卡型号")
+    @ApiModelProperty("定位卡型号")
     private String cardModel;
 
     /** 计划投放卡量 */
     @Excel(name = "计划投放卡量")
+    @ApiModelProperty("计划投放卡量")
     private Long plannedNumberCards;
 
     /** 下发人脸(Y:是;N:否) */
     @Excel(name = "下发人脸(Y:是;N:否)")
+    @ApiModelProperty("下发人脸(Y:是;N:否)")
     private String pushFace;
 
     /** 白名单数量 */
     @Excel(name = "白名单数量")
+    @ApiModelProperty("白名单数量")
     private Integer whiteListCount;
 
     /** 视图卡槽顺序 */
     @Excel(name = "视图卡槽顺序")
+    @ApiModelProperty("视图卡槽顺序")
     private String viewSort;
 
     /** 视图几排 */
     @Excel(name = "视图几排")
+    @ApiModelProperty("视图几排")
     private Integer viewRows;
 
     /** 视图几列 */
     @Excel(name = "视图几列")
+    @ApiModelProperty("视图几列")
     private Integer viewColumns;
 
     /** 视图数据 */
     @Excel(name = "视图数据")
+    @ApiModelProperty("视图数据")
     private String viewData;
 
     public void setCardSenderId(Long cardSenderId) 
