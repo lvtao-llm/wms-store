@@ -132,7 +132,7 @@
       <el-table-column label="点位名称" align="center" prop="dwmc" />
       <el-table-column label="时间" align="center" prop="sj" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.sj, '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(scope.row.sj, '{y}-{m}-{d} {hh}:{i}:{s}') }}</span>
         </template>
       </el-table-column>
 <!--      <el-table-column label="是否有车" align="center" prop="yc" />-->
