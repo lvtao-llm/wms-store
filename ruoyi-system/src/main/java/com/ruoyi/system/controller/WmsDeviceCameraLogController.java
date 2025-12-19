@@ -124,12 +124,19 @@ public class WmsDeviceCameraLogController extends BaseController {
     @Log(title = "摄像头识别日志", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody WmsDeviceCameraLog wmsDeviceCameraLog) {
+        // 按天创建一个车牌号的虚拟路径
+
+        // 当前天的时间字符串
         String ymd = sdfTableSuffix.format(new Date());
+        // 查询当前天和车牌号的记录
         WmsVehiclePositionHistory query = new WmsVehiclePositionHistory();
         query.setYmd(sdfTableSuffix.format(new Date()));
         query.setCph(wmsDeviceCameraLog.getCph());
         List<WmsVehiclePositionHistory> wmsVehiclePositionHistories = wmsVehiclePositionHistoryService.selectWmsVehiclePositionHistoryList(query);
+
+        // 判断车牌号今天是否有记录
         if (wmsVehiclePositionHistories.isEmpty()) {
+            // 今天没有记录，新增
             WmsVehiclePositionHistory wmsVehiclePositionHistory = new WmsVehiclePositionHistory();
             wmsVehiclePositionHistory.setCph(wmsDeviceCameraLog.getCph());
             wmsVehiclePositionHistory.setYmd(ymd);
@@ -137,35 +144,58 @@ public class WmsDeviceCameraLogController extends BaseController {
             wmsVehiclePositionHistory.setLogIds(wmsDeviceCameraLog.getId().toString());
             wmsVehiclePositionHistoryService.insertWmsVehiclePositionHistory(wmsVehiclePositionHistory);
         } else {
+            // 今天有记录，更新
+
+            // 今天的记录
             WmsVehiclePositionHistory wmsVehiclePositionHistory = wmsVehiclePositionHistories.get(0);
-            // 修正：使用可修改的 ArrayList 替代 Arrays.asList()
+            // 今天记录中记录的wms_device_camera_log的ID
             List<String> logIds = new ArrayList<>(Arrays.asList(wmsVehiclePositionHistory.getLogIds().split(",")));
+            // 最后一个wms_device_camera_log
             WmsDeviceCameraLog oldLog = wmsDeviceCameraLogService.selectWmsDeviceCameraLogById(Long.parseLong(logIds.get(logIds.size() - 1)));
+
+            // 车牌机端会发送在同一车牌机会发送重复的识别记录，所以最后一个识别记录的IP和当前识别记录的IP不一致，则添加。如果相同和忽略
             if (!oldLog.getDwmc().equals(wmsDeviceCameraLog.getDwmc())) {
+
+                // 查询虚拟路径定义表
                 WmsPathsDefinetion wmsPathsDefinetion = new WmsPathsDefinetion();
                 wmsPathsDefinetion.setFromIp(oldLog.getDwmc());
                 wmsPathsDefinetion.setToIp(oldLog.getDwmc());
                 List<WmsPathsDefinetion> wmsPathsDefinetions = wmsPathsDefinetionService.selectWmsPathsDefinetionList(wmsPathsDefinetion);
+
+                // 如果存在虚拟路径定义，则添加虚拟路径点
                 if (!wmsPathsDefinetions.isEmpty()) {
+
+                    // 取出虚拟路径定义的经纬度
                     List<String> longitudes = Arrays.asList(wmsPathsDefinetions.get(0).getPathLongitude().split(","));
                     List<String> latitudes = Arrays.asList(wmsPathsDefinetions.get(0).getPathLatitude().split(","));
-                    // 修正：使用可修改的 ArrayList 并添加空值检查
+
+                    // 获取当前记录的经纬度
                     String pointsStr = wmsVehiclePositionHistory.getPoints();
-                    List<String> points = pointsStr != null && !pointsStr.isEmpty() ?
-                            new ArrayList<>(Arrays.asList(pointsStr.split(";"))) : new ArrayList<>();
+                    // 转成List
+                    List<String> points = pointsStr != null && !pointsStr.isEmpty() ? new ArrayList<>(Arrays.asList(pointsStr.split(";"))) : new ArrayList<>();
+
+                    // 添加虚拟路径点
                     for (int i = 0; i < longitudes.size(); i++) {
                         points.add(longitudes.get(i) + "," + latitudes.get(i));
                     }
+
+                    // 重新赋值虚拟路径点
                     wmsVehiclePositionHistory.setPoints(String.join(";", points));
                 }
-                // 修正：现在可以安全地调用 add 方法
+
+                // 添加wms_device_camera_log的ID
                 logIds.add(wmsDeviceCameraLog.getId().toString());
                 wmsVehiclePositionHistory.setLogIds(String.join(",", logIds));
+
+                // 修改结束时间
                 wmsVehiclePositionHistory.setJssj(new Date());
 
+                // 更新车辆路径点历史记录
                 wmsVehiclePositionHistoryService.updateWmsVehiclePositionHistory(wmsVehiclePositionHistory);
             }
         }
+
+        // 插入新的wms_device_camera_log
         return toAjax(wmsDeviceCameraLogService.insertWmsDeviceCameraLog(wmsDeviceCameraLog));
     }
 
