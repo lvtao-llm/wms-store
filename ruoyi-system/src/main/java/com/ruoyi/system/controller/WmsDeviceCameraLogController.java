@@ -1,12 +1,17 @@
 package com.ruoyi.system.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.system.domain.WmsDevice;
+import com.ruoyi.system.domain.WmsPathsDefinetion;
+import com.ruoyi.system.domain.WmsVehiclePositionHistory;
 import com.ruoyi.system.service.IWmsDeviceService;
+import com.ruoyi.system.service.IWmsPathsDefinetionService;
+import com.ruoyi.system.service.IWmsVehiclePositionHistoryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -44,7 +49,15 @@ public class WmsDeviceCameraLogController extends BaseController {
     @Autowired
     private IWmsDeviceService wmsDeviceService;
 
+    @Autowired
+    private IWmsPathsDefinetionService wmsPathsDefinetionService;
+
+    @Autowired
+    private IWmsVehiclePositionHistoryService wmsVehiclePositionHistoryService;
+
     private static Map<String, String> ipMapDeviceName = new HashMap<>();
+
+    SimpleDateFormat sdfTableSuffix = new SimpleDateFormat("yyyyMMdd");
 
     @PostConstruct
     public void init() {
@@ -111,6 +124,48 @@ public class WmsDeviceCameraLogController extends BaseController {
     @Log(title = "摄像头识别日志", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody WmsDeviceCameraLog wmsDeviceCameraLog) {
+        String ymd = sdfTableSuffix.format(new Date());
+        WmsVehiclePositionHistory query = new WmsVehiclePositionHistory();
+        query.setYmd(sdfTableSuffix.format(new Date()));
+        query.setCph(wmsDeviceCameraLog.getCph());
+        List<WmsVehiclePositionHistory> wmsVehiclePositionHistories = wmsVehiclePositionHistoryService.selectWmsVehiclePositionHistoryList(query);
+        if (wmsVehiclePositionHistories.isEmpty()) {
+            WmsVehiclePositionHistory wmsVehiclePositionHistory = new WmsVehiclePositionHistory();
+            wmsVehiclePositionHistory.setCph(wmsDeviceCameraLog.getCph());
+            wmsVehiclePositionHistory.setYmd(ymd);
+            wmsVehiclePositionHistory.setKssj(new Date());
+            wmsVehiclePositionHistory.setLogIds(wmsDeviceCameraLog.getId().toString());
+            wmsVehiclePositionHistoryService.insertWmsVehiclePositionHistory(wmsVehiclePositionHistory);
+        } else {
+            WmsVehiclePositionHistory wmsVehiclePositionHistory = wmsVehiclePositionHistories.get(0);
+            // 修正：使用可修改的 ArrayList 替代 Arrays.asList()
+            List<String> logIds = new ArrayList<>(Arrays.asList(wmsVehiclePositionHistory.getLogIds().split(",")));
+            WmsDeviceCameraLog oldLog = wmsDeviceCameraLogService.selectWmsDeviceCameraLogById(Long.parseLong(logIds.get(logIds.size() - 1)));
+            if (!oldLog.getDwmc().equals(wmsDeviceCameraLog.getDwmc())) {
+                WmsPathsDefinetion wmsPathsDefinetion = new WmsPathsDefinetion();
+                wmsPathsDefinetion.setFromIp(oldLog.getDwmc());
+                wmsPathsDefinetion.setToIp(oldLog.getDwmc());
+                List<WmsPathsDefinetion> wmsPathsDefinetions = wmsPathsDefinetionService.selectWmsPathsDefinetionList(wmsPathsDefinetion);
+                if (!wmsPathsDefinetions.isEmpty()) {
+                    List<String> longitudes = Arrays.asList(wmsPathsDefinetions.get(0).getPathLongitude().split(","));
+                    List<String> latitudes = Arrays.asList(wmsPathsDefinetions.get(0).getPathLatitude().split(","));
+                    // 修正：使用可修改的 ArrayList 并添加空值检查
+                    String pointsStr = wmsVehiclePositionHistory.getPoints();
+                    List<String> points = pointsStr != null && !pointsStr.isEmpty() ?
+                            new ArrayList<>(Arrays.asList(pointsStr.split(";"))) : new ArrayList<>();
+                    for (int i = 0; i < longitudes.size(); i++) {
+                        points.add(longitudes.get(i) + "," + latitudes.get(i));
+                    }
+                    wmsVehiclePositionHistory.setPoints(String.join(";", points));
+                }
+                // 修正：现在可以安全地调用 add 方法
+                logIds.add(wmsDeviceCameraLog.getId().toString());
+                wmsVehiclePositionHistory.setLogIds(String.join(",", logIds));
+                wmsVehiclePositionHistory.setJssj(new Date());
+
+                wmsVehiclePositionHistoryService.updateWmsVehiclePositionHistory(wmsVehiclePositionHistory);
+            }
+        }
         return toAjax(wmsDeviceCameraLogService.insertWmsDeviceCameraLog(wmsDeviceCameraLog));
     }
 
