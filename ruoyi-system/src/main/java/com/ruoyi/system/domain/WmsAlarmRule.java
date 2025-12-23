@@ -103,6 +103,27 @@ public class WmsAlarmRule extends BaseEntity {
     private String alarmRuleNoticeType;
 
     /**
+     * 短信通知人员
+     */
+    @Excel(name = "短信通知人员")
+    @ApiModelProperty("短信通知人员")
+    private String smsNoticeUsers;
+
+    /**
+     * 即时通通知人员
+     */
+    @Excel(name = "即时通通知人员")
+    @ApiModelProperty("即时通通知人员")
+    private String imNoticeUsers;
+
+    /**
+     * 系统通知人员
+     */
+    @Excel(name = "系统通知人员")
+    @ApiModelProperty("系统通知人员")
+    private String sysNoticeUsers;
+
+    /**
      * 报警类型
      */
     @Excel(name = "报警类型")
@@ -271,5 +292,29 @@ public class WmsAlarmRule extends BaseEntity {
 
     public void setAlarmType(String alarmType) {
         this.alarmType = alarmType;
+    }
+
+    public String getSmsNoticeUsers() {
+        return smsNoticeUsers;
+    }
+
+    public void setSmsNoticeUsers(String smsNoticeUsers) {
+        this.smsNoticeUsers = smsNoticeUsers;
+    }
+
+    public String getImNoticeUsers() {
+        return imNoticeUsers;
+    }
+
+    public void setImNoticeUsers(String imNoticeUsers) {
+        this.imNoticeUsers = imNoticeUsers;
+    }
+
+    public String getSysNoticeUsers() {
+        return sysNoticeUsers;
+    }
+
+    public void setSysNoticeUsers(String sysNoticeUsers) {
+        this.sysNoticeUsers = sysNoticeUsers;
     }
 }

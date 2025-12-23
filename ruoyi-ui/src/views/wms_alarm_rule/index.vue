@@ -18,17 +18,17 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
-<!--      <el-col :span="1.5">-->
-<!--        <el-button-->
-<!--          type="primary"-->
-<!--          plain-->
-<!--          icon="el-icon-plus"-->
-<!--          size="mini"-->
-<!--          @click="handleAdd"-->
-<!--          v-hasPermi="['system:wms_alarm_rule:add']"-->
-<!--        >新增-->
-<!--        </el-button>-->
-<!--      </el-col>-->
+      <!--      <el-col :span="1.5">-->
+      <!--        <el-button-->
+      <!--          type="primary"-->
+      <!--          plain-->
+      <!--          icon="el-icon-plus"-->
+      <!--          size="mini"-->
+      <!--          @click="handleAdd"-->
+      <!--          v-hasPermi="['system:wms_alarm_rule:add']"-->
+      <!--        >新增-->
+      <!--        </el-button>-->
+      <!--      </el-col>-->
       <el-col :span="1.5">
         <el-button
           type="success"
@@ -41,18 +41,18 @@
         >修改
         </el-button>
       </el-col>
-<!--      <el-col :span="1.5">-->
-<!--        <el-button-->
-<!--          type="danger"-->
-<!--          plain-->
-<!--          icon="el-icon-delete"-->
-<!--          size="mini"-->
-<!--          :disabled="multiple"-->
-<!--          @click="handleDelete"-->
-<!--          v-hasPermi="['system:wms_alarm_rule:remove']"-->
-<!--        >删除-->
-<!--        </el-button>-->
-<!--      </el-col>-->
+      <!--      <el-col :span="1.5">-->
+      <!--        <el-button-->
+      <!--          type="danger"-->
+      <!--          plain-->
+      <!--          icon="el-icon-delete"-->
+      <!--          size="mini"-->
+      <!--          :disabled="multiple"-->
+      <!--          @click="handleDelete"-->
+      <!--          v-hasPermi="['system:wms_alarm_rule:remove']"-->
+      <!--        >删除-->
+      <!--        </el-button>-->
+      <!--      </el-col>-->
       <el-col :span="1.5">
         <el-button
           type="warning"
@@ -69,7 +69,7 @@
 
     <el-table v-loading="loading" :data="wms_alarm_ruleList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center"/>
-<!--      <el-table-column label="规则名" align="center" prop="alarmRuleName"/>-->
+      <!--      <el-table-column label="规则名" align="center" prop="alarmRuleName"/>-->
       <el-table-column label="报警类型" align="center" prop="alarmRuleType">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.wms_alarm_type" :value="scope.row.alarmRuleType"/>
@@ -85,11 +85,11 @@
         </template>
       </el-table-column>
 
-<!--      <el-table-column label="是否启用" align="center" prop="alarmRuleEnabled">-->
-<!--        <template slot-scope="scope">-->
-<!--          <dict-tag :options="dict.type.sys_normal_disable" :value="scope.row.alarmRuleEnabled"/>-->
-<!--        </template>-->
-<!--      </el-table-column>-->
+      <!--      <el-table-column label="是否启用" align="center" prop="alarmRuleEnabled">-->
+      <!--        <template slot-scope="scope">-->
+      <!--          <dict-tag :options="dict.type.sys_normal_disable" :value="scope.row.alarmRuleEnabled"/>-->
+      <!--        </template>-->
+      <!--      </el-table-column>-->
       <el-table-column label="授权人员" align="center" prop="alarmRuleRelatedPeople">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.wms_internal_people" :value="scope.row.alarmRuleRelatedPeople"/>
@@ -115,14 +115,14 @@
             v-hasPermi="['system:wms_alarm_rule:edit']"
           >修改
           </el-button>
-<!--          <el-button-->
-<!--            size="mini"-->
-<!--            type="text"-->
-<!--            icon="el-icon-delete"-->
-<!--            @click="handleDelete(scope.row)"-->
-<!--            v-hasPermi="['system:wms_alarm_rule:remove']"-->
-<!--          >删除-->
-<!--          </el-button>-->
+          <!--          <el-button-->
+          <!--            size="mini"-->
+          <!--            type="text"-->
+          <!--            icon="el-icon-delete"-->
+          <!--            @click="handleDelete(scope.row)"-->
+          <!--            v-hasPermi="['system:wms_alarm_rule:remove']"-->
+          <!--          >删除-->
+          <!--          </el-button>-->
         </template>
       </el-table-column>
     </el-table>
@@ -136,10 +136,10 @@
     />
 
     <!-- 添加或修改报警信息规则对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
+    <el-dialog :title="title" :visible.sync="open" width="700px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="120px">
         <el-form-item label="报警类型" prop="alarmRuleType">
-          <el-select v-model="form.alarmRuleType" placeholder="请选择报警类型" disabled="disabled">
+          <el-select v-model="form.alarmRuleType" placeholder="请选择报警类型" disabled="disabled" style="width: 100%">
             <el-option
               v-for="dict in dict.type.wms_alarm_type"
               :key="dict.value"
@@ -184,17 +184,17 @@
         </el-form-item>
 
 
-<!--        <el-form-item label="是否启用" prop="alarmRuleEnabled">-->
-<!--          <el-select v-model="form.alarmRuleEnabled" placeholder="请选择是否启用">-->
-<!--            <el-option-->
-<!--              v-for="dict in dict.type.sys_normal_disable"-->
-<!--              :key="dict.value"-->
-<!--              :label="dict.label"-->
-<!--              :value="dict.value"-->
-<!--            ></el-option>-->
-<!--          </el-select>-->
-<!--        </el-form-item>-->
-        <-item label="关联人员" prop="alarmRuleRelatedPeople">
+        <!--        <el-form-item label="是否启用" prop="alarmRuleEnabled">-->
+        <!--          <el-select v-model="form.alarmRuleEnabled" placeholder="请选择是否启用">-->
+        <!--            <el-option-->
+        <!--              v-for="dict in dict.type.sys_normal_disable"-->
+        <!--              :key="dict.value"-->
+        <!--              :label="dict.label"-->
+        <!--              :value="dict.value"-->
+        <!--            ></el-option>-->
+        <!--          </el-select>-->
+        <!--        </el-form-item>-->
+        <el-form-item label="关联人员" prop="alarmRuleRelatedPeople">
           <el-select
             multiple
             v-model="form.alarmRuleRelatedPeople"
@@ -206,21 +206,50 @@
               :value="dict.value"
             ></el-option>
           </el-select>
-        </-item>
+        </el-form-item>
         <el-form-item label="关联岗位" prop="alarmRuleRelatedDept">
-          <el-select v-model="form.alarmRuleRelatedDept" placeholder="请选择关联岗位">
+          <el-select multiple v-model="form.alarmRuleRelatedDept" placeholder="请选择关联岗位">
             <el-option
-              v-for="dict in dict.type.wms_internal_post"
+              v-for="dict in dict.type.sys_post"
               :key="dict.value"
               :label="dict.label"
               :value="dict.value"
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="通知方式" prop="alarmRuleNoticeType">
-          <el-select v-model="form.alarmRuleNoticeType" multiple placeholder="请选择通知方式">
+        <el-form-item label="短信通知人" prop="alarmRuleNoticeType">
+          <el-select
+            multiple
+            v-model="form.smsNoticeUsers"
+            placeholder="请选择短信通知人">
             <el-option
-              v-for="dict in dict.type.wms_notice_type"
+              v-for="dict in dict.type.sys_users"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="即时通通知人" prop="alarmRuleNoticeType">
+          <el-select
+            multiple
+            v-model="form.imNoticeUsers"
+            placeholder="请选择即时通通知人">
+            <el-option
+              v-for="dict in dict.type.sys_users"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="系统通知人" prop="alarmRuleNoticeType">
+          <el-select
+            multiple
+            v-model="form.sysNoticeUsers"
+            placeholder="请选择系统通知人">
+            <el-option
+              v-for="dict in dict.type.sys_users"
               :key="dict.value"
               :label="dict.label"
               :value="dict.value"
@@ -245,6 +274,8 @@ import {
   updateWms_alarm_rule
 } from "@/api/system/wms_alarm_rule"
 import {listArea} from "@/api/system/wms_area"
+import {listUser} from "@/api/system/user"
+import {listPost} from "@/api/system/post"
 
 import {listPersonStaffPage} from "@/api/lanya_transfer"
 
@@ -303,6 +334,8 @@ export default {
   methods: {
     /** 查询报警信息规则列表 */
     getList() {
+
+      // 获取内部人员列表
       listPersonStaffPage({"pageNum": 1, "pageSize": 1000}).then(response => {
         console.log(response)
         this.dict.type.wms_internal_people = response.data.map(item => ({
@@ -310,38 +343,60 @@ export default {
           value: item.realName,
           raw: {...item, listClass: 'primary'}
         }));
-      })
-      listArea({"pageNum": 1, "pageSize": 1000}).then(response => {
-        this.areas = response.rows
-        this.dict.type.wms_area_names = response.rows.map(item => ({
-          label: item.areaName,
-          value: item.areaId,
-          raw: {...item, listClass: 'primary'}
-        }));
-        listWms_alarm_rule(this.queryParams).then(response => {
-          response.rows.forEach(row => {
-            if (row.alarmRuleTargetAreaCode && typeof row.alarmRuleTargetAreaCode === 'string') {
-              row.alarmRuleTargetAreaCode = row.alarmRuleTargetAreaCode.split(',').map(id => parseInt(id, 10))
-              row.alarmRuleTargetAreaName = row.alarmRuleTargetAreaCode.map(areaId => {
-                const area = this.areas.find(area => area.areaId === areaId)
-                return area ? area.areaName : ''
-              }).join(",")
 
-            } else if (!row.alarmRuleTargetAreaCode) {
-              row.alarmRuleTargetAreaCode = []
-              row.alarmRuleTargetAreaName = []
+        // 获取区域列表
+        listArea({"pageNum": 2, "pageSize": 1000}).then(response => {
+          this.areas = response.rows
+          this.dict.type.wms_area_names = response.rows.map(item => ({
+            label: item.areaName,
+            value: item.areaId,
+            raw: {...item, listClass: 'primary'}
+          }));
 
-            }
+          // 获取用户列表
+          listUser({pageNum: 1, pageSize: 1000}).then(userResponse => {
+            this.dict.type.sys_users = userResponse.rows.map(item => ({
+              label: item.userName,
+              value: item.userName,
+              raw: {...item, listClass: 'primary'}
+            }));
 
-            if (row.alarmRuleRelatedPeople && typeof row.alarmRuleRelatedPeople === 'string') {
-              row.alarmRuleRelatedPeople = row.alarmRuleRelatedPeople.split(",")
-            } else {
-              row.alarmRuleRelatedPeople = []
-            }
+            // 获取岗位列表
+            listPost({pageNum: 1, pageSize: 1000}).then(postResponse => {
+              this.dict.type.sys_post = postResponse.rows.map(item => ({
+                label: item.postName,
+                value: item.postName,
+                raw: {...item, listClass: 'primary'}
+              }));
+
+              // 获取规则列表
+              listWms_alarm_rule(this.queryParams).then(response => {
+                response.rows.forEach(row => {
+                  if (row.alarmRuleTargetAreaCode && typeof row.alarmRuleTargetAreaCode === 'string') {
+                    row.alarmRuleTargetAreaCode = row.alarmRuleTargetAreaCode.split(',').map(id => parseInt(id, 10))
+                    row.alarmRuleTargetAreaName = row.alarmRuleTargetAreaCode.map(areaId => {
+                      const area = this.areas.find(area => area.areaId === areaId)
+                      return area ? area.areaName : ''
+                    }).join(",")
+
+                  } else if (!row.alarmRuleTargetAreaCode) {
+                    row.alarmRuleTargetAreaCode = []
+                    row.alarmRuleTargetAreaName = []
+
+                  }
+
+                  if (row.alarmRuleRelatedPeople && typeof row.alarmRuleRelatedPeople === 'string') {
+                    row.alarmRuleRelatedPeople = row.alarmRuleRelatedPeople.split(",")
+                  } else {
+                    row.alarmRuleRelatedPeople = []
+                  }
+                })
+                this.wms_alarm_ruleList = response.rows
+                this.total = response.total
+                this.loading = false
+              })
+            })
           })
-          this.wms_alarm_ruleList = response.rows
-          this.total = response.total
-          this.loading = false
         })
       })
     },
@@ -364,7 +419,10 @@ export default {
         alarmRuleEnabled: null,
         alarmRuleRelatedPeople: null,
         alarmRuleRelatedDept: null,
-        alarmRuleNoticeType: null
+        alarmRuleNoticeType: null,
+        smsNoticeUsers: null,
+        imNoticeUsers: null,
+        sysNoticeUsers: null,
       }
       this.resetForm("form")
     },
@@ -425,6 +483,34 @@ export default {
           this.form.alarmRuleNoticeType = []
         }
 
+        // 处理岗位数组
+        if (this.form.alarmRuleRelatedDept && typeof this.form.alarmRuleRelatedDept === 'string') {
+          this.form.alarmRuleRelatedDept = this.form.alarmRuleRelatedDept.split(",")
+        }else{
+          this.form.alarmRuleRelatedDept = []
+        }
+
+        // 处理短信通知人员数组
+        if (this.form.smsNoticeUsers && typeof this.form.smsNoticeUsers === 'string') {
+          this.form.smsNoticeUsers = this.form.smsNoticeUsers.split(",")
+        }else{
+          this.form.smsNoticeUsers = []
+        }
+
+        // 处理IM通知人员数组
+        if (this.form.imNoticeUsers && typeof this.form.imNoticeUsers === 'string') {
+          this.form.imNoticeUsers = this.form.imNoticeUsers.split(",")
+        }else{
+          this.form.imNoticeUsers = []
+        }
+
+        // 处理系统通知人员数组
+        if (this.form.sysNoticeUsers && typeof this.form.sysNoticeUsers === 'string') {
+          this.form.sysNoticeUsers = this.form.sysNoticeUsers.split(",")
+        }else{
+          this.form.sysNoticeUsers = []
+        }
+
         this.open = true
         this.title = "修改报警信息规则"
       })
@@ -433,9 +519,13 @@ export default {
     submitForm() {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          this.form.alarmRuleTargetAreaCode = this.form.alarmRuleTargetAreaCode.join(',')
-          this.form.alarmRuleRelatedPeople = this.form.alarmRuleRelatedPeople.join(',')
-          this.form.alarmRuleNoticeType = this.form.alarmRuleNoticeType.join(',')
+          this.form.alarmRuleTargetAreaCode = this.form.alarmRuleTargetAreaCode ? this.form.alarmRuleTargetAreaCode.join(',') : ''
+          this.form.alarmRuleRelatedPeople = this.form.alarmRuleRelatedPeople ? this.form.alarmRuleRelatedPeople.join(',') : ''
+          this.form.alarmRuleNoticeType = this.form.alarmRuleNoticeType ? this.form.alarmRuleNoticeType.join(',') : ''
+          this.form.alarmRuleRelatedDept = this.form.alarmRuleRelatedDept ? this.form.alarmRuleRelatedDept.join(',') : ''
+          this.form.smsNoticeUsers = this.form.smsNoticeUsers ? this.form.smsNoticeUsers.join(',') : ''
+          this.form.imNoticeUsers = this.form.imNoticeUsers ? this.form.imNoticeUsers.join(',') : ''
+          this.form.sysNoticeUsers = this.form.sysNoticeUsers ? this.form.sysNoticeUsers.join(',') : ''
           if (this.form.alarmRuleId != null) {
             updateWms_alarm_rule(this.form).then(response => {
               this.$modal.msgSuccess("修改成功")
@@ -472,3 +562,14 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+
+::v-deep .el-select {
+  width: 100%;
+}
+
+::v-deep .el-date-editor {
+  width: 100%;
+}
+</style>

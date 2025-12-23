@@ -19,6 +19,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="alarmRuleNoticeType"    column="alarm_rule_notice_type"    />
         <result property="maxPeopleCount"    column="max_people_count"    />
         <result property="alarmType"    column="alarm_type"    />
+        <result property="smsNoticeUsers" column="sms_notice_users"/>
+        <result property="imNoticeUsers" column="im_notice_users"/>
+        <result property="sysNoticeUsers" column="sys_notice_users"/>
     </resultMap>
 
     <sql id="selectWmsAlarmRuleVo">
@@ -35,27 +38,52 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                alarm_rule_related_people,
                alarm_rule_related_dept,
                alarm_rule_notice_type,
-               alarm_type
+               alarm_type,
+               sms_notice_users,
+               im_notice_users,
+               sys_notice_users
         from wms_alarm_rule
     </sql>
 
     <select id="selectWmsAlarmRuleList" parameterType="WmsAlarmRule" resultMap="WmsAlarmRuleResult">
         <include refid="selectWmsAlarmRuleVo"/>
         <where>
-            <if test="alarmRuleId != null "> and alarm_rule_id = #{alarmRuleId}</if>
-            <if test="alarmRuleName != null  and alarmRuleName != ''"> and alarm_rule_name like concat('%', #{alarmRuleName}, '%')</if>
-            <if test="alarmRuleTimeThreshold != null  and alarmRuleTimeThreshold != ''"> and alarm_rule_time_threshold = #{alarmRuleTimeThreshold}</if>
-            <if test="alarmRuleDistThreshold != null  and alarmRuleDistThreshold != ''"> and alarm_rule_dist_threshold = #{alarmRuleDistThreshold}</if>
-            <if test="alarmRuleTargetAreaCode != null  and alarmRuleTargetAreaCode != ''"> and alarm_rule_target_area_code = #{alarmRuleTargetAreaCode}</if>
-            <if test="alarmRuleType != null  and alarmRuleType != ''"> and alarm_rule_type = #{alarmRuleType}</if>
-            <if test="alarmRuleEffectivePeriodS != null  and alarmRuleEffectivePeriodS != ''"> and alarm_rule_effective_period_s = #{alarmRuleEffectivePeriodS}</if>
-            <if test="alarmRuleEffectivePeriodE != null  and alarmRuleEffectivePeriodE != ''"> and alarm_rule_effective_period_e = #{alarmRuleEffectivePeriodE}</if>
-            <if test="alarmRuleEnabled != null "> and alarm_rule_enabled = #{alarmRuleEnabled}</if>
-            <if test="alarmRuleRelatedPeople != null  and alarmRuleRelatedPeople != ''"> and alarm_rule_related_people = #{alarmRuleRelatedPeople}</if>
-            <if test="alarmRuleRelatedDept != null  and alarmRuleRelatedDept != ''"> and alarm_rule_related_dept = #{alarmRuleRelatedDept}</if>
-            <if test="alarmRuleNoticeType != null  and alarmRuleNoticeType != ''"> and alarm_rule_notice_type = #{alarmRuleNoticeType}</if>
-            <if test="maxPeopleCount != null  and alarmRuleNoticeType != ''"> and max_people_count = #{maxPeopleCount}</if>
-             <if test="alarmType != null  and alarmType != ''"> and alarm_type = #{alarmType}</if>
+            <if test="alarmRuleId != null ">and alarm_rule_id = #{alarmRuleId}</if>
+            <if test="alarmRuleName != null  and alarmRuleName != ''">and alarm_rule_name like concat('%',
+                #{alarmRuleName}, '%')
+            </if>
+            <if test="alarmRuleTimeThreshold != null  and alarmRuleTimeThreshold != ''">and alarm_rule_time_threshold =
+                #{alarmRuleTimeThreshold}
+            </if>
+            <if test="alarmRuleDistThreshold != null  and alarmRuleDistThreshold != ''">and alarm_rule_dist_threshold =
+                #{alarmRuleDistThreshold}
+            </if>
+            <if test="alarmRuleTargetAreaCode != null  and alarmRuleTargetAreaCode != ''">and
+                alarm_rule_target_area_code = #{alarmRuleTargetAreaCode}
+            </if>
+            <if test="alarmRuleType != null  and alarmRuleType != ''">and alarm_rule_type = #{alarmRuleType}</if>
+            <if test="alarmRuleEffectivePeriodS != null  and alarmRuleEffectivePeriodS != ''">and
+                alarm_rule_effective_period_s = #{alarmRuleEffectivePeriodS}
+            </if>
+            <if test="alarmRuleEffectivePeriodE != null  and alarmRuleEffectivePeriodE != ''">and
+                alarm_rule_effective_period_e = #{alarmRuleEffectivePeriodE}
+            </if>
+            <if test="alarmRuleEnabled != null ">and alarm_rule_enabled = #{alarmRuleEnabled}</if>
+            <if test="alarmRuleRelatedPeople != null  and alarmRuleRelatedPeople != ''">and alarm_rule_related_people =
+                #{alarmRuleRelatedPeople}
+            </if>
+            <if test="alarmRuleRelatedDept != null  and alarmRuleRelatedDept != ''">and alarm_rule_related_dept =
+                #{alarmRuleRelatedDept}
+            </if>
+            <if test="alarmRuleNoticeType != null  and alarmRuleNoticeType != ''">and alarm_rule_notice_type =
+                #{alarmRuleNoticeType}
+            </if>
+            <if test="maxPeopleCount != null  and alarmRuleNoticeType != ''">and max_people_count = #{maxPeopleCount}
+            </if>
+            <if test="alarmType != null  and alarmType != ''">and alarm_type = #{alarmType}</if>
+            <if test="smsNoticeUsers != null  and smsNoticeUsers != ''">and sms_notice_users = #{smsNoticeUsers}</if>
+            <if test="imNoticeUsers != null  and imNoticeUsers != ''">and im_notice_users = #{imNoticeUsers}</if>
+            <if test="sysNoticeUsers != null  and sysNoticeUsers != ''">and sys_notice_users = #{sysNoticeUsers}</if>
         </where>
     </select>
     
@@ -81,6 +109,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="alarmRuleNoticeType != null">alarm_rule_notice_type,</if>
             <if test="maxPeopleCount != null">max_people_count,</if>
             <if test="alarmType != null">alarm_type,</if>
+            <if test="smsNoticeUsers != null">sms_notice_users,</if>
+            <if test="imNoticeUsers != null">im_notice_users,</if>
+            <if test="sysNoticeUsers != null">sys_notice_users,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="alarmRuleId != null">#{alarmRuleId},</if>
@@ -97,6 +128,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="alarmRuleNoticeType != null">#{alarmRuleNoticeType},</if>
             <if test="maxPeopleCount != null">#{maxPeopleCount},</if>
             <if test="alarmType != null">#{alarmType},</if>
+            <if test="smsNoticeUsers != null">#{smsNoticeUsers},</if>
+            <if test="imNoticeUsers != null">#{imNoticeUsers},</if>
+            <if test="sysNoticeUsers != null">#{sysNoticeUsers},</if>
          </trim>
     </insert>
 
@@ -116,6 +150,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="alarmRuleNoticeType != null">alarm_rule_notice_type = #{alarmRuleNoticeType},</if>
             <if test="maxPeopleCount != null">max_people_count = #{maxPeopleCount},</if>
             <if test="alarmType != null">alarm_type = #{alarmType},</if>
+            <if test="smsNoticeUsers != null">sms_notice_users = #{smsNoticeUsers},</if>
+            <if test="imNoticeUsers != null">im_notice_users = #{imNoticeUsers},</if>
+            <if test="sysNoticeUsers != null">sys_notice_users = #{sysNoticeUsers},</if>
         </trim>
         where alarm_rule_id = #{alarmRuleId}
     </update>
