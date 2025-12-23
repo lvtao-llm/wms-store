@@ -86,6 +86,30 @@ public class WmsPathsDefinetionController extends BaseController {
     @Log(title = "虚拟路径点", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody JSONObject jsonObject) {
+        return update(jsonObject);
+    }
+
+    /**
+     * 修改虚拟路径点
+     */
+    @PreAuthorize("@ss.hasPermi('system:wms_paths_definetion:edit')")
+    @Log(title = "虚拟路径点", businessType = BusinessType.UPDATE)
+    @PutMapping
+    public AjaxResult edit(@RequestBody JSONObject jsonObject) {
+        return update(jsonObject);
+    }
+
+    /**
+     * 删除虚拟路径点
+     */
+    @PreAuthorize("@ss.hasPermi('system:wms_paths_definetion:remove')")
+    @Log(title = "虚拟路径点", businessType = BusinessType.DELETE)
+    @DeleteMapping("/{ids}")
+    public AjaxResult remove(@PathVariable Long[] ids) {
+        return toAjax(wmsPathsDefinetionService.deleteWmsPathsDefinetionByIds(ids));
+    }
+
+    private AjaxResult update(JSONObject jsonObject) {
         // 时间参数校验
         String beginTime = jsonObject.getString("beginTime");
         String finishTime = jsonObject.getString("finishTime");
@@ -133,25 +157,5 @@ public class WmsPathsDefinetionController extends BaseController {
         } else {
             return toAjax(wmsPathsDefinetionService.insertWmsPathsDefinetion(wmsPathsDefinetion));
         }
-    }
-
-    /**
-     * 修改虚拟路径点
-     */
-    @PreAuthorize("@ss.hasPermi('system:wms_paths_definetion:edit')")
-    @Log(title = "虚拟路径点", businessType = BusinessType.UPDATE)
-    @PutMapping
-    public AjaxResult edit(@RequestBody WmsPathsDefinetion wmsPathsDefinetion) {
-        return toAjax(wmsPathsDefinetionService.updateWmsPathsDefinetion(wmsPathsDefinetion));
-    }
-
-    /**
-     * 删除虚拟路径点
-     */
-    @PreAuthorize("@ss.hasPermi('system:wms_paths_definetion:remove')")
-    @Log(title = "虚拟路径点", businessType = BusinessType.DELETE)
-    @DeleteMapping("/{ids}")
-    public AjaxResult remove(@PathVariable Long[] ids) {
-        return toAjax(wmsPathsDefinetionService.deleteWmsPathsDefinetionByIds(ids));
     }
 }
