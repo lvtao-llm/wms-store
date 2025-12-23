@@ -3,7 +3,7 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.system.mapper.LanyaPositionHistoryMapper">
-    
+
     <resultMap type="LanyaPositionHistory" id="LanyaPositionHistoryResult">
         <result property="id"    column="id"    />
         <result property="acceptTime"    column="accept_time"    />
@@ -33,7 +33,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectLanyaPositionHistoryList" parameterType="LanyaPositionHistory" resultMap="LanyaPositionHistoryResult">
         <include refid="selectLanyaPositionHistoryVo"/>
-        <where>  
+        <where>
             <if test="acceptTime != null "> and accept_time = #{acceptTime}</if>
             <if test="cardId != null "> and card_id = #{cardId}</if>
             <if test="cardType != null  and cardType != ''"> and card_type = #{cardType}</if>
@@ -54,7 +54,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="rtkPositionMode != null  and rtkPositionMode != ''"> and rtk_position_mode = #{rtkPositionMode}</if>
         </where>
     </select>
-    
+
     <select id="selectLanyaPositionHistoryById" parameterType="Long" resultMap="LanyaPositionHistoryResult">
         <include refid="selectLanyaPositionHistoryVo"/>
         where id = #{id}
@@ -72,6 +72,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select id, accept_time, card_id, card_type, beacon_id, longitude, latitude, distance, layer_id, layer_height, create_time, person_id, person_type, staff_type, real_name, dept_id, post_id, contractor_id, altitude, rtk_position_mode
         from ${tableName}
         where accept_time >= #{begin} and accept_time <![CDATA[ <= ]]> #{end} and person_id = #{personId}
+    </select>
+
+    <select id="selectLanyaPositionHistoryListByTableTimeRangeCardId" resultMap="LanyaPositionHistoryResult">
+        select id, accept_time, card_id, card_type, beacon_id, longitude, latitude, distance, layer_id, layer_height, create_time, person_id, person_type, staff_type, real_name, dept_id, post_id, contractor_id, altitude, rtk_position_mode
+        from ${tableName}
+        where accept_time <![CDATA[ >=]]> #{begin} and accept_time <![CDATA[ <= ]]> #{end} and card_id = #{cardId}
     </select>
 
     <select id="selectNewLanyaPositionHistoryListByTable" resultMap="LanyaPositionHistoryResult">
@@ -226,7 +232,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteLanyaPositionHistoryByIds" parameterType="String">
-        delete from position_history where id in 
+        delete from position_history where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>

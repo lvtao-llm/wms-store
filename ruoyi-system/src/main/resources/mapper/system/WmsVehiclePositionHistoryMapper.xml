@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.WmsVehiclePositionHistoryMapper">
+    
+    <resultMap type="WmsVehiclePositionHistory" id="WmsVehiclePositionHistoryResult">
+        <result property="id"    column="id"    />
+        <result property="cph"    column="cph"    />
+        <result property="kssj"    column="kssj"    />
+        <result property="jssj"    column="jssj"    />
+        <result property="logIds"    column="log_ids"    />
+        <result property="points"    column="points"    />
+        <result property="ymd"    column="ymd"    />
+    </resultMap>
+
+    <sql id="selectWmsVehiclePositionHistoryVo">
+        select id, cph, kssj, jssj, log_ids, points, ymd from wms_vehicle_position_history
+    </sql>
+
+    <select id="selectWmsVehiclePositionHistoryList" parameterType="WmsVehiclePositionHistory" resultMap="WmsVehiclePositionHistoryResult">
+        <include refid="selectWmsVehiclePositionHistoryVo"/>
+        <where>  
+            <if test="cph != null  and cph != ''"> and cph = #{cph}</if>
+            <if test="kssj != null "> and kssj = #{kssj}</if>
+            <if test="jssj != null "> and jssj = #{jssj}</if>
+            <if test="logIds != null  and logIds != ''"> and log_ids = #{logIds}</if>
+            <if test="points != null  and points != ''"> and points = #{points}</if>
+            <if test="ymd != null  and ymd != ''"> and ymd = #{ymd}</if>
+        </where>
+    </select>
+    
+    <select id="selectWmsVehiclePositionHistoryById" parameterType="Long" resultMap="WmsVehiclePositionHistoryResult">
+        <include refid="selectWmsVehiclePositionHistoryVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertWmsVehiclePositionHistory" parameterType="WmsVehiclePositionHistory" useGeneratedKeys="true" keyProperty="id">
+        insert into wms_vehicle_position_history
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="cph != null">cph,</if>
+            <if test="kssj != null">kssj,</if>
+            <if test="jssj != null">jssj,</if>
+            <if test="logIds != null">log_ids,</if>
+            <if test="points != null">points,</if>
+            <if test="ymd != null">ymd,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="cph != null">#{cph},</if>
+            <if test="kssj != null">#{kssj},</if>
+            <if test="jssj != null">#{jssj},</if>
+            <if test="logIds != null">#{logIds},</if>
+            <if test="points != null">#{points},</if>
+            <if test="ymd != null">#{ymd},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWmsVehiclePositionHistory" parameterType="WmsVehiclePositionHistory">
+        update wms_vehicle_position_history
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="cph != null">cph = #{cph},</if>
+            <if test="kssj != null">kssj = #{kssj},</if>
+            <if test="jssj != null">jssj = #{jssj},</if>
+            <if test="logIds != null">log_ids = #{logIds},</if>
+            <if test="points != null">points = #{points},</if>
+            <if test="ymd != null">ymd = #{ymd},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWmsVehiclePositionHistoryById" parameterType="Long">
+        delete from wms_vehicle_position_history where id = #{id}
+    </delete>
+
+    <delete id="deleteWmsVehiclePositionHistoryByIds" parameterType="String">
+        delete from wms_vehicle_position_history where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

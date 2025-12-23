@@ -729,10 +729,12 @@ public class WebSocketServer {
         locationData.put("personTypeStatistics", personTypeStats);
         JSONArray dataArray = new JSONArray();
 
-        List<LanyaPositionHistory> trajectory = lanyaPositionHistoryService.selectNewLanyaPositionHistoryListByTable(tableName);
-        for (LanyaPositionHistory history : trajectory) {
-            JSONObject locationDataItem = JSONObject.from(history);
-            dataArray.add(locationDataItem);
+        if (lanyaPositionHistoryService.checkTableExists(tableName) > 0) {
+            List<LanyaPositionHistory> trajectory = lanyaPositionHistoryService.selectNewLanyaPositionHistoryListByTable(tableName);
+            for (LanyaPositionHistory history : trajectory) {
+                JSONObject locationDataItem = JSONObject.from(history);
+                dataArray.add(locationDataItem);
+            }
         }
 
         locationData.put("data", dataArray);

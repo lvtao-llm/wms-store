@@ -561,6 +561,12 @@ export const dynamicRoutes = [
         component: () => import('@/views/wms_device_camera_log/index'),
         name: '车辆识别记录',
         meta: {title: '车辆识别记录'}
+      },
+      {
+        path: 'path-definition',
+        component: () => import('@/views/wms_paths_definetion/index'),
+        name: '车辆路径定义',
+        meta: {title: '车辆路径定义'}
       }
     ]
   },

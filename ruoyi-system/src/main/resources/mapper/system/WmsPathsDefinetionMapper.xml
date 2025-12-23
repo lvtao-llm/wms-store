@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.WmsPathsDefinetionMapper">
+    
+    <resultMap type="WmsPathsDefinetion" id="WmsPathsDefinetionResult">
+        <result property="id"    column="id"    />
+        <result property="fromName"    column="from_name"    />
+        <result property="fromIp"    column="from_ip"    />
+        <result property="toName"    column="to_name"    />
+        <result property="toIp"    column="to_ip"    />
+        <result property="pathLongitude"    column="path_longitude"    />
+        <result property="pathLatitude"    column="path_latitude"    />
+    </resultMap>
+
+    <sql id="selectWmsPathsDefinetionVo">
+        select id, from_name, from_ip, to_name, to_ip, path_longitude, path_latitude from wms_paths_definetion
+    </sql>
+
+    <select id="selectWmsPathsDefinetionList" parameterType="WmsPathsDefinetion" resultMap="WmsPathsDefinetionResult">
+        <include refid="selectWmsPathsDefinetionVo"/>
+        <where>  
+            <if test="fromName != null  and fromName != ''"> and from_name like concat('%', #{fromName}, '%')</if>
+            <if test="fromIp != null  and fromIp != ''"> and from_ip = #{fromIp}</if>
+            <if test="toName != null  and toName != ''"> and to_name like concat('%', #{toName}, '%')</if>
+            <if test="toIp != null  and toIp != ''"> and to_ip = #{toIp}</if>
+            <if test="pathLongitude != null  and pathLongitude != ''"> and path_longitude = #{pathLongitude}</if>
+            <if test="pathLatitude != null  and pathLatitude != ''"> and path_latitude = #{pathLatitude}</if>
+        </where>
+    </select>
+    
+    <select id="selectWmsPathsDefinetionById" parameterType="Long" resultMap="WmsPathsDefinetionResult">
+        <include refid="selectWmsPathsDefinetionVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertWmsPathsDefinetion" parameterType="WmsPathsDefinetion" useGeneratedKeys="true" keyProperty="id">
+        insert into wms_paths_definetion
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="fromName != null">from_name,</if>
+            <if test="fromIp != null">from_ip,</if>
+            <if test="toName != null">to_name,</if>
+            <if test="toIp != null">to_ip,</if>
+            <if test="pathLongitude != null">path_longitude,</if>
+            <if test="pathLatitude != null">path_latitude,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="fromName != null">#{fromName},</if>
+            <if test="fromIp != null">#{fromIp},</if>
+            <if test="toName != null">#{toName},</if>
+            <if test="toIp != null">#{toIp},</if>
+            <if test="pathLongitude != null">#{pathLongitude},</if>
+            <if test="pathLatitude != null">#{pathLatitude},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWmsPathsDefinetion" parameterType="WmsPathsDefinetion">
+        update wms_paths_definetion
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="fromName != null">from_name = #{fromName},</if>
+            <if test="fromIp != null">from_ip = #{fromIp},</if>
+            <if test="toName != null">to_name = #{toName},</if>
+            <if test="toIp != null">to_ip = #{toIp},</if>
+            <if test="pathLongitude != null">path_longitude = #{pathLongitude},</if>
+            <if test="pathLatitude != null">path_latitude = #{pathLatitude},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWmsPathsDefinetionById" parameterType="Long">
+        delete from wms_paths_definetion where id = #{id}
+    </delete>
+
+    <delete id="deleteWmsPathsDefinetionByIds" parameterType="String">
+        delete from wms_paths_definetion where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

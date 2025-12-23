@@ -93,4 +93,6 @@ public interface ILanyaPositionHistoryService {
 
 
     List<LanyaPositionHistory> selectNewLanyaPositionHistoryListByTable(String tableName);
+
+    List<LanyaPositionHistory> selectLanyaPositionHistoryListByTableTimeRangeCardId(Date begin, Date end, Long cardId, String tableName);
 }
