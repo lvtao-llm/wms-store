@@ -418,11 +418,11 @@ export default {
         alarmRuleEffectivePeriodE: null,
         alarmRuleEnabled: null,
         alarmRuleRelatedPeople: null,
-        alarmRuleRelatedDept: null,
+        alarmRuleRelatedDept: [],
         alarmRuleNoticeType: null,
-        smsNoticeUsers: null,
-        imNoticeUsers: null,
-        sysNoticeUsers: null,
+        smsNoticeUsers: [],
+        imNoticeUsers: [],
+        sysNoticeUsers: [],
       }
       this.resetForm("form")
     },
