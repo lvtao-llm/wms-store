@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 2025/12/24
  */
 @Component
-@ServerEndpoint(value = "/system/ws-site-notice/{requestId}", configurator = ServerEndpointConfig.Configurator.class)
+@ServerEndpoint(value = "/system/ws-site-notice/{userId}", configurator = ServerEndpointConfig.Configurator.class)
 public class SiteNoticeService {
 
     /**
@@ -50,8 +50,8 @@ public class SiteNoticeService {
      * 客户端连接建立成功调用的方法
      */
     @OnOpen
-    public void onOpen(Session session, @PathParam("requestId") String requestId) throws Exception {
-        Long UserId = Long.parseLong(requestId);
+    public void onOpen(Session session, @PathParam("userId") String userId) throws Exception {
+        Long UserId = Long.parseLong(userId);
         if (!userCache.containsKey(UserId)) {
             userCache.put(UserId, userService.selectUserById(UserId));
         }
@@ -63,8 +63,8 @@ public class SiteNoticeService {
      * 客户端连接关闭时处理
      */
     @OnClose
-    public void onClose(Session session, @PathParam("requestId") String requestId) throws IOException {
-        Long UserId = Long.parseLong(requestId);
+    public void onClose(Session session, @PathParam("userId") String userId) throws IOException {
+        Long UserId = Long.parseLong(userId);
         clientSessions.remove(UserId);
     }
 
@@ -72,8 +72,8 @@ public class SiteNoticeService {
      * 客户端抛出异常时处理
      */
     @OnError
-    public void onError(Session session, @PathParam("requestId") String requestId, Throwable exception) throws Exception {
-        Long UserId = Long.parseLong(requestId);
+    public void onError(Session session, @PathParam("userId") String userId, Throwable exception) throws Exception {
+        Long UserId = Long.parseLong(userId);
         clientSessions.remove(UserId);
     }
 
@@ -81,7 +81,7 @@ public class SiteNoticeService {
      * 接收到客户端消息时调用的方法
      */
     @OnMessage
-    public void onMessage(String message, Session session, @PathParam("requestId") String requestId) {
+    public void onMessage(String message, Session session, @PathParam("userId") String userId) {
 
     }
 
