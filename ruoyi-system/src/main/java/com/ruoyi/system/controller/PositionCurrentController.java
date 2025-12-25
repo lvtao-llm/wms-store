@@ -41,7 +41,6 @@ public class PositionCurrentController extends BaseController {
      * 查询实时定位列表
      */
     @ApiOperation("查询实时定位列表")
-    @PreAuthorize("@ss.hasPermi('system:position_current:list')")
     @GetMapping("/list")
     public TableDataInfo list(PositionCurrent positionCurrent) {
         startPage();

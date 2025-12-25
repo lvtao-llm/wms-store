@@ -30,6 +30,9 @@ import java.util.concurrent.ConcurrentMap;
 public class LanyaDataSync {
     private static final Logger log = LoggerFactory.getLogger(LanyaDataSync.class);
 
+    @Autowired
+    private SiteNoticeService siteNoticeService;
+
     /**
      * Lanya定位数据数据服务
      */
@@ -446,12 +449,7 @@ public class LanyaDataSync {
                         userCache.put(UserId, userService.selectUserById(UserId));
                     }
                     SysUser sysUser = userCache.get(UserId);
-                    Map<String, Object> sms = new HashMap<String, Object>() {{
-                        put("user", sysUser.getJstWorkNumber());
-                        put("content", content);
-                        put("create_time", alarmTime);
-                    }};
-                    SpringUtils.getBean(SysJobLogMapper.class).insertSmsJst(sms);
+                    siteNoticeService.noticeTo(sysUser, content);
                 }
             }
         }

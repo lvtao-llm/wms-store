@@ -116,6 +116,7 @@ public class SecurityConfig {
                                     "/system/lanya-transfer/files/image",
                                     "/system/lanya-transfer/files/upload",
                                     "/system/lanya-transfer/position/historyPosition/findPersonHistoryList",
+                                    "/system/lanya-transfer/position/historyPosition/findPersonHistoryList",
                                     "/system/core/main/screen/data",
                                     "/system/lanya-transfer/ws/**",
                                     "/system/trajectory/**",
@@ -123,7 +124,6 @@ public class SecurityConfig {
                                     "/system/wms_device/**",
                                     "/api/camera/**",
                                     "/system/lanya_position_history/new",
-                                    "/system/lanya-transfer/position/historyPosition/findPersonHistoryList",
                                     "/system/wms_inspection_rule/**",
                                     "/system/wms_device_camera_log/**",
                                     "/common/upload/**",
@@ -133,7 +133,8 @@ public class SecurityConfig {
                                     "/system/wzgs_alarm/new",
                                     "/system/wms_material_in/list/**",
                                     "/system/wms_material_out/list/**",
-                                    "/system/wms_material_stock/list/**"
+                                    "/system/wms_material_stock/list/**",
+                                    "/system/position_current/list/**"
                             ).permitAll()
                             // 静态资源，可匿名访问
                             .antMatchers(HttpMethod.GET, "/", "/*.html", "/**/*.html", "/**/*.css", "/**/*.js", "/profile/**").permitAll()
