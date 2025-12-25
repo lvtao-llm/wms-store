@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.ruoyi.quartz.domain.SysJobLog;
-import com.ruoyi.quartz.mapper.SysJobLogMapper;
+import com.ruoyi.system.domain.SysJobLog;
+import com.ruoyi.system.mapper.SysJobLogMapper;
 import com.ruoyi.quartz.service.ISysJobLogService;
 
 /**

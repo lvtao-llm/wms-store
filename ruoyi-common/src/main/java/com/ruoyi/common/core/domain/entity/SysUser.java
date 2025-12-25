@@ -92,6 +92,9 @@ public class SysUser extends BaseEntity
     /** 角色ID */
     private Long roleId;
 
+    /** 即时通工号 */
+    private Long jstWorkNumber;
+
     public SysUser()
     {
 
@@ -334,5 +337,13 @@ public class SysUser extends BaseEntity
             .append("remark", getRemark())
             .append("dept", getDept())
             .toString();
+    }
+
+    public Long getJstWorkNumber() {
+        return jstWorkNumber;
+    }
+
+    public void setJstWorkNumber(Long jstWorkNumber) {
+        this.jstWorkNumber = jstWorkNumber;
     }
 }

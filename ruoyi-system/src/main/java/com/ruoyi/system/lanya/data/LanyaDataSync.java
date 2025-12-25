@@ -1,7 +1,10 @@
 package com.ruoyi.system.lanya.data;
 
 import com.alibaba.fastjson2.JSON;
+import com.ruoyi.common.core.domain.entity.SysUser;
+import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.system.domain.*;
+import com.ruoyi.system.mapper.SysJobLogMapper;
 import com.ruoyi.system.service.*;
 import com.ruoyi.system.utils.HttpUtil;
 import org.slf4j.Logger;
@@ -15,6 +18,7 @@ import javax.annotation.PostConstruct;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * @author 吕涛
@@ -132,10 +136,20 @@ public class LanyaDataSync {
     SimpleDateFormat sdfTableSuffix = new SimpleDateFormat("yyyyMMdd");
 
     /**
+     * 时间格式
+     */
+    SimpleDateFormat sdfChineseDateTime = new SimpleDateFormat("yyyy年MM月dd日HH时mm分");
+
+    /**
      * HTTP客户端
      */
     @Autowired
     private HttpUtil httpUtil;
+
+    @Autowired
+    private ISysUserService userService;
+
+    private Map<Long, SysUser> userCache = new LinkedHashMap<>();
 
     @PostConstruct
     public void init() throws Exception {
@@ -178,6 +192,12 @@ public class LanyaDataSync {
             if (dateSuffix.compareTo(positionOffset) >= 0) {
                 PositionSync(tableName);
             }
+        }
+
+        // 初始化系统用户
+        List<SysUser> sysUsers = userService.selectUserList(new SysUser());
+        for (SysUser sysUser : sysUsers) {
+            userCache.put(sysUser.getUserId(), sysUser);
         }
     }
 
@@ -371,6 +391,7 @@ public class LanyaDataSync {
                 log.error("未找到对应的设备卡记录");
             }
 
+            Date alarmTime = position.getAcceptTime();
             // 插入告警日志
             for (AlarmResult wmsAlarmRule : alarmRules) {
                 WmsAlarmLog log = new WmsAlarmLog();
@@ -384,6 +405,54 @@ public class LanyaDataSync {
                 log.setAlarmType("人员");
 
                 wmsAlarmLogService.insertWmsAlarmLog(log);
+
+                String content = String.format("【大庆油田有限责任公司】(物资公司)[%s]在%s时触发了%s报警，请尽快处理！", position.getPersonId(), sdfChineseDateTime.format(alarmTime), wmsAlarmRule.rule.getAlarmRuleName());
+
+                // 通知短信接收人员
+                for (String smsUser : wmsAlarmRule.rule.getSmsNoticeUsers().split(",")) {
+                    Long UserId = Long.parseLong(smsUser);
+                    if (!userCache.containsKey(UserId)) {
+                        userCache.put(UserId, userService.selectUserById(UserId));
+                    }
+                    SysUser sysUser = userCache.get(UserId);
+                    Map<String, Object> sms = new HashMap<String, Object>() {{
+                        put("mobile", sysUser.getPhonenumber());
+                        put("content", content);
+                        put("create_time", alarmTime);
+                        put("taskId", alarmTime.getTime());
+                    }};
+                    SpringUtils.getBean(SysJobLogMapper.class).insertSmsCat(sms);
+                }
+
+                // 通知即时通接收人员
+                for (String smsUser : wmsAlarmRule.rule.getImNoticeUsers().split(",")) {
+                    Long UserId = Long.parseLong(smsUser);
+                    if (!userCache.containsKey(UserId)) {
+                        userCache.put(UserId, userService.selectUserById(UserId));
+                    }
+                    SysUser sysUser = userCache.get(UserId);
+                    Map<String, Object> sms = new HashMap<String, Object>() {{
+                        put("user", sysUser.getJstWorkNumber());
+                        put("content", content);
+                        put("create_time", alarmTime);
+                    }};
+                    SpringUtils.getBean(SysJobLogMapper.class).insertSmsJst(sms);
+                }
+
+                // 通知站内通知接收人员
+                for (String smsUser : wmsAlarmRule.rule.getSysNoticeUsers().split(",")) {
+                    Long UserId = Long.parseLong(smsUser);
+                    if (!userCache.containsKey(UserId)) {
+                        userCache.put(UserId, userService.selectUserById(UserId));
+                    }
+                    SysUser sysUser = userCache.get(UserId);
+                    Map<String, Object> sms = new HashMap<String, Object>() {{
+                        put("user", sysUser.getJstWorkNumber());
+                        put("content", content);
+                        put("create_time", alarmTime);
+                    }};
+                    SpringUtils.getBean(SysJobLogMapper.class).insertSmsJst(sms);
+                }
             }
         }
 

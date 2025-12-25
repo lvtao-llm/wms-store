@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
@@ -67,6 +68,7 @@ public class LanyaPositionHistoryController extends BaseController {
      * 时间格式
      */
     SimpleDateFormat sdfYMD = new SimpleDateFormat("yyyyMMdd");
+
     /**
      * 查询历史轨迹列表
      */
@@ -150,8 +152,12 @@ public class LanyaPositionHistoryController extends BaseController {
 
         // 表名
         String tableName = "position_history_" + sdfYMD.format(offset);
-        // 最后同步的position_history表的时间
-        List<LanyaPositionHistory> list = lanyaPositionHistoryService.selectLanyaPositionHistoryListStartTime(offset, 100, tableName);
+
+        List<LanyaPositionHistory> list = new ArrayList<>();
+        if (lanyaPositionHistoryService.checkTableExists(tableName) == 1) {
+            // 最后同步的position_history表的时间
+            list = lanyaPositionHistoryService.selectLanyaPositionHistoryListStartTime(offset, 100, tableName);
+        }
 
         if (list.isEmpty()) {
             // 将 Date 转换为 LocalDateTime
@@ -184,8 +190,14 @@ public class LanyaPositionHistoryController extends BaseController {
 
         if (!list.isEmpty()) {
             sysConfig.setConfigValue(sdfDateTime.format(list.get(list.size() - 1).getCreateTime()));
-            configService.updateConfig(sysConfig);
+        } else {
+            LocalDateTime localDateTime = offset.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+            LocalDateTime nextDayStart = localDateTime.plusDays(1).withHour(0).withMinute(0).withSecond(0).withNano(0);
+            offset = Date.from(nextDayStart.atZone(ZoneId.systemDefault()).toInstant());
+            sysConfig.setConfigValue(sdfDateTime.format(offset));
         }
+
+        configService.updateConfig(sysConfig);
 
         return getDataTable(list);
     }

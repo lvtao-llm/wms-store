@@ -5,10 +5,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.enums.DataSourceType;
 import com.ruoyi.framework.datasource.DynamicDataSource;
-import com.ruoyi.quartz.mapper.SysJobLogMapper;
+import com.ruoyi.system.mapper.SysJobLogMapper;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.slf4j.Logger;
@@ -20,9 +19,8 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.bean.BeanUtils;
 import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.quartz.domain.SysJob;
-import com.ruoyi.quartz.domain.SysJobLog;
+import com.ruoyi.system.domain.SysJobLog;
 import com.ruoyi.quartz.service.ISysJobLogService;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * 抽象quartz调用

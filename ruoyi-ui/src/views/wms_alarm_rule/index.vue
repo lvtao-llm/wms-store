@@ -182,8 +182,6 @@
             ></el-option>
           </el-select>
         </el-form-item>
-
-
         <!--        <el-form-item label="是否启用" prop="alarmRuleEnabled">-->
         <!--          <el-select v-model="form.alarmRuleEnabled" placeholder="请选择是否启用">-->
         <!--            <el-option-->
