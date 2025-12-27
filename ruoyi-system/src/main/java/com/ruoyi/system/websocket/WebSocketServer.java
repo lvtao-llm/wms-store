@@ -758,6 +758,9 @@ public class WebSocketServer {
             } else {
                 staffCount++;
             }
+            current.setId((long) (Math.random() * Long.MAX_VALUE));
+            current.setPersonType(current.getPersonPhoto() == null ? "visitor" : "visitor");
+            current.setStaffType(current.getPersonPhoto() == null ? "visitor" : "visitor");
             dataArray.add(current);
         }
 

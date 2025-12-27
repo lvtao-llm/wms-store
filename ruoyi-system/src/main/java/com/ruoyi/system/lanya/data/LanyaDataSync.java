@@ -18,7 +18,6 @@ import javax.annotation.PostConstruct;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * @author 吕涛
@@ -144,6 +143,21 @@ public class LanyaDataSync {
     SimpleDateFormat sdfChineseDateTime = new SimpleDateFormat("yyyy年MM月dd日HH时mm分");
 
     /**
+     * 已发现的规则报警
+     */
+    Set<String> discoveredSmsAlarm = new HashSet<>();
+
+    /**
+     * 已发现的规则报警
+     */
+    Set<String> discoveredImAlarm = new HashSet<>();
+
+    /**
+     * 已发现的规则报警
+     */
+    Set<String> discoveredSysAlarm = new HashSet<>();
+
+    /**
      * HTTP客户端
      */
     @Autowired
@@ -153,6 +167,18 @@ public class LanyaDataSync {
     private ISysUserService userService;
 
     private Map<Long, SysUser> userCache = new LinkedHashMap<>();
+
+    /**
+     * 每天00:00清除已发现的报警
+     *
+     * @throws Exception
+     */
+    @Scheduled(cron = "0 0 0 * * ?")
+    public void clearDiscoveredAlarm() throws Exception {
+        discoveredSmsAlarm.clear();
+        discoveredImAlarm.clear();
+        discoveredSysAlarm.clear();
+    }
 
     @PostConstruct
     public void init() throws Exception {
@@ -417,6 +443,14 @@ public class LanyaDataSync {
                     if (!userCache.containsKey(UserId)) {
                         userCache.put(UserId, userService.selectUserById(UserId));
                     }
+                    String uniqueId = wmsAlarmRule.rule.getAlarmRuleName() + "@" + UserId;
+
+                    // 忽略重复
+                    if (discoveredSmsAlarm.contains(uniqueId)) {
+                        continue;
+                    }
+
+                    discoveredSmsAlarm.add(uniqueId);
                     SysUser sysUser = userCache.get(UserId);
                     Map<String, Object> sms = new HashMap<String, Object>() {{
                         put("mobile", sysUser.getPhonenumber());
@@ -433,6 +467,16 @@ public class LanyaDataSync {
                     if (!userCache.containsKey(UserId)) {
                         userCache.put(UserId, userService.selectUserById(UserId));
                     }
+
+                    String uniqueId = wmsAlarmRule.rule.getAlarmRuleName() + "@" + UserId;
+
+                    // 忽略重复
+                    if (discoveredImAlarm.contains(uniqueId)) {
+                        continue;
+                    }
+
+                    discoveredImAlarm.add(uniqueId);
+
                     SysUser sysUser = userCache.get(UserId);
                     Map<String, Object> sms = new HashMap<String, Object>() {{
                         put("user", sysUser.getJstWorkNumber());
@@ -445,6 +489,16 @@ public class LanyaDataSync {
                 // 通知站内通知接收人员
                 for (String smsUser : wmsAlarmRule.rule.getSysNoticeUsers().split(",")) {
                     Long UserId = Long.parseLong(smsUser);
+
+                    String uniqueId = wmsAlarmRule.rule.getAlarmRuleName() + "@" + UserId;
+
+                    // 忽略重复
+                    if (discoveredSysAlarm.contains(uniqueId)) {
+                        continue;
+                    }
+
+                    discoveredSysAlarm.add(uniqueId);
+
                     if (!userCache.containsKey(UserId)) {
                         userCache.put(UserId, userService.selectUserById(UserId));
                     }

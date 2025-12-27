@@ -40,10 +40,10 @@ public class SiteNoticeService {
     @PostConstruct
     public void init() {
         // 初始化系统用户
-        List<SysUser> sysUsers = userService.selectUserList(new SysUser());
-        for (SysUser sysUser : sysUsers) {
-            userCache.put(sysUser.getUserId(), sysUser);
-        }
+//        List<SysUser> sysUsers = userService.selectUserList(new SysUser());
+//        for (SysUser sysUser : sysUsers) {
+//            userCache.put(sysUser.getUserId(), sysUser);
+//        }
     }
 
     /**
