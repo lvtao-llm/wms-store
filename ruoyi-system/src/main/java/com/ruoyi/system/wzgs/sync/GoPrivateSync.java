@@ -179,6 +179,9 @@ public class GoPrivateSync {
                 for (int i = 0; i < object.getJSONArray("rows").size(); i++) {
                     JSONObject row = object.getJSONArray("rows").getJSONObject(i);
                     LanyaPositionCurrent position = row.toJavaObject(LanyaPositionCurrent.class);
+                    if (i == 0) {
+                        position.setRealName("黑EPA888");
+                    }
                     lanyaPositionCurrentService.insertLanyaPositionCurrent(position);
                 }
             } else {

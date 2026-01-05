@@ -9,7 +9,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.system.domain.LanyaPositionHistory;
+import com.ruoyi.system.domain.WmsDevice;
 import com.ruoyi.system.service.ILanyaPositionHistoryService;
+import com.ruoyi.system.service.IWmsDeviceCameraLogService;
+import com.ruoyi.system.service.IWmsDeviceService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,6 +49,9 @@ public class WmsPathsDefinetionController extends BaseController {
 
     @Autowired
     private ILanyaPositionHistoryService lanyaPositionHistoryService;
+
+    @Autowired
+    private IWmsDeviceService wmsDeviceService;
 
     /**
      * 查询虚拟路径点列表
@@ -113,8 +119,12 @@ public class WmsPathsDefinetionController extends BaseController {
         // 时间参数校验
         String beginTime = jsonObject.getString("beginTime");
         String finishTime = jsonObject.getString("finishTime");
-        if (beginTime == null || finishTime == null) {
-            return error("时间参数错误");
+        if (beginTime == null) {
+            return error("beginTime时间参数错误");
+        }
+
+        if (finishTime == null) {
+            return error("finishTime时间参数错误");
         }
 
         Date begin = jsonObject.getObject("beginTime", Date.class);
@@ -124,7 +134,21 @@ public class WmsPathsDefinetionController extends BaseController {
         beginTime = ymdSdf.format(begin);
         finishTime = ymdSdf.format(end);
         if (!beginTime.equals(finishTime)) {
-            return error("时间参数错误");
+            return error("日期必须是同一天");
+        }
+
+        String fromIP = jsonObject.getString("fromIp").trim();
+        String toIP = jsonObject.getString("toIp").trim();
+
+        WmsDevice wmsDevice1 = wmsDeviceService.selectWmsDeviceByIp(fromIP);
+        WmsDevice wmsDevice2 = wmsDeviceService.selectWmsDeviceByIp(toIP);
+
+        if (wmsDevice1 == null) {
+            return error(jsonObject.getString("fromIp") + "设备不存在");
+        }
+
+        if (wmsDevice2 == null) {
+            return error(jsonObject.getString("toIp") + "设备不存在");
         }
 
         // 查询位置信息
@@ -151,6 +175,11 @@ public class WmsPathsDefinetionController extends BaseController {
         }
         wmsPathsDefinetion.setPathLongitude(String.join(",", longitudeList));
         wmsPathsDefinetion.setPathLatitude(String.join(",", latitudeList));
+
+        wmsPathsDefinetion.setFromIp(fromIP);
+        wmsPathsDefinetion.setFromName(wmsDevice1.getDeviceName());
+        wmsPathsDefinetion.setToIp(toIP);
+        wmsPathsDefinetion.setToName(wmsDevice2.getDeviceName());
 
         if (!wmsPathsDefinetions.isEmpty()) {
             return toAjax(wmsPathsDefinetionService.updateWmsPathsDefinetion(wmsPathsDefinetion));

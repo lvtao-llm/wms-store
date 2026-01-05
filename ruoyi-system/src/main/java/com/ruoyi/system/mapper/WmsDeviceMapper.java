@@ -58,4 +58,6 @@ public interface WmsDeviceMapper
      * @return 结果
      */
     public int deleteWmsDeviceByIds(Long[] ids);
+
+    WmsDevice selectWmsDeviceByIp(String ip);
 }

@@ -2,18 +2,19 @@ package com.ruoyi.system.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson2.JSONObject;
-import com.ruoyi.system.domain.WmsDevice;
-import com.ruoyi.system.domain.WmsPathsDefinetion;
-import com.ruoyi.system.domain.WmsVehiclePositionHistory;
+import com.ruoyi.system.domain.*;
 import com.ruoyi.system.service.IWmsDeviceService;
 import com.ruoyi.system.service.IWmsPathsDefinetionService;
 import com.ruoyi.system.service.IWmsVehiclePositionHistoryService;
+import com.ruoyi.system.websocket.WebSocketServer;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +29,6 @@ import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.enums.BusinessType;
-import com.ruoyi.system.domain.WmsDeviceCameraLog;
 import com.ruoyi.system.service.IWmsDeviceCameraLogService;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
@@ -55,6 +55,9 @@ public class WmsDeviceCameraLogController extends BaseController {
     @Autowired
     private IWmsVehiclePositionHistoryService wmsVehiclePositionHistoryService;
 
+    @Autowired
+    private WebSocketServer webSocketServer;
+
     private static Map<String, String> ipMapDeviceName = new HashMap<>();
 
     SimpleDateFormat sdfTableSuffix = new SimpleDateFormat("yyyyMMdd");
@@ -64,14 +67,14 @@ public class WmsDeviceCameraLogController extends BaseController {
         WmsDevice wmsDevice = new WmsDevice();
         wmsDevice.setDeviceType("摄像头");
         List<WmsDevice> wmsDevices = wmsDeviceService.selectWmsDeviceList(wmsDevice);
-        for (WmsDevice wmsDevice1 : wmsDevices) {
-            String data = wmsDevice1.getData();
+        for (WmsDevice device : wmsDevices) {
+            String data = device.getData();
             JSONObject jsonObject = JSONObject.parseObject(data);
             if (jsonObject.containsKey("ip1")) {
-                ipMapDeviceName.put(jsonObject.getString("ip1"), wmsDevice1.getDeviceName());
+                ipMapDeviceName.put(jsonObject.getString("ip1"), device.getDeviceName());
             }
             if (jsonObject.containsKey("ip2")) {
-                ipMapDeviceName.put(jsonObject.getString("ip2"), wmsDevice1.getDeviceName());
+                ipMapDeviceName.put(jsonObject.getString("ip2"), device.getDeviceName());
             }
         }
         logger.info("摄像头设备名称：{}", ipMapDeviceName);
@@ -123,80 +126,73 @@ public class WmsDeviceCameraLogController extends BaseController {
     @ApiOperation("新增摄像头识别日志")
     @Log(title = "摄像头识别日志", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody WmsDeviceCameraLog wmsDeviceCameraLog) {
+    public AjaxResult add(@RequestBody WmsDeviceCameraLog currLog) {
+        // 插入新的wms_device_camera_log
+        int newLog = wmsDeviceCameraLogService.insertWmsDeviceCameraLog(currLog);
+
         // 按天创建一个车牌号的虚拟路径
 
         // 当前天的时间字符串
         String ymd = sdfTableSuffix.format(new Date());
+
         // 查询当前天和车牌号的记录
         WmsVehiclePositionHistory query = new WmsVehiclePositionHistory();
         query.setYmd(sdfTableSuffix.format(new Date()));
-        query.setCph(wmsDeviceCameraLog.getCph());
-        List<WmsVehiclePositionHistory> wmsVehiclePositionHistories = wmsVehiclePositionHistoryService.selectWmsVehiclePositionHistoryList(query);
+        query.setCph(currLog.getCph());
+        List<WmsVehiclePositionHistory> res = wmsVehiclePositionHistoryService.selectWmsVehiclePositionHistoryList(query);
 
         // 判断车牌号今天是否有记录
-        if (wmsVehiclePositionHistories.isEmpty()) {
+        if (res.isEmpty()) {
             // 今天没有记录，新增
-            WmsVehiclePositionHistory wmsVehiclePositionHistory = new WmsVehiclePositionHistory();
-            wmsVehiclePositionHistory.setCph(wmsDeviceCameraLog.getCph());
-            wmsVehiclePositionHistory.setYmd(ymd);
-            wmsVehiclePositionHistory.setKssj(new Date());
-            wmsVehiclePositionHistory.setLogIds(wmsDeviceCameraLog.getId().toString());
-            wmsVehiclePositionHistoryService.insertWmsVehiclePositionHistory(wmsVehiclePositionHistory);
+            WmsVehiclePositionHistory positionHistory = new WmsVehiclePositionHistory();
+            positionHistory.setCph(currLog.getCph());
+            positionHistory.setYmd(ymd);
+            positionHistory.setKssj(new Date());
+            positionHistory.setLogIds(currLog.getId().toString());
+            wmsVehiclePositionHistoryService.insertWmsVehiclePositionHistory(positionHistory);
         } else {
             // 今天有记录，更新
 
             // 今天的记录
-            WmsVehiclePositionHistory wmsVehiclePositionHistory = wmsVehiclePositionHistories.get(0);
+            WmsVehiclePositionHistory positionHistory = res.get(0);
             // 今天记录中记录的wms_device_camera_log的ID
-            List<String> logIds = new ArrayList<>(Arrays.asList(wmsVehiclePositionHistory.getLogIds().split(",")));
+            List<String> logIds = new ArrayList<>(Arrays.asList(positionHistory.getLogIds().split(",")));
             // 最后一个wms_device_camera_log
-            WmsDeviceCameraLog oldLog = wmsDeviceCameraLogService.selectWmsDeviceCameraLogById(Long.parseLong(logIds.get(logIds.size() - 1)));
+            WmsDeviceCameraLog prevLog = wmsDeviceCameraLogService.selectWmsDeviceCameraLogById(Long.parseLong(logIds.get(logIds.size() - 1)));
+
+            WmsDevice prevDevice = wmsDeviceService.selectWmsDeviceByIp(prevLog.getDwmc());
+            WmsDevice currDevice = wmsDeviceService.selectWmsDeviceByIp(currLog.getDwmc());
 
             // 车牌机端会发送在同一车牌机会发送重复的识别记录，所以最后一个识别记录的IP和当前识别记录的IP不一致，则添加。如果相同和忽略
-            if (!oldLog.getDwmc().equals(wmsDeviceCameraLog.getDwmc())) {
+            if (prevDevice != null && currDevice != null && !prevDevice.getDeviceName().equals(currDevice.getDeviceName())) {
 
-                // 查询虚拟路径定义表
-                WmsPathsDefinetion wmsPathsDefinetion = new WmsPathsDefinetion();
-                wmsPathsDefinetion.setFromIp(oldLog.getDwmc());
-                wmsPathsDefinetion.setToIp(oldLog.getDwmc());
-                List<WmsPathsDefinetion> wmsPathsDefinetions = wmsPathsDefinetionService.selectWmsPathsDefinetionList(wmsPathsDefinetion);
+                // 获取当前记录的经纬度
+                String pointsStr = positionHistory.getPoints();
+                // 转成List
+                List<String> points = pointsStr != null && !pointsStr.isEmpty() ? new ArrayList<>(Arrays.asList(pointsStr.split(";"))) : new ArrayList<>();
 
-                // 如果存在虚拟路径定义，则添加虚拟路径点
-                if (!wmsPathsDefinetions.isEmpty()) {
-
-                    // 取出虚拟路径定义的经纬度
-                    List<String> longitudes = Arrays.asList(wmsPathsDefinetions.get(0).getPathLongitude().split(","));
-                    List<String> latitudes = Arrays.asList(wmsPathsDefinetions.get(0).getPathLatitude().split(","));
-
-                    // 获取当前记录的经纬度
-                    String pointsStr = wmsVehiclePositionHistory.getPoints();
-                    // 转成List
-                    List<String> points = pointsStr != null && !pointsStr.isEmpty() ? new ArrayList<>(Arrays.asList(pointsStr.split(";"))) : new ArrayList<>();
-
-                    // 添加虚拟路径点
-                    for (int i = 0; i < longitudes.size(); i++) {
-                        points.add(longitudes.get(i) + "," + latitudes.get(i));
-                    }
-
-                    // 重新赋值虚拟路径点
-                    wmsVehiclePositionHistory.setPoints(String.join(";", points));
-                }
+                PathDetection pathDetection = getWmsPathsDefinition(prevDevice.getDeviceName(), currDevice.getDeviceName());
+                pathDetection.cph = currLog.getCph();
+                points.addAll(pathDetection.paths);
+                // 重新赋值虚拟路径点
+                positionHistory.setPoints(String.join(";", points));
 
                 // 添加wms_device_camera_log的ID
-                logIds.add(wmsDeviceCameraLog.getId().toString());
-                wmsVehiclePositionHistory.setLogIds(String.join(",", logIds));
+                logIds.add(currLog.getId().toString());
+                positionHistory.setLogIds(String.join(",", logIds));
 
                 // 修改结束时间
-                wmsVehiclePositionHistory.setJssj(new Date());
+                positionHistory.setJssj(new Date());
 
                 // 更新车辆路径点历史记录
-                wmsVehiclePositionHistoryService.updateWmsVehiclePositionHistory(wmsVehiclePositionHistory);
+                wmsVehiclePositionHistoryService.updateWmsVehiclePositionHistory(positionHistory);
+
+                // 更新车辆路径点数据给前端浏览器
+                webSocketServer.updateVehiclePositionHistoryData(pathDetection);
             }
         }
 
-        // 插入新的wms_device_camera_log
-        return toAjax(wmsDeviceCameraLogService.insertWmsDeviceCameraLog(wmsDeviceCameraLog));
+        return toAjax(newLog);
     }
 
     /**
@@ -220,4 +216,203 @@ public class WmsDeviceCameraLogController extends BaseController {
     public AjaxResult remove(@PathVariable Long[] ids) {
         return toAjax(wmsDeviceCameraLogService.deleteWmsDeviceCameraLogByIds(ids));
     }
+
+    private PathDetection getWmsPathsDefinition(String name1, String name2) {
+
+        PathDetection pathDetection = new PathDetection();
+        List<String> longitudes = new ArrayList<>();
+        List<String> latitudes = new ArrayList<>();
+        // 查询虚拟路径定义表
+        WmsPathsDefinetion wmsPathsDefinetion = new WmsPathsDefinetion();
+        wmsPathsDefinetion.setFromName(name1);
+        wmsPathsDefinetion.setToName(name2);
+        List<WmsPathsDefinetion> forwardDefinition = wmsPathsDefinetionService.selectWmsPathsDefinetionList(wmsPathsDefinetion);
+        if (!forwardDefinition.isEmpty()) {
+            // 取出虚拟路径定义的经纬度
+            longitudes = Arrays.asList(forwardDefinition.get(0).getPathLongitude().split(","));
+            latitudes = Arrays.asList(forwardDefinition.get(0).getPathLatitude().split(","));
+            pathDetection.fromName = forwardDefinition.get(0).getFromName();
+            pathDetection.fromIp = forwardDefinition.get(0).getFromIp();
+            pathDetection.toName = forwardDefinition.get(0).getToName();
+            pathDetection.toIp = forwardDefinition.get(0).getToIp();
+        }
+        wmsPathsDefinetion.setFromName(name2);
+        wmsPathsDefinetion.setToName(name1);
+        List<WmsPathsDefinetion> backwardDefinition = wmsPathsDefinetionService.selectWmsPathsDefinetionList(wmsPathsDefinetion);
+        if (!backwardDefinition.isEmpty()) {
+            // 取出虚拟路径定义的经纬度
+            longitudes = Arrays.asList(backwardDefinition.get(0).getPathLongitude().split(","));
+            latitudes = Arrays.asList(backwardDefinition.get(0).getPathLatitude().split(","));
+            Collections.reverse(longitudes);
+            Collections.reverse(latitudes);
+            pathDetection.fromName = backwardDefinition.get(0).getToName();
+            pathDetection.fromIp = backwardDefinition.get(0).getToIp();
+            pathDetection.toName = backwardDefinition.get(0).getFromName();
+            pathDetection.toIp = backwardDefinition.get(0).getFromIp();
+        }
+
+        pathDetection.setLongitudeAndLatitude(longitudes, latitudes);
+        // 添加虚拟路径点
+        for (int i = 0; i < longitudes.size(); i++) {
+            if (!Strings.isEmpty(longitudes.get(i)) && !Strings.isEmpty(latitudes.get(i))) {
+                pathDetection.paths.add(longitudes.get(i) + "," + latitudes.get(i));
+            }
+        }
+
+        return pathDetection;
+    }
+
+    public static class PathDetection {
+        public String cph;
+        public String fromName;
+        public String toName;
+        public String fromIp;
+        public String toIp;
+        public List<String> paths = new ArrayList<>();
+        public WmsVehiclePositionCurrent positionCurrent;
+        // 经度
+        private List<Double> longitudes;
+        // 纬度
+        private List<Double> latitudes;
+        // 秒数
+        private final int seconds = 60;
+        // 每秒点数
+        private final int pointsPerSecond = 10;
+        // 生产的点数
+        private final int points = seconds * pointsPerSecond;
+        // 开始时间
+        private final Date startTime = new Date();
+        // 结束时间
+        private final Date endTime;
+
+        public PathDetection() {
+            this.positionCurrent = new WmsVehiclePositionCurrent();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(startTime);
+            calendar.add(Calendar.SECOND, seconds);
+            this.endTime = calendar.getTime();
+        }
+
+        public WmsVehiclePositionCurrent getNextPositionCurrent(String cph) {
+            Date now = new Date();
+            int pointNum = nextPoint();
+            WmsVehiclePositionCurrent nextPositionCurrent = new WmsVehiclePositionCurrent();
+            nextPositionCurrent.setAcceptTime(now);
+            nextPositionCurrent.setRealName(cph);
+            nextPositionCurrent.setLongitude(longitudes.get(pointNum));
+            nextPositionCurrent.setLatitude(latitudes.get(pointNum));
+            return nextPositionCurrent;
+        }
+
+        /**
+         * 设置经纬度
+         *
+         * @param longitude 经度，类型List<String>
+         * @param latitude  纬度, 类型List<String>
+         */
+        public void setLongitudeAndLatitude(List<String> longitude, List<String> latitude) {
+            List<Double> longitudes = longitude.stream()
+                    .filter(s -> !s.isEmpty())
+                    .map(Double::parseDouble)
+                    .collect(Collectors.toList());
+
+            List<Double> latitudes = latitude.stream()
+                    .filter(s -> !s.isEmpty())
+                    .map(Double::parseDouble)
+                    .collect(Collectors.toList());
+            // 拟合成100个点
+            this.longitudes = this.fitToPoints(longitudes, this.points);
+            this.latitudes = this.fitToPoints(latitudes, this.points);
+        }
+
+        /**
+         * 将输入的点序列拟合成指定数量的点
+         *
+         * @param input        输入点序列
+         * @param targetPoints 目标点数
+         * @return 拟合后的点序列
+         */
+        private List<Double> fitToPoints(List<Double> input, int targetPoints) {
+            if (input.size() <= 1) {
+                return input;
+            }
+
+            List<Double> result = new ArrayList<>();
+
+            if (input.size() == targetPoints) {
+                // 如果输入点数等于目标点数，直接返回
+                return new ArrayList<>(input);
+            } else if (input.size() < targetPoints) {
+                // 如果输入点数少于目标点数，使用线性插值补充
+                for (int i = 0; i < targetPoints; i++) {
+                    double ratio = (double) i / (targetPoints - 1);
+                    double value = interpolate(input, ratio);
+                    result.add(value);
+                }
+            } else {
+                // 如果输入点数多于目标点数，进行采样
+                for (int i = 0; i < targetPoints; i++) {
+                    double ratio = (double) i / (targetPoints - 1);
+                    int index = (int) (ratio * (input.size() - 1));
+                    result.add(input.get(index));
+                }
+            }
+
+            return result;
+        }
+
+        /**
+         * 线性插值计算
+         *
+         * @param values 点序列
+         * @param ratio  插值比例 (0.0 - 1.0)
+         * @return 插值结果
+         */
+        private double interpolate(List<Double> values, double ratio) {
+            if (values.size() <= 1) {
+                return values.isEmpty() ? 0.0 : values.get(0);
+            }
+
+            double targetIndex = ratio * (values.size() - 1);
+            int lowerIndex = (int) Math.floor(targetIndex);
+            int upperIndex = (int) Math.ceil(targetIndex);
+
+            if (lowerIndex >= values.size() - 1) {
+                return values.get(values.size() - 1);
+            }
+
+            if (upperIndex <= 0) {
+                return values.get(0);
+            }
+
+            double fraction = targetIndex - lowerIndex;
+            double lowerValue = values.get(lowerIndex);
+            double upperValue = values.get(upperIndex);
+
+            return lowerValue + fraction * (upperValue - lowerValue);
+        }
+
+        private int nextPoint() {
+            Date nextDate = new Date();
+            // 计算nextDate在startTime和endTime之间的比例
+            long timeDiff = endTime.getTime() - startTime.getTime();
+            long nextTimeDiff = nextDate.getTime() - startTime.getTime();
+
+            // 计算比例（0.0到1.0之间）
+            double ratio = (double) nextTimeDiff / timeDiff;
+
+            // 确保比例在0.0到1.0之间
+            ratio = Math.max(0.0, Math.min(1.0, ratio));
+
+            // 根据比例计算pointNum
+            // 当前点数
+            int pointNum = (int) (ratio * (points - 1));
+
+            // 确保pointNum在有效范围内
+            pointNum = Math.max(0, Math.min(points - 1, pointNum));
+            return pointNum;
+        }
+    }
+
+
 }

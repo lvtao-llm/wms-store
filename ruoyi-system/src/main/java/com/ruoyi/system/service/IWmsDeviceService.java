@@ -58,4 +58,6 @@ public interface IWmsDeviceService
      * @return 结果
      */
     public int deleteWmsDeviceById(Long id);
+
+    WmsDevice selectWmsDeviceByIp(String ip);
 }

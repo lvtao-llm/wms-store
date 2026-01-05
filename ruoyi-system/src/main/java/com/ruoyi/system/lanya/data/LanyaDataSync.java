@@ -531,7 +531,6 @@ public class LanyaDataSync {
 
             // 如果目标表不存在则直接放弃本次同步
             if (!lanyaPositionHistoryService.showPositionHistoryTableNames().contains(tableName)) {
-                continueGet = false;
                 break;
             }
 

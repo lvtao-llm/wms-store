@@ -93,4 +93,9 @@ public class WmsDeviceServiceImpl implements IWmsDeviceService
     {
         return wmsDeviceMapper.deleteWmsDeviceById(id);
     }
+
+    @Override
+    public WmsDevice selectWmsDeviceByIp(String ip) {
+        return wmsDeviceMapper.selectWmsDeviceByIp(ip);
+    }
 }

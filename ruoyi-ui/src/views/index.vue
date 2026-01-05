@@ -33,7 +33,7 @@ export default {
   },
   methods: {
     onLoad() {
-      const wsuri = "ws://112.98.110.101:10030/system/lanya-transfer/ws/aaa";
+      const wsuri = "ws://localhost:10030/system/lanya-transfer/ws/aaa";
       this.ws = new WebSocket(wsuri);
       const that = this;
       this.ws.onopen = function (event) {

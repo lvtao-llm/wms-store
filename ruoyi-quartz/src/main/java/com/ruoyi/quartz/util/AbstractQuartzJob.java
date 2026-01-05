@@ -89,7 +89,7 @@ public abstract class AbstractQuartzJob implements Job {
                 for (String mobile : new String[]{"13263597803", "18346693933"}) {
                     Map<String, Object> sms = new HashMap<String, Object>() {{
                         put("mobile", mobile);
-                        put("content", String.format("【大庆油田有限责任公司】(物资公司)任务[%s]在 %s 时执行异常，请尽快处理！", sysJob.getJobName(), sdf.format(sysJob.getCreateTime())));
+                        put("content", String.format("【大庆油田有限责任公司】(物资公司)任务[%s]在 %s 时执行异常，请尽快处理！", sysJob.getJobName(), sdf.format(sysJob.getNextValidTime())));
                         put("create_time", date);
                         put("taskId", date.getTime());
                     }};

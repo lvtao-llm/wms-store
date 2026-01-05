@@ -55,6 +55,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </select>
 
+    <select id="selectWmsDeviceByIp" parameterType="String" resultMap="WmsDeviceResult">
+        <include refid="selectWmsDeviceVo"/>
+        where data like concat('%"', #{ip}, '"%')
+    </select>
+
     <insert id="insertWmsDevice" parameterType="WmsDevice" useGeneratedKeys="true" keyProperty="id">
         insert into wms_device
         <trim prefix="(" suffix=")" suffixOverrides=",">

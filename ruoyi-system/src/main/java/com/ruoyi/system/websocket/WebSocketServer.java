@@ -5,6 +5,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ruoyi.common.utils.ThirdPartyAuth;
 import com.ruoyi.common.utils.spring.SpringUtils;
+import com.ruoyi.system.controller.WmsDeviceCameraLogController;
 import com.ruoyi.system.domain.*;
 import com.ruoyi.system.lanya.data.AlarmDetection;
 import com.ruoyi.system.service.*;
@@ -292,6 +293,8 @@ public class WebSocketServer {
     public void setLanyaPositionCurrentService(ILanyaPositionCurrentService lanyaPositionCurrentService) {
         WebSocketServer.lanyaPositionCurrentService = lanyaPositionCurrentService;
     }
+
+    private Map<String, WmsDeviceCameraLogController.PathDetection> vehicleCurrents = new HashMap<>();
 
     /**
      * 初始化
@@ -709,34 +712,26 @@ public class WebSocketServer {
     @Scheduled(cron = "0/2 * * * * ?")
     public void currentVehiclePositionHistoryData() throws ParseException {
         DecimalFormat df = new DecimalFormat("#.##");
-        String tableName = "position_history_" + YMD.format(new Date());
+
         // 创建所需的JSONObject
         JSONObject locationData = new JSONObject();
         locationData.put("msgType", "currentVehicleLocation");
         locationData.put("total", 1);
 
-        // 创建personTypeStatistics数组
-        JSONArray personTypeStats = new JSONArray();
-
+        // 创建车辆统计数组
+        JSONArray vehicleStats = new JSONArray();
         // 添加staff类型统计
-        JSONObject staffStat = new JSONObject();
-        staffStat.put("count", mockVehicleIds.length);
-        staffStat.put("personType", "staff");
-        staffStat.put("personTypeName", "员工");
-        staffStat.put("ratio", df.format((float) mockVehicleIds.length / mockVehicleIds.length * 100));
-        personTypeStats.add(staffStat);
+        JSONObject vehicleStat = new JSONObject();
+        vehicleStat.put("count", vehicleCurrents.size());
+        vehicleStat.put("ratio", df.format((float) vehicleCurrents.size() / vehicleCurrents.size() * 100));
+        vehicleStats.add(vehicleStat);
 
-        locationData.put("personTypeStatistics", personTypeStats);
+        locationData.put("personTypeStatistics", vehicleStats);
+
         JSONArray dataArray = new JSONArray();
-
-        if (lanyaPositionHistoryService.checkTableExists(tableName) > 0) {
-            List<LanyaPositionHistory> trajectory = lanyaPositionHistoryService.selectNewLanyaPositionHistoryListByTable(tableName);
-            for (LanyaPositionHistory history : trajectory) {
-                JSONObject locationDataItem = JSONObject.from(history);
-                dataArray.add(locationDataItem);
-            }
+        for (Map.Entry<String, WmsDeviceCameraLogController.PathDetection> entry : vehicleCurrents.entrySet()) {
+            dataArray.add(entry.getValue().getNextPositionCurrent(entry.getKey()));
         }
-
         locationData.put("data", dataArray);
         messageQueue.add(locationData.toString());
     }
@@ -896,6 +891,10 @@ public class WebSocketServer {
 
     public void setServerAlreadyStarted() {
         serverAlreadyStarted = false;
+    }
+
+    public void updateVehiclePositionHistoryData(WmsDeviceCameraLogController.PathDetection pathDetection) {
+        vehicleCurrents.put(pathDetection.cph, pathDetection);
     }
 
     /**
