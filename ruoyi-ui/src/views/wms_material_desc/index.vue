@@ -289,7 +289,7 @@ export default {
     /** 查询物料描述档案列表 */
     getList() {
       this.loading = true;
-      listArea(this.queryParams).then((response) => {
+      listArea({ pageNum: 1, pageSize: 1000}).then((response) => {
         this.dict.type.wms_area_name = response.rows.map((item) => {
           return {
             value: item.areaId + "", // 确保是字符串
