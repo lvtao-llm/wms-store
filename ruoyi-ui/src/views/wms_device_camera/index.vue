@@ -177,10 +177,13 @@
         <el-form-item label="纬度" prop="latitude">
           <el-input v-model="form.latitude" placeholder="请输入摄像头纬度" />
         </el-form-item>
-        <el-form-item label="左画面通道" prop="serialNumber">
+        <el-form-item label="车牌机" prop="machine">
+          <el-input v-model="info.machine" placeholder="请输入序号SN" />
+        </el-form-item>
+        <el-form-item label="左画面通道" prop="channel1">
           <el-input v-model="info.channel1" placeholder="请输入序号SN" />
         </el-form-item>
-        <el-form-item label="右画面通道" prop="serialNumber">
+        <el-form-item label="右画面通道" prop="channel2">
           <el-input v-model="info.channel2" placeholder="请输入序号SN" />
         </el-form-item>
       </el-form>
@@ -267,6 +270,7 @@ export default {
         username2: null,
         password2: null,
         channel2: null,
+        machine:null
       },
       dialogName: "",
     };
@@ -293,6 +297,7 @@ export default {
             username2: info.username2,
             password2: info.password2,
             channel2: info.channel2,
+            machine: info.machine
           };
         });
         this.total = response.total;
@@ -326,15 +331,15 @@ export default {
         delFlag: null,
       };
       this.info = {
-        ip1: "10.61.102.150",
-        port1: "556",
-        username1: "admin",
-        password1: "Ll112233",
+        ip1: null,
+        port1: null,
+        username1: null,
+        password1: null,
         channel1: null,
-        ip2: "10.61.102.150",
-        port2: "556",
-        username2: "admin",
-        password2: "Ll112233",
+        ip2: null,
+        port2: null,
+        username2: null,
+        password2: null,
         channel2: null,
       };
       this.resetForm("form");
