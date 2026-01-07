@@ -6,12 +6,7 @@
       width="800"
       append-to-body
     >
-      <el-table
-        height="500px"
-        v-loading="loading"
-        :data="wms_alarm_logList"
-        @selection-change="handleSelectionChange"
-      >
+      <el-table height="500px" v-loading="loading" :data="wms_alarm_logList">
         <!-- <el-table-column type="selection" width="55" align="center" /> -->
         <el-table-column label="姓名" align="center" prop="personName" />
         <el-table-column label="工号" align="center" prop="personJobNo" />
