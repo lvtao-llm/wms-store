@@ -437,73 +437,79 @@ public class LanyaDataSync {
 
                 String content = String.format("【大庆油田有限责任公司】(物资公司)[%s]在%s时触发了%s报警，请尽快处理！", position.getPersonId(), sdfChineseDateTime.format(alarmTime), wmsAlarmRule.rule.getAlarmRuleName());
 
-                // 通知短信接收人员
-                for (String smsUser : wmsAlarmRule.rule.getSmsNoticeUsers().split(",")) {
-                    Long UserId = Long.parseLong(smsUser);
-                    if (!userCache.containsKey(UserId)) {
-                        userCache.put(UserId, userService.selectUserById(UserId));
-                    }
-                    String uniqueId = wmsAlarmRule.rule.getAlarmRuleName() + "@" + UserId;
+                if (wmsAlarmRule.rule.getSmsNoticeUsers() != null) {
+                    // 通知短信接收人员
+                    for (String smsUser : wmsAlarmRule.rule.getSmsNoticeUsers().split(",")) {
+                        Long UserId = Long.parseLong(smsUser);
+                        if (!userCache.containsKey(UserId)) {
+                            userCache.put(UserId, userService.selectUserById(UserId));
+                        }
+                        String uniqueId = wmsAlarmRule.rule.getAlarmRuleName() + "@" + UserId;
 
-                    // 忽略重复
-                    if (discoveredSmsAlarm.contains(uniqueId)) {
-                        continue;
-                    }
+                        // 忽略重复
+                        if (discoveredSmsAlarm.contains(uniqueId)) {
+                            continue;
+                        }
 
-                    discoveredSmsAlarm.add(uniqueId);
-                    SysUser sysUser = userCache.get(UserId);
-                    Map<String, Object> sms = new HashMap<String, Object>() {{
-                        put("mobile", sysUser.getPhonenumber());
-                        put("content", content);
-                        put("create_time", alarmTime);
-                        put("taskId", alarmTime.getTime());
-                    }};
-                    SpringUtils.getBean(SysJobLogMapper.class).insertSmsCat(sms);
+                        discoveredSmsAlarm.add(uniqueId);
+                        SysUser sysUser = userCache.get(UserId);
+                        Map<String, Object> sms = new HashMap<String, Object>() {{
+                            put("mobile", sysUser.getPhonenumber());
+                            put("content", content);
+                            put("create_time", alarmTime);
+                            put("taskId", alarmTime.getTime());
+                        }};
+                        SpringUtils.getBean(SysJobLogMapper.class).insertSmsCat(sms);
+                    }
                 }
 
-                // 通知即时通接收人员
-                for (String smsUser : wmsAlarmRule.rule.getImNoticeUsers().split(",")) {
-                    Long UserId = Long.parseLong(smsUser);
-                    if (!userCache.containsKey(UserId)) {
-                        userCache.put(UserId, userService.selectUserById(UserId));
+                if (wmsAlarmRule.rule.getImNoticeUsers() != null) {
+                    // 通知即时通接收人员
+                    for (String smsUser : wmsAlarmRule.rule.getImNoticeUsers().split(",")) {
+                        Long UserId = Long.parseLong(smsUser);
+                        if (!userCache.containsKey(UserId)) {
+                            userCache.put(UserId, userService.selectUserById(UserId));
+                        }
+
+                        String uniqueId = wmsAlarmRule.rule.getAlarmRuleName() + "@" + UserId;
+
+                        // 忽略重复
+                        if (discoveredImAlarm.contains(uniqueId)) {
+                            continue;
+                        }
+
+                        discoveredImAlarm.add(uniqueId);
+
+                        SysUser sysUser = userCache.get(UserId);
+                        Map<String, Object> sms = new HashMap<String, Object>() {{
+                            put("user", sysUser.getJstWorkNumber());
+                            put("content", content);
+                            put("create_time", alarmTime);
+                        }};
+                        SpringUtils.getBean(SysJobLogMapper.class).insertSmsJst(sms);
                     }
-
-                    String uniqueId = wmsAlarmRule.rule.getAlarmRuleName() + "@" + UserId;
-
-                    // 忽略重复
-                    if (discoveredImAlarm.contains(uniqueId)) {
-                        continue;
-                    }
-
-                    discoveredImAlarm.add(uniqueId);
-
-                    SysUser sysUser = userCache.get(UserId);
-                    Map<String, Object> sms = new HashMap<String, Object>() {{
-                        put("user", sysUser.getJstWorkNumber());
-                        put("content", content);
-                        put("create_time", alarmTime);
-                    }};
-                    SpringUtils.getBean(SysJobLogMapper.class).insertSmsJst(sms);
                 }
 
-                // 通知站内通知接收人员
-                for (String smsUser : wmsAlarmRule.rule.getSysNoticeUsers().split(",")) {
-                    Long UserId = Long.parseLong(smsUser);
+                if (wmsAlarmRule.rule.getSysNoticeUsers() != null) {
+                    // 通知站内通知接收人员
+                    for (String smsUser : wmsAlarmRule.rule.getSysNoticeUsers().split(",")) {
+                        Long UserId = Long.parseLong(smsUser);
 
-                    String uniqueId = wmsAlarmRule.rule.getAlarmRuleName() + "@" + UserId;
+                        String uniqueId = wmsAlarmRule.rule.getAlarmRuleName() + "@" + UserId;
 
-                    // 忽略重复
-                    if (discoveredSysAlarm.contains(uniqueId)) {
-                        continue;
+                        // 忽略重复
+                        if (discoveredSysAlarm.contains(uniqueId)) {
+                            continue;
+                        }
+
+                        discoveredSysAlarm.add(uniqueId);
+
+                        if (!userCache.containsKey(UserId)) {
+                            userCache.put(UserId, userService.selectUserById(UserId));
+                        }
+                        SysUser sysUser = userCache.get(UserId);
+                        siteNoticeService.noticeTo(sysUser, content);
                     }
-
-                    discoveredSysAlarm.add(uniqueId);
-
-                    if (!userCache.containsKey(UserId)) {
-                        userCache.put(UserId, userService.selectUserById(UserId));
-                    }
-                    SysUser sysUser = userCache.get(UserId);
-                    siteNoticeService.noticeTo(sysUser, content);
                 }
             }
         }

@@ -22,10 +22,10 @@
           icon="el-icon-search"
           size="mini"
           @click="handleQuery"
-          >搜索
+        >搜索
         </el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
-          >重置
+        >重置
         </el-button>
       </el-form-item>
     </el-form>
@@ -39,7 +39,7 @@
           size="mini"
           @click="handleAdd"
           v-hasPermi="['system:wms_device:add']"
-          >新增
+        >新增
         </el-button>
       </el-col>
       <el-col :span="1.5">
@@ -51,7 +51,7 @@
           :disabled="single"
           @click="handleUpdate"
           v-hasPermi="['system:wms_device:edit']"
-          >修改
+        >修改
         </el-button>
       </el-col>
       <el-col :span="1.5">
@@ -63,7 +63,7 @@
           :disabled="multiple"
           @click="handleDelete"
           v-hasPermi="['system:wms_device:remove']"
-          >删除
+        >删除
         </el-button>
       </el-col>
       <el-col :span="1.5">
@@ -74,7 +74,7 @@
           size="mini"
           @click="handleExport"
           v-hasPermi="['system:wms_device:export']"
-          >导出
+        >导出
         </el-button>
       </el-col>
       <right-toolbar
@@ -88,19 +88,20 @@
       :data="wms_deviceList"
       @selection-change="handleSelectionChange"
     >
-      <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="车牌机名称" align="center" prop="deviceName" />
-      <el-table-column label="序号SN" align="center" prop="serialNumber" />
-      <el-table-column label="型号" align="center" prop="model" />
+      <el-table-column type="selection" width="55" align="center"/>
+      <el-table-column label="名称" align="center" prop="deviceName" width="160"/>
+      <el-table-column label="SN" align="center" prop="serialNumber"/>
+      <el-table-column label="型号" align="center" prop="model"/>
       <el-table-column
-        label="车牌机描述"
+        label="描述"
         align="center"
         prop="deviceDescription"
       />
-      <el-table-column label="经度" align="center" prop="longitude" />
-      <el-table-column label="纬度" align="center" prop="latitude" />
-      <el-table-column label="摄像头1 ip" align="center" prop="ip1" />
-      <el-table-column label="摄像头2 ip" align="center" prop="ip2" />
+      <el-table-column label="经度" align="center" prop="longitude" :formatter="longitudeFormatter"/>
+      <el-table-column label="纬度" align="center" prop="latitude" :formatter="latitudeFormatter"/>
+      <el-table-column label="闸机IP" align="center" prop="machine" width="120"/>
+      <el-table-column label="左摄像头IP" align="center" prop="ip1" width="120"/>
+      <el-table-column label="右摄像头IP" align="center" prop="ip2" width="120"/>
       <el-table-column
         label="操作"
         align="center"
@@ -115,7 +116,7 @@
             icon="el-icon-view"
             @click="viewCameraStream(scope.row)"
             v-hasPermi="['system:wms_device:view']"
-            >查看画面
+          >查看画面
           </el-button>
           <el-button
             size="mini"
@@ -123,7 +124,7 @@
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['system:wms_device:edit']"
-            >修改
+          >修改
           </el-button>
           <el-button
             size="mini"
@@ -131,7 +132,7 @@
             icon="el-icon-edit"
             @click="handlePosition(scope.row)"
             v-hasPermi="['system:wms_device:edit']"
-            >位置
+          >位置
           </el-button>
           <el-button
             size="mini"
@@ -139,7 +140,7 @@
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['system:wms_device:remove']"
-            >删除
+          >删除
           </el-button>
         </template>
       </el-table-column>
@@ -157,7 +158,7 @@
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="180px">
         <el-form-item label="车牌机名称" prop="deviceName">
-          <el-input v-model="form.deviceName" placeholder="请输入车牌机名称" />
+          <el-input v-model="form.deviceName" placeholder="请输入车牌机名称"/>
         </el-form-item>
         <el-form-item label="车牌机描述" prop="deviceDescription">
           <el-input
@@ -166,25 +167,25 @@
           />
         </el-form-item>
         <el-form-item label="型号" prop="model">
-          <el-input v-model="form.model" placeholder="请输入型号" />
+          <el-input v-model="form.model" placeholder="请输入型号"/>
         </el-form-item>
         <el-form-item label="序号SN" prop="serialNumber">
-          <el-input v-model="form.serialNumber" placeholder="请输入序号SN" />
+          <el-input v-model="form.serialNumber" placeholder="请输入序号SN"/>
         </el-form-item>
         <el-form-item label="经度" prop="longitude">
-          <el-input v-model="form.longitude" placeholder="请输入摄像头经度" />
+          <el-input v-model="form.longitude" placeholder="请输入摄像头经度"/>
         </el-form-item>
         <el-form-item label="纬度" prop="latitude">
-          <el-input v-model="form.latitude" placeholder="请输入摄像头纬度" />
+          <el-input v-model="form.latitude" placeholder="请输入摄像头纬度"/>
         </el-form-item>
         <el-form-item label="车牌机" prop="machine">
-          <el-input v-model="info.machine" placeholder="请输入序号SN" />
+          <el-input v-model="info.machine" placeholder="请输入序号SN"/>
         </el-form-item>
         <el-form-item label="左画面通道" prop="channel1">
-          <el-input v-model="info.channel1" placeholder="请输入序号SN" />
+          <el-input v-model="info.channel1" placeholder="请输入序号SN"/>
         </el-form-item>
         <el-form-item label="右画面通道" prop="channel2">
-          <el-input v-model="info.channel2" placeholder="请输入序号SN" />
+          <el-input v-model="info.channel2" placeholder="请输入序号SN"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -270,7 +271,7 @@ export default {
         username2: null,
         password2: null,
         channel2: null,
-        machine:null
+        machine: null
       },
       dialogName: "",
     };
@@ -410,7 +411,8 @@ export default {
           this.getList();
           this.$modal.msgSuccess("删除成功");
         })
-        .catch(() => {});
+        .catch(() => {
+        });
     },
     /** 导出按钮操作 */
     handleExport() {
@@ -446,6 +448,12 @@ export default {
       this.dialogName = row.deviceName;
       this.$refs.cameraView.openCamera(row, JSON.parse(row.data));
     },
+    longitudeFormatter(row, column, cellValue) {
+      return cellValue ? parseFloat(cellValue).toFixed(4) : '';
+    },
+    latitudeFormatter(row, column, cellValue) {
+      return cellValue ? parseFloat(cellValue).toFixed(4) : '';
+    }
   },
 };
 </script>
