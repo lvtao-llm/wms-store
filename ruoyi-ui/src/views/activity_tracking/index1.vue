@@ -981,7 +981,6 @@ export default {
 
         // 边界检查
         if (targetTimestamp < data[0].time) {
-          console.log(111);
           characterMarker.setPosition(
             new BMap.Point(data[0].longitude, data[0].latitude)
           );

@@ -70,7 +70,7 @@ export const constantRoutes = [
         path: 'index',
         component: () => import('@/views/index'),
         name: 'Index',
-        meta: {title: '首页', icon: 'dashboard', affix: true}
+        meta: { title: '首页', icon: 'dashboard', affix: true }
       }
     ]
   },
@@ -84,7 +84,7 @@ export const constantRoutes = [
         path: 'profile',
         component: () => import('@/views/system/user/profile/index'),
         name: 'Profile',
-        meta: {title: '个人中心', icon: 'user'}
+        meta: { title: '个人中心', icon: 'user' }
       }
     ]
   }
@@ -102,7 +102,7 @@ export const dynamicRoutes = [
         path: 'role/:userId(\\d+)',
         component: () => import('@/views/system/user/authRole'),
         name: 'AuthRole',
-        meta: {title: '分配角色', activeMenu: '/system/user'}
+        meta: { title: '分配角色', activeMenu: '/system/user' }
       }
     ]
   },
@@ -116,7 +116,7 @@ export const dynamicRoutes = [
         path: 'user/:roleId(\\d+)',
         component: () => import('@/views/system/role/authUser'),
         name: 'AuthUser',
-        meta: {title: '分配用户', activeMenu: '/system/role'}
+        meta: { title: '分配用户', activeMenu: '/system/role' }
       }
     ]
   },
@@ -130,7 +130,7 @@ export const dynamicRoutes = [
         path: 'index/:dictId(\\d+)',
         component: () => import('@/views/system/dict/data'),
         name: 'Data',
-        meta: {title: '字典数据', activeMenu: '/system/dict'}
+        meta: { title: '字典数据', activeMenu: '/system/dict' }
       }
     ]
   },
@@ -144,7 +144,7 @@ export const dynamicRoutes = [
         path: 'index/:jobId(\\d+)',
         component: () => import('@/views/monitor/job/log'),
         name: 'JobLog',
-        meta: {title: '调度日志', activeMenu: '/monitor/job'}
+        meta: { title: '调度日志', activeMenu: '/monitor/job' }
       }
     ]
   },
@@ -158,7 +158,7 @@ export const dynamicRoutes = [
         path: 'index/:tableId(\\d+)',
         component: () => import('@/views/tool/gen/editTable'),
         name: 'GenEdit',
-        meta: {title: '修改生成配置', activeMenu: '/tool/gen'}
+        meta: { title: '修改生成配置', activeMenu: '/tool/gen' }
       }
     ]
   },
@@ -172,7 +172,7 @@ export const dynamicRoutes = [
         path: 'index',
         component: () => import('@/views/lanya_core_area/index'),
         name: '区域管理',
-        meta: {title: '区域管理'}
+        meta: { title: '区域管理' }
       }
     ]
   },
@@ -186,7 +186,7 @@ export const dynamicRoutes = [
         path: 'index',
         component: () => import('@/views/wms_person/index'),
         name: '员工档案',
-        meta: {title: '员工档案'}
+        meta: { title: '员工档案' }
       }
     ]
   },
@@ -200,7 +200,7 @@ export const dynamicRoutes = [
         path: 'index',
         component: () => import('@/views/lanya_vehicleInfo_visitor/index'),
         name: '访客车辆',
-        meta: {title: '访客车辆'}
+        meta: { title: '访客车辆' }
       }
     ]
   },
@@ -214,7 +214,7 @@ export const dynamicRoutes = [
         path: 'index',
         component: () => import('@/views/wms_gatepass/index'),
         name: '车辆预约',
-        meta: {title: '车辆预约'}
+        meta: { title: '车辆预约' }
       }
     ]
   },
@@ -228,7 +228,7 @@ export const dynamicRoutes = [
         path: 'index',
         component: () => import('@/views/wms_route_set/index'),
         name: '路线规划',
-        meta: {title: '路线规划'}
+        meta: { title: '路线规划' }
       }
     ]
   },
@@ -242,7 +242,7 @@ export const dynamicRoutes = [
         path: 'index',
         component: () => import('@/views/lanya_core_visitor/index'),
         name: '访客信息',
-        meta: {title: '访客信息'}
+        meta: { title: '访客信息' }
       }
     ]
   },
@@ -282,13 +282,13 @@ export const dynamicRoutes = [
         path: 'people',
         component: () => import('@/views/lanya_device_card_sender_log/index'),
         name: '人员发卡记录',
-        meta: {title: '人员发卡记录'}
+        meta: { title: '人员发卡记录' }
       },
       {
         path: 'vehicle',
         component: () => import('@/views/lanya_device_card_sender_vehicle_log/index'),
         name: '车辆发卡记录',
-        meta: {title: '车辆发卡记录'}
+        meta: { title: '车辆发卡记录' }
       }
     ]
   },
@@ -302,31 +302,31 @@ export const dynamicRoutes = [
         path: 'inbound',
         component: () => import('@/views/wms_material_in/index'),
         name: '入库档案',
-        meta: {title: '入库档案'}
+        meta: { title: '入库档案' }
       },
       {
         path: 'outbound',
         component: () => import('@/views/wms_material_out/index'),
         name: '出库档案',
-        meta: {title: '出库档案'}
+        meta: { title: '出库档案' }
       },
       {
         path: 'inventory',
         component: () => import('@/views/wms_material_stock/index'),
         name: '库存档案',
-        meta: {title: '库存档案'}
+        meta: { title: '库存档案' }
       },
       {
         path: 'material-desc',
         component: () => import('@/views/wms_material_desc/index'),
         name: '物料档案',
-        meta: {title: '物料档案'}
+        meta: { title: '物料档案' }
       },
       {
         path: 'material-identify-record',
         component: () => import('@/views/wms_material_identify_record/index'),
         name: '物料识别记录',
-        meta: {title: '物料识别记录'}
+        meta: { title: '物料识别记录' }
       }
     ]
   },
@@ -340,7 +340,7 @@ export const dynamicRoutes = [
         path: 'index',
         component: () => import('@/views/lanya_position_history/index'),
         name: '车辆轨迹',
-        meta: {title: '轨迹'}
+        meta: { title: '轨迹' }
       }
     ]
   },
@@ -354,7 +354,7 @@ export const dynamicRoutes = [
         path: 'index',
         component: () => import('@/views/lanya_core_person/index'),
         name: '人员轨迹',
-        meta: {title: '轨迹'}
+        meta: { title: '轨迹' }
       }
     ]
   },
@@ -368,13 +368,27 @@ export const dynamicRoutes = [
         path: 'activity-manage',
         component: () => import('@/views/activity_tracking/index'),
         name: '行动轨迹(模型)',
-        meta: {title: '行动轨迹(模型)'}
+        meta: { title: '行动轨迹(模型)' }
       },
       {
         path: 'activity-manage1',
         component: () => import('@/views/activity_tracking/index1'),
         name: '行动轨迹(地图)',
-        meta: {title: '行动轨迹(地图)'}
+        meta: { title: '行动轨迹(地图)' }
+      },
+    ]
+  },
+  {
+    path: '/RealTimeLocation',
+    component: Layout,
+    hidden: true,
+    permissions: ['system:role:edit'],
+    children: [
+      {
+        path: 'RealTimeLocations',
+        component: () => import('@/views/RealTimeLocation/RealTimeLocations/index'),
+        name: '人员实时定位',
+        meta: { title: '人员实时定位' }
       },
     ]
   },
@@ -388,49 +402,49 @@ export const dynamicRoutes = [
         path: 'card-manage',
         component: () => import('@/views/lanya_device_card/index'),
         name: '定位卡管理',
-        meta: {title: '定位卡管理'}
+        meta: { title: '定位卡管理' }
       },
       {
         path: 'machine-manage',
         component: () => import('@/views/lanya_device_machine/index'),
         name: '发卡机管理',
-        meta: {title: '发卡机管理'}
+        meta: { title: '发卡机管理' }
       },
       {
         path: 'beacon',
         component: () => import('@/views/wms_device_beacon/index'),
         name: '信标管理',
-        meta: {title: '信标管理'}
+        meta: { title: '信标管理' }
       },
       {
         path: 'plate-recognition',
         component: () => import('@/views/wms_device_plate/index'),
         name: '车牌识别管理',
-        meta: {title: '车牌识别管理'}
+        meta: { title: '车牌识别管理' }
       },
       {
         path: 'diff-gps-station',
         component: () => import('@/views/wms_device_refer/index'),
         name: '差分基站管理',
-        meta: {title: '差分基站管理'}
+        meta: { title: '差分基站管理' }
       },
       {
         path: 'camera',
         component: () => import('@/views/wms_device_camera/index'),
         name: '摄像头管理',
-        meta: {title: '摄像头管理'}
+        meta: { title: '摄像头管理' }
       },
       {
         path: 'send-content',
         component: () => import('@/views/wms_card_content_send/index'),
         name: '发送内容给卡播报',
-        meta: {title: '发送内容给卡播报'}
+        meta: { title: '发送内容给卡播报' }
       },
       {
         path: 'sos-alarm-log',
         component: () => import('@/views/lanya_core_alarm/index'),
         name: 'sos报警记录',
-        meta: {title: 'sos报警记录'}
+        meta: { title: 'sos报警记录' }
       }
     ]
   },
@@ -444,13 +458,13 @@ export const dynamicRoutes = [
         path: 'internal-employee',
         component: () => import('@/views/lanya_internal_employee/index'),
         name: '内部员工',
-        meta: {title: '内部员工'}
+        meta: { title: '内部员工' }
       },
       {
         path: 'person-in-out-record',
         component: () => import('@/views/lanya_person_in_out_record/index'),
         name: '人员进出列表',
-        meta: {title: '人员进出列表'}
+        meta: { title: '人员进出列表' }
       }
     ]
   },
@@ -464,19 +478,19 @@ export const dynamicRoutes = [
         path: 'area-draw',
         component: () => import('@/views/wms_area/index'),
         name: '区域绘制',
-        meta: {title: '区域绘制'}
+        meta: { title: '区域绘制' }
       },
       {
         path: 'area-material-manage',
         component: () => import('@/views/wms_area_material_manage/index'),
         name: '物料区域管理',
-        meta: {title: '物料区域管理'}
+        meta: { title: '物料区域管理' }
       },
       {
         path: 'area-360',
         component: () => import('@/views/wms_area_360/index'),
         name: '360全景',
-        meta: {title: '360全景'}
+        meta: { title: '360全景' }
       },
       // {
       //   path: 'person-in-out-record',
@@ -496,13 +510,13 @@ export const dynamicRoutes = [
         path: 'people-rule/:type',
         component: () => import('@/views/wms_alarm_rule/index'),
         name: '人员报警规则',
-        meta: {title: '人员报警规则'}
+        meta: { title: '人员报警规则' }
       },
       {
         path: 'people-log/:type',
         component: () => import('@/views/wms_alarm_log/index'),
         name: '人员报警记录',
-        meta: {title: '人员报警记录'}
+        meta: { title: '人员报警记录' }
       }
     ]
   },
@@ -516,19 +530,19 @@ export const dynamicRoutes = [
         path: 'rule',
         component: () => import('@/views/wms_inspection_rule/index'),
         name: '巡检规则管理',
-        meta: {title: '巡检规则管理'}
+        meta: { title: '巡检规则管理' }
       },
       {
         path: 'task',
         component: () => import('@/views/wms_inspection_task/index'),
         name: '巡检任务管理',
-        meta: {title: '巡检任务管理'}
+        meta: { title: '巡检任务管理' }
       },
       {
         path: 'issue',
         component: () => import('@/views/wms_inspection_issue/index'),
         name: '巡检问题管理',
-        meta: {title: '巡检问题管理'}
+        meta: { title: '巡检问题管理' }
       }
     ]
   },
@@ -542,31 +556,31 @@ export const dynamicRoutes = [
         path: 'appointment',
         component: () => import('@/views/wms_vehicle_appointment/index'),
         name: '车辆预约列表',
-        meta: {title: '车辆预约列表'}
+        meta: { title: '车辆预约列表' }
       },
       {
         path: 'blacklist',
         component: () => import('@/views/wms_vehicle_blacklist/index'),
         name: '车辆黑名单那列表',
-        meta: {title: '车辆黑名单那列表'}
+        meta: { title: '车辆黑名单那列表' }
       },
       {
         path: 'vechicle-in-out-record',
         component: () => import('@/views/wms_vehicle_record/index'),
         name: '车辆进出记录',
-        meta: {title: '车辆进出记录'}
+        meta: { title: '车辆进出记录' }
       },
       {
         path: 'vehicle-regconize-log',
         component: () => import('@/views/wms_device_camera_log/index'),
         name: '车辆识别记录',
-        meta: {title: '车辆识别记录'}
+        meta: { title: '车辆识别记录' }
       },
       {
         path: 'path-definition',
         component: () => import('@/views/wms_paths_definetion/index'),
         name: '车辆路径定义',
-        meta: {title: '车辆路径定义'}
+        meta: { title: '车辆路径定义' }
       }
     ]
   },
@@ -580,19 +594,19 @@ export const dynamicRoutes = [
         path: 'people',
         component: () => import('@/views/wms_statistics_people/index'),
         name: '人员统计报表',
-        meta: {title: '人员统计报表'}
+        meta: { title: '人员统计报表' }
       },
       {
         path: 'vehicle',
         component: () => import('@/views/wms_statistics_vehicle/index'),
         name: '车辆统计报表',
-        meta: {title: '车辆统计报表'}
+        meta: { title: '车辆统计报表' }
       },
       {
         path: 'vechicle-in-out-record',
         component: () => import('@/views/wms_vehicle_record/index'),
         name: '车辆进出记录报表',
-        meta: {title: '车辆进出记录报表'}
+        meta: { title: '车辆进出记录报表' }
       }
     ]
   },
@@ -606,7 +620,7 @@ export const dynamicRoutes = [
         path: 'backend-log',
         component: () => import('@/views/wms_system_log/index'),
         name: '后台日志',
-        meta: {title: '后台日志'}
+        meta: { title: '后台日志' }
       }
     ]
   }
@@ -626,6 +640,6 @@ Router.prototype.replace = function push(location) {
 
 export default new Router({
   mode: 'history', // 去掉url中的#
-  scrollBehavior: () => ({y: 0}),
+  scrollBehavior: () => ({ y: 0 }),
   routes: constantRoutes
 })
