@@ -143,8 +143,8 @@
     />
 
     <!-- 添加或修改车牌机对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="180px">
+    <el-dialog :title="title" :visible.sync="open" width="800px" append-to-body>
+      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-form-item label="传感器名称" prop="deviceName">
           <el-input v-model="form.deviceName" placeholder="请输入传感器名称" />
         </el-form-item>
@@ -152,15 +152,11 @@
           <el-select>
             <el-option label="龙门吊" value="1"></el-option>
             <el-option label="厂房" value="2"></el-option>
+            <el-option label="地秤" value="2"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="传感器描述" prop="deviceDescription">
-          <el-input
-            type="textarea"
-            :rows="2"
-            v-model="form.deviceDescription"
-            placeholder="请输入传感器描述"
-          />
+          <editor v-model="form.deviceDescription" :min-height="192" />
         </el-form-item>
 
         <el-form-item label="经度" prop="longitude">
