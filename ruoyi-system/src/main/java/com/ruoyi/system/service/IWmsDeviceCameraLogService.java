@@ -1,5 +1,6 @@
 package com.ruoyi.system.service;
 
+import java.util.Date;
 import java.util.List;
 import com.ruoyi.system.domain.WmsDeviceCameraLog;
 
@@ -58,4 +59,6 @@ public interface IWmsDeviceCameraLogService
      * @return 结果
      */
     public int deleteWmsDeviceCameraLogById(Long id);
+
+    List<WmsDeviceCameraLog> selectWmsDeviceCameraLogInId(String[] logIds, Date begin, Date end);
 }

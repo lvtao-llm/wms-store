@@ -105,4 +105,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
+
+    <select id="selectWmsDeviceCameraLogInId" parameterType="map" resultMap="WmsDeviceCameraLogResult">
+        select * from wms_device_camera_log where id in
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        <if test="begin != null">
+            and sj >= #{begin}
+        </if>
+        <if test="end != null">
+            and sj &lt;= #{end}
+        </if>
+        order by sj desc
+    </select>
 </mapper>

@@ -56,4 +56,9 @@ public enum BusinessType
      * 清空数据
      */
     CLEAN,
+
+    /**
+     * 移除缓存
+     */
+    REMOVE_CACHE,
 }

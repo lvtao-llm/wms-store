@@ -57,7 +57,6 @@ public class WmsTrajectoryController extends BaseController {
     public TableDataInfo personFuzzyList(String key) {
         startPage();
         WmsTrajectory wmsTrajectory = new WmsTrajectory();
-        wmsTrajectory.setTrajectoryType("人员");
         wmsTrajectory.setFuzzy(key);
         List<WmsTrajectory> list = wmsTrajectoryService.selectWmsTrajectoryList(wmsTrajectory);
         return getDataTable(list);

@@ -294,7 +294,7 @@ public class WebSocketServer {
         WebSocketServer.lanyaPositionCurrentService = lanyaPositionCurrentService;
     }
 
-    private Map<String, WmsDeviceCameraLogController.PathDetection> vehicleCurrents = new HashMap<>();
+    public Map<String, WmsDeviceCameraLogController.PathDetection> vehicleCurrents = new HashMap<>();
 
     /**
      * 初始化
@@ -447,13 +447,15 @@ public class WebSocketServer {
         List<JSONObject> wmsArea360sBody = new ArrayList<>();
         for (WmsArea360 wmsArea360 : wmsArea360s) {
             JSONObject wmsArea360Body = new JSONObject();
+            JSONObject wmsAreaType = new JSONObject();
+            wmsAreaType.put("type", "watch");
             wmsArea360Body.put("id", wmsArea360.getId());
             wmsArea360Body.put("deviceName", wmsArea360.getName());
             wmsArea360Body.put("deviceType", "传感器");
             wmsArea360Body.put("longitude", wmsArea360.getLongitude());
             wmsArea360Body.put("latitude", wmsArea360.getLatitude());
             wmsArea360Body.put("altitude", 0);
-            wmsArea360Body.put("type", "watch");
+            wmsArea360Body.put("data", wmsAreaType.toJSONString());
             wmsArea360Body.put("photo360", wmsArea360.getImage());
             wmsArea360sBody.add(wmsArea360Body);
         }
@@ -730,7 +732,7 @@ public class WebSocketServer {
 
         JSONArray dataArray = new JSONArray();
         for (Map.Entry<String, WmsDeviceCameraLogController.PathDetection> entry : vehicleCurrents.entrySet()) {
-            dataArray.add(entry.getValue().getNextPositionCurrent(entry.getKey()));
+            dataArray.add(entry.getValue().getNextPositionCurrent());
         }
         locationData.put("data", dataArray);
         messageQueue.add(locationData.toString());
@@ -895,6 +897,11 @@ public class WebSocketServer {
 
     public void updateVehiclePositionHistoryData(WmsDeviceCameraLogController.PathDetection pathDetection) {
         vehicleCurrents.put(pathDetection.cph, pathDetection);
+    }
+
+    public boolean removeVehiclePositionHistoryData(String cph) {
+        WmsDeviceCameraLogController.PathDetection remove = vehicleCurrents.remove(cph);
+        return remove != null;
     }
 
     /**

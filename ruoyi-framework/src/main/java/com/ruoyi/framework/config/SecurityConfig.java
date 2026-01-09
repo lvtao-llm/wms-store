@@ -116,7 +116,7 @@ public class SecurityConfig {
                                     "/system/lanya-transfer/files/image",
                                     "/system/lanya-transfer/files/upload",
                                     "/system/lanya-transfer/position/historyPosition/findPersonHistoryList",
-                                    "/system/lanya-transfer/position/historyPosition/findPersonHistoryList",
+                                    "/system/wms_device_camera_log/findVehicleHistoryList",
                                     "/system/core/main/screen/data",
                                     "/system/lanya-transfer/ws/**",
                                     "/system/trajectory/**",

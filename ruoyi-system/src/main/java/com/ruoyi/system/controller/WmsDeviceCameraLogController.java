@@ -6,15 +6,19 @@ import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;
 
+import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
+import com.ruoyi.common.core.page.PageDomain;
+import com.ruoyi.common.core.page.TableSupport;
+import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.system.domain.*;
-import com.ruoyi.system.service.IWmsDeviceService;
-import com.ruoyi.system.service.IWmsPathsDefinetionService;
-import com.ruoyi.system.service.IWmsVehiclePositionHistoryService;
+import com.ruoyi.system.service.*;
 import com.ruoyi.system.websocket.WebSocketServer;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.logging.log4j.util.Strings;
+import org.jgrapht.graph.SimpleGraph;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,11 +33,8 @@ import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.enums.BusinessType;
-import com.ruoyi.system.service.IWmsDeviceCameraLogService;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
-import org.jgrapht.Graph;
-import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.GraphPath;
@@ -64,11 +65,35 @@ public class WmsDeviceCameraLogController extends BaseController {
     private WebSocketServer webSocketServer;
 
     private static Map<String, String> ipMapDeviceName = new HashMap<>();
+    private static Map<String, List<String>> neighbors = new HashMap<>();
 
     private SimpleDateFormat sdfTableSuffix = new SimpleDateFormat("yyyyMMdd");
     // 1. 创建图对象 (顶点和边都用 String 表示名字)
-    private Graph<String, DefaultEdge> mapGraph = new DefaultDirectedGraph<>(DefaultEdge.class);
+    private SimpleGraph<String, DefaultEdge> mapGraph = new SimpleGraph<>(DefaultEdge.class);
 
+    @Autowired
+    private IWmsTrajectoryService wmsTrajectoryService;
+
+    private Map<String, PathDetection> pathDetectionCache = new HashMap<>();
+
+    /**
+     * 入口闸机
+     */
+    private WmsDevice entranceGate = new WmsDevice();
+
+    /**
+     * 出口闸机
+     */
+    private WmsDevice exitGate = new WmsDevice();
+
+    /**
+     * 入口车牌号列表
+     */
+    private Map<String, String> entrancePlateNumbers = new HashMap<>();
+
+    /**
+     * 初始化
+     */
     @PostConstruct
     public void init() {
         WmsDevice wmsDevice = new WmsDevice();
@@ -87,11 +112,35 @@ public class WmsDeviceCameraLogController extends BaseController {
             mapGraph.addVertex(device.getDeviceName());
         }
 
+        // 获取闸机
+        wmsDevice.setDeviceType("闸机");
+        wmsDevices = wmsDeviceService.selectWmsDeviceList(wmsDevice);
+        for (WmsDevice device : wmsDevices) {
+            if (device.getDeviceName().equals("入口闸机")) {
+                entranceGate = device;
+            }
+            if (device.getDeviceName().equals("出口闸机")) {
+                exitGate = device;
+            }
+        }
+
 
         List<WmsPathsDefinetion> wmsPathsDefinetions = wmsPathsDefinetionService.selectWmsPathsDefinetionList(new WmsPathsDefinetion());
         for (WmsPathsDefinetion pathsDefinetion : wmsPathsDefinetions) {
             // 3. 添加边（路径描述数据）
             mapGraph.addEdge(pathsDefinetion.getFromName(), pathsDefinetion.getToName());
+            if (!neighbors.containsKey(pathsDefinetion.getFromName())) {
+                neighbors.put(pathsDefinetion.getFromName(), new ArrayList<>());
+            }
+            if (!neighbors.containsKey(pathsDefinetion.getToName())) {
+                neighbors.put(pathsDefinetion.getToName(), new ArrayList<>());
+            }
+            if (!neighbors.get(pathsDefinetion.getFromName()).contains(pathsDefinetion.getToName())) {
+                neighbors.get(pathsDefinetion.getFromName()).add(pathsDefinetion.getToName());
+            }
+            if (!neighbors.get(pathsDefinetion.getToName()).contains(pathsDefinetion.getFromName())) {
+                neighbors.get(pathsDefinetion.getToName()).add(pathsDefinetion.getFromName());
+            }
         }
         logger.info("摄像头设备名称：{}", ipMapDeviceName);
     }
@@ -143,10 +192,33 @@ public class WmsDeviceCameraLogController extends BaseController {
     @Log(title = "摄像头识别日志", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody WmsDeviceCameraLog currLog) {
+        if (currLog.getSj() == null) {
+            // 如果没有设置时间，则设置为当前时间
+            currLog.setSj(new Date());
+        }
+
+        // log是入口闸机的数据，则记录车牌号
+        if (entranceGate.getData().contains(currLog.getDwmc())) {
+            entrancePlateNumbers.put(currLog.getCph().substring(1), currLog.getCph());
+        }
+
+        // log是出口闸机的数据，则完成车辆轨迹
+        if (exitGate.getData().contains(currLog.getDwmc())) {
+            completePosition(currLog.getCph(), currLog.getSj());
+        }
+
         // 插入新的wms_device_camera_log
         int newLog = wmsDeviceCameraLogService.insertWmsDeviceCameraLog(currLog);
 
-        // 按天创建一个车牌号的虚拟路径
+        /// 按天创建一个车牌号的虚拟路径 ///
+
+        // 根据当前log的摄像头ip查询当前设备
+        WmsDevice currDevice = wmsDeviceService.selectWmsDeviceByIp(currLog.getDwmc());
+
+        if (currDevice == null) {
+            // 当前输入没有找到对应的摄像头设备
+            return toAjax(newLog);
+        }
 
         // 当前天的时间字符串
         String ymd = sdfTableSuffix.format(new Date());
@@ -156,6 +228,28 @@ public class WmsDeviceCameraLogController extends BaseController {
         query.setYmd(sdfTableSuffix.format(new Date()));
         query.setCph(currLog.getCph());
         List<WmsVehiclePositionHistory> res = wmsVehiclePositionHistoryService.selectWmsVehiclePositionHistoryList(query);
+
+        // 当前新WmsDeviceCameraLog是否与记录中最后一个摄像头设备是同一个设备,默认是false，
+        // 如果是第一次的车辆数据接下来会或者不是上一个设备会创建虚拟路径发送给websocket服务器，页面会绘制车辆的虚拟路径。
+        boolean isSameDevice = false;
+
+        // 判断缓存中是否有车牌号
+        if (!pathDetectionCache.containsKey(currLog.getCph())) {
+            // 创建一个路径发现对象
+            PathDetection pathDetection = new PathDetection();
+            pathDetection.begin = currLog.getSj();
+            if (entrancePlateNumbers.containsKey(currLog.getCph().substring(1))) {
+                pathDetection.cph = entrancePlateNumbers.get(currLog.getCph().substring(1));
+            } else {
+                pathDetection.cph = currLog.getCph();
+            }
+            pathDetectionCache.put(currLog.getCph(), pathDetection);
+        }
+
+        // 当前车辆的路径点发现类对象
+        PathDetection pathDetection = pathDetectionCache.get(currLog.getCph());
+        pathDetection.cameraNames.add(currDevice.getDeviceName());
+        pathDetection.cameraIps.add(currLog.getDwmc());
 
         // 判断车牌号今天是否有记录
         if (res.isEmpty()) {
@@ -168,52 +262,120 @@ public class WmsDeviceCameraLogController extends BaseController {
             wmsVehiclePositionHistoryService.insertWmsVehiclePositionHistory(positionHistory);
         } else {
             // 今天有记录，更新
-
-            // 今天的记录
             WmsVehiclePositionHistory positionHistory = res.get(0);
             // 今天记录中记录的wms_device_camera_log的ID
             List<String> logIds = new ArrayList<>(Arrays.asList(positionHistory.getLogIds().split(",")));
-            // 最后一个wms_device_camera_log
+            // 更具今天已记录的WmsVehiclePositionHistory中最后一个wms_device_camera_log id 取WmsDeviceCameraLog对象
             WmsDeviceCameraLog prevLog = wmsDeviceCameraLogService.selectWmsDeviceCameraLogById(Long.parseLong(logIds.get(logIds.size() - 1)));
-
+            // 当前车辆的上一个摄像头设备
             WmsDevice prevDevice = wmsDeviceService.selectWmsDeviceByIp(prevLog.getDwmc());
-            WmsDevice currDevice = wmsDeviceService.selectWmsDeviceByIp(currLog.getDwmc());
 
             // 车牌机端会发送在同一车牌机会发送重复的识别记录，所以最后一个识别记录的IP和当前识别记录的IP不一致，则添加。如果相同和忽略
-            if (prevDevice != null && currDevice != null && !prevDevice.getDeviceName().equals(currDevice.getDeviceName())) {
-
+            if (prevDevice != null && !prevDevice.getDeviceName().equals(currDevice.getDeviceName())) {
                 // 获取当前记录的经纬度
-                String pointsStr = positionHistory.getPoints();
+                String historyPointsStr = positionHistory.getPoints();
                 // 转成List
-                List<String> points = pointsStr != null && !pointsStr.isEmpty() ? new ArrayList<>(Arrays.asList(pointsStr.split(";"))) : new ArrayList<>();
-
+                List<String> historyPoints = historyPointsStr != null && !historyPointsStr.isEmpty() ? new ArrayList<>(Arrays.asList(historyPointsStr.split(";"))) : new ArrayList<>();
+                // 查询当前车辆所在摄像头设备与上一个摄像头设备之间的路径点
                 List<String> path = findPath(prevDevice.getDeviceName(), currDevice.getDeviceName());
+                // 遍历路径点
                 for (int i = 0; i < path.size() - 1; i++) {
+                    // 获取两个摄像头设备之间的路径点
                     String name1 = path.get(i);
                     String name2 = path.get(i + 1);
-                    PathDetection pathDetection = getWmsPathsDefinition(name1, name2);
-                    pathDetection.cph = currLog.getCph();
-                    points.addAll(pathDetection.paths);
+                    List<List<String>> wmsPathsDefinition = getWmsPathsDefinition(name1, name2);
 
-                    // 重新赋值虚拟路径点
-                    positionHistory.setPoints(String.join(";", points));
-
-                    // 添加wms_device_camera_log的ID
-                    logIds.add(currLog.getId().toString());
-                    positionHistory.setLogIds(String.join(",", logIds));
-
-                    // 修改结束时间
-                    positionHistory.setJssj(new Date());
-
-                    // 更新车辆路径点历史记录
-                    wmsVehiclePositionHistoryService.updateWmsVehiclePositionHistory(positionHistory);
-                    // 更新车辆路径点数据给前端浏览器
-                    webSocketServer.updateVehiclePositionHistoryData(pathDetection);
+                    // 将路径点添加到历史路径点中
+                    for (int j = 0; j < wmsPathsDefinition.get(0).size(); j++) {
+                        String point = wmsPathsDefinition.get(0).get(j) + "," + wmsPathsDefinition.get(1).get(j);
+                        historyPoints.add(point);
+                        pathDetection.pathsAll.add(point);
+                    }
                 }
+                // 重新赋值虚拟路径点
+                positionHistory.setPoints(String.join(";", historyPoints));
+                // 添加wms_device_camera_log的ID
+                logIds.add(currLog.getId().toString());
+                positionHistory.setLogIds(String.join(",", logIds));
+
+                // 修改结束时间
+                positionHistory.setJssj(new Date());
+
+                // 更新车辆路径点历史记录
+                wmsVehiclePositionHistoryService.updateWmsVehiclePositionHistory(positionHistory);
+            } else {
+                // 当前车辆所在的摄像头设备与上一个设备是同一个设备，不创建虚拟路径给前端。
+                isSameDevice = true;
+            }
+        }
+
+        if (!isSameDevice) {
+            // 获取当前摄像头设备的相邻摄像头设备名称列表
+            List<String> strings = neighbors.get(currDevice.getDeviceName());
+
+            // 下一个虚拟要到达的摄像头设备的名称
+            String nextDeviceName = null;
+            if (strings != null) {
+                nextDeviceName = strings.get(0);
+            }
+            if (nextDeviceName != null) {
+                List<List<String>> wmsPathsDefinition = getWmsPathsDefinition(currDevice.getDeviceName(), nextDeviceName);
+                // 添加虚拟路径点
+                pathDetection.setFutureLongitudeAndLatitude(wmsPathsDefinition.get(0), wmsPathsDefinition.get(1));
+                // 更新车辆路径点数据给前端浏览器
+                webSocketServer.updateVehiclePositionHistoryData(pathDetection);
             }
         }
 
         return toAjax(newLog);
+    }
+
+    /**
+     * 移除摄像头识别车辆从缓存中
+     */
+    @ApiOperation("移除摄像头识别车辆从缓存中")
+    @PreAuthorize("@ss.hasPermi('system:wms_device_camera_log:remove_cache')")
+    @Log(title = "摄像头识别日志", businessType = BusinessType.REMOVE_CACHE)
+    @GetMapping("/remove_cache/{cph}")
+    public AjaxResult removeCache(@PathVariable("cph") String cph) {
+        return toAjax(webSocketServer.removeVehiclePositionHistoryData(cph));
+    }
+
+    /**
+     * 查询车辆轨迹缓存列表
+     */
+    @ApiOperation("查询车辆轨迹缓存列表")
+    @PreAuthorize("@ss.hasPermi('system:wms_device_camera_log:list')")
+    @GetMapping("/trajectory/cache/{cph}")
+    public TableDataInfo trajectoryCache(@PathVariable("cph") String cph) {
+        // 获取分页参数
+        PageDomain pageDomain = TableSupport.buildPageRequest();
+        Integer pageNum = pageDomain.getPageNum();
+        Integer pageSize = pageDomain.getPageSize();
+        Collection<PathDetection> res = new ArrayList<>();
+        if ("list".equals(cph)) {
+            res = webSocketServer.vehicleCurrents.values();
+        } else {
+            Collection<String> keys = webSocketServer.vehicleCurrents.keySet()
+                    .stream()
+                    .filter(key -> key.toLowerCase().contains(cph.toLowerCase()))
+                    .collect(Collectors.toList());
+            for (String key : keys) {
+                res.add(webSocketServer.vehicleCurrents.get(key));
+            }
+        }
+
+        // 分页处理
+        List<PathDetection> resList = new ArrayList<>(res);
+        int startIndex = (pageNum - 1) * pageSize;
+        int endIndex = Math.min(startIndex + pageSize, resList.size());
+
+        if (startIndex >= resList.size()) {
+            return getDataTable(new ArrayList<>());
+        }
+
+        List<PathDetection> paginatedList = resList.subList(startIndex, endIndex);
+        return getDataTable(paginatedList);
     }
 
     /**
@@ -238,10 +400,84 @@ public class WmsDeviceCameraLogController extends BaseController {
         return toAjax(wmsDeviceCameraLogService.deleteWmsDeviceCameraLogByIds(ids));
     }
 
-    private PathDetection getWmsPathsDefinition(String name1, String name2) {
+    @ApiOperation("查询车辆历史轨迹")
+    @PostMapping("/findVehicleHistoryList")
+    public TableDataInfo findVehicleHistoryList(@RequestBody JSONObject jsonObject) {
+        String beginTime = jsonObject.getString("beginTime");
+        String endTime = jsonObject.getString("endTime");
+        Date begin;
+        Date end;
+        String ymd;
+        String cph = jsonObject.getString("cph");
+        try {
+            begin = DateUtils.parseDate(beginTime);
+            end = DateUtils.parseDate(endTime);
+            ymd = sdfTableSuffix.format(begin);
+            if (!ymd.equals(sdfTableSuffix.format(end))) {
+                throw new RuntimeException("日期必须在同一天");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("时间格式错误");
+        }
 
+        WmsVehiclePositionHistory wmsVehiclePositionHistory = new WmsVehiclePositionHistory();
+        wmsVehiclePositionHistory.setYmd(ymd);
+        wmsVehiclePositionHistory.setCph(cph);
+        List<WmsVehiclePositionHistory> wmsVehiclePositionHistories = wmsVehiclePositionHistoryService.selectWmsVehiclePositionHistoryList(wmsVehiclePositionHistory);
+        if (wmsVehiclePositionHistories.isEmpty()) {
+            throw new RuntimeException("无此车辆历史轨迹");
+        }
 
-        PathDetection pathDetection = new PathDetection();
+        WmsVehiclePositionHistory history = wmsVehiclePositionHistories.get(0);
+        String[] logIds = history.getLogIds().split(",");
+
+        List<WmsDeviceCameraLog> list = wmsDeviceCameraLogService.selectWmsDeviceCameraLogInId(logIds, begin, end);
+
+        if (list.size() < 2) {
+            throw new RuntimeException("无此车辆历史轨迹");
+        }
+
+        WmsDevice prev = wmsDeviceService.selectWmsDeviceByIp(list.get(0).getDwmc());
+        JSONArray array = new JSONArray();
+        for (int i = 1; i < list.size() - 1; i++) {
+            WmsDevice next = wmsDeviceService.selectWmsDeviceByIp(list.get(i).getDwmc());
+            List<String> path = findPath(prev.getDeviceName(), next.getDeviceName());
+            for (int j = 0; j < path.size() - 1; j++) {
+                String name1 = path.get(j);
+                String name2 = path.get(j + 1);
+                List<List<String>> wmsPathsDefinition = getWmsPathsDefinition(name1, name2);
+                for (int k = 0; k < wmsPathsDefinition.get(0).size(); k++) {
+                    JSONObject object = new JSONObject();
+                    object.put("acceptTime", new Date());
+                    object.put("cardId", cph);
+                    object.put("personId", cph);
+                    object.put("longitude", Double.parseDouble(wmsPathsDefinition.get(0).get(k)));
+                    object.put("latitude", Double.parseDouble(wmsPathsDefinition.get(1).get(k)));
+                    object.put("layerId", "全图");
+                    object.put("layerHeight", 0);
+                    object.put("prevTimeDifference", 0);
+                    object.put("lineFlag", "beginToEnd");
+                    object.put("createTime", new Date());
+                    array.add(object);
+                }
+            }
+            prev = next;
+        }
+
+        return getDataTable(array);
+    }
+
+    /**
+     * 192.168.10.162 入口
+     * 192.168.10.163 出口
+     * 192.168.10.171 出口摄像头
+     *
+     * @param name1
+     * @param name2
+     * @return
+     */
+    private List<List<String>> getWmsPathsDefinition(String name1, String name2) {
+
         List<String> longitudes = new ArrayList<>();
         List<String> latitudes = new ArrayList<>();
 
@@ -254,10 +490,6 @@ public class WmsDeviceCameraLogController extends BaseController {
             // 取出虚拟路径定义的经纬度
             longitudes = Arrays.asList(forwardDefinition.get(0).getPathLongitude().split(","));
             latitudes = Arrays.asList(forwardDefinition.get(0).getPathLatitude().split(","));
-            pathDetection.fromName = forwardDefinition.get(0).getFromName();
-            pathDetection.fromIp = forwardDefinition.get(0).getFromIp();
-            pathDetection.toName = forwardDefinition.get(0).getToName();
-            pathDetection.toIp = forwardDefinition.get(0).getToIp();
         }
         wmsPathsDefinetion.setFromName(name2);
         wmsPathsDefinetion.setToName(name1);
@@ -268,84 +500,117 @@ public class WmsDeviceCameraLogController extends BaseController {
             latitudes = Arrays.asList(backwardDefinition.get(0).getPathLatitude().split(","));
             Collections.reverse(longitudes);
             Collections.reverse(latitudes);
-            pathDetection.fromName = backwardDefinition.get(0).getToName();
-            pathDetection.fromIp = backwardDefinition.get(0).getToIp();
-            pathDetection.toName = backwardDefinition.get(0).getFromName();
-            pathDetection.toIp = backwardDefinition.get(0).getFromIp();
         }
 
-        pathDetection.setLongitudeAndLatitude(longitudes, latitudes);
-        // 添加虚拟路径点
-        for (int i = 0; i < longitudes.size(); i++) {
-            if (!Strings.isEmpty(longitudes.get(i)) && !Strings.isEmpty(latitudes.get(i))) {
-                pathDetection.paths.add(longitudes.get(i) + "," + latitudes.get(i));
-            }
-        }
-
-        return pathDetection;
+        return Arrays.asList(longitudes, latitudes);
     }
 
     public static class PathDetection {
+        /**
+         * 车牌号
+         */
         public String cph;
-        public String fromName;
-        public String toName;
-        public String fromIp;
-        public String toIp;
-        public List<String> paths = new ArrayList<>();
-        public WmsVehiclePositionCurrent positionCurrent;
-        // 经度
-        private List<Double> longitudes;
-        // 纬度
-        private List<Double> latitudes;
-        // 秒数
-        private final int seconds = 60;
-        // 每秒点数
-        private final int pointsPerSecond = 10;
-        // 生产的点数
-        private final int points = seconds * pointsPerSecond;
-        // 开始时间
-        private final Date startTime = new Date();
-        // 结束时间
-        private final Date endTime;
+        /**
+         * 路径开始时间
+         */
+        public Date begin;
+        /**
+         * 途经摄像头设备名称
+         */
+        public List<String> cameraNames = new ArrayList<>();
+        /**
+         * 途经摄像头设备IP
+         */
+        public List<String> cameraIps = new ArrayList<>();
+        /**
+         * 所有的路径点
+         */
+        public List<String> pathsAll = new ArrayList<>();
+        /**
+         * 未来的虚拟路径点， 目的是从最后一个摄像头设备开始，预估车辆会到达下一个摄像头设备的路径点， 给前端一个虚拟的展示， 防止车辆在地图上静止。
+         */
+        public List<String> futurePaths = new ArrayList<>();
+        /**
+         * 发送给前端用的虚拟路径点的数据结构体，表示最后一个虚拟的路径点数据
+         */
+        public WmsVehiclePositionCurrent futurePositionCurrent;
+        /**
+         * 发送给前端用的虚拟路径的经纬度坐标数组，提前预制好，带前端发送时到数组中取对应虚拟路径点的经纬度
+         */
+        private List<Double> futureLongitudes;
+        /**
+         * 发送给前端用的虚拟路径的经纬度坐标数组，提前预制好，带前端发送时到数组中取对应虚拟路径点的经纬度
+         */
+        private List<Double> futureLatitudes;
+        /**
+         * 车辆要走到下一个虚拟的摄像头设备需要花费的时间（秒）
+         */
+        private final int futureSeconds = 60;
+        /**
+         * 每秒生成多少个点
+         */
+        private final int futurePointsPerSecond = 10;
+        /**
+         * 生产的实际点数
+         */
+        private final int futurePoints = futureSeconds * futurePointsPerSecond;
+        /**
+         * 开始播放的时间
+         */
+        private final Date futureStartTime = new Date();
+        /**
+         * 结束播放的时间
+         */
+        private final Date futureEndTime;
 
+        /**
+         * 构造函数
+         */
         public PathDetection() {
-            this.positionCurrent = new WmsVehiclePositionCurrent();
+            this.futurePositionCurrent = new WmsVehiclePositionCurrent();
             Calendar calendar = Calendar.getInstance();
-            calendar.setTime(startTime);
-            calendar.add(Calendar.SECOND, seconds);
-            this.endTime = calendar.getTime();
+            calendar.setTime(futureStartTime);
+            calendar.add(Calendar.SECOND, futureSeconds);
+            this.futureEndTime = calendar.getTime();
         }
 
-        public WmsVehiclePositionCurrent getNextPositionCurrent(String cph) {
+        /**
+         * 获取下一个虚拟路径点数据
+         *
+         * @return 下一个虚拟路径点数据
+         */
+        public WmsVehiclePositionCurrent getNextPositionCurrent() {
             Date now = new Date();
             int pointNum = nextPoint();
             WmsVehiclePositionCurrent nextPositionCurrent = new WmsVehiclePositionCurrent();
             nextPositionCurrent.setAcceptTime(now);
             nextPositionCurrent.setRealName(cph);
-            nextPositionCurrent.setLongitude(longitudes.get(pointNum));
-            nextPositionCurrent.setLatitude(latitudes.get(pointNum));
+            nextPositionCurrent.setLongitude(futureLongitudes.get(pointNum));
+            nextPositionCurrent.setLatitude(futureLatitudes.get(pointNum));
             return nextPositionCurrent;
         }
 
         /**
-         * 设置经纬度
+         * 设置经纬度， 使用插值算法平滑路径点及调整路径点的点数
          *
          * @param longitude 经度，类型List<String>
          * @param latitude  纬度, 类型List<String>
          */
-        public void setLongitudeAndLatitude(List<String> longitude, List<String> latitude) {
+        public void setFutureLongitudeAndLatitude(List<String> longitude, List<String> latitude) {
+            // 将输入的经纬度转换为double类型
             List<Double> longitudes = longitude.stream()
                     .filter(s -> !s.isEmpty())
                     .map(Double::parseDouble)
                     .collect(Collectors.toList());
-
+            // 将输入的纬度转换为double类型
             List<Double> latitudes = latitude.stream()
                     .filter(s -> !s.isEmpty())
                     .map(Double::parseDouble)
                     .collect(Collectors.toList());
-            // 拟合成100个点
-            this.longitudes = this.fitToPoints(longitudes, this.points);
-            this.latitudes = this.fitToPoints(latitudes, this.points);
+            // 拟合成this.futurePoints个点
+            this.futureLongitudes = this.fitToPoints(longitudes, this.futurePoints);
+            // 拟合成this.futurePoints个点
+            this.futureLatitudes = this.fitToPoints(latitudes, this.futurePoints);
         }
 
         /**
@@ -415,11 +680,16 @@ public class WmsDeviceCameraLogController extends BaseController {
             return lowerValue + fraction * (upperValue - lowerValue);
         }
 
+        /**
+         * 获取下一个虚拟路径点在路径中的位置（index）
+         *
+         * @return 下一个虚拟路径点index
+         */
         private int nextPoint() {
             Date nextDate = new Date();
             // 计算nextDate在startTime和endTime之间的比例
-            long timeDiff = endTime.getTime() - startTime.getTime();
-            long nextTimeDiff = nextDate.getTime() - startTime.getTime();
+            long timeDiff = futureEndTime.getTime() - futureStartTime.getTime();
+            long nextTimeDiff = nextDate.getTime() - futureStartTime.getTime();
 
             // 计算比例（0.0到1.0之间）
             double ratio = (double) nextTimeDiff / timeDiff;
@@ -429,14 +699,21 @@ public class WmsDeviceCameraLogController extends BaseController {
 
             // 根据比例计算pointNum
             // 当前点数
-            int pointNum = (int) (ratio * (points - 1));
+            int pointNum = (int) (ratio * (futurePoints - 1));
 
             // 确保pointNum在有效范围内
-            pointNum = Math.max(0, Math.min(points - 1, pointNum));
+            pointNum = Math.max(0, Math.min(futurePoints - 1, pointNum));
             return pointNum;
         }
     }
 
+    /**
+     * 根据起点、终点，寻找最短路径
+     *
+     * @param startNode 开始摄像头设备名称
+     * @param endNode   结束摄像头设备名称
+     * @return
+     */
     public List<String> findPath(String startNode, String endNode) {
         // 使用 Dijkstra 算法寻找最短路径
         DijkstraShortestPath<String, DefaultEdge> dijkstra = new DijkstraShortestPath<>(mapGraph);
@@ -449,5 +726,34 @@ public class WmsDeviceCameraLogController extends BaseController {
             // 无法联通
             return new ArrayList<>();
         }
+    }
+
+    /**
+     * 定时任务，清除车辆当前位置缓存
+     */
+    @Scheduled(cron = "0 0 23 * * ?")
+    public void clearVehicleCurrents() {
+        for (String cph : webSocketServer.vehicleCurrents.keySet()) {
+            completePosition(cph, new Date());
+        }
+    }
+
+    public void completePosition(String cph, Date endTime) {
+        PathDetection pathDetection = webSocketServer.vehicleCurrents.remove(cph);
+        WmsTrajectory wmsTrajectory = new WmsTrajectory();
+        wmsTrajectory.setTrajectoryType("车辆");
+        wmsTrajectory.setFuzzy(cph + "-" + pathDetection.begin + "-外部车辆");
+        wmsTrajectory.setTrajectoryBegin(pathDetection.begin);
+        wmsTrajectory.setTrajectoryEnd(endTime);
+        JSONArray jsonArray = new JSONArray();
+        for (int i = 0; i < pathDetection.pathsAll.size(); i++) {
+            JSONObject jsonObject = new JSONObject();
+            String[] s = pathDetection.pathsAll.get(i).split(",");
+            jsonObject.put("longitude", s[0]);
+            jsonObject.put("latitude", s[1]);
+            jsonArray.add(jsonObject);
+        }
+        wmsTrajectory.setTrajectoryPoints(jsonArray.toJSONString());
+        wmsTrajectoryService.insertWmsTrajectory(wmsTrajectory);
     }
 }

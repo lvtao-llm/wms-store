@@ -1,5 +1,6 @@
 package com.ruoyi.system.service.impl;
 
+import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -89,5 +90,10 @@ public class WmsDeviceCameraLogServiceImpl implements IWmsDeviceCameraLogService
     public int deleteWmsDeviceCameraLogById(Long id)
     {
         return wmsDeviceCameraLogMapper.deleteWmsDeviceCameraLogById(id);
+    }
+
+    @Override
+    public List<WmsDeviceCameraLog> selectWmsDeviceCameraLogInId(String[] ids, Date begin, Date end) {
+        return wmsDeviceCameraLogMapper.selectWmsDeviceCameraLogInId(ids, begin, end);
     }
 }
