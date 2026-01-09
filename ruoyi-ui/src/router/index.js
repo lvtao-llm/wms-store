@@ -445,6 +445,12 @@ export const dynamicRoutes = [
         component: () => import('@/views/lanya_core_alarm/index'),
         name: 'sos报警记录',
         meta: { title: 'sos报警记录' }
+      },
+      {
+        path: 'SensorManagement',
+        component: () => import('@/views/sensorManagement/index'),
+        name: '传感器管理',
+        meta: { title: '传感器管理' }
       }
     ]
   },

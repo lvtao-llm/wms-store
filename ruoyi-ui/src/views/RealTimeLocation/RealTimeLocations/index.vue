@@ -98,8 +98,11 @@ export default {
   },
   methods: {
     onLoad() {
-      const wsuri =
-        "ws://112.98.110.101:10030/system/lanya-transfer/ws/dingwei";
+      const baseUrl = process.env.VUE_APP_BASE_URL.substr(
+        5,
+        process.env.VUE_APP_BASE_URL.length - 1
+      );
+      const wsuri = `ws:${baseUrl}/system/lanya-transfer/ws/dingwei`;
       this.ws = new WebSocket(wsuri);
       const that = this;
       this.ws.onopen = function () {
@@ -112,7 +115,6 @@ export default {
         if (data.msgType === "currentPersonLocation") {
           that.removeAllCustomMarkers();
           const points = convertTrajectoryPoints(data.data, 0.00015, -0.0001);
-          console.log(points);
           // const points = data.data;
           points.forEach((i) => {
             that.addCustomMarker(i.longitude, i.latitude, i.realName);
