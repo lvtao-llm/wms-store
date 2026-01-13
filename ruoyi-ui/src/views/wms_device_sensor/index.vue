@@ -90,12 +90,22 @@
     >
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="传感器名称" align="center" prop="deviceName" />
-      <el-table-column label="传感器类型" align="center" prop="serialNumber" />
-      <el-table-column
+      <el-table-column label="传感器类型" align="center" prop="sensorType">
+        <template slot-scope="{ row }">
+          {{
+            row.sensorType == 1
+              ? "龙门吊"
+              : row.sensorType == 2
+              ? "厂房"
+              : "地秤"
+          }}
+        </template>
+      </el-table-column>
+      <!-- <el-table-column
         label="传感器描述"
         align="center"
         prop="deviceDescription"
-      />
+      /> -->
       <el-table-column label="经度" align="center" prop="longitude" />
       <el-table-column label="纬度" align="center" prop="latitude" />
 
@@ -148,15 +158,15 @@
         <el-form-item label="传感器名称" prop="deviceName">
           <el-input v-model="form.deviceName" placeholder="请输入传感器名称" />
         </el-form-item>
-        <el-form-item label="传感器类型" prop="serialNumber">
-          <el-select>
+        <el-form-item label="传感器类型" prop="sensorType">
+          <el-select style="width: 100%" v-model="form.sensorType">
             <el-option label="龙门吊" value="1"></el-option>
             <el-option label="厂房" value="2"></el-option>
-            <el-option label="地秤" value="2"></el-option>
+            <el-option label="地秤" value="3"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="传感器描述" prop="deviceDescription">
-          <editor v-model="form.deviceDescription" :min-height="192" />
+        <el-form-item label="传感器描述" prop="remark">
+          <editor v-model="form.remark" :min-height="192" />
         </el-form-item>
 
         <el-form-item label="经度" prop="longitude">
@@ -260,16 +270,8 @@ export default {
           let info = item.data ? JSON.parse(item.data) : {};
           return {
             ...item,
-            ip1: info.ip1,
-            port1: info.port1,
-            username1: info.username1,
-            password1: info.password1,
-            channel1: info.channel1,
-            ip2: info.ip2,
-            port2: info.port2,
-            username2: info.username2,
-            password2: info.password2,
-            channel2: info.channel2,
+            sensorType: info.sensorType,
+            remark: info.remark,
           };
         });
         this.total = response.total;
@@ -286,34 +288,12 @@ export default {
       this.form = {
         id: null,
         deviceType: "传感器",
-        deviceDescription: null,
         longitude: null,
         latitude: null,
         altitude: null,
         deviceName: null,
-        model: null,
-        specification: null,
-        serialNumber: null,
-        tableName: null,
-        tableId: null,
-        createBy: null,
-        createTime: null,
-        updateBy: null,
-        updateTime: null,
-        delFlag: null,
       };
-      this.info = {
-        ip1: "10.61.102.150",
-        port1: "556",
-        username1: "admin",
-        password1: "Ll112233",
-        channel1: null,
-        ip2: "10.61.102.150",
-        port2: "556",
-        username2: "admin",
-        password2: "Ll112233",
-        channel2: null,
-      };
+      this.info = {};
       this.resetForm("form");
     },
     /** 搜索按钮操作 */
@@ -345,6 +325,8 @@ export default {
       getWms_device(id).then((response) => {
         this.form = response.data;
         this.info = response.data.data ? JSON.parse(response.data.data) : {};
+        this.form.sensorType = this.info.sensorType;
+        this.form.remark = decodeURIComponent(this.info.remark);
         this.open = true;
         this.title = "修改传感器";
       });
@@ -353,7 +335,10 @@ export default {
     submitForm() {
       this.$refs["form"].validate((valid) => {
         if (valid) {
-          this.form.data = JSON.stringify(this.info);
+          this.form.data = JSON.stringify({
+            sensorType: this.form.sensorType,
+            remark: encodeURIComponent(this.form.remark),
+          });
           if (this.form.id != null) {
             updateWms_device(this.form).then((response) => {
               this.$modal.msgSuccess("修改成功");
@@ -374,7 +359,7 @@ export default {
     handleDelete(row) {
       const ids = row.id || this.ids;
       this.$modal
-        .confirm('是否确认删除车牌机编号为"' + ids + '"的数据项？')
+        .confirm("是否确认删除？")
         .then(function () {
           return delWms_device(ids);
         })
