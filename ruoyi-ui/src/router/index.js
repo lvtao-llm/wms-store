@@ -448,7 +448,7 @@ export const dynamicRoutes = [
       },
       {
         path: 'SensorManagement',
-        component: () => import('@/views/sensorManagement/index'),
+        component: () => import('@/views/wms_device_sensor/index'),
         name: '传感器管理',
         meta: { title: '传感器管理' }
       }
