@@ -89,7 +89,7 @@ public class WmsDeviceCameraLogController extends BaseController {
     /**
      * 入口车牌号列表
      */
-    private Map<String, String> entrancePlateNumbers = new HashMap<>();
+    private Map<String, WmsDeviceCameraLog> entrancePlateNumbers = new HashMap<>();
 
     /**
      * 初始化
@@ -197,14 +197,25 @@ public class WmsDeviceCameraLogController extends BaseController {
             currLog.setSj(new Date());
         }
 
+        // 日志是闸机的数据
+        boolean isGate = false;
         // log是入口闸机的数据，则记录车牌号
         if (entranceGate.getData().contains(currLog.getDwmc())) {
-            entrancePlateNumbers.put(currLog.getCph().substring(1), currLog.getCph());
+            entrancePlateNumbers.put(currLog.getCph(), currLog);
+            isGate = true;
         }
 
         // log是出口闸机的数据，则完成车辆轨迹
         if (exitGate.getData().contains(currLog.getDwmc())) {
             completePosition(currLog.getCph(), currLog.getSj());
+            entrancePlateNumbers.remove(currLog.getCph());
+            isGate = true;
+        }
+
+        // 如果日志不是闸机数据，则尝试匹配车牌号
+        if (!isGate) {
+            WmsDeviceCameraLog bestMatchingPlateWithQuality = findBestMatchingPlateWithQuality(currLog);
+            currLog.setCph(bestMatchingPlateWithQuality.getCph());
         }
 
         // 插入新的wms_device_camera_log
@@ -238,11 +249,7 @@ public class WmsDeviceCameraLogController extends BaseController {
             // 创建一个路径发现对象
             PathDetection pathDetection = new PathDetection();
             pathDetection.begin = currLog.getSj();
-            if (entrancePlateNumbers.containsKey(currLog.getCph().substring(1))) {
-                pathDetection.cph = entrancePlateNumbers.get(currLog.getCph().substring(1));
-            } else {
-                pathDetection.cph = currLog.getCph();
-            }
+            pathDetection.cph = currLog.getCph();
             pathDetectionCache.put(currLog.getCph(), pathDetection);
         }
 
@@ -755,5 +762,64 @@ public class WmsDeviceCameraLogController extends BaseController {
         }
         wmsTrajectory.setTrajectoryPoints(jsonArray.toJSONString());
         wmsTrajectoryService.insertWmsTrajectory(wmsTrajectory);
+    }
+
+    /**
+     * 最长公共子序列算法计算匹配字符数
+     */
+    private int longestCommonSubsequenceLength(String str1, String str2) {
+        int m = str1.length();
+        int n = str2.length();
+        int[][] dp = new int[m + 1][n + 1];
+
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (str1.charAt(i - 1) == str2.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                } else {
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+                }
+            }
+        }
+
+        return dp[m][n];
+    }
+
+    /**
+     * 查找最佳匹配的车牌号，并考虑匹配质量和相似度
+     *
+     * @param log 输入的车牌号字符串
+     * @return 匹配的键值对，如果没有合适的匹配则返回 null
+     */
+    private WmsDeviceCameraLog findBestMatchingPlateWithQuality(WmsDeviceCameraLog log) {
+        if (log.getCph() == null || entrancePlateNumbers.isEmpty()) {
+            return log;
+        }
+
+        Map.Entry<String, WmsDeviceCameraLog> bestMatch = null;
+        int maxMatchCount = 0;
+        double bestMatchRatio = 0.0;
+
+        for (Map.Entry<String, WmsDeviceCameraLog> entry : entrancePlateNumbers.entrySet()) {
+            int matchCount = longestCommonSubsequenceLength(log.getCph(), entry.getKey());
+
+            // 计算匹配率（避免短字符串的高匹配率问题）
+            double matchRatio = (double) matchCount / Math.max(log.getCph().length(), entry.getKey().length());
+
+            // 如果匹配数更高，或者匹配数相同但匹配率更高的情况下更新最佳匹配
+            if (matchCount > maxMatchCount ||
+                    (matchCount == maxMatchCount && matchRatio > bestMatchRatio)) {
+                maxMatchCount = matchCount;
+                bestMatchRatio = matchRatio;
+                bestMatch = entry;
+            }
+        }
+
+        // 只有在匹配数达到一定阈值时才返回匹配结果
+        if (bestMatch == null) {  // 至少匹配5个字符
+            return log;
+        }
+
+        return bestMatch.getValue();
     }
 }
