@@ -8,6 +8,7 @@ import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.system.controller.WmsDeviceCameraLogController;
 import com.ruoyi.system.domain.*;
 import com.ruoyi.system.lanya.data.AlarmDetection;
+import com.ruoyi.system.mapper.WmsMapper;
 import com.ruoyi.system.service.*;
 import org.apache.logging.log4j.util.Strings;
 import org.slf4j.Logger;
@@ -214,6 +215,13 @@ public class WebSocketServer {
     @Autowired
     public void setWmsMaterialStaticsDayService(IWmsMaterialStaticsDayService wmsMaterialStaticsDayService) {
         WebSocketServer.wmsMaterialStaticsDayService = wmsMaterialStaticsDayService;
+    }
+
+    private static WmsMapper wmsMapper;
+
+    @Autowired
+    public void setWmsMapper(WmsMapper wmsMapper) {
+        WebSocketServer.wmsMapper = wmsMapper;
     }
 
     /**
@@ -551,11 +559,74 @@ public class WebSocketServer {
     /**
      * 物料多维度统计数据
      */
-    @Scheduled(cron = "${wms.ws-data.material-class-statics:0 * * * * ?}")
+    @Scheduled(cron = "${wms.ws-data.material-class-statics:0/10 * * * * ?}")
     public void materialClassStaticsData() {
+        JSONObject data = new JSONObject();
+        executeSqlFill("select sum(cs) as value from wms_material_in", data, "接料车数", "value", 0);
+        executeSqlFill("select sum(car_count) as value from wms_material_out", data, "发料车数", "value", 0);
+        executeSqlFill("select sum(actual_weight) from wms_material_stock", data, "库存数量", "value", 0);
+        executeSqlFill("select * from wms_material_class_statics_day", data, "库存金额", "value", 0);
+        executeSqlFill(
+                "SELECT SUM(jl.cs) as value\n" +
+                        "FROM wms_material_desc tz \n" +
+                        "LEFT JOIN wms_material_in jl ON jl.wzbm = tz.wzbm \n" +
+                        "LEFT JOIN wms_area a ON FIND_IN_SET(a.area_id, tz.area_codes) > 0\n" +
+                        "where a.area_name = '13料场'", data, "毛石料厂.接料车数", "value", 0);
+        executeSqlFill(
+                "SELECT SUM(jl.car_count) as value\n" +
+                        "FROM wms_material_desc tz \n" +
+                        "LEFT JOIN wms_material_out jl ON jl.wzbm = tz.wzbm \n" +
+                        "LEFT JOIN wms_area a ON FIND_IN_SET(a.area_id, tz.area_codes) > 0\n" +
+                        "where a.area_name = '13料场'", data, "毛石料厂.发料车数", "value", 0);
+        executeSqlFill(
+                "SELECT SUM(jl.cs) as value\n" +
+                        "FROM wms_material_desc tz \n" +
+                        "LEFT JOIN wms_material_in jl ON jl.wzbm = tz.wzbm \n" +
+                        "LEFT JOIN wms_area a ON FIND_IN_SET(a.area_id, tz.area_codes) > 0\n" +
+                        "where a.area_name = '11料场'", data, "劳保库房.接料车数", "value", 0);
+        executeSqlFill(
+                "SELECT SUM(jl.car_count) as value\n" +
+                        "FROM wms_material_desc tz \n" +
+                        "LEFT JOIN wms_material_out jl ON jl.wzbm = tz.wzbm \n" +
+                        "LEFT JOIN wms_area a ON FIND_IN_SET(a.area_id, tz.area_codes) > 0\n" +
+                        "where a.area_name = '11料场'", data, "劳保库房.发料车数", "value", 0);
+        executeSqlFill(
+                "SELECT SUM(jl.cs) as value\n" +
+                        "FROM wms_material_desc tz \n" +
+                        "LEFT JOIN wms_material_in jl ON jl.wzbm = tz.wzbm \n" +
+                        "LEFT JOIN wms_area a ON FIND_IN_SET(a.area_id, tz.area_codes) > 0\n" +
+                        "where a.area_name = '12料场'", data, "金属料场.接料车数", "value", 0);
+        executeSqlFill(
+                "SELECT SUM(jl.car_count) as value\n" +
+                        "FROM wms_material_desc tz \n" +
+                        "LEFT JOIN wms_material_out jl ON jl.wzbm = tz.wzbm \n" +
+                        "LEFT JOIN wms_area a ON FIND_IN_SET(a.area_id, tz.area_codes) > 0\n" +
+                        "where a.area_name = '12料场'", data, "金属料场.发料车数", "value", 0);
+        executeSqlFill(
+                "SELECT SUM(jl.cs) as value\n" +
+                        "FROM wms_material_desc tz \n" +
+                        "LEFT JOIN wms_material_in jl ON jl.wzbm = tz.wzbm \n" +
+                        "LEFT JOIN wms_area a ON FIND_IN_SET(a.area_id, tz.area_codes) > 0\n" +
+                        "where a.area_name = '14料场'", data, "油井水泥.接料车数", "value", 0);
+        executeSqlFill(
+                "SELECT SUM(jl.car_count) as value\n" +
+                        "FROM wms_material_desc tz \n" +
+                        "LEFT JOIN wms_material_out jl ON jl.wzbm = tz.wzbm \n" +
+                        "LEFT JOIN wms_area a ON FIND_IN_SET(a.area_id, tz.area_codes) > 0\n" +
+                        "where a.area_name = '14料场'", data, "油井水泥.发料车数", "value", 0);
+        JSONObject msg = new JSONObject();
+        msg.put("msgType", "materialClassStatics");
+        msg.put("data", data);
+        messageQueue.add(msg.toString());
+    }
 
-        // 使用异步发送替代阻塞发送
-//        WmsMaterialClassStaticsDay wmsMaterialClassStat
+    private void executeSqlFill(String sql, JSONObject data, String key, String value, Object defaultValue) {
+        try {
+            List<JSONObject> list = wmsMapper.executeSqlForList(sql);
+            data.put(key, list.get(0).get(value));
+        } catch (Exception e) {
+            data.put(key, defaultValue);
+        }
     }
 
     /**

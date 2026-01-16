@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ruoyi.system.domain.WmsMaterialIn;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.SelectProvider;
 
 /**
  * 接料视图Mapper接口

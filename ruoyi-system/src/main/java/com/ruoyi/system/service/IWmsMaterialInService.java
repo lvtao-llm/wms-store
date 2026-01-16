@@ -59,5 +59,5 @@ public interface IWmsMaterialInService
      */
     public int deleteWmsMaterialInByJlBh(String jlBh);
 
-    List<WmsMaterialIn> selectWmsMaterialInListByAreaNames(WmsMaterialIn wmsMaterialIn, List<String> areaNames);
+    public List<WmsMaterialIn> selectWmsMaterialInListByAreaNames(WmsMaterialIn wmsMaterialIn, List<String> areaNames);
 }
