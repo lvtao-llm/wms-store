@@ -60,7 +60,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </sql>
 
     <select id="selectWmsMaterialInListByAreaNames" resultMap="WmsMaterialInResult">
-        select * from wms_material_desc
+        select * from wms_material_in
         <where>
             wzmc in (
             <foreach item="item" collection="areaNames" separator=",">
@@ -91,7 +91,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="wmsMaterialIn.lz != null  and wmsMaterialIn.lz != ''">and lz = #{wmsMaterialIn.lz}</if>
             <if test="wmsMaterialIn.jlsjT != null ">and jlsj_t = #{wmsMaterialIn.jlsjT}</if>
             <if test="wmsMaterialIn.ysr != null  and wmsMaterialIn.ysr != ''">and ysr = #{wmsMaterialIn.ysr}</if>
-            <if test="wmsMaterialIn.yssj != null ">and yssj = #{wmsMaterialIn.yssj}</if>
+            <if test="wmsMaterialIn.yssj != null ">and yssj >= #{wmsMaterialIn.yssj}</if>
             <if test="wmsMaterialIn.jhr != null  and wmsMaterialIn.jhr != ''">and jhr = #{wmsMaterialIn.jhr}</if>
             <if test="wmsMaterialIn.jhsj != null ">and jhsj = #{wmsMaterialIn.jhsj}</if>
             <if test="wmsMaterialIn.dksj != null ">and dksj = #{wmsMaterialIn.dksj}</if>

@@ -63,7 +63,7 @@ public class WmsMaterialInController extends BaseController {
     @ApiOperation("查询接料视图列表")
     @GetMapping("/list/{areaName}")
     public TableDataInfo list(WmsMaterialIn wmsMaterialIn, @PathVariable(value = "areaName", required = false) String areaName) {
-        startPage();
+
         List<WmsMaterialIn> list = new ArrayList<>();
         if (areaName != null) {
             WmsArea wmsArea = new WmsArea();
@@ -88,8 +88,10 @@ public class WmsMaterialInController extends BaseController {
             if (wzbm.isEmpty()) {
                 return getDataTable(list);
             }
+            startPage();
             list = wmsMaterialInService.selectWmsMaterialInListByAreaNames(wmsMaterialIn, wzbm);
         } else {
+            startPage();
             list = wmsMaterialInService.selectWmsMaterialInList(wmsMaterialIn);
         }
 

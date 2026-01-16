@@ -335,6 +335,7 @@ export default {
     submitForm() {
       this.$refs["form"].validate((valid) => {
         if (valid) {
+          console.warn("this.form")
           this.form.data = JSON.stringify({
             sensorType: this.form.sensorType,
             remark: encodeURIComponent(this.form.remark),

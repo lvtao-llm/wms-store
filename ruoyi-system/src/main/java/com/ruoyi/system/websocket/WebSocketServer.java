@@ -549,9 +549,19 @@ public class WebSocketServer {
     }
 
     /**
-     * 物料统计数据
+     * 物料多维度统计数据
      */
-    @Scheduled(cron = "${wms.ws-data.material-statics:0/10 * * * * ?}")
+    @Scheduled(cron = "${wms.ws-data.material-class-statics:0 * * * * ?}")
+    public void materialClassStaticsData() {
+
+        // 使用异步发送替代阻塞发送
+//        WmsMaterialClassStaticsDay wmsMaterialClassStat
+    }
+
+    /**
+     * 物料按区域日统计数据
+     */
+    @Scheduled(cron = "${wms.ws-data.material-statics:0/30 * * * * ?}")
     public void materialStaticsData() {
 
         // 使用异步发送替代阻塞发送
@@ -583,9 +593,9 @@ public class WebSocketServer {
     }
 
     /**
-     * 物料统计数据
+     * 物料接料统计数据
      */
-    @Scheduled(cron = "${wms.ws-data.material-jl:0/10 * * * * ?}")
+    @Scheduled(cron = "${wms.ws-data.material-jl:0/30 * * * * ?}")
     public void materialJlData() {
         // 使用异步发送替代阻塞发送
         WmsMaterialIn wmsMaterialIn = new WmsMaterialIn();
@@ -614,9 +624,9 @@ public class WebSocketServer {
     }
 
     /**
-     * 物料统计数据
+     * 物料调拨统计数据
      */
-    @Scheduled(cron = "${wms.ws-data.material-db:0/10 * * * * ?}")
+    @Scheduled(cron = "${wms.ws-data.material-db:0/30 * * * * ?}")
     public void materialDbData() throws ParseException {
         // 使用异步发送替代阻塞发送
         Calendar calendar = Calendar.getInstance();
@@ -647,9 +657,9 @@ public class WebSocketServer {
     }
 
     /**
-     * 物料统计数据
+     * 物料库存统计数据
      */
-    @Scheduled(cron = "${wms.ws-data.material-kc:0/10 * * * * ?}")
+    @Scheduled(cron = "${wms.ws-data.material-kc:0/30 * * * * ?}")
     public void materialKcData() {
         // 使用异步发送替代阻塞发送
         WmsMaterialStock wmsMaterialStock = new WmsMaterialStock();
@@ -683,7 +693,7 @@ public class WebSocketServer {
     /**
      * 区域统计数据
      */
-    @Scheduled(cron = "${wms.ws-data.area-statics:0/10 * * * * ?}")
+    @Scheduled(cron = "${wms.ws-data.area-statics:0/30 * * * * ?}")
     public void areaStaticsData() {
         Map<Long, WmsArea> wmsAreas = wmsAreaService.getAreaMap();
         // 使用异步发送替代阻塞发送

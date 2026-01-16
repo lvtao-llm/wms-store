@@ -122,7 +122,7 @@
             <if test="wmsMaterialOut.guard != null  and wmsMaterialOut.guard != ''">and guard =
                 #{wmsMaterialOut.guard}
             </if>
-            <if test="wmsMaterialOut.outboundTime != null ">and outbound_time = #{wmsMaterialOut.outboundTime}</if>
+            <if test="wmsMaterialOut.outboundTime != null ">and outbound_time >= #{wmsMaterialOut.outboundTime}</if>
             <if test="wmsMaterialOut.measurer != null  and wmsMaterialOut.measurer != ''">and measurer =
                 #{wmsMaterialOut.measurer}
             </if>
