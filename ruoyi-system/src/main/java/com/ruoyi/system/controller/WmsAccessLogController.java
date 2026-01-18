@@ -31,8 +31,7 @@ public class WmsAccessLogController extends BaseController {
     /**
      * 查询人员和车辆进出进路列表
      */
-    @ApiOperation("查询人员和车辆进出进路列表")
-    @PreAuthorize("@ss.hasPermi('system:access_route:list')")
+    @ApiOperation("查询人员和车辆进出记录列表")
     @GetMapping("/list")
     public TableDataInfo list(@RequestParam(required = false) String jssj_s, @RequestParam(required = false) String jssj_e) {
         startPage();

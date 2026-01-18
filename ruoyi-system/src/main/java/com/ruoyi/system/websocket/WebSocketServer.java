@@ -562,58 +562,35 @@ public class WebSocketServer {
     @Scheduled(cron = "${wms.ws-data.material-class-statics:0/10 * * * * ?}")
     public void materialClassStaticsData() {
         JSONObject data = new JSONObject();
-        executeSqlFill("select sum(cs) as value from wms_material_in", data, "接料车数", "value", 0);
-        executeSqlFill("select sum(car_count) as value from wms_material_out", data, "发料车数", "value", 0);
-        executeSqlFill("select sum(actual_weight) from wms_material_stock", data, "库存数量", "value", 0);
-        executeSqlFill("select * from wms_material_class_statics_day", data, "库存金额", "value", 0);
+        String ymd = sdfYearMonDay.format(new Date());
+        executeSqlFill("select case when sum(cs) is null then 0 else round(sum(cs)) end as value from wms_material_in where jlsj_t >= '" + ymd + " 00:00:00' and jlsj_t <= '" + ymd + " 23:23:59'", data, "接料车数", "value", 0);
+        executeSqlFill("select sum(car_count) as value from wms_material_out where allot_time >= '" + ymd + " 00:00:00' and allot_time <= '" + ymd + " 23:23:59'", data, "发料车数", "value", 0);
+        executeSqlFill("select sum(actual_weight) as value from wms_material_stock", data, "库存数量", "value", 0);
+
         executeSqlFill(
-                "SELECT SUM(jl.cs) as value\n" +
-                        "FROM wms_material_desc tz \n" +
-                        "LEFT JOIN wms_material_in jl ON jl.wzbm = tz.wzbm \n" +
-                        "LEFT JOIN wms_area a ON FIND_IN_SET(a.area_id, tz.area_codes) > 0\n" +
-                        "where a.area_name = '13料场'", data, "毛石料厂.接料车数", "value", 0);
+                "select case when sum(cs) is null then 0 else round(sum(cs)) end as value from wms_material_in where jlsj_t >= '" + ymd + " 00:00:00' and jlsj_t <= '" + ymd + " 23:23:59' and pzbm in ('A0703010', 'A0704010', 'A0704020')", data, "毛石料厂.接料车数", "value", 0);
         executeSqlFill(
-                "SELECT SUM(jl.car_count) as value\n" +
-                        "FROM wms_material_desc tz \n" +
-                        "LEFT JOIN wms_material_out jl ON jl.wzbm = tz.wzbm \n" +
-                        "LEFT JOIN wms_area a ON FIND_IN_SET(a.area_id, tz.area_codes) > 0\n" +
-                        "where a.area_name = '13料场'", data, "毛石料厂.发料车数", "value", 0);
+                "select sum(car_count) as value from wms_material_out where allot_time >= '" + ymd + " 00:00:00' and allot_time <= '" + ymd + " 23:23:59' and material_group in ('A0703010', 'A0704010', 'A0704020')", data, "毛石料厂.发料车数", "value", 0);
+        executeSqlFill("select sum(actual_weight) as value from wms_material_stock where variety_code in ('A0703010', 'A0704010', 'A0704020')", data, "毛石料厂.库存数量", "value", 0);
+
         executeSqlFill(
-                "SELECT SUM(jl.cs) as value\n" +
-                        "FROM wms_material_desc tz \n" +
-                        "LEFT JOIN wms_material_in jl ON jl.wzbm = tz.wzbm \n" +
-                        "LEFT JOIN wms_area a ON FIND_IN_SET(a.area_id, tz.area_codes) > 0\n" +
-                        "where a.area_name = '11料场'", data, "劳保库房.接料车数", "value", 0);
+                "select case when sum(cs) is null then 0 else round(sum(cs)) end as value from wms_material_in where jlsj_t >= '" + ymd + " 00:00:00' and jlsj_t <= '" + ymd + " 23:23:59' and pzbm in ('A2302010')", data, "劳保库房.接料车数", "value", 0);
         executeSqlFill(
-                "SELECT SUM(jl.car_count) as value\n" +
-                        "FROM wms_material_desc tz \n" +
-                        "LEFT JOIN wms_material_out jl ON jl.wzbm = tz.wzbm \n" +
-                        "LEFT JOIN wms_area a ON FIND_IN_SET(a.area_id, tz.area_codes) > 0\n" +
-                        "where a.area_name = '11料场'", data, "劳保库房.发料车数", "value", 0);
+                "select sum(car_count) as value from wms_material_out where allot_time >= '" + ymd + " 00:00:00' and allot_time <= '" + ymd + " 23:23:59' and material_group in ('A2302010')", data, "劳保库房.发料车数", "value", 0);
+        executeSqlFill("select sum(actual_weight) as value from wms_material_stock where variety_code in ('A2302010')", data, "劳保库房.库存数量", "value", 0);
+
         executeSqlFill(
-                "SELECT SUM(jl.cs) as value\n" +
-                        "FROM wms_material_desc tz \n" +
-                        "LEFT JOIN wms_material_in jl ON jl.wzbm = tz.wzbm \n" +
-                        "LEFT JOIN wms_area a ON FIND_IN_SET(a.area_id, tz.area_codes) > 0\n" +
-                        "where a.area_name = '12料场'", data, "金属料场.接料车数", "value", 0);
+                "select case when sum(cs) is null then 0 else round(sum(cs)) end as value from wms_material_in where jlsj_t >= '" + ymd + " 00:00:00' and jlsj_t <= '" + ymd + " 23:23:59' and pzbm not in ('A0703010', 'A0704010', 'A0704020', 'A0603010','A2302010' )", data, "金属料场.接料车数", "value", 0);
         executeSqlFill(
-                "SELECT SUM(jl.car_count) as value\n" +
-                        "FROM wms_material_desc tz \n" +
-                        "LEFT JOIN wms_material_out jl ON jl.wzbm = tz.wzbm \n" +
-                        "LEFT JOIN wms_area a ON FIND_IN_SET(a.area_id, tz.area_codes) > 0\n" +
-                        "where a.area_name = '12料场'", data, "金属料场.发料车数", "value", 0);
+                "select sum(car_count) as value from wms_material_out where allot_time >= '" + ymd + " 00:00:00' and allot_time <= '" + ymd + " 23:23:59' and material_group not in ('A0703010', 'A0704010', 'A0704020', 'A0603010','A2302010' )", data, "金属料场.发料车数", "value", 0);
+        executeSqlFill("select sum(actual_weight) as value from wms_material_stock where variety_code not in ('A0703010', 'A0704010', 'A0704020', 'A0603010','A2302010' )", data, "金属料场.库存数量", "value", 0);
+
         executeSqlFill(
-                "SELECT SUM(jl.cs) as value\n" +
-                        "FROM wms_material_desc tz \n" +
-                        "LEFT JOIN wms_material_in jl ON jl.wzbm = tz.wzbm \n" +
-                        "LEFT JOIN wms_area a ON FIND_IN_SET(a.area_id, tz.area_codes) > 0\n" +
-                        "where a.area_name = '14料场'", data, "油井水泥.接料车数", "value", 0);
+                "select case when sum(cs) is null then 0 else round(sum(cs)) end as value from wms_material_in where jlsj_t >= '" + ymd + " 00:00:00' and jlsj_t <= '" + ymd + " 23:23:59' and pzbm in ('A0603010')", data, "油井水泥.接料车数", "value", 0);
         executeSqlFill(
-                "SELECT SUM(jl.car_count) as value\n" +
-                        "FROM wms_material_desc tz \n" +
-                        "LEFT JOIN wms_material_out jl ON jl.wzbm = tz.wzbm \n" +
-                        "LEFT JOIN wms_area a ON FIND_IN_SET(a.area_id, tz.area_codes) > 0\n" +
-                        "where a.area_name = '14料场'", data, "油井水泥.发料车数", "value", 0);
+                "select sum(car_count) as value from wms_material_out where allot_time >= '" + ymd + " 00:00:00' and allot_time <= '" + ymd + " 23:23:59' and material_group in ('A0603010')", data, "油井水泥.发料车数", "value", 0);
+        executeSqlFill("select sum(actual_weight) as value from wms_material_stock where variety_code in ('A0603010')", data, "油井水泥.库存数量", "value", 0);
+
         JSONObject msg = new JSONObject();
         msg.put("msgType", "materialClassStatics");
         msg.put("data", data);

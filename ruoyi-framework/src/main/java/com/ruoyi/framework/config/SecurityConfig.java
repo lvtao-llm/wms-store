@@ -134,7 +134,8 @@ public class SecurityConfig {
                                     "/system/wms_material_in/list/**",
                                     "/system/wms_material_out/list/**",
                                     "/system/wms_material_stock/list/**",
-                                    "/system/position_current/list/**"
+                                    "/system/position_current/list/**",
+                                    "/system/access_log/list/**"
                             ).permitAll()
                             // 静态资源，可匿名访问
                             .antMatchers(HttpMethod.GET, "/", "/*.html", "/**/*.html", "/**/*.css", "/**/*.js", "/profile/**").permitAll()
