@@ -327,6 +327,12 @@ export const dynamicRoutes = [
         component: () => import('@/views/wms_material_identify_record/index'),
         name: '物料识别记录',
         meta: { title: '物料识别记录' }
+      },
+      {
+        path: 'access-log',
+        component: () => import('@/views/wms_access_log/index'),
+        name: '料场进出记录',
+        meta: { title: '料场进出记录' }
       }
     ]
   },
