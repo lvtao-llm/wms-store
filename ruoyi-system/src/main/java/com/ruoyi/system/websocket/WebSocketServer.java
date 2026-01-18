@@ -302,7 +302,7 @@ public class WebSocketServer {
         WebSocketServer.lanyaPositionCurrentService = lanyaPositionCurrentService;
     }
 
-    public Map<String, WmsDeviceCameraLogController.PathDetection> vehicleCurrents = new HashMap<>();
+    public static Map<String, WmsDeviceCameraLogController.PathDetection> vehicleCurrents = new HashMap<>();
 
     /**
      * 初始化

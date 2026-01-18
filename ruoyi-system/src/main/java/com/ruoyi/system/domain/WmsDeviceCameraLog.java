@@ -79,6 +79,7 @@ public class WmsDeviceCameraLog extends BaseEntity
     @Excel(name = "颜色")
     @ApiModelProperty("颜色")
     private String base64;
+    private String srcCph;
 
     public void setId(Long id) 
     {
@@ -216,5 +217,13 @@ public class WmsDeviceCameraLog extends BaseEntity
             .append("sfcdgf", getSfcdgf())
             .append("base64", getBase64())
             .toString();
+    }
+
+    public void setSrcCph(String srcCph) {
+        this.srcCph = srcCph;
+    }
+
+    public String getSrcCph() {
+        return srcCph;
     }
 }
