@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.WmsMaterialTypeMapper">
+    
+    <resultMap type="WmsMaterialType" id="WmsMaterialTypeResult">
+        <result property="bm"    column="bm"    />
+        <result property="mc"    column="mc"    />
+        <result property="areaCode"    column="area_code"    />
+        <result property="id"    column="id"    />
+    </resultMap>
+
+    <sql id="selectWmsMaterialTypeVo">
+        select bm, mc, area_code, id from wms_material_type
+    </sql>
+
+    <select id="selectWmsMaterialTypeList" parameterType="WmsMaterialType" resultMap="WmsMaterialTypeResult">
+        <include refid="selectWmsMaterialTypeVo"/>
+        <where>  
+            <if test="bm != null  and bm != ''"> and bm = #{bm}</if>
+            <if test="mc != null  and mc != ''"> and mc = #{mc}</if>
+            <if test="areaCode != null  and areaCode != ''"> and area_code = #{areaCode}</if>
+        </where>
+    </select>
+    
+    <select id="selectWmsMaterialTypeByBm" parameterType="String" resultMap="WmsMaterialTypeResult">
+        <include refid="selectWmsMaterialTypeVo"/>
+        where bm = #{bm}
+    </select>
+
+    <insert id="insertWmsMaterialType" parameterType="WmsMaterialType">
+        insert into wms_material_type
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="bm != null">bm,</if>
+            <if test="mc != null">mc,</if>
+            <if test="areaCode != null">area_code,</if>
+            <if test="id != null">id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="bm != null">#{bm},</if>
+            <if test="mc != null">#{mc},</if>
+            <if test="areaCode != null">#{areaCode},</if>
+            <if test="id != null">#{id},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWmsMaterialType" parameterType="WmsMaterialType">
+        update wms_material_type
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="mc != null">mc = #{mc},</if>
+            <if test="areaCode != null">area_code = #{areaCode},</if>
+            <if test="id != null">id = #{id},</if>
+        </trim>
+        where bm = #{bm}
+    </update>
+
+    <delete id="deleteWmsMaterialTypeByBm" parameterType="String">
+        delete from wms_material_type where bm = #{bm}
+    </delete>
+
+    <delete id="deleteWmsMaterialTypeByBms" parameterType="String">
+        delete from wms_material_type where bm in 
+        <foreach item="bm" collection="array" open="(" separator="," close=")">
+            #{bm}
+        </foreach>
+    </delete>
+</mapper>
