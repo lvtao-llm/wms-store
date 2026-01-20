@@ -36,6 +36,6 @@ public class WmsAccessLogController extends BaseController {
     public TableDataInfo list(@RequestParam(required = false) String jssj_s, @RequestParam(required = false) String jssj_e) {
         startPage();
         List<JSONObject> list = wmsAccessLogMapper.selectWmsAccessLogList(jssj_s, jssj_e);
-        return getDataTable(list);
+        return getDataTable(getDataTable(list));
     }
 }

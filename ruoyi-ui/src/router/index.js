@@ -333,6 +333,12 @@ export const dynamicRoutes = [
         component: () => import('@/views/wms_access_log/index'),
         name: '料场进出记录',
         meta: { title: '料场进出记录' }
+      },
+      {
+        path: 'material-type',
+        component: () => import('@/views/wms_material_type/index'),
+        name: '料场进出记录',
+        meta: { title: '料场进出记录' }
       }
     ]
   },

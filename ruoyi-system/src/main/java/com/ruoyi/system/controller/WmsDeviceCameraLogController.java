@@ -129,6 +129,8 @@ public class WmsDeviceCameraLogController extends BaseController {
             if (device.getDeviceName().equals("出口闸机")) {
                 exitGate = device;
             }
+            // 2. 添加点（独立描述数据）
+            mapGraph.addVertex(device.getDeviceName());
         }
 
 
@@ -204,32 +206,33 @@ public class WmsDeviceCameraLogController extends BaseController {
             currLog.setSj(new Date());
         }
 
+        currLog.setSrcCph(currLog.getCph());
+        currLog.setCph(null);
+
         // 日志是闸机的数据
         boolean isGate = false;
         // 日志时出口闸机数据
         boolean isExitGate = false;
         // log是入口闸机的数据，则记录车牌号
         if (entranceGate.getData().contains(currLog.getDwmc())) {
-            entrancePlateNumbers.put(currLog.getCph(), currLog);
+            entrancePlateNumbers.put(currLog.getSrcCph(), currLog);
             isGate = true;
+            currLog.setCph(currLog.getSrcCph());
         }
 
         // log是出口闸机的数据，则完成车辆轨迹
         if (exitGate.getData().contains(currLog.getDwmc())) {
-            completePosition(currLog.getCph(), currLog.getSj());
-            entrancePlateNumbers.remove(currLog.getCph());
+            completePosition(currLog.getSrcCph(), currLog.getSj());
+            entrancePlateNumbers.remove(currLog.getSrcCph());
             isGate = true;
             isExitGate = true;
+            currLog.setCph(currLog.getSrcCph());
         }
-
-        currLog.setSrcCph(currLog.getCph());
-        currLog.setCph(null);
-
 
         // 如果日志不是闸机数据，则尝试匹配车牌号
         WmsDeviceCameraLog bestMatchingPlateWithQuality = null;
         if (!isGate) {
-            bestMatchingPlateWithQuality = findBestMatchingPlateWithQuality(currLog);
+            bestMatchingPlateWithQuality = findBestMatchingPlateWithQuality(currLog.getSrcCph());
             if (bestMatchingPlateWithQuality != null) {
                 currLog.setCph(bestMatchingPlateWithQuality.getCph());
             }
@@ -364,8 +367,6 @@ public class WmsDeviceCameraLogController extends BaseController {
                     List<List<String>> wmsPathsDefinition = getWmsPathsDefinition(currDevice.getDeviceName(), nextDeviceName);
                     // 添加虚拟路径点
                     pathDetection.setFutureLongitudeAndLatitude(wmsPathsDefinition.get(0), wmsPathsDefinition.get(1));
-
-
                 }
             } else {
                 pathDetection.setFutureLongitudeAndLatitude(playPaths.get(0), playPaths.get(1));
@@ -790,19 +791,21 @@ public class WmsDeviceCameraLogController extends BaseController {
     }
 
     public void completePosition(String cph, Date endTime) {
-        PathDetection pathDetection = webSocketServer.vehicleCurrents.remove(cph);
+        PathDetection pathDetection = WebSocketServer.vehicleCurrents.remove(cph);
         WmsTrajectory wmsTrajectory = new WmsTrajectory();
         wmsTrajectory.setTrajectoryType("车辆");
-        wmsTrajectory.setFuzzy(cph + "-" + pathDetection.begin + "-外部车辆");
-        wmsTrajectory.setTrajectoryBegin(pathDetection.begin);
         wmsTrajectory.setTrajectoryEnd(endTime);
         JSONArray jsonArray = new JSONArray();
-        for (int i = 0; i < pathDetection.pathsAll.size(); i++) {
-            JSONObject jsonObject = new JSONObject();
-            String[] s = pathDetection.pathsAll.get(i).split(",");
-            jsonObject.put("longitude", s[0]);
-            jsonObject.put("latitude", s[1]);
-            jsonArray.add(jsonObject);
+        if (pathDetection != null) {
+            wmsTrajectory.setFuzzy(cph + "-" + pathDetection.begin + "-外部车辆");
+            wmsTrajectory.setTrajectoryBegin(pathDetection.begin);
+            for (int i = 0; i < pathDetection.pathsAll.size(); i++) {
+                JSONObject jsonObject = new JSONObject();
+                String[] s = pathDetection.pathsAll.get(i).split(",");
+                jsonObject.put("longitude", s[0]);
+                jsonObject.put("latitude", s[1]);
+                jsonArray.add(jsonObject);
+            }
         }
         wmsTrajectory.setTrajectoryPoints(jsonArray.toJSONString());
         wmsTrajectoryService.insertWmsTrajectory(wmsTrajectory);
@@ -832,11 +835,11 @@ public class WmsDeviceCameraLogController extends BaseController {
     /**
      * 查找最佳匹配的车牌号，并考虑匹配质量和相似度
      *
-     * @param log 输入的车牌号字符串
+     * @param cph 输入的车牌号字符串
      * @return 匹配的键值对，如果没有合适的匹配则返回 null
      */
-    private WmsDeviceCameraLog findBestMatchingPlateWithQuality(WmsDeviceCameraLog log) {
-        if (log.getCph() == null || entrancePlateNumbers.isEmpty()) {
+    private WmsDeviceCameraLog findBestMatchingPlateWithQuality(String cph) {
+        if (cph == null || entrancePlateNumbers.isEmpty()) {
             return null;
         }
 
@@ -845,10 +848,10 @@ public class WmsDeviceCameraLogController extends BaseController {
         double bestMatchRatio = 0.0;
 
         for (Map.Entry<String, WmsDeviceCameraLog> entry : entrancePlateNumbers.entrySet()) {
-            int matchCount = longestCommonSubsequenceLength(log.getCph(), entry.getKey());
+            int matchCount = longestCommonSubsequenceLength(cph, entry.getKey());
 
             // 计算匹配率（避免短字符串的高匹配率问题）
-            double matchRatio = (double) matchCount / Math.max(log.getCph().length(), entry.getKey().length());
+            double matchRatio = (double) matchCount / Math.max(cph.length(), entry.getKey().length());
 
             // 如果匹配数更高，或者匹配数相同但匹配率更高的情况下更新最佳匹配
             if (matchCount > maxMatchCount || (matchCount == maxMatchCount && matchRatio > bestMatchRatio)) {

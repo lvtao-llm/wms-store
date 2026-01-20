@@ -564,23 +564,23 @@ public class WebSocketServer {
         JSONObject data = new JSONObject();
         String ymd = sdfYearMonDay.format(new Date());
         executeSqlFill("select case when sum(cs) is null then 0 else round(sum(cs)) end as value from wms_material_in where jlsj_t >= '" + ymd + " 00:00:00' and jlsj_t <= '" + ymd + " 23:23:59'", data, "接料车数", "value", 0);
-        executeSqlFill("select sum(car_count) as value from wms_material_out where allot_time >= '" + ymd + " 00:00:00' and allot_time <= '" + ymd + " 23:23:59'", data, "发料车数", "value", 0);
+        executeSqlFill("select sum(car_count) as value from wms_material_out where measure_time >= '" + ymd + " 00:00:00' and measure_time <= '" + ymd + " 23:23:59'", data, "发料车数", "value", 0);
         executeSqlFill("select sum(actual_weight) as value from wms_material_stock", data, "库存数量", "value", 0);
 
         executeSqlFill("select case when sum(cs) is null then 0 else round(sum(cs)) end as value from wms_material_in where jlsj_t >= '" + ymd + " 00:00:00' and jlsj_t <= '" + ymd + " 23:23:59' and pzbm in ('A0703010', 'A0704010', 'A0704020')", data, "毛石料厂.接料车数", "value", 0);
-        executeSqlFill("select sum(car_count) as value from wms_material_out where allot_time >= '" + ymd + " 00:00:00' and allot_time <= '" + ymd + " 23:23:59' and material_group in ('A0703010', 'A0704010', 'A0704020')", data, "毛石料厂.发料车数", "value", 0);
+        executeSqlFill("select sum(car_count) as value from wms_material_out where measure_time >= '" + ymd + " 00:00:00' and measure_time <= '" + ymd + " 23:23:59' and material_group in ('A0703010', 'A0704010', 'A0704020')", data, "毛石料厂.发料车数", "value", 0);
         executeSqlFill("select sum(actual_weight) as value from wms_material_stock where variety_code in ('A0703010', 'A0704010', 'A0704020')", data, "毛石料厂.库存数量", "value", 0);
 
         executeSqlFill("select case when sum(cs) is null then 0 else round(sum(cs)) end as value from wms_material_in where jlsj_t >= '" + ymd + " 00:00:00' and jlsj_t <= '" + ymd + " 23:23:59' and pzbm in ('A2302010')", data, "劳保库房.接料车数", "value", 0);
-        executeSqlFill("select sum(car_count) as value from wms_material_out where allot_time >= '" + ymd + " 00:00:00' and allot_time <= '" + ymd + " 23:23:59' and material_group in ('A2302010')", data, "劳保库房.发料车数", "value", 0);
+        executeSqlFill("select sum(car_count) as value from wms_material_out where measure_time >= '" + ymd + " 00:00:00' and measure_time <= '" + ymd + " 23:23:59' and material_group in ('A2302010')", data, "劳保库房.发料车数", "value", 0);
         executeSqlFill("select sum(actual_weight) as value from wms_material_stock where variety_code in ('A2302010')", data, "劳保库房.库存数量", "value", 0);
 
         executeSqlFill("select case when sum(cs) is null then 0 else round(sum(cs)) end as value from wms_material_in where jlsj_t >= '" + ymd + " 00:00:00' and jlsj_t <= '" + ymd + " 23:23:59' and pzbm not in ('A0703010', 'A0704010', 'A0704020', 'A0603010','A2302010' )", data, "金属料场.接料车数", "value", 0);
-        executeSqlFill("select sum(car_count) as value from wms_material_out where allot_time >= '" + ymd + " 00:00:00' and allot_time <= '" + ymd + " 23:23:59' and material_group not in ('A0703010', 'A0704010', 'A0704020', 'A0603010','A2302010' )", data, "金属料场.发料车数", "value", 0);
+        executeSqlFill("select sum(car_count) as value from wms_material_out where measure_time >= '" + ymd + " 00:00:00' and measure_time <= '" + ymd + " 23:23:59' and material_group not in ('A0703010', 'A0704010', 'A0704020', 'A0603010','A2302010' )", data, "金属料场.发料车数", "value", 0);
         executeSqlFill("select sum(actual_weight) as value from wms_material_stock where variety_code not in ('A0703010', 'A0704010', 'A0704020', 'A0603010','A2302010' )", data, "金属料场.库存数量", "value", 0);
 
         executeSqlFill("select case when sum(cs) is null then 0 else round(sum(cs)) end as value from wms_material_in where jlsj_t >= '" + ymd + " 00:00:00' and jlsj_t <= '" + ymd + " 23:23:59' and pzbm in ('A0603010')", data, "油井水泥.接料车数", "value", 0);
-        executeSqlFill("select sum(car_count) as value from wms_material_out where allot_time >= '" + ymd + " 00:00:00' and allot_time <= '" + ymd + " 23:23:59' and material_group in ('A0603010')", data, "油井水泥.发料车数", "value", 0);
+        executeSqlFill("select sum(car_count) as value from wms_material_out where measure_time >= '" + ymd + " 00:00:00' and measure_time <= '" + ymd + " 23:23:59' and material_group in ('A0603010')", data, "油井水泥.发料车数", "value", 0);
         executeSqlFill("select sum(actual_weight) as value from wms_material_stock where variety_code in ('A0603010')", data, "油井水泥.库存数量", "value", 0);
 
         JSONObject msg = new JSONObject();

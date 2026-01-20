@@ -17,6 +17,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="ys"    column="ys"    />
         <result property="sfcdgf"    column="sfcdgf"    />
         <result property="base64"    column="base64"    />
+        <result property="scrCph"    column="src_cph"    />
     </resultMap>
 
     <sql id="selectWmsDeviceCameraLogVo">
@@ -61,6 +62,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="ys != null">ys,</if>
             <if test="sfcdgf != null">sfcdgf,</if>
             <if test="base64 != null">base64,</if>
+            <if test="srcCph != null">src_cph,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="type != null">#{type},</if>
@@ -74,6 +76,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="ys != null">#{ys},</if>
             <if test="sfcdgf != null">#{sfcdgf},</if>
             <if test="base64 != null">#{base64},</if>
+            <if test="srcCph != null">#{srcCph},</if>
          </trim>
     </insert>
 
@@ -91,6 +94,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="ys != null">ys = #{ys},</if>
             <if test="sfcdgf != null">sfcdgf = #{sfcdgf},</if>
             <if test="base64 != null">base64 = #{base64},</if>
+            <if test="srcCph != null">src_cph = #{srcCph},</if>
         </trim>
         where id = #{id}
     </update>
